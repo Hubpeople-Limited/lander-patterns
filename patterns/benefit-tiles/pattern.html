@@ -1,15 +1,15 @@
 <!--
 name: benefit-tiles
-version: 1
+version: 2
 type: section
 page-types: homepage, landing
 content-shape: peer set
 description: A four-up run of tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
 keywords: benefits, features, tiles, icons, value propositions, no photography
-needs: four real benefits or features, each with a short title and one or two sentences the brand can stand behind; one real icon image per tile, square and at least 44px, each with its own alt text
+needs: three to five real capabilities the brand actually offers, each with a short title and one or two sentences of real copy; a simple line mark per tile, drawn inline so it takes the badge's ink; a label naming what the set is
 pairs-with: heading-block
 avoid-with: none
-tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-2, --space-4, --space-5, --space-6, --space-8
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-2, --space-4, --space-5, --space-6, --space-8
 motion: none
 one-per-page: yes
 status: active
@@ -17,7 +17,11 @@ added: 2026-08-22
 behaviours: reveal
 -->
 <section class="benefit-tiles">
-  <ul class="benefit-tiles-track" role="list" data-hub-module="reveal" data-hub-reveal-children>
+  <!-- tabindex="0" keeps the track reachable: below 48rem it scrolls, and
+       not every engine makes a scrolling region focusable on its own. -->
+  <ul class="benefit-tiles-track" role="list" tabindex="0"
+      aria-label="slot:track-label"
+      data-hub-module="reveal" data-hub-reveal-children>
     <!-- ONE tile. Duplicate this whole <li> to four: the row is four wide and
          drops to two, so any other count leaves a hole in it. The badge takes
          a real icon file - set width and height to its intrinsic pixel size,
@@ -25,8 +29,15 @@ behaviours: reveal
          same thing, otherwise alt="". The <h3> expects an <h2> above the
          section, which is what heading-block supplies. -->
     <li class="benefit-tiles-item">
-      <span class="benefit-tiles-badge">
-        <img class="benefit-tiles-icon" src="slot:tile-icon" alt="slot:tile-icon-alt" width="44" height="44" loading="lazy">
+      <!-- The glyph is drawn, not fetched, so it takes the badge's ink and
+           stays legible whatever the brand sets. Replace the path data with
+           the real mark; keep stroke="currentColor" and add no fill. -->
+      <span class="benefit-tiles-badge" aria-hidden="true">
+        <svg class="benefit-tiles-icon" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+             stroke-linejoin="round" focusable="false">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
       </span>
       <div class="benefit-tiles-text">
         <h3 class="benefit-tiles-title"><!-- slot: tile-title --></h3>

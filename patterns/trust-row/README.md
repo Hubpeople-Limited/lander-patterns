@@ -51,11 +51,13 @@ still reads: the fluid `padding-block` is what holds the marks apart from their
 neighbours, and the labels carry all the meaning, so nothing is lost if the
 hairlines all but disappear. `--chip-radius` shapes the status chip — pill on a
 soft brand, squared on a sharp one. The icons are `--color-primary-dark` mixed
-65% into `--color-text`: the bare token is a *dark* ink, so on a brand with a
-dark page ground it measures 1.79:1 and the glyphs disappear, while the mix
-pulls it toward the one ink guaranteed against every page ground and clears the
-3:1 graphics bar at 3.54:1 without noticeably shifting the icon on a light brand
-(14.4:1 becomes 16.2:1). Do not put the bare token back. The icons are
+65% into `--color-text`. The bare token is contracted as a dark ink for light
+grounds, and on the sample brands it runs 8.68 / 13.64 / 3.61 against the page
+ground — clearing the 3:1 an icon needs, but with almost nothing to spare on a
+dark brand and no promise behind it. The mix pulls it toward the one ink the
+contract guarantees against every page ground and gives 11.23 / 15.30 / 6.14,
+which is headroom rather than a pass. Re-derive from `preview/tokens-*.css`
+before changing it. The icons are
 `aria-hidden` in any case — decoration beside their labels, never standing in
 for them, so a badge always keeps its words.
 

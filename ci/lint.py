@@ -18,6 +18,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import legibility
+
 ROOT = Path(__file__).resolve().parent.parent
 PATTERNS = ROOT / "patterns"
 INDEX = ROOT / "INDEX.md"
@@ -871,6 +874,10 @@ def main():
         check_list_semantics(html, css, folder.name)
         check_motion_claim(html, css, meta)
         check_edges_documented(readme, meta)
+        if css.is_file():
+            legibility.check(
+                css.read_text(encoding="utf-8"),
+                lambda d, _p=css: find(_p, "legibility", d))
         check_comment_policy(html, "html")
         if css.is_file():
             check_comment_policy(css, "css")

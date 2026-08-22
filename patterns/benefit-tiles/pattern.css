@@ -1,4 +1,4 @@
-/* benefit-tiles v1 - tokens only, selectors prefixed */
+/* benefit-tiles v2 - tokens only, selectors prefixed */
 .benefit-tiles {
   --benefit-tiles-badge-fill: var(--color-primary);
   --benefit-tiles-badge-size: 3rem;
@@ -49,12 +49,13 @@
   height: var(--benefit-tiles-badge-size);
   border-radius: var(--chip-radius);
   background: var(--benefit-tiles-badge-fill);
+  /* The one ink the contract guarantees on this ground. */
+  color: var(--color-on-primary);
 }
 .benefit-tiles-icon {
   display: block;
   width: 1.375rem;
   height: 1.375rem;
-  object-fit: contain;
 }
 /* margin-top:auto drives the words to the floor, so tiles carrying unequal
    amounts of copy still line up as a set. */
@@ -77,6 +78,7 @@
 .benefit-tiles-copy {
   color: var(--color-text-soft);
   font-size: 0.9375rem;
+  font-weight: 500;
   line-height: 1.55;
   margin: 0;
 }

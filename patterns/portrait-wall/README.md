@@ -14,7 +14,7 @@ already runs a set of image cards — a second grid of photographs is where a pa
 stops looking designed.
 
 **What it needs.** Fifteen **real** member photographs, all different, portrait-
-crop and at least 600px wide (tiles render around 300px at the widest, so 2× for
+crop and at least 420px wide (tiles render around 205px at the widest, so 2× for
 retina). This is the library's hungriest pattern and the obvious place to reach
 for stock: don't. Fifteen bought smiles read as fifteen bought smiles, and the
 one claim the wall makes — that these are members — is the one it then can't

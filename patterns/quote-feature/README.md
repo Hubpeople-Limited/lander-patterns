@@ -18,7 +18,7 @@ most trustworthy thing on the page. If there is no quote, there is no section.
 short enough to read at display size — the quote is held to a 20-character
 measure, so roughly fifteen to twenty-five words is the working range. A real
 name, and an attribution line that is true (role, location, how long they have
-been a member). One real portrait of that person, square, at least 160px, with
+been a member). One real portrait of that person, square, at least 104px, with
 alt text describing them. The eyebrow is one short label from brand material.
 
 The stars line is optional and gated: fill `rating` and `rating-label` only
@@ -52,10 +52,11 @@ editorial pull quote and a grotesque as a product claim, from the same markup.
 Every ink on the stage is `--color-text` or `--color-text-soft`, and that is
 deliberate rather than dull. The quote is display-size but it is not sitting on
 `--color-bg`, and `--color-heading` promises 3:1 against `--color-bg` only —
-against a surface it measures as low as 1.5:1 on a conforming brand. The stars
-are the same case: at 18px they are small text on a coloured ground, so they
-take the one ink guaranteed on every page ground. `--color-primary-dark` there
-measures 1.75:1 on the sample dark brand, which is a stars line nobody can see.
+against `--color-surface-soft` it measures 2.36:1 on the sample dark brand, and
+against `--color-surface` 2.71:1. The stars are the same case: at 18px they are
+small text on a coloured ground, so they take the one ink guaranteed on every
+page ground. `--color-primary-dark` there measures 2.81:1, short of the 4.5:1
+small text needs.
 
 The portrait's roundness is the pattern's own `--quote-feature-portrait-radius`
 rather than `--card-radius`, so a sharp-cornered brand keeps a round face by
