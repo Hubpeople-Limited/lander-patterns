@@ -1,0 +1,92 @@
+/* link-cluster v1 - tokens only, selectors prefixed */
+/* Each ground names its own ink and pill face; every rule reads the pair. */
+.link-cluster--plain {
+  --link-cluster-ground: var(--color-bg);
+  --link-cluster-ink: var(--color-text);
+  --link-cluster-quiet: var(--color-text-soft);
+  --link-cluster-title-ink: var(--color-heading);
+  --link-cluster-face: var(--color-surface);
+  --link-cluster-ring: var(--color-focus);
+  --link-cluster-edge: var(--color-rule);
+}
+.link-cluster--soft {
+  --link-cluster-ground: var(--color-surface-soft);
+  --link-cluster-ink: var(--color-text);
+  --link-cluster-quiet: var(--color-text-soft);
+  --link-cluster-title-ink: var(--color-text);
+  --link-cluster-face: var(--color-surface);
+  --link-cluster-ring: var(--color-focus);
+  --link-cluster-edge: var(--color-rule);
+}
+.link-cluster--brand {
+  --link-cluster-ground: var(--color-primary);
+  --link-cluster-ink: var(--color-primary);
+  --link-cluster-quiet: var(--color-on-primary);
+  --link-cluster-title-ink: var(--color-on-primary);
+  --link-cluster-face: var(--color-on-primary);
+  --link-cluster-ring: var(--color-on-primary);
+  --link-cluster-edge: transparent;
+}
+.link-cluster {
+  padding-block: var(--space-8);
+  padding-inline: var(--space-4);
+  background: var(--link-cluster-ground);
+}
+.link-cluster-inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  text-align: center;
+}
+.link-cluster-title {
+  font-family: var(--font-heading);
+  color: var(--link-cluster-title-ink);
+  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.link-cluster-intro {
+  color: var(--link-cluster-quiet);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 46ch;
+  margin: 0 auto var(--space-5);
+}
+.link-cluster-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* The pill is a target before it is a shape: 44px is the floor, and the
+   horizontal padding is what keeps two short place names apart. */
+.link-cluster-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--link-cluster-edge);
+  border-radius: var(--chip-radius);
+  /* The face alone does not separate a pill from the ground on a brand whose
+   surface and surface-soft are nearly the same colour, so the edge is drawn
+   on the two grounds where that can happen. */
+  background: var(--link-cluster-face);
+  color: var(--link-cluster-ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+}
+.link-cluster-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.link-cluster-link:focus-visible {
+  outline: 3px solid var(--link-cluster-ring);
+  outline-offset: 3px;
+}

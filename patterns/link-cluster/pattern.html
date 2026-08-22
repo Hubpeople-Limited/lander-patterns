@@ -1,0 +1,37 @@
+<!--
+name: link-cluster
+version: 1
+type: section
+page-types: homepage, landing, pricing, safety, article
+requires: none
+content-shape: reference
+description: A wrapping run of plain links to real pages - places, categories, topics - on a choice of three grounds, with no photograph, no figure and nothing to invent.
+keywords: links, locations, cities, categories, internal links, seo, cluster
+needs: real destination pages that already exist and already have content on them, and the brand's own name for each. Nothing else - no image, no copy, no figure. Every link must resolve: a cluster pointing at pages that are missing or empty is worse than no cluster, because it tells a reader the brand is bigger than it is
+pairs-with: heading-block, opener-split, cta-band, faq-details
+avoid-with: none
+tokens-used: --chip-radius, --color-bg, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- Take one ground modifier: --plain on the page ground, --soft on the
+     tinted fill, --brand on the brand colour. Two clusters on one page read
+     well when they run on different grounds and hold different kinds of thing
+     - places, then categories.
+
+     ONE link. Duplicate the whole <li>; ten to twenty-five is the useful
+     range. Below ten it reads as a short menu rather than a map; above
+     twenty-five nobody scans it. Delete the intro when nothing true fills it. -->
+<section class="link-cluster link-cluster--plain" aria-labelledby="slot:section-id">
+  <div class="link-cluster-inner">
+    <h2 class="link-cluster-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <p class="link-cluster-intro"><!-- slot: section-intro --></p>
+    <ul class="link-cluster-list" role="list">
+      <li class="link-cluster-item">
+        <a class="link-cluster-link" href="slot:link-url"><!-- slot: link-text --></a>
+      </li>
+    </ul>
+  </div>
+</section>

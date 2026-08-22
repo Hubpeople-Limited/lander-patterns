@@ -439,6 +439,32 @@
   "version": "2",
   "whole-page": false
  },
+ "link-cluster": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "A wrapping run of plain links to real pages - places, categories, topics - on a choice of three grounds, with no photograph, no figure and nothing to invent.",
+  "motion": "none",
+  "needs": "real destination pages that already exist and already have content on them, and the brand's own name for each. Nothing else - no image, no copy, no figure. Every link must resolve: a cluster pointing at pages that are missing or empty is worse than no cluster, because it tells a reader the brand is bigger than it is",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "opener-split",
+   "cta-band",
+   "faq-details"
+  ],
+  "requires": "none",
+  "type": "section",
+  "version": "1",
+  "whole-page": false
+ },
  "media-card-grid": {
   "avoid-with": [
    "gallery-scroll",
