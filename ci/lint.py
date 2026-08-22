@@ -24,6 +24,9 @@ import legibility
 ROOT = Path(__file__).resolve().parent.parent
 PATTERNS = ROOT / "patterns"
 INDEX = ROOT / "INDEX.md"
+# Everything a planner needs in order to choose patterns without opening one.
+# Generated, never hand-edited, like INDEX.md.
+MANIFEST = ROOT / "patterns.json"
 
 REQUIRED_FIELDS = [
     "name", "version", "type", "page-types", "content-shape", "description",
@@ -913,6 +916,7 @@ def main():
     check_token_sets_are_complete()
 
     rows = []
+    manifest = {}
     names = set()
     cross_refs = []
     avoids, avoid_paths = {}, {}
@@ -1028,6 +1032,30 @@ def main():
         # to be visible here - inside the pattern folder it arrives after the
         # decision it was meant to inform.
         limit = " · **one per page**" if meta.get("one-per-page") == "yes" else ""
+        # The index is where an agent shortlists, so every field the choice runs
+        # on has to be visible here. content-shape is the skill's own vocabulary
+        # for picking a composition; needs is the gate that closes a pattern
+        # when the brand has no material for it, and inside the folder it
+        # arrives thousands of tokens after the decision it was meant to
+        # inform; behaviours decides whether the brand needs the bundle at all.
+        shape = meta.get("content-shape", "")
+        beh = meta.get("behaviours", "")
+        needs = meta.get("needs", "")
+        manifest[name] = {
+            "version": meta.get("version"),
+            "type": meta.get("type"),
+            "page-types": [s.strip() for s in meta.get("page-types", "").split(",") if s.strip()],
+            "content-shape": shape,
+            "one-per-page": meta.get("one-per-page") == "yes",
+            "needs": needs,
+            "avoid-with": [s.strip() for s in meta.get("avoid-with", "").split(",")
+                           if s.strip() and s.strip() != "none"],
+            "pairs-with": [s.strip() for s in meta.get("pairs-with", "").split(",")
+                           if s.strip() and s.strip() != "none"],
+            "behaviours": [s.strip() for s in beh.split(",") if s.strip()],
+            "motion": meta.get("motion"),
+            "description": meta.get("description", ""),
+        }
         rows.append(
             f"- **{name}** v{meta.get('version', '?')} · {meta.get('type', '?')} · "
             f"{meta.get('page-types', '?')}{limit} · {meta.get('description', '?')}"
@@ -1080,6 +1108,8 @@ def main():
             find(INDEX, "stale-index", "INDEX.md does not match the patterns; run ci/lint.py")
     elif not findings:
         INDEX.write_text(index_text, encoding="utf-8", newline="\n")
+        MANIFEST.write_text(json.dumps(manifest, indent=1, sort_keys=True) + "\n",
+                            encoding="utf-8", newline="\n")
 
     if findings:
         print("\n".join(findings))

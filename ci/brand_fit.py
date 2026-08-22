@@ -59,12 +59,19 @@ def main(argv):
     brands = {}
     for root in argv:
         base = Path(root)
+        # One stylesheet per brand. A checkout often holds the same tokens
+        # twice - assets/global.css and for-toolkit/site/global.css - and
+        # counting both inflates the denominator, which makes a token look
+        # better covered than it is. Group by the top folder under the root
+        # and keep the deepest path, which is the checkout rather than a copy.
+        best = {}
         for css in sorted(base.rglob("global.css")):
-            # Label by the path under the supplied root, so two brands whose
-            # stylesheets sit at different depths cannot collapse onto one
-            # name and quietly halve the count.
-            label = str(css.relative_to(base).parent).replace("\\", "/")
-            brands[label] = defined_in(css.read_text(encoding="utf-8",
+            rel = css.relative_to(base)
+            brand = rel.parts[0]
+            if brand not in best or len(rel.parts) > len(best[brand].relative_to(base).parts):
+                best[brand] = css
+        for brand, css in best.items():
+            brands[brand] = defined_in(css.read_text(encoding="utf-8",
                                                      errors="replace"))
     if not brands:
         print("no global.css found under: " + ", ".join(argv))

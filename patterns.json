@@ -1,0 +1,751 @@
+{
+ "article-masthead": {
+  "avoid-with": [
+   "hero-centred",
+   "hero-overlay",
+   "hero-split"
+  ],
+  "behaviours": [],
+  "content-shape": "single article",
+  "description": "Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.",
+  "motion": "none",
+  "needs": "a real article title and a real lede of one or two sentences; the category the piece genuinely sits in; an honest read time and a genuine publication date; the name and role of the person who actually wrote it, with their real portrait and real alt text",
+  "one-per-page": true,
+  "page-types": [
+   "article"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "3"
+ },
+ "benefit-tiles": {
+  "avoid-with": [],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "A four-up run of tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.",
+  "motion": "none",
+  "needs": "three to five real capabilities the brand actually offers, each with a short title and one or two sentences of real copy; a simple line mark per tile, drawn inline so it takes the badge's ink; a label naming what the set is",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "2"
+ },
+ "capability-tabs": {
+  "avoid-with": [
+   "zigzag-rows"
+  ],
+  "behaviours": [
+   "tabs"
+  ],
+  "content-shape": "peer set",
+  "description": "A topic switcher - a rail of pill tabs over one tinted panel pairing a claim, a ticked list of what is included and a half-panel image; with no behaviour library every panel renders stacked and readable.",
+  "motion": "none",
+  "needs": "two to five real capability stories the brand can stand behind, each with a short tab label, a claim heading, one or two sentences, three to five true points and its own photograph with alt text; a section heading and one supporting line",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "2"
+ },
+ "cta-band": {
+  "avoid-with": [
+   "cta-curtain",
+   "cta-image"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Plain full-bleed closing call to action on the brand colour - a centred claim, one supporting line and one control; the ordinary page finale the library had no answer for.",
+  "motion": "none",
+  "needs": "a closing headline and one supporting line of real copy, both saying something the page has earned the right to say",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article"
+  ],
+  "pairs-with": [
+   "pricing-tiers",
+   "faq-details",
+   "safety-protections"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "cta-curtain": {
+  "avoid-with": [
+   "cta-band",
+   "cta-image",
+   "cta-sticky",
+   "pinned-cards"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Full-viewport closing CTA pinned behind the last content section and uncovered as that section scrolls up and away, like a sheet being lifted.",
+  "motion": "none",
+  "needs": "a closing headline and one supporting line of real copy; the page's last content section, which becomes the covering sheet",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "hero-split",
+   "pricing-tiers"
+  ],
+  "type": "section",
+  "version": "8"
+ },
+ "cta-image": {
+  "avoid-with": [
+   "cta-band",
+   "cta-curtain"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.",
+  "motion": "none",
+  "needs": "one landscape photograph strong enough to fill a band at least 2000px wide, with its own alt text and a CDN srcset ladder; a closing headline and one supporting line of real copy",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "pricing-tiers",
+   "faq-details"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "cta-sticky": {
+  "avoid-with": [
+   "cta-curtain"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Mobile sticky bottom CTA bar - one join button always in the thumb zone on pages longer than two screens; hidden on desktop.",
+  "motion": "none",
+  "needs": "nothing beyond the page it sits on being longer than two mobile screens",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "article"
+  ],
+  "pairs-with": [],
+  "type": "component",
+  "version": "6"
+ },
+ "faq-details": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "question and answer",
+  "description": "Zero-JavaScript FAQ accordion on native details/summary - hairline rows, a plus that turns into a cross when the row opens.",
+  "motion": "subtle",
+  "needs": "the real questions people actually ask, each with a true answer in the brand's own words; a section heading",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "3"
+ },
+ "feature-panels": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "A run of full-bleed panels climbing a ground ladder - light, then the brand colour, then dark - each carrying a mark, a label, one large claim and a link on its floor.",
+  "motion": "subtle",
+  "needs": "two to four real things the brand offers that genuinely sit in an order - tiers, levels, degrees of visibility. Three panels ship and there are exactly three grounds: for two, delete the middle panel; for four, repeat the middle ground rather than inventing a fourth. Each needs a short label, one claim of a few words, and a simple line mark drawn inline. A section heading, and a supporting line only where there is something true to say",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "opener-split",
+   "heading-block",
+   "pricing-tiers",
+   "faq-details"
+  ],
+  "type": "section",
+  "version": "2"
+ },
+ "gallery-scroll": {
+  "avoid-with": [
+   "hero-overlay",
+   "hero-split",
+   "media-card-grid",
+   "photo-cards",
+   "portrait-wall",
+   "steps-numbered"
+  ],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances.",
+  "motion": "subtle",
+  "needs": "three or more real images of the same kind, each with real alt text, sized for the slot via the CDN",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "article"
+  ],
+  "pairs-with": [
+   "pricing-tiers"
+  ],
+  "type": "component",
+  "version": "3"
+ },
+ "heading-block": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.",
+  "motion": "none",
+  "needs": "a short eyebrow label, a title, and one supporting sentence - all real copy; the intro line is optional and deleted when there is nothing true to say",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article"
+  ],
+  "pairs-with": [
+   "testimonial-grid",
+   "pricing-tiers"
+  ],
+  "type": "component",
+  "version": "4"
+ },
+ "hero-centred": {
+  "avoid-with": [
+   "article-masthead",
+   "hero-overlay",
+   "hero-split"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Opener with the claim centred above a wide cropped photograph in its own band - the one hero that never lays a word over an image, so no scrim has to carry a ratio.",
+  "motion": "none",
+  "needs": "a headline of one or two lines and one supporting sentence, both from real brand material; one landscape photograph at least 1600px wide with its own alt text and a CDN srcset ladder",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "picker-chips",
+   "stats-band",
+   "steps-plain"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "hero-overlay": {
+  "avoid-with": [
+   "article-masthead",
+   "gallery-scroll",
+   "hero-centred",
+   "hero-split"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.",
+  "motion": "none",
+  "needs": "one landscape photograph strong enough to fill a whole screen, at least 2400px wide, with its own alt text and a CDN srcset ladder; a headline of one or two lines and one supporting sentence, both from real brand material",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "stats-band"
+  ],
+  "type": "section",
+  "version": "6"
+ },
+ "hero-split": {
+  "avoid-with": [
+   "article-masthead",
+   "gallery-scroll",
+   "hero-centred",
+   "hero-overlay",
+   "zigzag-rows"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Conversion opener - value proposition left, one strong image right, single join CTA; stacks image-first on phones.",
+  "motion": "none",
+  "needs": "one hero image at least 1280px wide from real material; a headline and one-sentence subhead that state the actual offer",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "pricing-tiers"
+  ],
+  "type": "section",
+  "version": "4"
+ },
+ "media-card-grid": {
+  "avoid-with": [
+   "gallery-scroll",
+   "photo-cards",
+   "portrait-wall",
+   "steps-numbered"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "A responsive grid of portrait image cards, each with a corner chip and its heading, one line of copy and an arrow cue set on a tuned bottom-up scrim over the photograph.",
+  "motion": "subtle",
+  "needs": "one real photograph per card, portrait-ish and at least 1280px wide, each with its own alt text; a short heading, one sentence of copy and a real destination URL per card; a short chip label per card only where the brand genuinely has one. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "7"
+ },
+ "offer-split": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "A mid-page conversion beat with no photography in it - the argument set as prose on one side, the offer as a filled panel carrying its own heading and control on the other.",
+  "motion": "none",
+  "needs": "two or three short paragraphs making one argument, and a panel heading with one line saying plainly what is on offer. Everything here is words, so they have to be the brand's real ones",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "opener-split",
+   "steps-plain",
+   "faq-details"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "opener-split": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Editorial section opener - a display title held to a short measure on the left, its supporting line pushed right and set to the title's baseline; stacks to one column on narrow screens.",
+  "motion": "none",
+  "needs": "a title, and one supporting sentence that says something the title does not; a short eyebrow label only where the section genuinely belongs to a named group",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article"
+  ],
+  "pairs-with": [
+   "steps-plain",
+   "benefit-tiles",
+   "zigzag-rows",
+   "faq-details"
+  ],
+  "type": "component",
+  "version": "1"
+ },
+ "photo-cards": {
+  "avoid-with": [
+   "gallery-scroll",
+   "media-card-grid"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "A run of cards with the photograph in its own box at the top and every word set below it on the card's own surface, so nothing is ever laid over an image.",
+  "motion": "none",
+  "needs": "one real photograph per card with its own alt text; a short heading, one or two sentences and a real destination per card. Three or four cards read best",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "article"
+  ],
+  "pairs-with": [
+   "opener-split",
+   "heading-block",
+   "cta-band"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "picker-chips": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "The first sign-up decision as one tap - a question, a helper line, and a row of pill links that each go straight into the join flow.",
+  "motion": "none",
+  "needs": "the real opening question the brand asks; two to four real options in the brand's own words; one helper line saying what picking does; a decision from the platform on whether the join flow reads a preference parameter",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "hero-split"
+  ],
+  "type": "component",
+  "version": "5"
+ },
+ "pinned-cards": {
+  "avoid-with": [
+   "cta-curtain"
+  ],
+  "behaviours": [],
+  "content-shape": "ordered set",
+  "description": "Full-screen photographic cards that pin as the page scrolls, each one sliding over the last like a dealt hand; pure CSS, and a plain stack of readable sections wherever it cannot pin.",
+  "motion": "none",
+  "needs": "one strong landscape photograph per card, at least 1600px wide, each with its own alt text; a short title and one or two sentences per card, in an order that means something. Two to four cards - a fifth stops being a hand and starts being a slideshow",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "opener-split",
+   "heading-block",
+   "cta-band"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "portrait-wall": {
+  "avoid-with": [
+   "gallery-scroll",
+   "media-card-grid",
+   "steps-numbered",
+   "testimonial-grid"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "A five-by-three lattice of member portraits with the strongest photograph held in the centre cell - a full-section image wall that carries scale rather than copy.",
+  "motion": "none",
+  "needs": "fifteen different real member photographs, portrait-crop and at least 420px wide - never stock, never the same face twice; a short label naming what the wall shows; and a section around it carrying the words, because the wall says nothing on its own. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "4"
+ },
+ "pricing-tiers": {
+  "avoid-with": [],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "reference",
+  "description": "Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.",
+  "motion": "none",
+  "needs": "the real tiers - names, real prices with currency, and each tier's actual features from brand material; a stated recommended tier or none",
+  "one-per-page": false,
+  "page-types": [
+   "pricing"
+  ],
+  "pairs-with": [
+   "stats-band"
+  ],
+  "type": "section",
+  "version": "5"
+ },
+ "prose-column": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "narrative",
+  "description": "The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.",
+  "motion": "none",
+  "needs": "real writing. Headings that say what their section contains, each section opening with a complete one-sentence answer to the question its heading raises",
+  "one-per-page": false,
+  "page-types": [
+   "article",
+   "safety",
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "article-masthead",
+   "heading-block",
+   "gallery-scroll"
+  ],
+  "type": "component",
+  "version": "1"
+ },
+ "quote-feature": {
+  "avoid-with": [
+   "testimonial-grid"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "One oversized testimonial on a full-width tinted stage - eyebrow pinned to the stage, display-size quote held to a short measure, circular portrait and attribution beneath.",
+  "motion": "none",
+  "needs": "one real testimonial, quoted word for word as the person actually wrote it, with their real name and a true attribution line; one real portrait of that person with real alt text; a star rating only where a real published rating exists. A quote nobody said is not a candidate for this pattern - do not write one, do not paraphrase one, and do not attach a name to praise that arrived unattributed. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [],
+  "type": "section",
+  "version": "2"
+ },
+ "safety-protections": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "Categorised safety protections as cards, each carrying three registers - the name of the protection, what it does, and the line the reader takes away about how it protects them.",
+  "motion": "none",
+  "needs": "real protections the brand actually operates, each with the name it is known by, one or two plain sentences of what it does, and one sentence saying what that means for the reader; a section heading. Nothing here may be invented - a protection written because it sounds right is a promise about someone's physical safety that nobody is keeping",
+  "one-per-page": false,
+  "page-types": [
+   "safety",
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "trust-row",
+   "faq-details"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "stat-rows": {
+  "avoid-with": [
+   "stats-band"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "reference",
+  "description": "Full-width editorial statistic rows - a large figure, a hairline that draws itself across, one supporting sentence set against it on the right.",
+  "motion": "subtle",
+  "needs": "each real statistic exactly as the brand publishes it, one supporting sentence per figure from real material, and a short label naming what the strip is",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "5"
+ },
+ "stats-band": {
+  "avoid-with": [
+   "stat-rows"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "Full-bleed inverted proof band - a hairline lattice of real figures, each one paired with its label in a definition list; renders complete with no script.",
+  "motion": "none",
+  "needs": "an eyebrow, a short band title, and the real figures with their labels - every number taken from brand material and written into the markup as text, never computed on the page",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "pricing-tiers",
+   "hero-split",
+   "hero-overlay"
+  ],
+  "type": "section",
+  "version": "5"
+ },
+ "steps-numbered": {
+  "avoid-with": [
+   "gallery-scroll",
+   "media-card-grid",
+   "portrait-wall",
+   "steps-plain",
+   "zigzag-rows"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "ordered set",
+  "description": "How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.",
+  "motion": "none",
+  "needs": "one real photograph per step, portrait-ish and at least 1020px wide, each with its own alt text; a short step title and one sentence of body copy per step, in the real order they happen",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "5"
+ },
+ "steps-plain": {
+  "avoid-with": [
+   "steps-numbered"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "ordered set",
+  "description": "How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.",
+  "motion": "none",
+  "needs": "three to five real steps in the order they actually happen, each with a short title and one or two sentences; a section heading. No photography of any kind - that is the point of it",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "opener-split",
+   "cta-band"
+  ],
+  "type": "section",
+  "version": "1"
+ },
+ "testimonial-carousel": {
+  "avoid-with": [
+   "testimonial-grid"
+  ],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "Reader-driven testimonial carousel on a radio group - one card centre stage, its neighbours peeking at reduced scale, no script and nothing that moves on its own.",
+  "motion": "subtle",
+  "needs": "at least three real testimonials - each quote as the person actually wrote it, with a real name and a true attribution line; one real portrait per person with real alt text; a section heading; each quote short enough to read in about three lines, since the longest in the set sets the height of every slide. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "3"
+ },
+ "testimonial-grid": {
+  "avoid-with": [
+   "portrait-wall",
+   "quote-feature",
+   "testimonial-carousel"
+  ],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "Three equal-height testimonial cards with portraits overlapping the card edge; one card may be filled and is named as featured in words.",
+  "motion": "none",
+  "needs": "three real testimonials - each quote as the person actually wrote it, their name, and their attribution; one real portrait per person with real alt text; a public source URL only where the testimonial genuinely has one. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "5"
+ },
+ "trust-row": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "Hairline-bracketed strip of assurance marks - a membership lockup beside a row of icon-over-label compliance badges, answering whether the brand is legitimate at the point of sign-up.",
+  "motion": "none",
+  "needs": "real, verifiable compliance marks or memberships the brand actually holds and nothing else - the supplied membership logo file with its real alt text, the association's real name, the real membership status, and the real name of each certification or regulation the brand can evidence",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety"
+  ],
+  "pairs-with": [
+   "pricing-tiers",
+   "faq-details"
+  ],
+  "type": "component",
+  "version": "2"
+ },
+ "zigzag-rows": {
+  "avoid-with": [
+   "capability-tabs",
+   "hero-split",
+   "steps-numbered"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.",
+  "motion": "none",
+  "needs": "one real photograph per row, at least 1000px on the short side, each with its own alt text; a short heading and one or two sentences per row; optionally one destination link per row",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block"
+  ],
+  "type": "section",
+  "version": "4"
+ }
+}
