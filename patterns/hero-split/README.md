@@ -19,6 +19,8 @@ rather than felt, or when the available photography will not survive being
 cropped to a full screen. Pick `hero-overlay` when the image carries the
 argument on its own.
 
+**Not on a page with `hero-centred`.** Both put the claim beside or above a single image and a page opens once. `hero-centred` is the one to reach for when the photograph is landscape and unpredictable, since it lays no word over it.
+
 **Pairing.** Works ahead of `pricing-tiers` on long
 pages. Not on a page with `gallery-scroll` — two large visual moments compete
 and neither wins — nor with `zigzag-rows`, which is the same image-beside-copy

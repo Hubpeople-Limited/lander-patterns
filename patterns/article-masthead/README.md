@@ -34,6 +34,8 @@ announce itself as a second site header alongside the chassis's real one.
 
 Portrait renders at 44px and is cropped square, so supply at least 88px square.
 
+**Not on a page with `hero-centred`.** An article opens on its masthead, and a hero above one gives the page two openers and two competing claims to the `h1`.
+
 **Pairing.** `heading-block` down the article body, for each section within it.
 Nothing else belongs directly beneath the masthead — the article's own first
 paragraph does. Page furniture such as `cta-sticky` is a page-level decision

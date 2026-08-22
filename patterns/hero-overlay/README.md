@@ -48,6 +48,8 @@ argument — atmosphere, who this is for, what it feels like. Pick `hero-split`
 when the words are the argument and the image supports them, or when no
 photograph strong enough to fill a whole screen exists.
 
+**Not on a page with `hero-centred`.** Three heroes now exist and a page takes one. Choose this where the photograph is strong enough to carry a whole screen and be read through; `hero-centred` where it is not, or where you do not control it.
+
 **Pairing.** `stats-band` directly beneath it, which is what the dissolve is
 for — the hero resolves into the page background and the numbers begin with no
 seam. Avoid `gallery-scroll` for the same reason `hero-split` does: a second

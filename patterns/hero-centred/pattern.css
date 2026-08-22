@@ -1,0 +1,79 @@
+/* hero-centred v1 - tokens only, selectors prefixed */
+.hero-centred {
+  --hero-centred-title-measure: 15ch;
+  --hero-centred-sub-measure: 50ch;
+  /* Portrait on phones, letterbox from the tablet band: a landscape crop
+   shown at a fixed height on a narrow screen is a sliver. */
+  --hero-centred-ratio: 4 / 5;
+  padding-block: var(--space-8);
+  padding-inline: var(--space-4);
+}
+.hero-centred-copy {
+  max-width: var(--container-max);
+  margin: 0 auto var(--space-6);
+  text-align: center;
+}
+.hero-centred-title {
+  font-family: var(--font-heading);
+  /* Page ground and a clamp floor above 24px: both halves of the heading
+   token's contract. Keep both if you edit it. */
+  color: var(--color-heading);
+  font-size: clamp(2.125rem, 6vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  max-width: var(--hero-centred-title-measure);
+  margin: 0 auto var(--space-5);
+  text-wrap: balance;
+}
+.hero-centred-sub {
+  color: var(--color-text-soft);
+  font-size: clamp(1rem, 1.4vw, 1.1875rem);
+  line-height: 1.6;
+  max-width: var(--hero-centred-sub-measure);
+  margin: 0 auto var(--space-6);
+}
+.hero-centred-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 48px target, above the 44px AAA floor. */
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.hero-centred-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* The ring lands on the page ground, where --color-focus is contracted. */
+.hero-centred-btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+.hero-centred-media {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  /* A ground behind a slow or failed image, so the band keeps its shape. */
+  background: var(--color-surface-soft);
+}
+.hero-centred-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: var(--hero-centred-ratio);
+  object-fit: cover;
+}
+@media (min-width: 48rem) {
+  .hero-centred {
+    --hero-centred-ratio: 16 / 7;
+    padding-inline: var(--space-6);
+  }
+}
