@@ -11,6 +11,7 @@ Shortlist here, then read only the chosen pattern's folder.
 - **cta-image** v1 · section · homepage, landing, pricing · **one per page** · Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
 - **cta-sticky** v6 · component · homepage, landing, pricing, article · **one per page** · Mobile sticky bottom CTA bar - one join button always in the thumb zone on pages longer than two screens; hidden on desktop.
 - **faq-details** v3 · section · homepage, landing, pricing · Zero-JavaScript FAQ accordion on native details/summary - hairline rows, a plus that turns into a cross when the row opens.
+- **feature-panels** v1 · section · homepage, landing, pricing · **one per page** · A run of full-bleed panels climbing a ground ladder - light, then the brand colour, then dark - each carrying a mark, a label, one large claim and a link on its floor.
 - **gallery-scroll** v3 · component · homepage, landing, article · User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances.
 - **heading-block** v4 · component · homepage, landing, pricing, safety, article · Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
 - **hero-centred** v1 · section · homepage, landing · **one per page** · Opener with the claim centred above a wide cropped photograph in its own band - the one hero that never lays a word over an image, so no scrim has to carry a ratio.

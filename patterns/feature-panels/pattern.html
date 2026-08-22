@@ -1,0 +1,96 @@
+<!--
+name: feature-panels
+version: 1
+type: section
+page-types: homepage, landing, pricing
+content-shape: peer set
+description: A run of full-bleed panels climbing a ground ladder - light, then the brand colour, then dark - each carrying a mark, a label, one large claim and a link on its floor.
+keywords: panels, tiers, membership, full-bleed, ladder, ranked
+needs: two to four real things the brand offers that genuinely sit in an order - tiers, levels, degrees of visibility. Each needs a short label, one claim of a few words, and a simple line mark drawn inline. A section heading, and a supporting line only where there is something true to say
+pairs-with: opener-split, heading-block, pricing-tiers, faq-details
+avoid-with: none
+tokens-used: --chip-radius, --color-heading, --color-on-primary, --color-on-scrim, --color-primary, --color-scrim, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-6, --space-8, --transition-fast
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- section-id: draw it from the heading.
+
+     THREE PANELS SHIP, AND THEIR ORDER IS THE POINT. Each carries one ground
+     modifier and they run light, brand, deep - the climb is what says these
+     things are ranked. Never reorder them and never give two panels the same
+     modifier. The three grounds are the only ones that exist:
+       feature-panels-item--light  on --color-surface-soft
+       feature-panels-item--brand  on --color-primary
+       feature-panels-item--deep   on --color-scrim
+     For two panels, delete the middle one. For four, repeat --brand only
+     where the brand genuinely has two middle tiers; a fourth ground does not
+     exist and must not be invented.
+
+     Replace each mark's path data with the real one. Keep
+     stroke="currentColor" and add no fill, so a mark takes whatever ink its
+     panel carries. -->
+<section class="feature-panels" aria-labelledby="slot:section-id">
+  <div class="feature-panels-head">
+    <p class="feature-panels-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="feature-panels-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <p class="feature-panels-intro"><!-- slot: section-intro --></p>
+  </div>
+  <ul class="feature-panels-list" role="list">
+    <li class="feature-panels-item feature-panels-item--light">
+      <p class="feature-panels-mark">
+        <span class="feature-panels-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <circle cx="12" cy="12" r="8"></circle>
+          </svg>
+        </span>
+        <!-- slot: panel-1-label -->
+      </p>
+      <h3 class="feature-panels-claim"><!-- slot: panel-1-claim --></h3>
+      <p class="feature-panels-action">
+        <a class="feature-panels-link" href="{{join.url}}">
+          <!-- slot: panel-1-link-text -->
+          <span class="feature-panels-arrow" aria-hidden="true">&#8594;</span>
+        </a>
+      </p>
+    </li>
+    <li class="feature-panels-item feature-panels-item--brand">
+      <p class="feature-panels-mark">
+        <span class="feature-panels-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <circle cx="12" cy="12" r="8"></circle>
+            <path d="M12 8v8"></path>
+          </svg>
+        </span>
+        <!-- slot: panel-2-label -->
+      </p>
+      <h3 class="feature-panels-claim"><!-- slot: panel-2-claim --></h3>
+      <p class="feature-panels-action">
+        <a class="feature-panels-link" href="{{join.url}}">
+          <!-- slot: panel-2-link-text -->
+          <span class="feature-panels-arrow" aria-hidden="true">&#8594;</span>
+        </a>
+      </p>
+    </li>
+    <li class="feature-panels-item feature-panels-item--deep">
+      <p class="feature-panels-mark">
+        <span class="feature-panels-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <circle cx="12" cy="12" r="8"></circle>
+            <path d="M8 12h8"></path>
+            <path d="M12 8v8"></path>
+          </svg>
+        </span>
+        <!-- slot: panel-3-label -->
+      </p>
+      <h3 class="feature-panels-claim"><!-- slot: panel-3-claim --></h3>
+      <p class="feature-panels-action">
+        <a class="feature-panels-link" href="{{join.url}}">
+          <!-- slot: panel-3-link-text -->
+          <span class="feature-panels-arrow" aria-hidden="true">&#8594;</span>
+        </a>
+      </p>
+    </li>
+  </ul>
+</section>

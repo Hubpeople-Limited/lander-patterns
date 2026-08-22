@@ -1,0 +1,155 @@
+/* feature-panels v1 - tokens only, selectors prefixed */
+.feature-panels {
+  --feature-panels-min: 20rem;
+  --feature-panels-height: clamp(24rem, 46vh, 34rem);
+  padding-block: var(--space-8) 0;
+}
+.feature-panels-head {
+  max-width: var(--container-max);
+  margin: 0 auto var(--space-6);
+  padding-inline: var(--space-4);
+}
+.feature-panels-eyebrow {
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
+}
+.feature-panels-title {
+  font-family: var(--font-heading);
+  /* Page ground and a clamp floor above 24px: both halves of the heading
+   token's contract. Keep both if you edit it. */
+  color: var(--color-heading);
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+}
+.feature-panels-intro {
+  color: var(--color-text-soft);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 46ch;
+  margin: 0;
+}
+/* Edge to edge, no gutters and no radius: the panels are the section. */
+.feature-panels-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--feature-panels-min), 1fr));
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* Each panel names a ground, and its ink is the one the contract states
+   against that ground. Everything below reads both through these two
+   properties, which is why nothing here needs to know which panel it is. */
+.feature-panels-item--light {
+  --feature-panels-ground: var(--color-surface-soft);
+  --feature-panels-ink: var(--color-text);
+}
+.feature-panels-item--brand {
+  --feature-panels-ground: var(--color-primary);
+  --feature-panels-ink: var(--color-on-primary);
+}
+.feature-panels-item--deep {
+  --feature-panels-ground: var(--color-scrim);
+  --feature-panels-ink: var(--color-on-scrim);
+}
+.feature-panels-item {
+  display: flex;
+  flex-direction: column;
+  min-height: var(--feature-panels-height);
+  padding: var(--space-6);
+  background: var(--feature-panels-ground);
+  color: var(--feature-panels-ink);
+}
+.feature-panels-mark {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-8);
+}
+.feature-panels-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--chip-radius);
+  /* The mark's own ground is the panel ink at low strength, so it reads on
+   every one of the three without needing a fourth pair. */
+  background: color-mix(in srgb, var(--feature-panels-ink) 16%, transparent);
+}
+.feature-panels-icon svg {
+  display: block;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+.feature-panels-claim {
+  font-family: var(--font-heading);
+  /* The panel ink, never --color-heading: every panel paints its own ground
+   and that token is promised against --color-bg alone. */
+  color: var(--feature-panels-ink);
+  font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+/* margin-top:auto pins the link to the panel floor, so panels holding claims
+   of unequal length still line their links up across the row. */
+.feature-panels-action {
+  margin: auto 0 0;
+  padding-top: var(--space-6);
+}
+.feature-panels-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  /* 44px target on a link that carries no padding of its own. */
+  min-height: 44px;
+  color: var(--feature-panels-ink);
+  font-weight: 700;
+  /* Underlined, not tinted: colour is never the only thing marking a link,
+   and on three different grounds a tint could not be either. */
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.feature-panels-arrow {
+  transition: translate var(--transition-fast) ease-out;
+}
+.feature-panels-link:hover .feature-panels-arrow,
+.feature-panels-link:focus-visible .feature-panels-arrow {
+  translate: 0.25rem 0;
+}
+/* The ring is the panel's own ink, which is by definition the one colour the
+   contract promises against that panel's ground - so one rule is guaranteed
+   on all three, where --color-focus would not be. See the README. */
+.feature-panels-link:focus-visible {
+  outline: 3px solid var(--feature-panels-ink);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .feature-panels-arrow {
+    transition: none;
+  }
+}
+@media (min-width: 48rem) {
+  .feature-panels-head {
+    padding-inline: var(--space-6);
+  }
+  .feature-panels-item {
+    padding: var(--space-8);
+  }
+}
