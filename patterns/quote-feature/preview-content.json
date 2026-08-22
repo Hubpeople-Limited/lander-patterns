@@ -1,0 +1,10 @@
+{
+  "eyebrow": "Sample eyebrow for preview",
+  "rating": "★★★★★ (sample)",
+  "rating-label": "Sample rating label, preview only",
+  "quote": "A sample sentence standing in for the one real quote this preview cannot have.",
+  "portrait": "sample-portrait.svg",
+  "portrait-alt": "Sample portrait placeholder, preview only",
+  "person-name": "Sample Person",
+  "person-role": "Sample attribution line for the preview"
+}

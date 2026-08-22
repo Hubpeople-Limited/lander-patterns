@@ -1,0 +1,39 @@
+<!--
+name: article-masthead
+version: 1
+type: section
+page-types: article
+content-shape: single article
+description: Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
+keywords: article, byline, masthead, blog, editorial
+needs: a real article title and a real lede of one or two sentences; the category the piece genuinely sits in; an honest read time and a genuine publication date; the name and role of the person who actually wrote it, with their real portrait and real alt text
+pairs-with: heading-block
+avoid-with: hero-overlay, hero-split
+tokens-used: --color-bg, --color-heading, --color-rule, --color-text, --color-text-soft, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- All three eyebrow items are required; the separators between them are
+     decorative and go with whatever item they precede. datetime takes the
+     machine-readable date (2026-08-22), the slot beside it the words a reader
+     sees. This block carries the page's only h1. -->
+<div class="article-masthead">
+  <div class="article-masthead-meta">
+    <p class="article-masthead-item article-masthead-tag"><!-- slot: tag --></p>
+    <span class="article-masthead-sep" aria-hidden="true">&middot;</span>
+    <p class="article-masthead-item"><!-- slot: read-time --></p>
+    <span class="article-masthead-sep" aria-hidden="true">&middot;</span>
+    <time class="article-masthead-item" datetime="slot:publish-datetime"><!-- slot: publish-date --></time>
+  </div>
+  <h1 class="article-masthead-title"><!-- slot: title --></h1>
+  <p class="article-masthead-lede"><!-- slot: lede --></p>
+  <div class="article-masthead-author">
+    <img class="article-masthead-avatar" src="slot:author-portrait" alt="slot:author-portrait-alt" width="88" height="88" loading="lazy">
+    <div class="article-masthead-author-meta">
+      <p class="article-masthead-byline"><!-- slot: author-name --></p>
+      <p class="article-masthead-role"><!-- slot: author-role --></p>
+    </div>
+  </div>
+</div>

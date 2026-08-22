@@ -22,7 +22,8 @@ argument on its own.
 **Pairing.** Works ahead of `pricing-tiers` on long
 pages. Not on a page with `gallery-scroll` — two large visual moments compete
 and neither wins — nor with `zigzag-rows`, which is the same image-beside-copy
-shape further down.
+shape further down. Not with `article-masthead`: that opens an article and
+carries the page's `<h1>`, which this pattern also does.
 
 **Brand adaptability.** `--card-radius` + `--card-shadow` set the image's
 character: radius 0 and no shadow reads sharp and editorial, soft radius and

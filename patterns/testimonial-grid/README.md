@@ -29,9 +29,11 @@ non-featured card. The source link needs a real URL and real link text or it
 is deleted outright.
 
 **Pairing.** `heading-block` above it gives the section its opener, which is
-why this pattern carries only a plain `<h2>`. It does not fight anything, but
-do not put it directly next to a second card grid — two rows of cards in a
-row stop reading as distinct sections.
+why this pattern carries only a plain `<h2>`. Do not put it directly next to a
+second card grid — two rows of cards in a row stop reading as distinct
+sections. And not on a page with `quote-feature`, which spends a whole screen
+on a single testimonial: between them they say the same thing twice, and the
+choice is whether the brand has one strong quote or several.
 
 **Brand adaptability.** `--card-border`, `--card-radius` and `--card-shadow`
 set the feel, as everywhere: hairline-and-flat reads editorial, shadowed-and-

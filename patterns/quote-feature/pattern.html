@@ -1,0 +1,40 @@
+<!--
+name: quote-feature
+version: 1
+type: section
+page-types: homepage, landing, pricing
+content-shape: single claim
+description: One oversized testimonial on a full-width tinted stage - eyebrow pinned to the stage, display-size quote held to a short measure, circular portrait and attribution beneath.
+keywords: testimonial, pull quote, social proof, single quote, review
+needs: one real testimonial, quoted word for word as the person actually wrote it, with their real name and a true attribution line; one real portrait of that person with real alt text; a star rating only where a real published rating exists. A quote nobody said is not a candidate for this pattern - do not write one, do not paraphrase one, and do not attach a name to praise that arrived unattributed
+pairs-with: none
+avoid-with: testimonial-grid
+tokens-used: --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-12, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-21
+-->
+<section class="quote-feature">
+  <!-- One quote per stage, and one stage per page. For a set of testimonials
+       use testimonial-grid: duplicating this figure breaks the measure the
+       stage is built on. -->
+  <div class="quote-feature-stage">
+    <p class="quote-feature-eyebrow"><!-- slot: eyebrow --></p>
+    <figure class="quote-feature-block">
+      <!-- Delete this whole line unless a real published rating exists. There
+           is no default star count and no default label. -->
+      <p class="quote-feature-stars" role="img" aria-label="slot:rating-label"><!-- slot: rating --></p>
+      <blockquote class="quote-feature-quote">
+        <p><!-- slot: quote --></p>
+      </blockquote>
+      <figcaption class="quote-feature-author">
+        <img class="quote-feature-portrait" src="slot:portrait" alt="slot:portrait-alt" width="52" height="52" loading="lazy">
+        <span class="quote-feature-author-meta">
+          <span class="quote-feature-name"><!-- slot: person-name --></span>
+          <span class="quote-feature-role"><!-- slot: person-role --></span>
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+</section>

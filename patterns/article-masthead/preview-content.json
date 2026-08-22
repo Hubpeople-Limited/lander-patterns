@@ -1,0 +1,12 @@
+{
+  "tag": "Sample category",
+  "read-time": "6 min sample read",
+  "publish-date": "1 January 2026 (sample)",
+  "publish-datetime": "2026-01-01 sample",
+  "title": "A sample article title for the preview render",
+  "lede": "One or two sentences of sample standfirst, written only to show how far the lede runs before it wraps.",
+  "author-portrait": "sample-portrait.svg",
+  "author-portrait-alt": "Sample portrait placeholder, preview only",
+  "author-name": "Sample Author",
+  "author-role": "Sample role line for the preview"
+}

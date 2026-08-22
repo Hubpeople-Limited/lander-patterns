@@ -1,0 +1,6 @@
+{
+  "tile-icon": "sample-wide.svg",
+  "tile-icon-alt": "Preview placeholder icon",
+  "tile-title": "Sample benefit title",
+  "tile-copy": "Two short sentences of sample copy, here only to render this preview. They sit on the floor of the tile, whatever the tile above them holds."
+}

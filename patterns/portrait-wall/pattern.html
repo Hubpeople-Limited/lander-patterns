@@ -1,0 +1,54 @@
+<!--
+name: portrait-wall
+version: 1
+type: section
+page-types: homepage, landing
+content-shape: peer set
+description: A five-by-three lattice of member portraits with a larger focal tile at its centre - a full-section image wall that carries scale rather than copy.
+keywords: portrait wall, image grid, members, mosaic, montage
+needs: fifteen different real member photographs, portrait-crop and at least 600px wide - never stock, never the same face twice; a short label naming what the wall shows; and a section around it carrying the words, because the wall says nothing on its own
+pairs-with: heading-block
+avoid-with: none
+tokens-used: --card-radius, --card-shadow, --color-surface-soft, --container-max, --space-2, --space-4, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+behaviours: reveal
+-->
+<section class="portrait-wall">
+  <!-- The whole wall is one labelled image: fill wall-label, and leave every
+       alt empty. Keep the three layers, their order, and their tile counts of
+       6 / 6 / 2 - the stylesheet places tiles by their position in a layer. -->
+  <div class="portrait-wall-grid" role="img" aria-label="slot:wall-label" data-hub-module="reveal" data-hub-reveal-children>
+    <!-- Outer columns. This layer is hidden below 48rem, so put the six
+         weakest photographs here. -->
+    <div class="portrait-wall-layer">
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-1" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-2" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-3" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-4" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-5" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-6" alt="" width="600" height="800" loading="lazy"></div>
+    </div>
+    <!-- Inner columns. These six show on every screen. -->
+    <div class="portrait-wall-layer">
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-7" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-8" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-9" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-10" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-11" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-12" alt="" width="600" height="800" loading="lazy"></div>
+    </div>
+    <!-- Centre column, above and below the focal tile. Exactly two. -->
+    <div class="portrait-wall-layer">
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-13" alt="" width="600" height="800" loading="lazy"></div>
+      <div class="portrait-wall-tile"><img class="portrait-wall-img" src="slot:tile-14" alt="" width="600" height="800" loading="lazy"></div>
+    </div>
+    <!-- The centre cell. Its photograph is the one a visitor looks at, so give
+         it the best of the fifteen. -->
+    <div class="portrait-wall-focal">
+      <img class="portrait-wall-focal-img" src="slot:focal" alt="" width="600" height="800" loading="lazy">
+    </div>
+  </div>
+</section>

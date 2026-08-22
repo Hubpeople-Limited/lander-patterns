@@ -1,0 +1,98 @@
+/* portrait-wall v1 - tokens only, selectors prefixed */
+.portrait-wall {
+  padding-block: var(--space-8);
+}
+.portrait-wall-grid {
+  --portrait-wall-offset: -1;
+  --portrait-wall-gap: clamp(var(--space-2), 3vw, var(--space-6));
+  --portrait-wall-ratio: 3 / 4;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: var(--portrait-wall-gap);
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+/* Each layer is one ring of tiles laid on the wall's own tracks, which is what
+   lets the rules below address a whole ring by position. Take subgrid away and
+   all three rings collapse into a single column. */
+.portrait-wall-grid > .portrait-wall-layer {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  grid-template-columns: subgrid;
+  grid-template-rows: subgrid;
+}
+/* --portrait-wall-offset re-points every centre-column reference when the wall
+   drops from five columns to three. Change the column count and change this. */
+.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile:nth-of-type(odd) {
+  grid-column: 1;
+}
+.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile:nth-of-type(even) {
+  grid-column: -2;
+}
+.portrait-wall-layer:nth-of-type(2) > .portrait-wall-tile:nth-of-type(odd) {
+  grid-column: calc(2 + var(--portrait-wall-offset));
+}
+.portrait-wall-layer:nth-of-type(2) > .portrait-wall-tile:nth-of-type(even) {
+  grid-column: calc(-3 - var(--portrait-wall-offset));
+}
+.portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile:first-of-type {
+  grid-column: calc(3 + var(--portrait-wall-offset));
+  grid-row: 1;
+}
+.portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile:last-of-type {
+  grid-column: calc(3 + var(--portrait-wall-offset));
+  grid-row: -1;
+}
+.portrait-wall-tile,
+.portrait-wall-focal {
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  background: var(--color-surface-soft);
+  box-shadow: var(--portrait-wall-shadow, var(--card-shadow));
+}
+.portrait-wall-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--portrait-wall-ratio);
+  object-fit: cover;
+}
+/* The centre cell is sized by the tiles beside it, so its photograph is laid
+   over the cell rather than sized by its own ratio. */
+.portrait-wall-focal {
+  position: relative;
+  z-index: 1;
+  grid-area: 2 / calc(3 + var(--portrait-wall-offset));
+}
+.portrait-wall-focal-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The outer ring only exists where there are five columns to hold it. */
+.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .portrait-wall-grid {
+    --portrait-wall-offset: 0;
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile {
+    display: block;
+  }
+}
+/* Without subgrid a layer is its own one-column grid; display: contents hands
+   the tiles straight to the wall, and dense packing seats each in its column. */
+@supports not (grid-template-columns: subgrid) {
+  .portrait-wall-grid {
+    grid-auto-flow: dense;
+  }
+  .portrait-wall-grid > .portrait-wall-layer {
+    display: contents;
+  }
+}

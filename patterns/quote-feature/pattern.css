@@ -1,0 +1,110 @@
+/* quote-feature v1 - tokens only, selectors prefixed */
+.quote-feature {
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  padding-block: var(--space-8);
+}
+.quote-feature-stage {
+  position: relative;
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* Top padding is the eyebrow's room. Cut it and the eyebrow lands on the
+     stars. */
+  padding-block: var(--space-12) var(--space-8);
+}
+/* Pinned to the stage, not stacked above the quote, so the quote stays
+   optically centred whatever its length. */
+.quote-feature-eyebrow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+.quote-feature-block {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.quote-feature-stars {
+  margin: 0 0 var(--space-5);
+  font-size: 1.125rem;
+  line-height: 1.2;
+  letter-spacing: 0.22em;
+  /* --color-text: --color-primary-dark is for light grounds only. */
+  color: var(--color-text);
+}
+/* The measure is what keeps a display-size quote a quote instead of a
+   paragraph. Widen 20ch and it stops being this pattern. */
+.quote-feature-quote {
+  margin: 0;
+  max-width: 20ch;
+  font-family: var(--font-heading);
+  font-size: clamp(1.5rem, 3.4vw, 2.875rem);
+  line-height: 1.24;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  /* --color-text: the stage is a surface, and --color-heading is only
+     guaranteed against --color-bg. */
+  color: var(--color-text);
+}
+.quote-feature-quote p {
+  margin: 0;
+}
+.quote-feature-author {
+  margin-top: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+}
+.quote-feature-portrait {
+  /* The portrait is a face, not a panel: round on every brand. */
+  --quote-feature-portrait-radius: 50%;
+  flex: none;
+  width: 3.25rem;
+  height: 3.25rem;
+  display: block;
+  object-fit: cover;
+  border-radius: var(--quote-feature-portrait-radius);
+}
+.quote-feature-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+.quote-feature-role {
+  display: block;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: var(--color-text-soft);
+}
+@media (min-width: 48rem) {
+  .quote-feature {
+    padding-block: var(--space-12);
+  }
+  .quote-feature-stage {
+    padding-block: var(--space-12);
+  }
+  .quote-feature-stars {
+    margin-bottom: var(--space-6);
+  }
+  .quote-feature-author {
+    margin-top: var(--space-8);
+  }
+}

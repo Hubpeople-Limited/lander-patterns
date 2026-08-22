@@ -51,9 +51,11 @@ photograph strong enough to fill a whole screen exists.
 **Pairing.** `stats-band` directly beneath it, which is what the dissolve is
 for — the hero resolves into the page background and the numbers begin with no
 seam. Avoid `gallery-scroll` for the same reason `hero-split` does: a second
-second large image set anywhere on the page fights the one that is meant to
+large image set anywhere on the page fights the one that is meant to
 own the screen.
-And avoid `hero-split` outright — a page gets one hero.
+And avoid `hero-split` outright — a page gets one hero. Not on a page with
+`article-masthead` either: that opens an article and carries the page's `<h1>`,
+which this pattern also does.
 
 **Brand adaptability.** `--color-bg` does most of the work, because it is both
 the scrim and the page: a dark brand gets the moody cinema look the treatment

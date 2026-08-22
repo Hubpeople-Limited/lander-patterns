@@ -1,0 +1,37 @@
+<!--
+name: benefit-tiles
+version: 1
+type: section
+page-types: homepage, landing
+content-shape: peer set
+description: A four-up run of tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
+keywords: benefits, features, tiles, icons, value propositions, no photography
+needs: four real benefits or features, each with a short title and one or two sentences the brand can stand behind; one real icon image per tile, square and at least 44px, each with its own alt text
+pairs-with: heading-block
+avoid-with: none
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-2, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+behaviours: reveal
+-->
+<section class="benefit-tiles">
+  <ul class="benefit-tiles-track" role="list" data-hub-module="reveal" data-hub-reveal-children>
+    <!-- ONE tile. Duplicate this whole <li> to four: the row is four wide and
+         drops to two, so any other count leaves a hole in it. The badge takes
+         a real icon file - set width and height to its intrinsic pixel size,
+         and give it alt text only where the title does not already say the
+         same thing, otherwise alt="". The <h3> expects an <h2> above the
+         section, which is what heading-block supplies. -->
+    <li class="benefit-tiles-item">
+      <span class="benefit-tiles-badge">
+        <img class="benefit-tiles-icon" src="slot:tile-icon" alt="slot:tile-icon-alt" width="44" height="44" loading="lazy">
+      </span>
+      <div class="benefit-tiles-text">
+        <h3 class="benefit-tiles-title"><!-- slot: tile-title --></h3>
+        <p class="benefit-tiles-copy"><!-- slot: tile-copy --></p>
+      </div>
+    </li>
+  </ul>
+</section>
