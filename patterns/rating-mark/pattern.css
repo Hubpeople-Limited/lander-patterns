@@ -1,0 +1,26 @@
+/* rating-mark v1 - tokens only, selectors prefixed */
+/* Sets no colour: it inherits the ink it sits in. See the README. */
+.rating-mark {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+.rating-mark-stars {
+  display: inline-flex;
+  gap: 0.1em;
+}
+.rating-mark-star {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
+.rating-mark-value {
+  font-weight: 700;
+}
+.rating-mark-count {
+  color: var(--color-text-soft);
+}

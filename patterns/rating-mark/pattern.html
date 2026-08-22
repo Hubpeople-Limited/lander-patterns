@@ -1,0 +1,34 @@
+<!--
+name: rating-mark
+version: 1
+type: component
+page-types: homepage, landing, pricing, article
+content-shape: reference
+description: A published rating shown as whole stars beside the figure itself - the stars are the glance, the text is the claim, and only the text is read out.
+keywords: rating, stars, reviews, proof, score
+needs: a rating the platform actually publishes, with the number of ratings behind it. Both are facts with a source - a score with no count is unreadable as evidence, and a score the brand cannot point at is invented proof
+pairs-with: quote-feature, testimonial-grid, member-strip, hero-split
+avoid-with: none
+tokens-used: --color-text-soft, --space-1, --space-2
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- Whole stars only. Fill the first N with the filled star and leave the rest
+     outlined; round to the nearest whole star and let the figure beside them
+     carry the precision. There is deliberately no half star - see the README.
+
+     The stars are aria-hidden, so the value and the count are the only things
+     read out. Never ship the stars without them. -->
+<p class="rating-mark">
+  <span class="rating-mark-stars" aria-hidden="true">
+    <svg class="rating-mark-star rating-mark-star--on" viewBox="0 0 20 20" fill="currentColor" focusable="false"><path d="M10 1.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L1.6 7.7l5.8-.8z"></path></svg>
+    <svg class="rating-mark-star rating-mark-star--on" viewBox="0 0 20 20" fill="currentColor" focusable="false"><path d="M10 1.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L1.6 7.7l5.8-.8z"></path></svg>
+    <svg class="rating-mark-star rating-mark-star--on" viewBox="0 0 20 20" fill="currentColor" focusable="false"><path d="M10 1.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L1.6 7.7l5.8-.8z"></path></svg>
+    <svg class="rating-mark-star rating-mark-star--on" viewBox="0 0 20 20" fill="currentColor" focusable="false"><path d="M10 1.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L1.6 7.7l5.8-.8z"></path></svg>
+    <svg class="rating-mark-star" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" focusable="false"><path d="M10 1.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L1.6 7.7l5.8-.8z"></path></svg>
+  </span>
+  <span class="rating-mark-value"><!-- slot: rating-value --></span>
+  <span class="rating-mark-count"><!-- slot: rating-count --></span>
+</p>

@@ -36,6 +36,8 @@ Portrait renders at 44px and is cropped square, so supply at least 88px square.
 
 **Not on a page with `hero-centred`.** An article opens on its masthead, and a hero above one gives the page two openers and two competing claims to the `h1`.
 
+**Not on a page with `hero-squeeze`.** That one is a whole page in one viewport with nothing after it, so there is no article for a masthead to open.
+
 **Pairing.** `heading-block` down the article body, for each section within it.
 Nothing else belongs directly beneath the masthead — the article's own first
 paragraph does. Page furniture such as `cta-sticky` is a page-level decision

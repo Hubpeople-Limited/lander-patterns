@@ -21,6 +21,8 @@ argument on its own.
 
 **Not on a page with `hero-centred`.** Both put the claim beside or above a single image and a page opens once. `hero-centred` is the one to reach for when the photograph is landscape and unpredictable, since it lays no word over it.
 
+**Not on a page with `hero-squeeze`.** That one is not an opener, it is the whole page: everything the visitor needs sits in one viewport and nothing follows it. A page opens once.
+
 **Pairing.** Works ahead of `pricing-tiers` on long
 pages. Not on a page with `gallery-scroll` — two large visual moments compete
 and neither wins — nor with `zigzag-rows`, which is the same image-beside-copy

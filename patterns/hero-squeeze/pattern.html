@@ -1,0 +1,51 @@
+<!--
+name: hero-squeeze
+version: 1
+type: section
+page-types: homepage, landing
+content-shape: single claim
+description: The whole page in one viewport - a photograph, one claim, one control, the reassurance under it and one piece of proof, with nothing below the fold at all.
+needs: one landscape photograph at least 1600px wide with its own alt text; a headline of one line and one supporting sentence; and the two things that go under the control - the reassurance line, and one piece of real proof. Nothing else may go on the page, so everything the visitor needs to decide has to be in these five things
+keywords: squeeze, hero, one screen, paid traffic, above the fold, conversion
+pairs-with: cta-assurance, member-strip, rating-mark
+avoid-with: article-masthead, hero-centred, hero-overlay, hero-split
+tokens-used: --btn-radius, --color-on-scrim, --color-on-primary, --color-primary, --color-scrim, --font-heading, --space-3, --space-4, --space-5, --space-6
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- A SQUEEZE IS A PAGE THAT DOES NOT CONTINUE. Nothing goes after this
+     section except the site footer. Adding a second section is how a squeeze
+     quietly becomes a short landing page - which is a real thing to build, and
+     hero-overlay is the opener for it.
+
+     Drop cta-assurance into the assurance slot and member-strip or
+     rating-mark into the proof slot. Both are slots rather than fixed markup
+     because the proof a brand has differs; both should be filled, and the
+     README says what to do when there is no proof to put there.
+
+     The image is the page's LCP element: never lazy, high fetch priority, and
+     width/height carrying the real file's intrinsic size. -->
+<section class="hero-squeeze">
+  <img class="hero-squeeze-img"
+       src="slot:hero-image"
+       srcset="slot:hero-image-srcset"
+       sizes="100vw"
+       alt="slot:hero-image-alt"
+       width="1600"
+       height="900"
+       fetchpriority="high"
+       decoding="async">
+  <div class="hero-squeeze-inner">
+    <h1 class="hero-squeeze-title"><!-- slot: headline --></h1>
+    <p class="hero-squeeze-sub"><!-- slot: subhead --></p>
+    <div class="hero-squeeze-cta">
+      <a class="hero-squeeze-btn" href="{{join.url}}">{{join.text}}</a>
+      <!-- slot: assurance -->
+    </div>
+    <div class="hero-squeeze-proof">
+      <!-- slot: proof -->
+    </div>
+  </div>
+</section>

@@ -1,0 +1,91 @@
+/* hero-squeeze v1 - tokens only, selectors prefixed */
+.hero-squeeze {
+  --hero-squeeze-scrim-floor: clamp(0.86, var(--hero-squeeze-scrim-strength, 0.86), 1);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  /* min-height, never height: the page aims to fit one viewport, and where it
+   cannot it scrolls rather than clipping. See the README. svh, not vh: 100vh
+   is the largest viewport, so the control would sit under the address bar. */
+  min-height: 100svh;
+  padding: var(--space-6) var(--space-4);
+  background: var(--color-scrim);
+  text-align: center;
+}
+.hero-squeeze-img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-squeeze::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 46%), transparent) 0%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 100%), transparent) 34%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 100%), transparent) 100%
+  );
+}
+.hero-squeeze-inner {
+  display: grid;
+  justify-items: center;
+  max-width: min(100%, 38rem);
+  color: var(--color-on-scrim);
+}
+.hero-squeeze-title {
+  font-family: var(--font-heading);
+  /* --color-heading is barred over a photograph however heavy the scrim. */
+  color: var(--color-on-scrim);
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+}
+.hero-squeeze-sub {
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
+  line-height: 1.55;
+  max-width: 34ch;
+  margin: 0 0 var(--space-6);
+}
+.hero-squeeze-cta {
+  display: grid;
+  justify-items: center;
+}
+.hero-squeeze-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 52px: this is the only control on the page and it is the page's whole job. */
+  min-height: 52px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.hero-squeeze-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* Two bands: a photograph sits behind this and no token describes it, so the
+   indicator brings its own ground. Same technique as media-card-grid. */
+.hero-squeeze-btn:focus-visible {
+  outline: 3px solid var(--color-on-scrim);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 7px var(--color-scrim);
+}
+.hero-squeeze-proof {
+  margin-top: var(--space-5);
+}

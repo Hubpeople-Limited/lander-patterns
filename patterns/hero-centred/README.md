@@ -34,6 +34,8 @@ copy says what the photograph shows, and the picture is the page's whole first
 impression — empty the value only for a pure texture or gradient, and never
 delete the attribute.
 
+**Not on a page with `hero-squeeze`.** Both put the claim first, but that one is the entire page rather than its opening - nothing follows it, so everything has to fit one screen.
+
 **Pairing.** `picker-chips` directly under it, which turns the claim into the
 first decision. `stats-band` under that. `steps-plain` where the page then has
 to explain itself. `avoid-with` names the other two heroes and

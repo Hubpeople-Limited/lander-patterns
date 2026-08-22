@@ -1,0 +1,44 @@
+/* member-strip v1 - tokens only, selectors prefixed */
+.member-strip {
+  --member-strip-photo: 3.5rem;
+}
+/* No colour of its own: it inherits the ink of whatever it sits in. */
+.member-strip-lead {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 var(--space-3);
+}
+.member-strip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.member-strip-item {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-1);
+  width: var(--member-strip-photo);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  text-align: center;
+}
+.member-strip-photo {
+  display: block;
+  width: var(--member-strip-photo);
+  height: var(--member-strip-photo);
+  border-radius: 50%;
+  object-fit: cover;
+  /* A ground behind a slow or failed photograph, so the row keeps its shape
+   and the names stay on their grid. */
+  background: var(--color-surface);
+}
+.member-strip-name {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.member-strip-meta {
+  color: var(--color-text-soft);
+}

@@ -3,7 +3,8 @@
   "avoid-with": [
    "hero-centred",
    "hero-overlay",
-   "hero-split"
+   "hero-split",
+   "hero-squeeze"
   ],
   "behaviours": [],
   "content-shape": "single article",
@@ -18,7 +19,7 @@
    "heading-block"
   ],
   "type": "section",
-  "version": "3"
+  "version": "4"
  },
  "benefit-tiles": {
   "avoid-with": [],
@@ -274,7 +275,8 @@
   "avoid-with": [
    "article-masthead",
    "hero-overlay",
-   "hero-split"
+   "hero-split",
+   "hero-squeeze"
   ],
   "behaviours": [],
   "content-shape": "single claim",
@@ -292,14 +294,15 @@
    "steps-plain"
   ],
   "type": "section",
-  "version": "1"
+  "version": "2"
  },
  "hero-overlay": {
   "avoid-with": [
    "article-masthead",
    "gallery-scroll",
    "hero-centred",
-   "hero-split"
+   "hero-split",
+   "hero-squeeze"
   ],
   "behaviours": [],
   "content-shape": "single claim",
@@ -315,7 +318,7 @@
    "stats-band"
   ],
   "type": "section",
-  "version": "6"
+  "version": "7"
  },
  "hero-split": {
   "avoid-with": [
@@ -323,6 +326,7 @@
    "gallery-scroll",
    "hero-centred",
    "hero-overlay",
+   "hero-squeeze",
    "zigzag-rows"
   ],
   "behaviours": [],
@@ -339,7 +343,32 @@
    "pricing-tiers"
   ],
   "type": "section",
-  "version": "4"
+  "version": "5"
+ },
+ "hero-squeeze": {
+  "avoid-with": [
+   "article-masthead",
+   "hero-centred",
+   "hero-overlay",
+   "hero-split"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "The whole page in one viewport - a photograph, one claim, one control, the reassurance under it and one piece of proof, with nothing below the fold at all.",
+  "motion": "none",
+  "needs": "one landscape photograph at least 1600px wide with its own alt text; a headline of one line and one supporting sentence; and the two things that go under the control - the reassurance line, and one piece of real proof. Nothing else may go on the page, so everything the visitor needs to decide has to be in these five things",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "cta-assurance",
+   "member-strip",
+   "rating-mark"
+  ],
+  "type": "section",
+  "version": "1"
  },
  "media-card-grid": {
   "avoid-with": [
@@ -365,6 +394,31 @@
   ],
   "type": "section",
   "version": "7"
+ },
+ "member-strip": {
+  "avoid-with": [
+   "portrait-wall"
+  ],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "A short row of real members - photograph, name and one line each - sized to sit inside a hero or beside a control, so the proof is at the point of the ask rather than a screen away.",
+  "motion": "none",
+  "needs": "four to eight real members the brand can name, each with their real photograph and the name they actually use on the platform. Every one of them must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing, and this is a face and a username on an acquisition page. Never stock, never a face reused, and never a member invented to lengthen the row",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "hero-split",
+   "hero-centred",
+   "hero-squeeze",
+   "rating-mark",
+   "cta-band"
+  ],
+  "type": "component",
+  "version": "1"
  },
  "offer-split": {
   "avoid-with": [],
@@ -482,6 +536,7 @@
   "avoid-with": [
    "gallery-scroll",
    "media-card-grid",
+   "member-strip",
    "steps-numbered",
    "testimonial-grid"
   ],
@@ -501,7 +556,7 @@
    "heading-block"
   ],
   "type": "section",
-  "version": "4"
+  "version": "5"
  },
  "pricing-tiers": {
   "avoid-with": [],
@@ -563,6 +618,29 @@
   "pairs-with": [],
   "type": "section",
   "version": "2"
+ },
+ "rating-mark": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "A published rating shown as whole stars beside the figure itself - the stars are the glance, the text is the claim, and only the text is read out.",
+  "motion": "none",
+  "needs": "a rating the platform actually publishes, with the number of ratings behind it. Both are facts with a source - a score with no count is unreadable as evidence, and a score the brand cannot point at is invented proof",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "article"
+  ],
+  "pairs-with": [
+   "quote-feature",
+   "testimonial-grid",
+   "member-strip",
+   "hero-split"
+  ],
+  "type": "component",
+  "version": "1"
  },
  "safety-protections": {
   "avoid-with": [],

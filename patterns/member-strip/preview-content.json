@@ -1,0 +1,7 @@
+{
+  "lead": "Sample lead line for the preview",
+  "member-photo": "sample-portrait.svg",
+  "member-name": "Sample",
+  "member-meta": "sample",
+  "_repeat": { "class": "member-strip-item", "count": 6 }
+}
