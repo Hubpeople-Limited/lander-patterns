@@ -27,6 +27,20 @@ jobs:
       # Regenerates INDEX.md as part of validation, so a contributor in the
       # web editor never has to touch it - the release job commits the
       # regenerated copy on merge.
+      - name: Check what this pull request says in public
+        if: github.event_name == 'pull_request'
+        env:
+          LANDER_LEAK_NEEDLES: ${{ secrets.LANDER_LEAK_NEEDLES }}
+          LANDER_LEAK_SKIP: ${{ github.event.pull_request.head.repo.fork }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          python ci/check_prose.py --range origin/main...HEAD
+          # Through the environment, never interpolated into the script: a
+          # pull request title is text a stranger wrote.
+          { echo "$PR_TITLE"; echo; echo "$PR_BODY"; } > pr-text.tmp
+          python ci/check_prose.py --file pr-text.tmp
+          rm -f pr-text.tmp
       - name: Lint patterns (regenerates INDEX.md)
         env:
           # The strings that must never reach a public file are not in this

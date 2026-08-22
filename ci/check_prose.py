@@ -15,7 +15,7 @@ Exit code 0 = clean. Any finding prints `where: rule: detail` and exits 1.
 This repository is public and permanently readable. A commit message is not
 a note to a colleague: it is a paragraph a stranger can read years later,
 attached to the change forever, and it cannot be edited once it is out. The
-policy is in WRITING.md; this file enforces the part a machine can see, which
+policy, and the sources behind it, are in WRITING.md; this file enforces the part a machine can see, which
 is vocabulary. Tone is a review question.
 """
 import argparse
@@ -60,8 +60,11 @@ PROCESS = [
 # weakness is in every older version somebody is still pinned to, so the
 # convention everywhere is: describe the fix, not the hole.
 DISCLOSURE = [
-    "vulnerability", "exploit", "attack vector", "can be abused",
-    "allows an attacker", "security hole", "bypasses the", "injection",
+    "vulnerability", "vulnerable", "exploit", "exploitable",
+    "attack vector", "can be abused", "allows an attacker",
+    "security hole", "security fix", "use after free", "use-after-free",
+    "overflow", "xss", "csrf", "sql injection", "script injection",
+    "proof of concept", "reproduction steps",
 ]
 
 CATEGORIES = [

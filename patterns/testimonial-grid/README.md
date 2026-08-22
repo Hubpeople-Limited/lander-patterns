@@ -32,9 +32,10 @@ is deleted outright.
 why this pattern carries only a plain `<h2>`. Do not put it directly next to a
 second card grid — two rows of cards in a row stop reading as distinct
 sections — and not on a page with `portrait-wall`, which is a third run of
-faces. And not on a page with `quote-feature`, which spends a whole screen
-on a single testimonial: between them they say the same thing twice, and the
-choice is whether the brand has one strong quote or several.
+faces. Nor with `quote-feature`, which spends a whole screen on one
+testimonial, nor `testimonial-carousel`, which holds a larger set in a single
+block: any two of the three say the same thing twice. The choice is how much
+real material the brand has — one strong quote, a handful, or a body of it.
 
 **Brand adaptability.** `--card-border`, `--card-radius` and `--card-shadow`
 set the feel, as everywhere: hairline-and-flat reads editorial, shadowed-and-
