@@ -43,11 +43,12 @@ body {{ margin: 0; font-family: var(--font-body); background: var(--color-bg);
 <body>
 <p class="preview-note">Preview render - {name} on the {set_name} token set. Sample content, not a real page.</p>
 {markup}
-<script type="module">
-/* Preview-only embed of lib/hub.js, standing in for the platform's injected
-   behaviour library. Pattern files themselves never carry a script. */
-{hub_js}
-</script>
+<!-- lib/hub.js is copied in beside these pages and referenced, never inlined.
+     Inlining it put a literal </script> from its own header comment into the
+     document: the HTML tokenizer does not read JavaScript comments, so that
+     string ended the element and the rest of the file rendered as body text.
+     Referencing it is also how a real page gets it. -->
+<script type="module" src="hub.js"></script>
 </body>
 </html>
 """
@@ -104,9 +105,9 @@ def main():
     OUT.mkdir(parents=True)
     for asset in (ROOT / "preview").glob("*.svg"):
         shutil.copy(asset, OUT / asset.name)
+    shutil.copy(ROOT / "lib" / "hub.js", OUT / "hub.js")
     tokens = {k: (ROOT / "preview" / v).read_text(encoding="utf-8")
               for k, v in TOKEN_SETS.items()}
-    hub_js = (ROOT / "lib" / "hub.js").read_text(encoding="utf-8")
     cards = []
     for folder in sorted(p for p in (ROOT / "patterns").iterdir() if p.is_dir()):
         markup = (folder / "pattern.html").read_text(encoding="utf-8")
@@ -123,7 +124,7 @@ def main():
         for set_name, token_css in tokens.items():
             page = SHELL.format(title=f"{folder.name} ({set_name})",
                                 tokens=token_css, css=css, name=folder.name,
-                                set_name=set_name, markup=filled, hub_js=hub_js)
+                                set_name=set_name, markup=filled)
             (OUT / f"{folder.name}--{set_name}.html").write_text(
                 page, encoding="utf-8", newline="\n")
         cards.append(
@@ -142,6 +143,21 @@ def main():
              "of that token. Anything that looks wrong there is a defect in "
              "the pattern, not in the preview.</p><ul>" + "".join(cards) + "</ul></body></html>\n")
     (OUT / "index.html").write_text(index, encoding="utf-8", newline="\n")
+    # Every script element on a generated page must be empty and carry a src.
+    # Inlining a script body once put a literal closing-script string from
+    # hub.js's own header comment into the document; the HTML tokenizer does
+    # not read JavaScript comments, so it ended the element there and the rest
+    # of the file rendered as visible body text on every preview. Nothing
+    # caught it because the preview site had never been published.
+    bad = []
+    for page in sorted(OUT.glob("*.html")):
+        text = page.read_text(encoding="utf-8")
+        for m in re.finditer(r"<script\b([^>]*)>(.*?)</script\s*>", text, re.S | re.I):
+            if m.group(2).strip() or "src=" not in m.group(1):
+                bad.append(f"{page.name}: a script element is not an empty src reference")
+    if bad:
+        raise SystemExit("preview: " + "; ".join(sorted(set(bad))[:3]))
+
     print(f"built previews for {len(cards)} pattern(s) into {OUT.relative_to(ROOT)}")
 
 
