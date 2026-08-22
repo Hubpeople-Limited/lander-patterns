@@ -52,6 +52,8 @@ photograph strong enough to fill a whole screen exists.
 
 **Not on a page with `hero-squeeze`.** That one is not an opener at all: it is the whole page in one viewport with nothing after it. This is the opener for a page that continues, which is the other choice.
 
+**Not on a page with `hero-stated`.** That is the opener for a brand with no usable photography, which is the case this pattern cannot serve at all.
+
 **Pairing.** `stats-band` directly beneath it, which is what the dissolve is
 for — the hero resolves into the page background and the numbers begin with no
 seam. Avoid `gallery-scroll` for the same reason `hero-split` does: a second

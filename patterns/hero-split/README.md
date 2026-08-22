@@ -23,6 +23,8 @@ argument on its own.
 
 **Not on a page with `hero-squeeze`.** That one is not an opener, it is the whole page: everything the visitor needs sits in one viewport and nothing follows it. A page opens once.
 
+**Not on a page with `hero-stated`.** Reach for that one when there is no photograph worth the space, or none at all.
+
 **Pairing.** Works ahead of `pricing-tiers` on long
 pages. Not on a page with `gallery-scroll` — two large visual moments compete
 and neither wins — nor with `zigzag-rows`, which is the same image-beside-copy

@@ -4,7 +4,8 @@
    "hero-centred",
    "hero-overlay",
    "hero-split",
-   "hero-squeeze"
+   "hero-squeeze",
+   "hero-stated"
   ],
   "behaviours": [],
   "content-shape": "single article",
@@ -18,8 +19,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "4"
+  "version": "6",
+  "whole-page": false
  },
  "benefit-tiles": {
   "avoid-with": [],
@@ -38,8 +41,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "2"
+  "version": "3",
+  "whole-page": false
  },
  "capability-tabs": {
   "avoid-with": [
@@ -60,8 +65,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "2"
+  "version": "3",
+  "whole-page": false
  },
  "cta-assurance": {
   "avoid-with": [],
@@ -85,8 +92,10 @@
    "cta-image",
    "pricing-tiers"
   ],
+  "requires": "none",
   "type": "component",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "cta-band": {
   "avoid-with": [
@@ -111,8 +120,10 @@
    "faq-details",
    "safety-protections"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "cta-curtain": {
   "avoid-with": [
@@ -136,8 +147,10 @@
    "hero-split",
    "pricing-tiers"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "8"
+  "version": "9",
+  "whole-page": false
  },
  "cta-image": {
   "avoid-with": [
@@ -159,8 +172,10 @@
    "pricing-tiers",
    "faq-details"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "cta-sticky": {
   "avoid-with": [
@@ -179,8 +194,10 @@
    "article"
   ],
   "pairs-with": [],
+  "requires": "none",
   "type": "component",
-  "version": "6"
+  "version": "7",
+  "whole-page": false
  },
  "faq-details": {
   "avoid-with": [],
@@ -198,8 +215,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "3"
+  "version": "4",
+  "whole-page": false
  },
  "feature-panels": {
   "avoid-with": [],
@@ -220,8 +239,10 @@
    "pricing-tiers",
    "faq-details"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "2"
+  "version": "3",
+  "whole-page": false
  },
  "gallery-scroll": {
   "avoid-with": [
@@ -246,8 +267,10 @@
   "pairs-with": [
    "pricing-tiers"
   ],
+  "requires": "photography",
   "type": "component",
-  "version": "3"
+  "version": "4",
+  "whole-page": false
  },
  "heading-block": {
   "avoid-with": [],
@@ -268,15 +291,18 @@
    "testimonial-grid",
    "pricing-tiers"
   ],
+  "requires": "none",
   "type": "component",
-  "version": "4"
+  "version": "5",
+  "whole-page": false
  },
  "hero-centred": {
   "avoid-with": [
    "article-masthead",
    "hero-overlay",
    "hero-split",
-   "hero-squeeze"
+   "hero-squeeze",
+   "hero-stated"
   ],
   "behaviours": [],
   "content-shape": "single claim",
@@ -293,8 +319,10 @@
    "stats-band",
    "steps-plain"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "2"
+  "version": "4",
+  "whole-page": false
  },
  "hero-overlay": {
   "avoid-with": [
@@ -302,7 +330,8 @@
    "gallery-scroll",
    "hero-centred",
    "hero-split",
-   "hero-squeeze"
+   "hero-squeeze",
+   "hero-stated"
   ],
   "behaviours": [],
   "content-shape": "single claim",
@@ -317,8 +346,10 @@
   "pairs-with": [
    "stats-band"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "7"
+  "version": "9",
+  "whole-page": false
  },
  "hero-split": {
   "avoid-with": [
@@ -327,6 +358,7 @@
    "hero-centred",
    "hero-overlay",
    "hero-squeeze",
+   "hero-stated",
    "zigzag-rows"
   ],
   "behaviours": [],
@@ -342,15 +374,18 @@
   "pairs-with": [
    "pricing-tiers"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "5"
+  "version": "7",
+  "whole-page": false
  },
  "hero-squeeze": {
   "avoid-with": [
    "article-masthead",
    "hero-centred",
    "hero-overlay",
-   "hero-split"
+   "hero-split",
+   "hero-stated"
   ],
   "behaviours": [],
   "content-shape": "single claim",
@@ -367,8 +402,42 @@
    "member-strip",
    "rating-mark"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "1"
+  "version": "3",
+  "whole-page": true
+ },
+ "hero-stated": {
+  "avoid-with": [
+   "article-masthead",
+   "hero-centred",
+   "hero-overlay",
+   "hero-split",
+   "hero-squeeze"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.",
+  "motion": "none",
+  "needs": "a headline the brand can stand behind and one supporting sentence that says something the headline does not. Nothing else - no photograph, no figure, no logo. This is the opener for a brand that has words and nothing else yet",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety"
+  ],
+  "pairs-with": [
+   "cta-assurance",
+   "picker-chips",
+   "benefit-tiles",
+   "steps-plain",
+   "rating-mark"
+  ],
+  "requires": "none",
+  "type": "section",
+  "version": "2",
+  "whole-page": false
  },
  "media-card-grid": {
   "avoid-with": [
@@ -392,8 +461,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "consented-people",
   "type": "section",
-  "version": "7"
+  "version": "8",
+  "whole-page": false
  },
  "member-strip": {
   "avoid-with": [
@@ -417,8 +488,10 @@
    "rating-mark",
    "cta-band"
   ],
+  "requires": "consented-people",
   "type": "component",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "offer-split": {
   "avoid-with": [],
@@ -438,8 +511,10 @@
    "steps-plain",
    "faq-details"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "opener-split": {
   "avoid-with": [],
@@ -462,8 +537,10 @@
    "zigzag-rows",
    "faq-details"
   ],
+  "requires": "none",
   "type": "component",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "photo-cards": {
   "avoid-with": [
@@ -489,8 +566,10 @@
    "heading-block",
    "cta-band"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "picker-chips": {
   "avoid-with": [],
@@ -507,8 +586,10 @@
   "pairs-with": [
    "hero-split"
   ],
+  "requires": "none",
   "type": "component",
-  "version": "5"
+  "version": "6",
+  "whole-page": false
  },
  "pinned-cards": {
   "avoid-with": [
@@ -529,8 +610,10 @@
    "heading-block",
    "cta-band"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "portrait-wall": {
   "avoid-with": [
@@ -555,8 +638,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "consented-people",
   "type": "section",
-  "version": "5"
+  "version": "6",
+  "whole-page": false
  },
  "pricing-tiers": {
   "avoid-with": [],
@@ -574,8 +659,10 @@
   "pairs-with": [
    "stats-band"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "5"
+  "version": "6",
+  "whole-page": false
  },
  "prose-column": {
   "avoid-with": [],
@@ -597,8 +684,10 @@
    "heading-block",
    "gallery-scroll"
   ],
+  "requires": "none",
   "type": "component",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "quote-feature": {
   "avoid-with": [
@@ -616,8 +705,10 @@
    "pricing"
   ],
   "pairs-with": [],
+  "requires": "consented-people",
   "type": "section",
-  "version": "2"
+  "version": "3",
+  "whole-page": false
  },
  "rating-mark": {
   "avoid-with": [],
@@ -639,8 +730,10 @@
    "member-strip",
    "hero-split"
   ],
+  "requires": "none",
   "type": "component",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "safety-protections": {
   "avoid-with": [],
@@ -660,8 +753,10 @@
    "trust-row",
    "faq-details"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "stat-rows": {
   "avoid-with": [
@@ -682,8 +777,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "5"
+  "version": "6",
+  "whole-page": false
  },
  "stats-band": {
   "avoid-with": [
@@ -707,8 +804,10 @@
    "hero-split",
    "hero-overlay"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "5"
+  "version": "6",
+  "whole-page": false
  },
  "steps-numbered": {
   "avoid-with": [
@@ -733,8 +832,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "5"
+  "version": "6",
+  "whole-page": false
  },
  "steps-plain": {
   "avoid-with": [
@@ -759,8 +860,10 @@
    "opener-split",
    "cta-band"
   ],
+  "requires": "none",
   "type": "section",
-  "version": "1"
+  "version": "2",
+  "whole-page": false
  },
  "testimonial-carousel": {
   "avoid-with": [
@@ -780,8 +883,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "consented-people",
   "type": "section",
-  "version": "3"
+  "version": "4",
+  "whole-page": false
  },
  "testimonial-grid": {
   "avoid-with": [
@@ -803,8 +908,10 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "consented-people",
   "type": "section",
-  "version": "5"
+  "version": "6",
+  "whole-page": false
  },
  "trust-row": {
   "avoid-with": [],
@@ -824,8 +931,10 @@
    "pricing-tiers",
    "faq-details"
   ],
+  "requires": "none",
   "type": "component",
-  "version": "2"
+  "version": "3",
+  "whole-page": false
  },
  "zigzag-rows": {
   "avoid-with": [
@@ -848,7 +957,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "requires": "photography",
   "type": "section",
-  "version": "4"
+  "version": "5",
+  "whole-page": false
  }
 }

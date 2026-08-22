@@ -1,0 +1,6 @@
+{
+  "eyebrow": "Sample eyebrow",
+  "headline": "A sample headline for preview, set large",
+  "subhead": "One supporting sentence, used only to render this preview.",
+  "assurance": "<ul class=\"cta-assurance\" role=\"list\"><li class=\"cta-assurance-item\">Sample assurance</li><li class=\"cta-assurance-item\">Sample assurance</li></ul>"
+}

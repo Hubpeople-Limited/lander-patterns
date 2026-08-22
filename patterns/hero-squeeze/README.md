@@ -36,6 +36,8 @@ filling it.** A squeeze with a real claim and no proof still converts. A squeeze
 with invented proof is a fabricated claim on the highest-traffic page the brand
 runs, which is the worst place in the estate to put one.
 
+**Not on a page with `hero-stated`.** That one is the text-only opener for a page that continues; this is the whole page. A page opens once.
+
 **Pairing.** `cta-assurance`, `member-strip` and `rating-mark` go inside it,
 and nothing goes after it.
 

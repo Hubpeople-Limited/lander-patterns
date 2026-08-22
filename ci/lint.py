@@ -1046,6 +1046,8 @@ def main():
             "type": meta.get("type"),
             "page-types": [s.strip() for s in meta.get("page-types", "").split(",") if s.strip()],
             "content-shape": shape,
+            "requires": meta.get("requires", "none"),
+            "whole-page": meta.get("whole-page") == "yes",
             "one-per-page": meta.get("one-per-page") == "yes",
             "needs": needs,
             "avoid-with": [s.strip() for s in meta.get("avoid-with", "").split(",")

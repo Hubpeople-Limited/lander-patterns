@@ -1,0 +1,101 @@
+/* hero-stated v1 - tokens only, selectors prefixed */
+/* Each ground names its own ink, and every rule below reads the pair rather
+   than a token, so nothing here knows which ground it is on. */
+.hero-stated--plain {
+  --hero-stated-ground: var(--color-bg);
+  --hero-stated-ink: var(--color-text-soft);
+  --hero-stated-title-ink: var(--color-heading);
+  --hero-stated-btn-face: var(--color-primary);
+  --hero-stated-btn-ink: var(--color-on-primary);
+  --hero-stated-ring: var(--color-focus);
+}
+.hero-stated--brand {
+  --hero-stated-ground: var(--color-primary);
+  --hero-stated-ink: var(--color-on-primary);
+  --hero-stated-title-ink: var(--color-on-primary);
+  --hero-stated-btn-face: var(--color-on-primary);
+  --hero-stated-btn-ink: var(--color-primary);
+  --hero-stated-ring: var(--color-on-primary);
+}
+.hero-stated--deep {
+  --hero-stated-ground: var(--color-scrim);
+  --hero-stated-ink: var(--color-on-scrim);
+  --hero-stated-title-ink: var(--color-on-scrim);
+  --hero-stated-btn-face: var(--color-primary);
+  --hero-stated-btn-ink: var(--color-on-primary);
+  --hero-stated-ring: var(--color-on-scrim);
+}
+.hero-stated {
+  padding-block: var(--space-12);
+  padding-inline: var(--space-4);
+  background: var(--hero-stated-ground);
+  color: var(--hero-stated-ink);
+}
+.hero-stated-inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+.hero-stated-eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-4);
+}
+.hero-stated-title {
+  font-family: var(--font-heading);
+  /* On the plain ground this is --color-heading, which the contract promises
+   at the large-text bar against --color-bg; the clamp floor is 40px. On the
+   other two grounds it is that ground's own ink. */
+  color: var(--hero-stated-title-ink);
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  max-width: 16ch;
+  margin: 0 0 var(--space-5);
+  text-wrap: balance;
+}
+.hero-stated-sub {
+  font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
+  line-height: 1.55;
+  max-width: 46ch;
+  margin: 0 0 var(--space-6);
+}
+.hero-stated-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 52px: on a page whose opener carries no image, this is what the eye
+   lands on after the words. */
+  min-height: 52px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  background: var(--hero-stated-btn-face);
+  color: var(--hero-stated-btn-ink);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.hero-stated-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* The ring is the ground's own, so one rule is right on all three. */
+.hero-stated-btn:focus-visible {
+  outline: 3px solid var(--hero-stated-ring);
+  outline-offset: 4px;
+}
+.hero-stated--centred .hero-stated-inner {
+  text-align: center;
+}
+.hero-stated--centred .hero-stated-title,
+.hero-stated--centred .hero-stated-sub {
+  margin-inline: auto;
+}
+@media (min-width: 48rem) {
+  .hero-stated {
+    padding-inline: var(--space-8);
+  }
+}
