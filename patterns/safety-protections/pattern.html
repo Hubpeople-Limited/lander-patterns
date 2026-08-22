@@ -1,0 +1,41 @@
+<!--
+name: safety-protections
+version: 1
+type: section
+page-types: safety, homepage, landing
+content-shape: peer set
+description: Categorised safety protections as cards, each carrying three registers - the name of the protection, what it does, and the line the reader takes away about how it protects them.
+keywords: safety, trust, protection, moderation, verification, cards
+needs: real protections the brand actually operates, each with the name it is known by, one or two plain sentences of what it does, and one sentence saying what that means for the reader; a section heading. Nothing here may be invented - a protection written because it sounds right is a promise about someone's physical safety that nobody is keeping
+pairs-with: heading-block, trust-row, faq-details
+avoid-with: none
+tokens-used: --card-radius, --color-heading, --color-rule, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- section-id: draw it from the heading. Several of these may sit on one
+     page, one per category, so every id must differ. -->
+<section class="safety-protections" aria-labelledby="slot:section-id">
+  <div class="safety-protections-inner">
+    <!-- Delete the h2 and its aria-labelledby only when heading-block sits
+         directly above. Delete the intro when there is nothing true to say. -->
+    <h2 class="safety-protections-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <p class="safety-protections-intro"><!-- slot: section-intro --></p>
+    <ul class="safety-protections-list" role="list">
+      <!-- ONE protection; duplicate the whole <li> per real protection. The
+           three registers are not interchangeable, and effect-label is the
+           same words on every card - a column header, not a sentence. See the
+           README before filling any of it. -->
+      <li class="safety-protections-item">
+        <h3 class="safety-protections-name"><!-- slot: protection-name --></h3>
+        <p class="safety-protections-what"><!-- slot: protection-what --></p>
+        <p class="safety-protections-effect">
+          <span class="safety-protections-effect-label"><!-- slot: effect-label --></span>
+          <!-- slot: protection-effect -->
+        </p>
+      </li>
+    </ul>
+  </div>
+</section>
