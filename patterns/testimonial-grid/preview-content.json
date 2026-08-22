@@ -6,5 +6,9 @@
   "person-name": "Sample Person",
   "person-role": "Sample attribution line for the preview",
   "source-url": "#sample-source",
-  "source-text": "Sample source link"
+  "source-text": "Sample source link",
+  "_repeat": {
+    "class": "testimonial-grid-item",
+    "count": 3
+  }
 }

@@ -3,5 +3,9 @@
   "recommended-label": "Sample flag",
   "tier-name": "Sample tier",
   "tier-price": "0.00 preview",
-  "tier-features": "<li>Sample feature line one</li><li>Sample feature line two</li><li>Sample feature line three</li>"
+  "tier-features": "<li>Sample feature line one</li><li>Sample feature line two</li><li>Sample feature line three</li>",
+  "_repeat": {
+    "class": "pricing-tiers-card",
+    "count": 3
+  }
 }

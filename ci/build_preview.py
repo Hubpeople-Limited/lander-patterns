@@ -53,9 +53,41 @@ body {{ margin: 0; font-family: var(--font-body); background: var(--color-bg);
 """
 
 
+def repeat_block(markup, cls, count):
+    """Duplicate the element carrying `cls` until there are `count` of them.
+
+    A pattern ships one of whatever it says to duplicate, which is right for a
+    file someone pastes from and wrong for a preview: a grid that only breaks
+    at four items has never been rendered. Refuses rather than returning the
+    markup unchanged, because a repeat that silently did nothing would put the
+    exact failure it exists to catch back out of sight.
+    """
+    start = markup.find(f'class="{cls}"')
+    if start == -1:
+        raise SystemExit(f"_repeat: no element carries class {cls!r}")
+    open_lt = markup.rfind("<", 0, start)
+    tag = re.match(r"<([a-zA-Z][\w-]*)", markup[open_lt:]).group(1)
+    # Balanced scan: a nested element of the same tag must not end the block.
+    depth, i = 0, open_lt
+    pattern = re.compile(rf"<(/?){tag}\b", re.I)
+    while True:
+        m = pattern.search(markup, i)
+        if not m:
+            raise SystemExit(f"_repeat: unbalanced <{tag}> around {cls!r}")
+        depth += -1 if m.group(1) else 1
+        i = m.end()
+        if depth == 0:
+            end = markup.index(">", i) + 1
+            break
+    block = markup[open_lt:end]
+    return markup[:end] + (block * (count - 1)) + markup[end:]
+
+
 def fill(markup, sample):
     # Longest keys first, so 'hero-image' can never eat 'hero-image-alt'.
     for key in sorted(sample, key=len, reverse=True):
+        if key.startswith("_"):
+            continue
         value = str(sample[key])
         markup = re.sub(rf"<!--\s*slot\s*:\s*{re.escape(key)}\s*-->", value, markup)
         markup = markup.replace(f"slot:{key}", value)
@@ -82,6 +114,9 @@ def main():
         css = (folder / "pattern.css").read_text(encoding="utf-8")
         sample = json.loads((folder / "preview-content.json").read_text(encoding="utf-8"))
         filled = fill(markup, sample)
+        repeat = sample.get("_repeat")
+        if repeat:
+            filled = repeat_block(filled, repeat["class"], int(repeat["count"]))
         leftovers = re.findall(r"slot:[\w-]+|<!--\s*slot", filled)
         if leftovers:
             raise SystemExit(f"{folder.name}: unfilled slots in preview: {leftovers}")

@@ -2,5 +2,9 @@
   "eyebrow": "Sample eyebrow",
   "band-title": "A sample band title for the preview render",
   "stat-figure": "00+ sample",
-  "stat-label": "Sample label for preview"
+  "stat-label": "Sample label for preview",
+  "_repeat": {
+    "class": "stats-band-item",
+    "count": 3
+  }
 }

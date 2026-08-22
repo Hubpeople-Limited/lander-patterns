@@ -5,5 +5,9 @@
   "card-image": "sample-wide.svg",
   "card-image-alt": "Preview placeholder image",
   "card-title": "Sample card title",
-  "card-body": "One or two sentences of sample copy, here only to render this preview."
+  "card-body": "One or two sentences of sample copy, here only to render this preview.",
+  "_repeat": {
+    "class": "pinned-cards-item",
+    "count": 3
+  }
 }

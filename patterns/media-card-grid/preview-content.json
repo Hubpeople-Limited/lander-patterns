@@ -6,5 +6,9 @@
   "card-heading": "Sample card heading",
   "card-copy": "One sentence of sample copy, here only to render this preview.",
   "card-cue": "Sample cue",
-  "card-url": "#sample-destination"
+  "card-url": "#sample-destination",
+  "_repeat": {
+    "class": "media-card-grid-item",
+    "count": 4
+  }
 }

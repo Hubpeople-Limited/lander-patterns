@@ -2,5 +2,9 @@
   "gallery-label": "Sample gallery for preview",
   "image": "sample-wide.svg",
   "image-alt": "Preview placeholder image",
-  "caption": "Sample caption for preview"
+  "caption": "Sample caption for preview",
+  "_repeat": {
+    "class": "gallery-scroll-item",
+    "count": 4
+  }
 }
