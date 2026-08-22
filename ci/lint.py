@@ -454,8 +454,12 @@ def expand_var_fallbacks(value, local_prefix):
     return value
 
 
-def check_css(path, folder_name):
-    text = path.read_text(encoding="utf-8")
+def check_css(path, folder_name, text=None):
+    """ overrides the file's contents, so the behaviour library's
+    injected stylesheet goes through exactly these checks rather than a
+    simpler copy of them that can drift."""
+    if text is None:
+        text = path.read_text(encoding="utf-8")
     stripped = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
 
     if re.search(r"#[0-9a-fA-F]{3,8}\b", stripped):
@@ -967,23 +971,23 @@ def main():
         )
 
     # The behaviour library injects CSS into every page that gets it, so its
-    # stylesheet reaches brands exactly as a pattern's does - and until this
-    # ran, it was the one that no colour or legibility check ever saw.
+    # stylesheet reaches brands exactly as a pattern's does. It goes through
+    # the same check rather than a simpler one beside it: a second
+    # implementation is a second set of holes.
     hub = ROOT / "lib" / "hub.js"
     if hub.is_file():
         js = hub.read_text(encoding="utf-8")
-        for block in re.findall(r"css:\s*`([^`]*)`", js):
-            for prop, value in iter_declarations(block):
-                literal = colour_literal(value)
-                if literal:
-                    find(hub, "no-colour-literals",
-                         f"{literal} in the injected stylesheet, "
-                         f"'{prop}: {value}'")
-                if (prop.endswith("-radius") or prop == "box-shadow")                         and "var(" not in value                         and value.strip() not in ("none", "0", "50%", "100%"):
-                    find(hub, "token-only",
-                         f"{prop}: {value} in the injected stylesheet must "
-                         "come from a token")
-            legibility.check(block, lambda d, _p=hub: find(_p, "legibility", d))
+        # Every template literal that looks like a stylesheet, not only the
+        # ones under a `css:` key - a behaviour can push styles from anywhere.
+        for block in re.findall(r"`([^`]*)`", js):
+            # A stylesheet, not a message: an interpolated literal is a JS
+            # string, and a real block has a declaration in it.
+            if "${" in block or not re.search(r"\{[^{}]*[\w-]+\s*:", block):
+                continue
+            check_css(hub, "hub", block)
+        # legibility.check is deliberately NOT run here. Its rule is that a
+        # pattern may not hide content and wait for a script; this file IS
+        # the script, and hiding a panel is the whole of what it does.
 
     check_version_bumps(sorted(p for p in PATTERNS.iterdir() if p.is_dir()))
 

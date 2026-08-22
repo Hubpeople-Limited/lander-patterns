@@ -35,18 +35,50 @@ def _exempt(selector):
     parts = [p.strip() for p in parts if p.strip()]
     if not parts:
         return False
-    return all(HUB_CLASS.search(re.sub(r":not\([^)]*\)", "", p)) for p in parts)
+    return all(HUB_CLASS.search(_bare(p)) for p in parts)
+
+
+def _bare(selector):
+    """A selector with every functional pseudo-class argument removed.
+
+    `:not(.hub-x)` mentions a class without depending on it, and so do
+    `:is()`, `:where()` and `:has()`. Stripping only `:not()` left the other
+    three as the same escape."""
+    for _ in range(5):
+        stripped = re.sub(r":(?:not|is|where|has|matches|any)\([^()]*\)", "",
+                          selector)
+        if stripped == selector:
+            return stripped
+        selector = stripped
+    return selector
+
+
+def _is_state(selector):
+    """Does this selector name a STATE rather than the plain element?
+
+    A pattern's own `.x { display: grid }` is the default, not a reveal. Only
+    something carrying a pseudo-class, an attribute or a modifier can bring
+    hidden content back, so only those count."""
+    bare = _bare(selector)
+    return bool(re.search(r"[:\[]", bare) or "--" in bare)
 
 HIDDEN = re.compile(
     r"(?<![-\w])("
-    r"opacity\s*:\s*0(?![.\d])"
-    r"|visibility\s*:\s*hidden"
+    r"opacity\s*:\s*0(?:\.0+)?(?![.\d])"
+    r"|visibility\s*:\s*(?:hidden|collapse)"
     r"|display\s*:\s*none"
     r"|content-visibility\s*:\s*hidden"
     r"|color\s*:\s*transparent"
-    r"|font-size\s*:\s*0(?![.\d])"
+    r"|-webkit-text-fill-color\s*:\s*transparent"
+    r"|font-size\s*:\s*0(?:\.0+)?(?:px|rem|em)?(?![.\d])"
     r"|transform\s*:\s*scale\(\s*0\s*\)"
+    r"|scale\s*:\s*0(?![.\d])"
+    r"|max-height\s*:\s*0(?![.\d])"
     r")")
+
+# @layer takes no condition, so "inside an at-rule" was a way straight out.
+# Only a conditional at-rule is a decision about the environment.
+CONDITIONAL_AT = re.compile(r"@(media|supports|container)\b")
 
 # Deliberately absent from HIDDEN: clip-path and text-indent. Those are the
 # visually-hidden idiom for text meant only for a screen reader, and this
@@ -83,7 +115,7 @@ def _rules(css):
             buf = ""
             depth += 1
             if prelude.startswith("@"):
-                at_depth.append(depth)
+                at_depth.append((depth, bool(CONDITIONAL_AT.match(prelude))))
             else:
                 body_start = i + 1
                 j, inner = body_start, 1
@@ -94,12 +126,13 @@ def _rules(css):
                         inner -= 1
                     j += 1
                 yield (prelude, stripped[body_start:j - 1],
-                       stripped[:i].count("\n") + 1, bool(at_depth))
+                       stripped[:i].count("\n") + 1,
+                       any(cond for _d, cond in at_depth))
                 depth -= 1
                 i = j
                 continue
         elif ch == "}":
-            if at_depth and at_depth[-1] == depth:
+            if at_depth and at_depth[-1][0] == depth:
                 at_depth.pop()
             depth -= 1
             buf = ""
@@ -148,9 +181,15 @@ def check(css, report, html=""):
     # bring it back, because then the no-JS render is missing content.
     revealed = set()
     for selector, body, _line, _nested in _rules(css):
+        # Only a STATE selector reveals. A pattern's own `.x { display: grid }`
+        # is the element's default, not a way back from hidden - and counting
+        # it made the whole check inert for any pattern that styles display,
+        # which is most of them.
         if _exempt(selector) or not SHOWN.search(body):
             continue
-        for cls in re.findall(r"\.([\w-]+)", selector):
+        if not _is_state(selector):
+            continue
+        for cls in re.findall(r"\.([\w-]+)", _bare(selector)):
             if _carries(html, cls):
                 revealed.add(cls)
 
@@ -158,6 +197,11 @@ def check(css, report, html=""):
         # Nested in an at-rule: a media query hiding something is a decision
         # about a viewport, not content waiting for a script.
         if _exempt(selector) or nested:
+            continue
+        # A pseudo-element is not the page's content: hiding ::marker or
+        # ::-webkit-details-marker removes a disclosure triangle the browser
+        # drew, which is the ordinary way to style a <details>.
+        if "::" in selector:
             continue
         hidden = HIDDEN.search(body)
         if not hidden:
