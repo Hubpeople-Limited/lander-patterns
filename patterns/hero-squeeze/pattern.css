@@ -43,7 +43,7 @@
   font-family: var(--font-heading);
   /* --color-heading is barred over a photograph however heavy the scrim. */
   color: var(--color-on-scrim);
-  font-size: clamp(2rem, 6vw, 3.25rem);
+  font-size: calc(clamp(2rem, 6vw, 3.25rem) * var(--type-scale, 1));
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1.08;

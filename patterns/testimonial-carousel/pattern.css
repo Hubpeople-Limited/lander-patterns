@@ -18,7 +18,7 @@
   margin: 0 0 var(--space-8);
   font-family: var(--font-heading);
   color: var(--color-heading);
-  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  font-size: calc(clamp(1.5rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
   letter-spacing: -0.02em;
 }
 /* Full bleed: the neighbouring cards sit well outside any container. */
@@ -97,7 +97,7 @@
 .testimonial-carousel-quote p {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(1.0625rem, 0.95rem + 0.6vw, 1.3125rem);
+  font-size: calc(clamp(1.0625rem, 0.95rem + 0.6vw, 1.3125rem) * var(--type-scale, 1));
   line-height: 1.28;
   font-weight: 800;
   letter-spacing: -0.035em;

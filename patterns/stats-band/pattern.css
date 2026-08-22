@@ -28,7 +28,7 @@
 .stats-band-title {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(1.625rem, 1.1rem + 2.2vw, 2.75rem);
+  font-size: calc(clamp(1.625rem, 1.1rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
   font-weight: 700;
   line-height: 1.08;
   letter-spacing: -0.025em;
@@ -54,7 +54,7 @@
 }
 .stats-band-figure {
   font-family: var(--font-heading);
-  font-size: clamp(2.125rem, 1.4rem + 3vw, 3.5rem);
+  font-size: calc(clamp(2.125rem, 1.4rem + 3vw, 3.5rem) * var(--type-scale, 1));
   font-weight: 700;
   line-height: 1.02;
   letter-spacing: -0.03em;

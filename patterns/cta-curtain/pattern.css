@@ -34,7 +34,7 @@
   font-family: var(--font-heading);
   /* --color-text: --color-heading is not guaranteed on a surface. */
   color: var(--color-text);
-  font-size: clamp(1.75rem, 1.2rem + 3vw, 3rem);
+  font-size: calc(clamp(1.75rem, 1.2rem + 3vw, 3rem) * var(--type-scale, 1));
   line-height: 1.05;
   text-wrap: balance;
 }

@@ -68,7 +68,7 @@
   /* --color-text, not --color-heading: this floor is 20px, under the size the
    heading token is contracted for, and the tile is a surface. */
   color: var(--color-text);
-  font-size: clamp(1.25rem, 1.6vw, 1.625rem);
+  font-size: calc(clamp(1.25rem, 1.6vw, 1.625rem) * var(--type-scale, 1));
   font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.25;

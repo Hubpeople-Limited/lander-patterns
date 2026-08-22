@@ -21,7 +21,7 @@
 }
 .hero-split-title {
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 1.2rem + 3.5vw, 3.4rem);
+  font-size: calc(clamp(2rem, 1.2rem + 3.5vw, 3.4rem) * var(--type-scale, 1));
   line-height: 1.15;
   color: var(--color-heading);
   margin: 0 0 var(--space-4);

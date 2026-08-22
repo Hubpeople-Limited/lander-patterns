@@ -21,7 +21,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "benefit-tiles": {
@@ -43,7 +43,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "capability-tabs": {
@@ -67,7 +67,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "cta-assurance": {
@@ -122,7 +122,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "cta-curtain": {
@@ -149,7 +149,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "cta-image": {
@@ -174,7 +174,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "cta-sticky": {
@@ -217,7 +217,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "feature-panels": {
@@ -241,7 +241,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "gallery-scroll": {
@@ -293,7 +293,7 @@
   ],
   "requires": "none",
   "type": "component",
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "hero-centred": {
@@ -321,7 +321,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "hero-overlay": {
@@ -348,7 +348,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "hero-split": {
@@ -376,7 +376,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -404,7 +404,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": true
  },
  "hero-stated": {
@@ -436,7 +436,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "link-cluster": {
@@ -462,7 +462,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "media-card-grid": {
@@ -489,7 +489,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "member-strip": {
@@ -539,7 +539,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "opener-split": {
@@ -565,7 +565,7 @@
   ],
   "requires": "none",
   "type": "component",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "photo-cards": {
@@ -594,7 +594,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "picker-chips": {
@@ -614,7 +614,7 @@
   ],
   "requires": "none",
   "type": "component",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "pinned-cards": {
@@ -638,7 +638,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "portrait-wall": {
@@ -687,7 +687,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "prose-column": {
@@ -733,7 +733,7 @@
   "pairs-with": [],
   "requires": "consented-people",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "rating-mark": {
@@ -781,7 +781,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "source-note": {
@@ -832,7 +832,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "stats-band": {
@@ -859,7 +859,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "steps-numbered": {
@@ -887,7 +887,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "steps-plain": {
@@ -915,7 +915,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "testimonial-carousel": {
@@ -938,7 +938,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "testimonial-grid": {
@@ -963,7 +963,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "trust-row": {
@@ -1012,7 +1012,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "5",
+  "version": "6",
   "whole-page": false
  }
 }

@@ -33,7 +33,7 @@
 .heading-block-title {
   margin: 0;
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.6rem);
+  font-size: calc(clamp(2rem, 1.4rem + 2.6vw, 3.6rem) * var(--type-scale, 1));
   line-height: 1.02;
   letter-spacing: -0.035em;
   font-weight: 800;

@@ -22,7 +22,7 @@
   /* Page ground and a clamp floor above 24px: both halves of the heading
    token's contract. Keep both if you edit it. */
   color: var(--color-heading);
-  font-size: clamp(1.875rem, 4.6vw, 3.5rem);
+  font-size: calc(clamp(1.875rem, 4.6vw, 3.5rem) * var(--type-scale, 1));
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.05;

@@ -86,6 +86,56 @@ vs shadowed:
 | `--chip-radius` | Chips and small labels |
 | `--logo-height` | Header logo size |
 
+## Dials
+
+Two optional tokens. **Every other token in this document is one a brand must
+define; these two are ones it may.** Both carry a fallback in every use, so a
+brand that never mentions them renders exactly as it does today, and a brand
+that sets one changes its whole register in one line.
+
+| Token | Default | What it does |
+|---|---|---|
+| `--type-scale` | `1` | Multiplies display type only - every size in a rule that also sets `--font-heading`. Body copy does not move. |
+| `--space-scale` | `1` | Multiplies the spacing ramp, once, where the ramp is defined. Patterns never reference it. |
+
+**Why they exist.** Across the four sample token sets, seven of the eight
+spacing steps are byte-identical and the display sizes are hard-coded in the
+patterns. Two brands could pick different colours, different faces and different
+corners, and still lay out identically - which is what makes pages on a
+multi-tenant platform read as siblings. Colour is the axis brands already vary;
+size and rhythm were the two they could not.
+
+**`--type-scale` in practice.** `0.92` is a quieter, more editorial register;
+`1.08` to `1.15` reads as a consumer brand shouting. Useful range is roughly
+`0.9` to `1.2`. Past that the `clamp()` floors stop being sensible at 320px and
+headlines held to `16ch` start breaking in the wrong places, so a brand wanting
+something outside it wants a different pattern rather than a bigger number.
+
+It multiplies the whole `clamp()`, floor and ceiling together, so the
+responsive behaviour is preserved rather than flattened.
+
+**`--space-scale` in practice.** It is applied by the brand, not the pattern -
+each step is defined in terms of it, once:
+
+```css
+:root {
+  --space-scale: 1;
+  --space-1: calc(0.25rem * var(--space-scale));
+  --space-2: calc(0.5rem  * var(--space-scale));
+  /* and so on through --space-12 */
+}
+```
+
+`0.85` is dense and utilitarian; `1.2` is airy and premium. Below `0.8` the
+44px target sizes stop having room around them, which is an accessibility
+floor rather than a taste one.
+
+**Both are bare numbers, never lengths.** `--type-scale: 1.1rem` multiplies a length by a length, which makes the whole `calc()` invalid; the declaration drops and the heading falls back to inherited size. Nothing errors, the page just goes flat on every display size at once. `ci/brand_fit.py` checks for this, and it is the only place it can be caught, because a brand's stylesheet is outside this library's CI.
+
+**Set at most one of them away from `1` at a time, to begin with.** Both at
+once compounds, and a brand at `1.15` type on `1.2` space is not a bolder
+brand, it is a broken one.
+
 ## Motion
 
 Patterns whose metadata declares `motion: subtle` or `motion: expressive` may

@@ -15,7 +15,7 @@
   font-family: var(--font-heading);
   /* --color-text: this is not large text. */
   color: var(--color-text);
-  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  font-size: calc(clamp(1.125rem, 1rem + 0.5vw, 1.375rem) * var(--type-scale, 1));
   line-height: 1.2;
 }
 .picker-chips-helper {

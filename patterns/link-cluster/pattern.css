@@ -40,7 +40,7 @@
 .link-cluster-title {
   font-family: var(--font-heading);
   color: var(--link-cluster-title-ink);
-  font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+  font-size: calc(clamp(1.5rem, 2.8vw, 2.25rem) * var(--type-scale, 1));
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.2;

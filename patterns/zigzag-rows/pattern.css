@@ -15,7 +15,7 @@
 .zigzag-rows-title {
   font-family: var(--font-heading);
   color: var(--color-heading);
-  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+  font-size: calc(clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
   line-height: 1.1;
   letter-spacing: -0.02em;
   margin: 0;
@@ -44,7 +44,7 @@
 .zigzag-rows-heading {
   font-family: var(--font-heading);
   color: var(--color-heading);
-  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  font-size: calc(clamp(1.5rem, 1.2rem + 1.2vw, 2rem) * var(--type-scale, 1));
   line-height: 1.2;
   letter-spacing: -0.015em;
   margin: 0 0 var(--space-3);

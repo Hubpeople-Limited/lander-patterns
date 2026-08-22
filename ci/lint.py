@@ -875,6 +875,30 @@ def check_token_sets_are_complete():
                  f"with no fallback: {', '.join(missing)}")
 
 
+def check_display_type_carries_the_dial(css, name):
+    """Every display size must be multiplied by --type-scale.
+
+    The dial is worth nothing if a pattern can quietly opt out of it: one
+    hard-coded headline on a page is the one that does not move when a brand
+    turns the register up, and it will read as a mistake rather than a choice.
+
+    A display size is a font-size in a rule that also sets --font-heading.
+    Body copy is deliberately out of scope - a brand asking for bigger
+    headlines is not asking for 19px paragraphs.
+    """
+    for m in re.finditer(r"\{([^{}]*)\}", re.sub(r"/\*.*?\*/", "", css, flags=re.S)):
+        body = m.group(1)
+        if "var(--font-heading)" not in body:
+            continue
+        fs = re.search(r"font-size:\s*([^;]+);", body)
+        if fs and "var(--type-scale" not in fs.group(1):
+            find(PATTERNS / name / "pattern.css", "type-scale",
+                 f"display size {fs.group(1).strip()} is not multiplied by "
+                 f"--type-scale, so it will not move when a brand sets the "
+                 f"dial - wrap it: calc({fs.group(1).strip()} "
+                 f"* var(--type-scale, 1))")
+
+
 def main():
     check_only = "--check" in sys.argv
     if not PATTERNS.is_dir():
@@ -966,6 +990,8 @@ def main():
             check_header_comments(html, header_block.group(1))
         if css.is_file():
             check_css(css, folder.name)
+            check_display_type_carries_the_dial(
+                css.read_text(encoding="utf-8"), folder.name)
             # `tokens-used` names the CONTRACT tokens a pattern consumes. A
             # pattern's own custom properties (--<pattern-name>-*) are its
             # internal plumbing, not part of the contract, so they are

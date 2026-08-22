@@ -48,7 +48,7 @@
    at the large-text bar against --color-bg; the clamp floor is 40px. On the
    other two grounds it is that ground's own ink. */
   color: var(--hero-stated-title-ink);
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  font-size: calc(clamp(2.5rem, 7vw, 4.5rem) * var(--type-scale, 1));
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.02;

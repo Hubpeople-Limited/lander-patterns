@@ -9,7 +9,7 @@
 .pricing-tiers-title {
   font-family: var(--font-heading);
   color: var(--color-heading);
-  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  font-size: calc(clamp(1.5rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
   margin: 0 0 var(--space-6);
 }
 .pricing-tiers-grid {
@@ -42,7 +42,7 @@
   font-family: var(--font-heading);
   /* --color-text: --color-heading is not guaranteed on a surface. */
   color: var(--color-text);
-  font-size: 1.25rem;
+  font-size: calc(1.25rem * var(--type-scale, 1));
   margin: 0 0 var(--space-2);
 }
 .pricing-tiers-price {

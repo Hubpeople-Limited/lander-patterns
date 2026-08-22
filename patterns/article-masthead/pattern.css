@@ -45,7 +45,7 @@
 .article-masthead-title {
   margin: 0 0 var(--space-4);
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: calc(clamp(2rem, 4vw, 3.5rem) * var(--type-scale, 1));
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.08;

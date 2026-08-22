@@ -112,6 +112,9 @@ def main(argv):
 
     print(":root {")
     print("  /* Shape: the brand's scale, under the names the patterns use. */")
+    print("  /* Dials: bare numbers, never lengths. See TOKENS.md. */")
+    print("  --type-scale: 1;   /* 0.92 quieter, 1.15 louder */")
+    print("  --space-scale: 1;  /* 0.85 dense, 1.2 airy */")
     for role, source, default in (
             ("--card-radius", "--radius-lg", "0.75rem"),
             ("--btn-radius", "--radius-md", "0.5rem"),

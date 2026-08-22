@@ -15,7 +15,7 @@
   margin: 0;
   font-family: var(--font-heading);
   color: var(--color-heading);
-  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  font-size: calc(clamp(1.5rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
   line-height: 1.1;
 }
 .capability-tabs-sub {
@@ -49,7 +49,7 @@
   /* --color-text: a panel is a surface, and --color-heading is promised
      against --color-bg only. */
   color: var(--color-text);
-  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.875rem);
+  font-size: calc(clamp(1.25rem, 1rem + 1.2vw, 1.875rem) * var(--type-scale, 1));
   line-height: 1.15;
 }
 .capability-tabs-lede {

@@ -58,7 +58,7 @@
   font-family: var(--font-heading);
   /* --color-text: the ground here is a scrim over a photograph. */
   color: var(--color-text);
-  font-size: clamp(2.25rem, 1.4rem + 3.4vw, 4rem);
+  font-size: calc(clamp(2.25rem, 1.4rem + 3.4vw, 4rem) * var(--type-scale, 1));
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-wrap: balance;

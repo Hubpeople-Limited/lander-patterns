@@ -21,7 +21,7 @@
   color: var(--color-heading);
   font-weight: var(--stat-rows-weight, 300);
   /* Figure and sentence are sized as a pair; keep the ratio if retuning. */
-  font-size: clamp(1.875rem, 1.4rem + 2.2vw, 2.625rem);
+  font-size: calc(clamp(1.875rem, 1.4rem + 2.2vw, 2.625rem) * var(--type-scale, 1));
   line-height: 1.04;
   letter-spacing: -0.03em;
 }

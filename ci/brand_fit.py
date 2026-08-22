@@ -52,11 +52,37 @@ def pattern_needs():
     return out
 
 
+DIAL = re.compile(r"--(type|space)-scale\s*:\s*([^;}]+)")
+
+
+def check_dials(brand, text):
+    """The two dials are unitless multipliers, and a unit silently deletes type.
+
+    calc(clamp(2rem, 4vw, 3.5rem) * var(--type-scale, 1)) multiplies a length
+    by a number. Give it a length instead and the product is an area, the
+    whole calc is invalid, and font-size falls back to whatever is inherited -
+    which on a heading is body size. The page does not error; it just goes
+    flat, on every display size at once.
+
+    A brand is outside this library's CI, so this is the only place the
+    mistake can be caught before it ships.
+    """
+    out = []
+    for which, value in DIAL.findall(text):
+        v = value.strip()
+        if not re.fullmatch(r"\d*\.?\d+", v):
+            out.append(f"  {brand}: --{which}-scale is {v!r} - it must be a "
+                       f"bare number. A unit makes every declaration using it "
+                       f"invalid, and the type silently collapses to inherited size.")
+    return out
+
+
 def main(argv):
     if not argv:
         print(__doc__)
         return 2
     brands = {}
+    dial_faults = []
     for root in argv:
         base = Path(root)
         # One stylesheet per brand. A checkout often holds the same tokens
@@ -71,11 +97,16 @@ def main(argv):
             if brand not in best or len(rel.parts) > len(best[brand].relative_to(base).parts):
                 best[brand] = css
         for brand, css in best.items():
-            brands[brand] = defined_in(css.read_text(encoding="utf-8",
-                                                     errors="replace"))
+            raw = css.read_text(encoding="utf-8", errors="replace")
+            brands[brand] = defined_in(raw)
+            dial_faults.extend(check_dials(brand, raw))
     if not brands:
         print("no global.css found under: " + ", ".join(argv))
         return 2
+
+    if dial_faults:
+        print("dial faults - these break type outright:")
+        print(chr(10).join(dial_faults) + chr(10))
 
     needs = pattern_needs()
     every = sorted({t for n in needs.values() for t in n})

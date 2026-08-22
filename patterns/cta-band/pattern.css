@@ -22,7 +22,7 @@
 .cta-band-title {
   font-family: var(--font-heading);
   color: var(--color-on-primary);
-  font-size: clamp(2rem, 4.5vw, 3.25rem);
+  font-size: calc(clamp(2rem, 4.5vw, 3.25rem) * var(--type-scale, 1));
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.1;
