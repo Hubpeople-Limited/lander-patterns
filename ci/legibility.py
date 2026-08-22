@@ -8,10 +8,34 @@ one has shipped somewhere before it was checked for.
 """
 import re
 
-# The behaviour library's injected classes, matched at a class boundary - a
-# substring test let any pattern whose own name contained "hub-" opt out of
-# every check in this file.
+# The behaviour library's injected classes. Testing the whole prelude for
+# this leaked twice over: `:not(.hub-x)` mentions it without depending on it,
+# and in a selector LIST one comma-part mentioning it exempted every other
+# part. Both are checked against each part with :not() stripped, which is what
+# the stylesheet checks in lint.py already do.
 HUB_CLASS = re.compile(r"\.hub-")
+
+
+def _exempt(selector):
+    """True only when EVERY part of the selector list genuinely depends on a
+    class the behaviour library injects."""
+    parts = []
+    depth, buf = 0, ""
+    for ch in selector:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        if ch == "," and depth == 0:
+            parts.append(buf)
+            buf = ""
+        else:
+            buf += ch
+    parts.append(buf)
+    parts = [p.strip() for p in parts if p.strip()]
+    if not parts:
+        return False
+    return all(HUB_CLASS.search(re.sub(r":not\([^)]*\)", "", p)) for p in parts)
 
 HIDDEN = re.compile(
     r"(?<![-\w])("
@@ -124,7 +148,7 @@ def check(css, report, html=""):
     # bring it back, because then the no-JS render is missing content.
     revealed = set()
     for selector, body, _line, _nested in _rules(css):
-        if HUB_CLASS.search(selector) or not SHOWN.search(body):
+        if _exempt(selector) or not SHOWN.search(body):
             continue
         for cls in re.findall(r"\.([\w-]+)", selector):
             if _carries(html, cls):
@@ -133,7 +157,7 @@ def check(css, report, html=""):
     for selector, body, line, nested in _rules(css):
         # Nested in an at-rule: a media query hiding something is a decision
         # about a viewport, not content waiting for a script.
-        if HUB_CLASS.search(selector) or nested:
+        if _exempt(selector) or nested:
             continue
         hidden = HIDDEN.search(body)
         if not hidden:

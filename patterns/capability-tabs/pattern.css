@@ -1,4 +1,4 @@
-/* capability-tabs v1 - tokens only, selectors prefixed.
+/* capability-tabs v2 - tokens only, selectors prefixed.
    Nothing here hides a panel: with no behaviour library every panel renders,
    stacked, under its own heading. */
 .capability-tabs {
@@ -153,6 +153,9 @@
 }
 @media (width < 48rem) {
   .capability-tabs .hub-tabs-list {
+    /* Room for the focus ring: this is a scroll container, so anything drawn
+       outside the padding box is clipped. */
+    padding-block: var(--space-1);
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;

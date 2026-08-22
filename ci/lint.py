@@ -293,7 +293,10 @@ def check_html(path, meta, folder_name):
     # prose - alt text, aria labels, slot names - are exempt.
     PROSE_ATTRS = {"alt", "title", "aria-label", "aria-labelledby",
                    "aria-describedby", "class", "id", "href", "src",
-                   "srcset", "sizes", "data-hub-module"}
+                   "srcset", "sizes", "data-hub-module",
+                   # Visible prose, so a tier called "Silver" is a name and
+                   # not a colour literal.
+                   "data-hub-tab-label", "data-hub-tabs-label"}
     for m in re.finditer(
             r"""([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""",
             re.sub(r"<!--.*?-->", "", decoded_ws, flags=re.S)):
@@ -962,6 +965,25 @@ def main():
             f"- **{name}** v{meta.get('version', '?')} · {meta.get('type', '?')} · "
             f"{meta.get('page-types', '?')}{limit} · {meta.get('description', '?')}"
         )
+
+    # The behaviour library injects CSS into every page that gets it, so its
+    # stylesheet reaches brands exactly as a pattern's does - and until this
+    # ran, it was the one that no colour or legibility check ever saw.
+    hub = ROOT / "lib" / "hub.js"
+    if hub.is_file():
+        js = hub.read_text(encoding="utf-8")
+        for block in re.findall(r"css:\s*`([^`]*)`", js):
+            for prop, value in iter_declarations(block):
+                literal = colour_literal(value)
+                if literal:
+                    find(hub, "no-colour-literals",
+                         f"{literal} in the injected stylesheet, "
+                         f"'{prop}: {value}'")
+                if (prop.endswith("-radius") or prop == "box-shadow")                         and "var(" not in value                         and value.strip() not in ("none", "0", "50%", "100%"):
+                    find(hub, "token-only",
+                         f"{prop}: {value} in the injected stylesheet must "
+                         "come from a token")
+            legibility.check(block, lambda d, _p=hub: find(_p, "legibility", d))
 
     check_version_bumps(sorted(p for p in PATTERNS.iterdir() if p.is_dir()))
 
