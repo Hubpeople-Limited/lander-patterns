@@ -1,4 +1,4 @@
-/* zigzag-rows v3 - tokens only, selectors prefixed */
+/* zigzag-rows v4 - tokens only, selectors prefixed */
 .zigzag-rows {
   /* One ratio for every media box, set once: equal-height rows are what hold
    the rhythm down the page. */
@@ -77,7 +77,7 @@
   text-underline-offset: 0.2em;
 }
 .zigzag-rows-link:hover {
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 .zigzag-rows-link:focus-visible {
   outline: 2px solid var(--color-focus);

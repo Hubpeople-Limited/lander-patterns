@@ -1,7 +1,6 @@
-/* heading-block v3 - tokens only, selectors prefixed */
+/* heading-block v4 - tokens only, selectors prefixed */
 .heading-block {
-  /* Same gutter idiom as every other pattern, so the block lines up with
-     the section it introduces instead of touching the viewport edge. */
+  /* Same gutter idiom as every other pattern. */
   width: min(100% - 2 * var(--space-4), 45rem);
   margin-inline: auto;
   margin-block-end: var(--space-8);
@@ -12,7 +11,8 @@
   align-items: center;
   gap: var(--space-2);
   margin: 0 0 var(--space-4);
-  color: var(--color-primary);
+  /* --color-text: --color-primary carries no stated ratio. */
+  color: var(--color-text);
   font-size: 0.8125rem;
   line-height: 1;
   font-weight: 800;
@@ -47,8 +47,7 @@
   line-height: 1.65;
   color: var(--color-text-soft);
 }
-/* From tablet up the block centres; phones keep it left-aligned, which reads
-   better in a narrow measure. */
+/* Tablet up: centred. Phones keep it left. */
 @media (min-width: 48rem) {
   .heading-block {
     text-align: center;

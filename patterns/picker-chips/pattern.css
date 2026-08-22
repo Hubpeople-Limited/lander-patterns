@@ -1,4 +1,4 @@
-/* picker-chips v4 - tokens only, selectors prefixed */
+/* picker-chips v5 - tokens only, selectors prefixed */
 .picker-chips {
   /* The touch-target floor. Every pill is at least this tall and wide. */
   --picker-chips-target: 48px;
@@ -49,7 +49,9 @@
   background: var(--color-surface);
   /* --color-text: --color-primary-dark is for light grounds only. */
   color: var(--color-text);
-  border: 2px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-surface));
+  /* The border is the only thing marking this as a control, so it carries
+     the boundary contrast on its own. */
+  border: 2px solid color-mix(in srgb, var(--color-primary) 75%, var(--color-surface));
   border-radius: var(--chip-radius);
   font-weight: 700;
   line-height: 1.2;

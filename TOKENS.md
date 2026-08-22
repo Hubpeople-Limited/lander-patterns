@@ -23,7 +23,7 @@ comes from the tables below.
 | `--color-bg` | Page background |
 | `--color-surface` | Card / panel background |
 | `--color-surface-soft` | Subtle fill — track backgrounds, alternate rows |
-| `--color-text` | Body text on `--color-bg` (≥ 4.5:1 against it) |
+| `--color-text` | Body text (≥ 4.5:1 against `--color-bg` **and against every `--color-surface*`**) |
 | `--color-text-soft` | Muted text (still ≥ 4.5:1 on the surface it sits on) |
 | `--color-heading` | Headings — **large text only** (≥ 3:1 against `--color-bg`; may equal `--color-text`) |
 | `--color-primary` | The brand's action colour — CTAs, key accents |
@@ -34,7 +34,12 @@ comes from the tables below.
 | `--color-rule` | Hairlines and dividers. **Decorative — brands may set it as soft as they like**, so no pattern may make it the only thing carrying a meaning |
 | `--color-focus` | Focus rings (≥ 3:1 against adjacent colours) |
 
-Only three pairs carry a stated ratio: `--color-text` on `--color-bg`,
+`--color-text` is the one ink that works anywhere the page's own grounds go:
+`--color-bg`, `--color-surface` and `--color-surface-soft`. Patterns are told
+to fall back to it whenever a heading sits on a card or a panel, so the
+guarantee has to cover the ground they land on.
+
+Only three pairs carry a stated ratio: `--color-text` on any page ground,
 `--color-on-primary` on `--color-primary`, and `--color-on-scrim` on
 `--color-scrim`. **A pattern that lays small text on a coloured ground must
 use one of those three.**

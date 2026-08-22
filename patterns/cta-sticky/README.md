@@ -21,8 +21,11 @@ moment and the same thumb. Only one fixed bottom element per page in general,
 so if the site adds a cookie bar, one of them has to move.
 
 **Brand adaptability.** `--btn-radius` and the primary-colour pair are the
-whole look. The bar inherits the page surface, so it reads native on any
-brand. Hidden from 60rem up — desktop relies on the page's inline CTAs.
+whole look. The bar sits on `--color-surface` and is separated from the
+content behind it twice over — a hairline and a soft upward shadow — because
+`--color-rule` is decorative by contract and a brand may set it to almost
+nothing, and a fixed bar that blends into the page is a bar nobody can see the
+edge of. Hidden from 60rem up — desktop relies on the page's inline CTAs.
 
 One implementation note: the stylesheet uses media *range* syntax
 (`@media (width < 60rem)`) because a min/max pair leaves a fractional-pixel

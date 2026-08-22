@@ -14,5 +14,6 @@
 - [ ] `needs` states the real content the pattern consumes, and every need
       has a slot
 - [ ] If this changes an existing pattern's CSS or structure: `version` bumped
-- [ ] I looked at both preview renders — the checks attach them to this PR as
-      the `pattern-previews` artifact — and both feels look intentional
+- [ ] I looked at all three preview renders — the checks attach them to this PR
+      as the `pattern-previews` artifact — and my pattern looks intentional on
+      each, including `dark`, which is a hostile brand rather than a third style
