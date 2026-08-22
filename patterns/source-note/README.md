@@ -41,7 +41,7 @@ have to leave the page to find out what a number means.
 
 **Pairing.** Under `stat-rows`, `stats-band`, `rating-mark`, inside a
 `faq-details` answer, or under a `quote-feature` where the quote carries a
-figure. `one-per-page` is `no` — a page with four claimed figures needs four of
+figure. `one-per-page` is `no` — a page asserting four figures needs four of
 these, and if that looks like a lot of small print, the honest response is fewer
 claims rather than fewer sources.
 
