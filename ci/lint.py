@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import legibility
 from _display_type import display_faults
 from _heading_size import heading_size_faults
+from _containment import external_faults, spacing_faults
 import _dials as dials
 import _heading_size as heading_size
 
@@ -138,10 +139,20 @@ thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen""".spl
 
 COLOUR_FUNCTIONS = r"\b(rgb|rgba|hsl|hsla|oklch|oklab|lab|lch|hwb|color|device-cmyk)\s*\("
 
+# A pattern is appended into a page that already exists, so an unclosed
+# container does not break the pattern - it swallows the rest of the document.
+# The list therefore has to cover everything a pattern may legally contain,
+# not the subset the patterns happened to use when it was written.
 BALANCED_TAGS = ["section", "article", "div", "ul", "ol", "li", "main",
                  "header", "footer", "nav", "a", "p", "h1", "h2", "h3",
-                 "dl", "dt", "dd", "button", "details", "summary",
-                 "figure", "figcaption", "blockquote", "span", "label"]
+                 "h4", "h5", "h6", "dl", "dt", "dd", "button", "details",
+                 "summary", "figure", "figcaption", "blockquote", "span",
+                 "label", "table", "thead", "tbody", "tfoot", "tr", "td",
+                 "th", "caption", "colgroup", "aside", "picture", "video",
+                 "audio", "svg", "form", "fieldset", "legend", "select",
+                 "option", "optgroup", "textarea", "time", "strong", "em",
+                 "b", "i", "small", "pre", "code", "dialog", "address",
+                 "hgroup", "search", "noscript"]
 
 SLOT_CANONICAL = re.compile(r"<!-- slot: [\w-]+ -->")
 SLOT_ANYWHERE = re.compile(r"<!--\s*slot\s*:", re.I)
@@ -270,10 +281,16 @@ def check_html(path, meta, folder_name):
             find(path, "legibility",
                  f'class="{m.group(1)}" carries the behaviour library prefix, '
                  "which other checks treat as the platform's and skip")
-    for m in re.finditer(r"<form\b([^>]*)>", body, re.I):
-        if re.search(r"action\s*=\s*[\"']?\s*(https?:)?//", m.group(1), re.I):
+    # Decoded, because browsers decode entities and so must this - the handler
+    # and javascript: checks below already do, and this one read raw markup,
+    # so action="&#104;ttps://..." went straight through. formaction on a
+    # button or input is the same door and was not checked at all.
+    for m in re.finditer(r"<(form|button|input)\b([^>]*)>", decoded_ws, re.I):
+        if re.search(r"(?<![-\w])(?:form)?action\s*=\s*[\"']?\s*(https?:)?//",
+                     m.group(2), re.I):
             find(path, "no-embedded-content",
-                 "a form posting to an external host is not allowed")
+                 f"a {m.group(1).lower()} posting to an external host is not "
+                 "allowed")
     if re.search(r"<style\b", body, re.I):
         find(path, "no-style-element", "style elements are not allowed")
     if re.search(r"(?<![-\w])on\w+\s*=", decoded_ws, re.I):
@@ -691,8 +708,13 @@ def check_version_bumps(folders):
             moved.append("pattern.css")
         if not moved:
             continue
-        was = re.search(r"^version: (.*)$", old["pattern.html"], re.M)
-        now = re.search(r"^version: (.*)$", now_html, re.M)
+        # Flexible whitespace, because the header parser that reads this field
+        # everywhere else partitions on the colon and accepts `version:5`.
+        # This regex demanded exactly one space, so writing it without one
+        # made `now` None and skipped the comparison entirely - while the
+        # version still parsed fine into INDEX.md and patterns.json.
+        was = re.search(r"^version\s*:\s*(.*)$", old["pattern.html"], re.M)
+        now = re.search(r"^version\s*:\s*(.*)$", now_html, re.M)
         if was and now and was.group(1).strip() == now.group(1).strip():
             find(folder / "pattern.html", "version",
                  f"{' and '.join(moved)} changed since {ref[:8]} but version "
@@ -904,6 +926,29 @@ def check_dial_range_is_stated_once():
              f"{dials.TYPE_MIN} - the guarantee and the range must agree")
 
 
+def check_containment(html, css, name):
+    """A pattern pulls nothing in from elsewhere, and spaces on the brand ramp.
+
+    The banned-tag list already stops <iframe>, <object>, <embed> and <link>,
+    but nothing checked URLs - so the same reach was available through
+    @import, @font-face, background-image, an img on a third-party host, a
+    srcset entry, or <use href> into a remote sprite.
+
+    And --space-scale is applied by the brand at the ramp, so a hardcoded
+    length silently removes that band from the brand's spacing system. See
+    ci/_containment.py.
+    """
+    for text, kind, path in ((html, "html", PATTERNS / name / "pattern.html"),
+                             (css, "css", PATTERNS / name / "pattern.css")):
+        for what, why in external_faults(text, kind):
+            find(path, "no-embedded-content", f"{what} - {why}")
+    for line, decl in spacing_faults(css):
+        find(PATTERNS / name / "pattern.css", "token-only",
+             f"line {line}: '{decl}' sets spacing in a length rather than the "
+             f"--space-* ramp, so this band opts out of the brand's rhythm and "
+             f"of --space-scale with it")
+
+
 def check_heading_token_size(css, name):
     """--color-heading only where it is guaranteed, across the whole dial range.
 
@@ -1032,6 +1077,8 @@ def main():
                 css.read_text(encoding="utf-8"), folder.name)
             check_heading_token_size(
                 css.read_text(encoding="utf-8"), folder.name)
+            check_containment(html.read_text(encoding="utf-8"),
+                              css.read_text(encoding="utf-8"), folder.name)
             # `tokens-used` names the CONTRACT tokens a pattern consumes. A
             # pattern's own custom properties (--<pattern-name>-*) are its
             # internal plumbing, not part of the contract, so they are
@@ -1141,7 +1188,11 @@ def main():
         for block in re.findall(r"`([^`]*)`", js):
             # A stylesheet, not a message: an interpolated literal is a JS
             # string, and a real block has a declaration in it.
-            if "${" in block or not re.search(r"\{[^{}]*[\w-]+\s*:", block):
+            # An interpolation used to skip the whole block, which put this
+            # stylesheet one `${delay}` away from switching its own checks
+            # off. Blank the interpolated spans and check what surrounds them.
+            block = re.sub(r"\$\{[^{}]*\}", "0", block)
+            if not re.search(r"\{[^{}]*[\w-]+\s*:", block):
                 continue
             check_css(hub, "hub", block)
         # legibility.check is deliberately NOT run here. Its rule is that a

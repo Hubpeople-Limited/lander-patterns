@@ -24,8 +24,13 @@ HUB_CLASS = re.compile(r"\.hub-")
 CONDITIONAL_AT = re.compile(r"@(media|supports|container)\b", re.I)
 ALWAYS_TRUE_AT = re.compile(
     r"@media\s*(screen|all)\s*$"
-    r"|min-(width|height|inline-size|block-size)\s*:\s*0(?![.\d])"
-    r"|@supports\s*\(\s*display\s*:\s*(block|none|flex|grid)\s*\)",
+    # Any floor at or below one CSS pixel is true on every device there is.
+    # Recognising only a literal 0 let `(min-width: 1px)` excuse everything.
+    r"|min-(width|height|inline-size|block-size)\s*:\s*(0(?![.\d])|[01](\.\d+)?px)"
+    # @supports for anything universally implemented is the same trick played
+    # on a different at-rule. Custom properties and var() have been everywhere
+    # for years, so testing for them discriminates against nothing.
+    r"|@supports\s*\(\s*[\w-]+\s*:\s*(block|none|flex|grid|var\([^)]*\))\s*\)",
     re.I)
 
 HIDDEN = re.compile(
@@ -186,10 +191,13 @@ def check(css, report, html=""):
     """`report(detail)` is called once per finding."""
     for selector, body, line, _excused in _rules(css):
         faded = re.search(r"(?<![-\w])opacity\s*:\s*(0?\.\d+)", body, re.I)
-        if faded and re.search(r"(?<![-\w])color\s*:", body, re.I):
-            report(f"line {line}: opacity {faded.group(1)} on a rule that "
-                   "also sets color - dim with --color-text-soft, which "
-                   "carries a guarantee, not with opacity, which removes one")
+        # The "and it also sets color" guard exempted the plainer version of
+        # the same defect: a rule that only fades. Text at 8% is unreadable
+        # whether or not an ink is named in the same block.
+        if faded:
+            report(f"line {line}: opacity {faded.group(1)} - dim with "
+                   "--color-text-soft, which carries a guarantee, not with "
+                   "opacity, which removes one")
 
         if re.search(r"(?<![-\w])color\s*:[^;]*color-mix\([^;]*transparent",
                      body, re.I):
