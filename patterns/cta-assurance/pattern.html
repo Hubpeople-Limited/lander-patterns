@@ -1,0 +1,25 @@
+<!--
+name: cta-assurance
+version: 1
+type: component
+page-types: homepage, landing, pricing, safety, article
+content-shape: peer set
+description: The short run of reassurances that sits under a join control - what it costs, what is not being committed to, how long it takes - each one a fact the brand can evidence.
+keywords: assurance, reassurance, cta, conversion, objection, microcopy
+needs: two to four things about signing up that are true and checkable - the price, whether a card is required, how long it takes, what is visible to whom. Each must be a fact the brand can evidence, never a promise about the future and never a time-limited offer
+pairs-with: hero-split, hero-centred, cta-band, cta-image, pricing-tiers
+avoid-with: none
+tokens-used: --space-2, --space-3, --space-4
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- Directly after a join control, inside whatever wraps it. Two to four
+     items, three or four words each; duplicate or delete the <li>. Separators
+     are drawn in CSS, so type no dots or bullets.
+     NEVER: a bare "Free" without saying what is free, anything time-limited,
+     or anything about what the reader loses by waiting. README says why. -->
+<ul class="cta-assurance" role="list">
+  <li class="cta-assurance-item"><!-- slot: assurance --></li>
+</ul>

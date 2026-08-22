@@ -1,0 +1,23 @@
+/* cta-assurance v1 - tokens only, selectors prefixed */
+/* Sets no colour: it inherits the ink above it. See the README. */
+.cta-assurance {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.cta-assurance-item + .cta-assurance-item::before {
+  content: "";
+  display: inline-block;
+  width: 0.25rem;
+  height: 0.25rem;
+  margin-inline-end: var(--space-3);
+  border-radius: 50%;
+  background: currentColor;
+  vertical-align: middle;
+}

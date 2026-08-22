@@ -62,6 +62,31 @@
   "type": "section",
   "version": "2"
  },
+ "cta-assurance": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "The short run of reassurances that sits under a join control - what it costs, what is not being committed to, how long it takes - each one a fact the brand can evidence.",
+  "motion": "none",
+  "needs": "two to four things about signing up that are true and checkable - the price, whether a card is required, how long it takes, what is visible to whom. Each must be a fact the brand can evidence, never a promise about the future and never a time-limited offer",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article"
+  ],
+  "pairs-with": [
+   "hero-split",
+   "hero-centred",
+   "cta-band",
+   "cta-image",
+   "pricing-tiers"
+  ],
+  "type": "component",
+  "version": "1"
+ },
  "cta-band": {
   "avoid-with": [
    "cta-curtain",
