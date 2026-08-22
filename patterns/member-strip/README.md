@@ -54,9 +54,13 @@ well as individual members. `avoid-with` names `portrait-wall` alone.
 
 **Brand adaptability. It sets no ink of its own**, so it takes the colour of
 whatever it sits in — a page ground, a brand-coloured band or a scrim — which is
-by definition the ink the contract promises against that ground. Only the meta
-line names a token, `--color-text-soft`, which is contracted against the surface
-it sits on.
+by definition the ink the contract promises against that ground.
+
+**The meta line inherits too, and that is not an oversight.**
+`--color-text-soft` is promised against page grounds only, and this pattern's
+own placements put it on a scrim and on `--color-primary`, where it measures
+as low as 1.12:1. A token whose name contains *text* is not a token that
+travels with the text: the promise is about a ground, not about a role.
 
 The photograph paints `--color-surface` behind itself, so a slow or failed
 image leaves a circle rather than collapsing the row and dropping every name

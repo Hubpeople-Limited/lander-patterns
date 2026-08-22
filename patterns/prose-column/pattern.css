@@ -51,7 +51,9 @@
   color: var(--color-text-soft);
 }
 .prose-column a {
-  color: var(--color-primary-dark);
+  /* Inherit: the underline carries the affordance, on every ground and in
+   every ink. See the README. */
+  color: inherit;
   text-decoration: underline;
   text-underline-offset: 0.18em;
 }

@@ -404,7 +404,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "4",
+  "version": "5",
   "whole-page": true
  },
  "hero-stated": {
@@ -462,7 +462,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "media-card-grid": {
@@ -516,7 +516,7 @@
   ],
   "requires": "consented-people",
   "type": "component",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "offer-split": {
@@ -594,7 +594,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "picker-chips": {
@@ -638,7 +638,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "portrait-wall": {
@@ -712,7 +712,7 @@
   ],
   "requires": "none",
   "type": "component",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "quote-feature": {
@@ -758,7 +758,7 @@
   ],
   "requires": "none",
   "type": "component",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "safety-protections": {

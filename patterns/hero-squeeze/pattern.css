@@ -28,8 +28,8 @@
   z-index: -1;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 46%), transparent) 0%,
-    color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 100%), transparent) 34%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 60%), transparent) 0%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 100%), transparent) 12%,
     color-mix(in srgb, var(--color-scrim) calc(var(--hero-squeeze-scrim-floor) * 100%), transparent) 100%
   );
 }

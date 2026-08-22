@@ -1,6 +1,6 @@
 <!--
 name: prose-column
-version: 3
+version: 4
 type: component
 page-types: article, safety, homepage, landing, pricing
 requires: none
@@ -10,7 +10,7 @@ keywords: prose, article, body, editorial, measure, longform
 needs: real writing. Headings that say what their section contains, each section opening with a complete one-sentence answer to the question its heading raises
 pairs-with: article-masthead, heading-block, gallery-scroll
 avoid-with: none
-tokens-used: --card-radius, --color-focus, --color-heading, --color-primary-dark, --color-rule, --color-surface-soft, --color-text, --color-text-soft, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale
+tokens-used: --card-radius, --color-focus, --color-heading, --color-rule, --color-surface-soft, --color-text, --color-text-soft, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale
 motion: none
 one-per-page: no
 status: active
@@ -37,8 +37,11 @@ added: 2026-08-22
   </blockquote>
 
   <!-- A table where the material is a comparison; keep the scope attributes.
-       Delete the whole figure otherwise. -->
-  <figure>
+       Delete the whole figure otherwise. The table scrolls sideways on a
+       phone, and a scroll box holding nothing focusable cannot be scrolled by
+       keyboard - so tabindex and the label are not optional. Name what the
+       table compares; it is read instead of the caption, not as well as it. -->
+  <figure tabindex="0" role="region" aria-label="slot:table-label">
     <table>
       <caption><!-- slot: table-caption --></caption>
       <thead>

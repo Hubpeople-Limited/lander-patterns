@@ -9,5 +9,6 @@
   "column-heading": "Sample column",
   "column-heading-2": "Sample column two",
   "row-heading": "Sample row",
-  "cell": "Sample cell"
+  "cell": "Sample cell",
+  "table-label": "Sample comparison of three plans"
 }

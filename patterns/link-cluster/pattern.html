@@ -1,6 +1,6 @@
 <!--
 name: link-cluster
-version: 3
+version: 4
 type: section
 page-types: homepage, landing, pricing, safety, article
 requires: none
@@ -19,7 +19,9 @@ added: 2026-08-22
 <!-- Take one ground modifier: --plain on the page ground, --soft on the
      tinted fill, --brand on the brand colour. Two clusters on one page read
      well when they run on different grounds and hold different kinds of thing
-     - places, then categories.
+     - places, then categories. Every section-id must differ: two clusters
+     sharing one id collide, and both regions get announced with the first
+     heading's name.
 
      ONE link. Duplicate the whole <li>; ten to twenty-five is the useful
      range. Below ten it reads as a short menu rather than a map; above

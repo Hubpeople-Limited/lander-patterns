@@ -46,10 +46,14 @@ take the ink of whatever they sit in — which is the only ink promised against
 that ground, and lets the same component work in a hero over a scrim, on a
 card, and on a brand-coloured band without changing a line.
 
-The count is the one exception: it is `--color-text-soft`, a token with a
-stated ratio, rather than a faded copy of the surrounding ink. Dimming with
-`opacity` is exactly where a contrast guarantee stops holding, so the quieter
-half of the claim uses a token that still promises something.
+**The count inherits with everything else.** `--color-text-soft` states its
+ratio against a page ground, and this pattern's whole purpose is sitting on
+scrims and brand bands, where it measures between 1.12:1 and 3.04:1. A stated
+ratio is only worth having against the ground it was stated for.
+
+Dimming with `opacity` is where a contrast guarantee stops holding, so the
+count is not dimmed at all — it is subordinated by size and position, the same
+way `source-note` is.
 
 The stars are inline SVG with `fill="currentColor"`, so they inherit rather than
 being fetched, cannot go missing in a brand font the way a `★` character can,
