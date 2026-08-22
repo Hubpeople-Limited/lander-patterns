@@ -1,4 +1,4 @@
-/* trust-row v1 - tokens only, selectors prefixed */
+/* trust-row v2 - tokens only, selectors prefixed */
 
 /* The hairlines and the space inside them are the whole frame: no background,
    no card. Do not add one. The padding, not the rule, is what separates the
@@ -6,7 +6,6 @@
 .trust-row {
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   gap: clamp(var(--space-6), 6vw, var(--space-12));

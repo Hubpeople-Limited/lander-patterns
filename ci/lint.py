@@ -921,6 +921,12 @@ def main():
                     find(preview, "preview-content", f"no sample value for slot '{slot}'")
             for key, value in sample.items():
                 text = str(value)
+                # A machine-readable value cannot also say "sample" and stay
+                # valid, and a datetime attribute is exactly that case. The
+                # rule exists so no preview value can be mistaken for a real
+                # claim about a brand, and a bare date makes none.
+                if re.fullmatch(r"\d{4}-\d{2}-\d{2}(T[\d:.+-]+)?", text):
+                    continue
                 if "sample" not in text.lower() and "preview" not in text.lower():
                     find(preview, "preview-content",
                          f"value for '{key}' must self-declare as sample/preview")

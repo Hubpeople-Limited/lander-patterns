@@ -27,7 +27,8 @@ invented to fill the row, borrowed from a competitor's footer, aspirational, or
 evidence none, do not use this pattern.
 
 Concretely: the membership logo as a supplied image file (`membership-mark`)
-with real alt text, the association's real name (`membership-name`) and the real
+whose alt is `""` when the association's name sits beside it, the association's
+real name (`membership-name`) and the real
 status held (`membership-status` — *Member*, *Accredited*, whatever the
 association actually grants). Then one label per certification or regulation
 (`badge-1-label` … `badge-3-label`), named as the scheme names itself. Delete

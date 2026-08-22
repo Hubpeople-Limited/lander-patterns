@@ -27,7 +27,8 @@ announce itself as a second site header alongside the chassis's real one.
 - The category the article genuinely sits in, an honest read time, and the real
   publication date. `datetime` takes the machine-readable form (`2026-08-22`),
   the slot beside it the words a reader sees.
-- The name and role of the person who wrote it, their portrait, and alt text
+- The name and role of the person who wrote it, and their portrait. The alt
+  is `""` unless the portrait carries something the byline beside it does not
   describing that portrait. A byline is a claim about a named human being: if
   nobody is willing to be named, this is the wrong pattern, not a field to fill.
 
