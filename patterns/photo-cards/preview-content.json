@@ -1,0 +1,10 @@
+{
+  "section-id": "sample-photo-cards",
+  "section-title": "Sample photo cards heading",
+  "card-image": "sample-wide.svg",
+  "card-image-alt": "Preview placeholder image",
+  "card-chip": "Sample chip",
+  "card-heading": "Sample card heading",
+  "card-url": "#sample-preview-destination",
+  "card-copy": "One or two sentences of sample copy, here only to render this preview."
+}

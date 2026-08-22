@@ -15,6 +15,8 @@ alt text, each sized for the slot through the CDN (roughly 480px wide at 2×).
 A short caption per image if the material supports one; delete the caption
 element otherwise. Duplicate the item element once per image.
 
+**Not on a page with `photo-cards`.** Two runs of photographs competing for the same attention, one of which scrolls sideways, is a page asking a reader to browse twice.
+
 **Pairing.** Fine mid-page on a homepage or article. Keep it away from
 `hero-split` and `hero-overlay` — two large visual moments on one page compete
 and neither wins — and off any page carrying `steps-numbered`,

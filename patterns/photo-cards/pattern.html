@@ -1,0 +1,40 @@
+<!--
+name: photo-cards
+version: 1
+type: section
+page-types: homepage, landing, pricing, article
+content-shape: peer set
+description: A run of cards with the photograph in its own box at the top and every word set below it on the card's own surface, so nothing is ever laid over an image.
+keywords: cards, photography, grid, peer set, no-scrim
+needs: one real photograph per card with its own alt text; a short heading, one or two sentences and a real destination per card. Three or four cards read best
+pairs-with: opener-split, heading-block, cta-band
+avoid-with: gallery-scroll, media-card-grid
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-heading, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+behaviours: reveal
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- section-id: draw it from the heading. -->
+<section class="photo-cards" aria-labelledby="slot:section-id">
+  <div class="photo-cards-inner">
+    <h2 class="photo-cards-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <ul class="photo-cards-list" role="list" data-hub-module="reveal" data-hub-reveal-children>
+      <!-- ONE card. Duplicate the whole <li> per real item - three or four
+           read best. The heading is the only link; do not add a second, and
+           do not put a button in the card. The chip is optional: delete the
+           paragraph where the item has no real label. -->
+      <li class="photo-cards-item">
+        <img class="photo-cards-img" src="slot:card-image" alt="slot:card-image-alt" width="720" height="480" loading="lazy">
+        <div class="photo-cards-text">
+          <p class="photo-cards-chip"><!-- slot: card-chip --></p>
+          <h3 class="photo-cards-heading">
+            <a class="photo-cards-link" href="slot:card-url"><!-- slot: card-heading --></a>
+          </h3>
+          <p class="photo-cards-copy"><!-- slot: card-copy --></p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>

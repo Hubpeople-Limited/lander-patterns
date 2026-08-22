@@ -54,6 +54,12 @@ card's entire text as the control's name. Here the heading is the link, and its
 name is the destination, and there is never a second control inside the first.
 The arrow cue is `aria-hidden`: it is the visual affordance and repeats nothing.
 
+**Not on a page with `photo-cards`.** That pattern sets the copy below the
+photograph instead of over it, so a page carrying both shows one card run twice
+in different furniture. Choose by whether you control the photographs: this one
+is stronger when the imagery is good and yours, `photo-cards` safer when it is
+neither.
+
 **Pairing.** `heading-block` above it when the section needs an eyebrow and an
 intro, which is why this pattern carries only a plain `<h2>`. Avoid
 `steps-numbered` on the same page — both are
