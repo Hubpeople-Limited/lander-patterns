@@ -22,10 +22,9 @@ occupies a whole screen and says nothing, and there is no scrim to hide behind
 because the words sit on their own panel. A short title and one or two sentences
 per card, in an order that means something.
 
-**Increment `--pinned-cards-i` on every card.** It is the stacking order, and
-the later card has to sit over the earlier one or the effect runs backwards. It
-is a custom property in a `style` attribute, which is the only thing a `style`
-attribute is permitted to carry here.
+**Increment `--pinned-cards-i` on every card.** It is the stacking order and
+the later card must sit over the earlier one, or the effect runs backwards. A
+custom property is the only thing a `style` attribute may carry here.
 
 **Keep the join control on the last card only.** Three identical buttons is one
 decision asked three times, and it makes the earlier cards feel like adverts
