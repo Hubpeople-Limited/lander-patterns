@@ -1,0 +1,29 @@
+<!--
+name: opener-split
+version: 1
+type: component
+page-types: homepage, landing, pricing, safety, article
+content-shape: single claim
+description: Editorial section opener - a display title held to a short measure on the left, its supporting line pushed right and set to the title's baseline; stacks to one column on narrow screens.
+keywords: opener, section heading, editorial, asymmetric, intro
+needs: a title, and one supporting sentence that says something the title does not; a short eyebrow label only where the section genuinely belongs to a named group
+pairs-with: steps-plain, benefit-tiles, zigzag-rows, faq-details
+avoid-with: none
+tokens-used: --color-heading, --color-rule, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- The alternative to heading-block, not a companion to it: pick one opener
+     style and hold it down the page. See the README.
+     Add opener-split--ruled for a hairline under the block where the opener
+     needs separating from what follows. Delete the eyebrow and the intro
+     when there is nothing true to put in them. -->
+<div class="opener-split">
+  <div class="opener-split-lead">
+    <p class="opener-split-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="opener-split-title"><!-- slot: title --></h2>
+  </div>
+  <p class="opener-split-intro"><!-- slot: intro --></p>
+</div>

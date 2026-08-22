@@ -1,0 +1,59 @@
+/* opener-split v1 - tokens only, selectors prefixed */
+.opener-split {
+  --opener-split-title-measure: 14ch;
+  --opener-split-intro-measure: 42ch;
+  display: grid;
+  gap: var(--space-5);
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  padding-block: var(--space-8) var(--space-6);
+}
+.opener-split-eyebrow {
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
+}
+.opener-split-title {
+  font-family: var(--font-heading);
+  /* Page ground and a clamp floor above 24px: both halves of the heading
+   token's contract. Keep both if you edit it. */
+  color: var(--color-heading);
+  font-size: clamp(1.875rem, 4.6vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+  text-wrap: balance;
+}
+.opener-split-intro {
+  color: var(--color-text-soft);
+  font-size: 1rem;
+  line-height: 1.65;
+  max-width: var(--opener-split-intro-measure);
+  margin: 0;
+}
+.opener-split--ruled {
+  border-bottom: 1px solid var(--color-rule);
+  padding-bottom: var(--space-6);
+}
+/* Side by side only from 64rem: two half-width columns at tablet width leave
+   the title too narrow to hold a heading. See the README. */
+@media (min-width: 64rem) {
+  .opener-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: end;
+    column-gap: var(--space-6);
+  }
+  .opener-split-title {
+    max-width: var(--opener-split-title-measure);
+  }
+  .opener-split-intro {
+    justify-self: end;
+    /* Optical nudge onto the title's baseline: the type sizes differ too
+     much for align-items alone. */
+    padding-bottom: var(--space-2);
+  }
+}

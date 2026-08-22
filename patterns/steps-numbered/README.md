@@ -32,6 +32,8 @@ carrying to any pattern doing the same job: `--color-heading` carries no stated
 ratio, and on a brand whose heading is a display colour sitting at the 3:1
 large-text bar, this card's 14-16px body has no guarantee to stand on.
 
+**Not on a page with `steps-plain`.** That pattern answers the same "how it works" question without photography, and a page carrying both asks a reader to follow two sequences that are really one. Choose by whether the brand has a real photograph for every step: if it does, this one; if it does not, `steps-plain`.
+
 **Pairing.** `heading-block` above it when the section needs an eyebrow and an
 intro line. Put it late: the step that follows "here is how it works" is
 joining, so whatever carries the join should be the next thing a reader meets.

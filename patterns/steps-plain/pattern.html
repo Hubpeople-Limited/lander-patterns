@@ -1,0 +1,38 @@
+<!--
+name: steps-plain
+version: 1
+type: section
+page-types: homepage, landing, pricing, safety
+content-shape: ordered set
+description: How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.
+keywords: steps, how it works, process, onboarding, no-photography
+needs: three to five real steps in the order they actually happen, each with a short title and one or two sentences; a section heading. No photography of any kind - that is the point of it
+pairs-with: heading-block, opener-split, cta-band
+avoid-with: steps-numbered
+tokens-used: --card-radius, --chip-radius, --color-heading, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+behaviours: reveal
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- section-id: draw it from the heading. -->
+<section class="steps-plain" aria-labelledby="slot:section-id">
+  <div class="steps-plain-inner">
+    <!-- Delete the eyebrow and the intro when nothing true fills them. -->
+    <p class="steps-plain-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="steps-plain-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <p class="steps-plain-intro"><!-- slot: section-intro --></p>
+    <ol class="steps-plain-list" role="list" data-hub-module="reveal" data-hub-reveal-children>
+      <!-- ONE step; duplicate the whole <li> per real step, three to five.
+           Never type a number: the numeral is a CSS counter off the <ol>, so
+           reordering or deleting a step renumbers the set on its own. -->
+      <li class="steps-plain-item">
+        <h3 class="steps-plain-heading"><!-- slot: step-title --></h3>
+        <p class="steps-plain-body"><!-- slot: step-body --></p>
+      </li>
+    </ol>
+    <!-- Delete this line unless something true closes on it. -->
+    <p class="steps-plain-note"><!-- slot: note --></p>
+  </div>
+</section>
