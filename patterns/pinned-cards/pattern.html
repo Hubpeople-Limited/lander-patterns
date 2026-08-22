@@ -1,0 +1,44 @@
+<!--
+name: pinned-cards
+version: 1
+type: section
+page-types: homepage, landing
+content-shape: ordered set
+description: Full-screen photographic cards that pin as the page scrolls, each one sliding over the last like a dealt hand; pure CSS, and a plain stack of readable sections wherever it cannot pin.
+keywords: sticky, stack, scroll, full-screen, cards, photography
+needs: one strong landscape photograph per card, at least 1600px wide, each with its own alt text; a short title and one or two sentences per card, in an order that means something. Two to four cards - a fifth stops being a hand and starts being a slideshow
+pairs-with: opener-split, heading-block, cta-band
+avoid-with: cta-curtain
+tokens-used: --btn-radius, --card-radius, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- section-id: draw it from the heading. -->
+<section class="pinned-cards" aria-labelledby="slot:section-id">
+  <div class="pinned-cards-head">
+    <p class="pinned-cards-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="pinned-cards-title" id="slot:section-id"><!-- slot: section-title --></h2>
+  </div>
+  <ol class="pinned-cards-list" role="list">
+    <!-- ONE card. Duplicate the whole <li> per real card, two to four, and
+         increment --pinned-cards-i on each: it is the stacking order and the
+         later card must sit over the earlier one. It is a custom property,
+         which is the only thing a style attribute may carry here.
+
+         Keep the CTA on the LAST card only. Three identical join buttons is
+         one decision asked three times; delete the whole paragraph from every
+         other card. -->
+    <li class="pinned-cards-item" style="--pinned-cards-i: 1">
+      <img class="pinned-cards-img" src="slot:card-image" alt="slot:card-image-alt" width="1600" height="900" loading="lazy" decoding="async">
+      <div class="pinned-cards-panel">
+        <h3 class="pinned-cards-heading"><!-- slot: card-title --></h3>
+        <p class="pinned-cards-body"><!-- slot: card-body --></p>
+        <p class="pinned-cards-action">
+          <a class="pinned-cards-btn" href="{{join.url}}">{{join.text}}</a>
+        </p>
+      </div>
+    </li>
+  </ol>
+</section>

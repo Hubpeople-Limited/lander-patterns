@@ -1,0 +1,9 @@
+{
+  "section-id": "sample-pinned-cards",
+  "eyebrow": "Sample eyebrow",
+  "section-title": "Sample pinned cards heading",
+  "card-image": "sample-wide.svg",
+  "card-image-alt": "Preview placeholder image",
+  "card-title": "Sample card title",
+  "card-body": "One or two sentences of sample copy, here only to render this preview."
+}

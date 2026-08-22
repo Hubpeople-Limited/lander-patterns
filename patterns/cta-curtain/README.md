@@ -38,7 +38,10 @@ Never with `cta-band` or `cta-image` either, for a plainer reason: all three
 close a page, and a page that closes three times has not decided how it ends.
 Reach for this one only when the uncovering is the point; `cta-band` is the
 ordinary finale and `cta-image` the photographic one.
-Note the reading order — the panel precedes the covering section in the DOM, so
+Never with `pinned-cards` either, and that one is mechanical rather than
+editorial: both build a stacking order out of `position: sticky`, and two of
+them on one page put the curtain's panel and the cards' z-indexes in the same
+argument. Note the reading order — the panel precedes the covering section in the DOM, so
 a screen-reader or keyboard visitor meets the join link before the content that
 visually sits above it. The link's own words carry the meaning, which keeps
 that honest, but it is a real trade the pin forces and worth knowing.

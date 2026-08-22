@@ -1,0 +1,128 @@
+/* pinned-cards v1 - tokens only, selectors prefixed */
+.pinned-cards {
+  --pinned-cards-panel-max: 34rem;
+  --pinned-cards-step: 6vh;
+  padding-block: var(--space-8);
+}
+.pinned-cards-head {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin: 0 auto var(--space-6);
+}
+.pinned-cards-eyebrow {
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
+}
+.pinned-cards-title {
+  font-family: var(--font-heading);
+  /* Page ground and a clamp floor above 24px: both halves of the heading
+   token's contract. Keep both if you edit it. */
+  color: var(--color-heading);
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+.pinned-cards-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.pinned-cards-item {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  /* min-height, never height: a card whose copy outgrows the viewport must
+   be able to grow. See the README. */
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: var(--space-5);
+  overflow: hidden;
+  border-radius: var(--card-radius);
+}
+.pinned-cards-item + .pinned-cards-item {
+  margin-top: var(--space-5);
+}
+.pinned-cards-img {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* A solid panel, not a scrim: the words never touch the photograph. */
+.pinned-cards-panel {
+  max-width: var(--pinned-cards-panel-max);
+  padding: var(--space-6);
+  background: var(--color-surface);
+  border-radius: var(--card-radius);
+}
+.pinned-cards-heading {
+  font-family: var(--font-heading);
+  /* A panel is not --color-bg, so the heading token promises nothing here. */
+  color: var(--color-text);
+  font-size: clamp(1.375rem, 2.4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.pinned-cards-body {
+  color: var(--color-text-soft);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+.pinned-cards-action {
+  margin: var(--space-5) 0 0;
+}
+.pinned-cards-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 48px target, above the 44px AAA floor. */
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.pinned-cards-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.pinned-cards-btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+/* The pin waits on height as well as width: a pinned card cannot be scrolled
+   inside, so it is only safe where a whole card fits. See the README. */
+@media (min-width: 48rem) and (min-height: 44rem) {
+  .pinned-cards-item {
+    position: sticky;
+    top: 0;
+    z-index: var(--pinned-cards-i, 1);
+    padding: var(--space-8);
+  }
+  .pinned-cards-item + .pinned-cards-item {
+    margin-top: var(--pinned-cards-step);
+  }
+}
+/* Unpinned on paper, or the stack prints as one card. */
+@media print {
+  .pinned-cards-item {
+    position: static;
+    min-height: 0;
+  }
+}
