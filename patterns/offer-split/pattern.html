@@ -1,0 +1,34 @@
+<!--
+name: offer-split
+version: 1
+type: section
+page-types: homepage, landing, pricing
+content-shape: single claim
+description: A mid-page conversion beat with no photography in it - the argument set as prose on one side, the offer as a filled panel carrying its own heading and control on the other.
+keywords: offer, conversion, split, mid-page, no-photography, panel
+needs: two or three short paragraphs making one argument, and a panel heading with one line saying plainly what is on offer. Everything here is words, so they have to be the brand's real ones
+pairs-with: opener-split, steps-plain, faq-details
+avoid-with: none
+tokens-used: --btn-radius, --card-radius, --color-heading, --color-on-primary, --color-primary, --color-text-soft, --container-max, --font-heading, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- section-id: draw it from the heading. -->
+<section class="offer-split" aria-labelledby="slot:section-id">
+  <div class="offer-split-inner">
+    <div class="offer-split-copy">
+      <h2 class="offer-split-title" id="slot:section-id"><!-- slot: section-title --></h2>
+      <!-- Two or three paragraphs, no more. Duplicate or delete this one; the
+           panel opposite is what a scanning reader stops at, so anything here
+           past the third paragraph is not being read. -->
+      <p class="offer-split-body"><!-- slot: body --></p>
+    </div>
+    <div class="offer-split-panel">
+      <h3 class="offer-split-panel-title"><!-- slot: panel-title --></h3>
+      <p class="offer-split-panel-body"><!-- slot: panel-body --></p>
+      <a class="offer-split-btn" href="{{join.url}}">{{join.text}}</a>
+    </div>
+  </div>
+</section>
