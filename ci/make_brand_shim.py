@@ -20,7 +20,8 @@ import re
 import sys
 from pathlib import Path
 
-VAR_DEF = re.compile(r"^\s*(--[\w-]+)\s*:\s*([^;]+);", re.M)
+# Unanchored: brands put several declarations on one line.
+VAR_DEF = re.compile(r"(--[\w-]+)\s*:\s*([^;]+?);")
 
 # A dark neutral, deliberately not derived from the brand. TOKENS.md requires
 # the scrim to be a neutral rather than a brand tint: a tinted scrim over a

@@ -25,7 +25,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 VAR_USE = re.compile(r"var\(\s*(--[\w-]+)\s*(,)?")
-VAR_DEF = re.compile(r"^\s*(--[\w-]+)\s*:", re.M)
+# Unanchored on purpose: brands put several declarations on one line, and an
+# anchored match sees only the first, which understates what they define.
+# A use is var(--x) with no colon, so this cannot mistake one for a definition.
+VAR_DEF = re.compile(r"(--[\w-]+)\s*:")
 
 
 def defined_in(text):

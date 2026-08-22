@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "preview" / "site"
 TOKEN_SETS = {"soft": "tokens-soft.css", "sharp": "tokens-sharp.css",
-              "dark": "tokens-dark.css"}
+              "dark": "tokens-dark.css", "brand": "tokens-brand.css"}
 
 # Display stand-ins so furniture tokens render readably in previews. These
 # substitutions exist only here; pattern files always keep the real tokens.
