@@ -82,7 +82,7 @@ preview/                    the sample token sets and the sample images the
 `lib/hub.js` is the library's JavaScript half: one platform-controlled
 bundle of behaviours (entrance reveals today; carousels, tabs and more as
 they earn their place), activated by `data-hub-module` attributes in pattern
-markup. Pages never carry a script — the platform injects the library on
+markup. A pattern never carries a script; the library arrives beside it on
 served pages, exactly as it injects its own navigation script — and until
 that delivery ships the hooks are inert attributes, so nothing depends on
 it. Every behaviour is a progressive enhancement over working HTML/CSS, and

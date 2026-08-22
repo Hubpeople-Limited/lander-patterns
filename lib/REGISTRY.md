@@ -4,7 +4,10 @@ One line per behaviour in `hub.js`. A pattern may declare a behaviour in its
 `behaviours:` header field and hook it with `data-hub-module="<name>"` only if
 the name is listed here — CI enforces both directions.
 
-**Delivery is gated on the platform**: pages never carry a script tag; the
+**Delivery is out of the pattern's hands.** A site may carry this file as its
+own asset and reference it with a single `<script type="module">` tag, or a
+platform may inject it. A pattern never carries a tag itself and never knows
+which arrived; the
 hooks are inert data attributes until the platform injects the library on
 served pages. Behaviours must therefore always be pure enhancements — the
 no-JS render is the page.

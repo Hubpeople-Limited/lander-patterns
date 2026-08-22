@@ -200,11 +200,17 @@ red.
 ## Behaviours — platform-delivered JavaScript (gated)
 
 Patterns never carry a `<script>`; that rule does not move. But the library
-has a second half: **`lib/hub.js`, a single behaviour bundle the platform
-itself will deliver to served pages** — the same way it already injects its
-own navigation script. Markup opts in with `data-hub-module="<name>"`
-attributes, which are **inert data attributes until that delivery exists**,
-so a pattern can ship its hooks today and light up later with no change.
+has a second half: **`lib/hub.js`, one behaviour bundle that arrives beside
+the patterns rather than inside them.** Markup opts in with
+`data-hub-module="<name>"` attributes, which are **inert data attributes until
+the bundle is on the page**, so a pattern ships its hooks and lights up
+whenever the bundle turns up — with no change to the pattern.
+
+How it turns up is a decision for whoever is building the site, and a pattern
+must work either way. A site can carry the file as its own asset and reference
+it with a single `<script type="module">` tag. A platform can inject it
+instead, which is better where it exists — one cached copy across every brand,
+versioned centrally, and no page carrying a tag at all.
 
 A pattern that uses a behaviour declares it in the header
 (`behaviours: reveal`) and hooks it in the markup; CI checks the header, the
