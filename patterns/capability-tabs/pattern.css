@@ -1,0 +1,166 @@
+/* capability-tabs v1 - tokens only, selectors prefixed.
+   Nothing here hides a panel: with no behaviour library every panel renders,
+   stacked, under its own heading. */
+.capability-tabs {
+  /* The page gutter. The rail's bleed below is this value three times over -
+     negative margin, padding, scroll padding - so change them together. */
+  --capability-tabs-gutter: var(--space-4);
+  padding-block: var(--space-8);
+}
+.capability-tabs-inner {
+  width: min(100% - 2 * var(--capability-tabs-gutter), var(--container-max));
+  margin-inline: auto;
+}
+.capability-tabs-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  line-height: 1.1;
+}
+.capability-tabs-sub {
+  margin: var(--space-3) 0 0;
+  max-width: 52ch;
+  color: var(--color-text-soft);
+  line-height: 1.55;
+}
+.capability-tabs-panels {
+  display: grid;
+  gap: var(--space-6);
+  margin-block-start: var(--space-6);
+}
+.capability-tabs-panel {
+  display: grid;
+  /* Explicit: the image takes its height from the copy beside it, so no
+     aspect ratio is set on it anywhere. */
+  align-items: stretch;
+  background: var(--color-surface-soft);
+  border-radius: var(--card-radius);
+  /* Clips the image to the panel's corners. */
+  overflow: hidden;
+}
+.capability-tabs-copy {
+  padding: var(--space-6);
+  align-self: center;
+}
+.capability-tabs-panel-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  /* --color-text: a panel is a surface, and --color-heading is promised
+     against --color-bg only. */
+  color: var(--color-text);
+  font-size: clamp(1.25rem, 1rem + 1.2vw, 1.875rem);
+  line-height: 1.15;
+}
+.capability-tabs-lede {
+  margin: var(--space-3) 0 0;
+  max-width: 46ch;
+  color: var(--color-text-soft);
+  line-height: 1.6;
+}
+.capability-tabs-list {
+  display: grid;
+  gap: var(--space-3);
+  list-style: none;
+  margin: var(--space-5) 0 0;
+  padding: 0;
+}
+.capability-tabs-list li {
+  position: relative;
+  padding-inline-start: var(--space-6);
+  color: var(--color-text);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.capability-tabs-list li::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.1em;
+  width: var(--space-5);
+  height: var(--space-5);
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+/* The tick is two borders on a rotated box, so it takes its ink from the
+   token rather than from an image. */
+.capability-tabs-list li::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.5rem;
+  top: calc(0.1em + 0.35rem);
+  width: 0.35rem;
+  height: 0.65rem;
+  border-right: 2px solid var(--color-on-primary);
+  border-bottom: 2px solid var(--color-on-primary);
+  transform: rotate(45deg);
+}
+.capability-tabs-media {
+  position: relative;
+  margin: 0;
+  min-height: 15rem;
+}
+/* Absolute, so the image contributes no height of its own and the copy beside
+   it sets the panel's. Take this out and a tall image stretches the panel. */
+.capability-tabs-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The rail exists only once the behaviour library builds it. */
+.capability-tabs .hub-tabs-list {
+  gap: var(--space-2);
+  margin-block-start: var(--space-6);
+}
+.capability-tabs .hub-tabs-tab {
+  font: inherit;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-5);
+  border: 0;
+  border-radius: var(--chip-radius);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.capability-tabs .hub-tabs-tab[aria-selected="true"] {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.capability-tabs .hub-tabs-tab:focus-visible,
+.capability-tabs .hub-tabs-panel:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+@media (min-width: 48rem) {
+  .capability-tabs-panel {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--space-6);
+  }
+  .capability-tabs-copy {
+    padding: var(--space-8);
+    padding-inline-end: 0;
+  }
+  .capability-tabs-media {
+    min-height: 20rem;
+  }
+}
+@media (width < 48rem) {
+  .capability-tabs .hub-tabs-list {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--capability-tabs-gutter));
+    padding-inline: var(--capability-tabs-gutter);
+    scroll-padding-inline: var(--capability-tabs-gutter);
+  }
+  .capability-tabs .hub-tabs-list::-webkit-scrollbar {
+    display: none;
+  }
+}

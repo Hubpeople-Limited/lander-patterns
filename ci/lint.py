@@ -572,9 +572,11 @@ def contract_tokens():
     tokens = set()
     for row in re.findall(r"^\|([^|]+)\|", text, re.M):
         tokens.update(re.findall(r"`(--[\w-]+)`", row))
-    # Two families are documented as ranges rather than one row each.
-    if "--space-1" in tokens or re.search(r"`--space-1`\s*…", text):
-        tokens.update(f"--space-{n}" for n in range(1, 13))
+    # The spacing scale has gaps, and inventing the missing steps here would
+    # bless a token no brand defines - which resolves to nothing and takes
+    # its whole declaration with it.
+    tokens.update(re.findall(r"`(--space-\d+)`", text))
+    tokens.update("--space-" + n for n in re.findall(r"`-(\d+)`", text))
     # Motion tokens are named in prose, not a table.
     tokens.update(re.findall(r"`(--transition-[\w-]+)`", text))
     return tokens

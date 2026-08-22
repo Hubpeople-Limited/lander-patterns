@@ -5,6 +5,7 @@ Shortlist here, then read only the chosen pattern's folder.
 
 - **article-masthead** v2 · section · article · **one per page** · Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
 - **benefit-tiles** v2 · section · homepage, landing · **one per page** · A four-up run of tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
+- **capability-tabs** v1 · section · homepage, landing · **one per page** · A topic switcher - a rail of pill tabs over one tinted panel pairing a claim, a ticked list of what is included and a half-panel image; with no behaviour library every panel renders stacked and readable.
 - **cta-curtain** v6 · section · homepage, landing, pricing · **one per page** · Full-viewport closing CTA pinned behind the last content section and uncovered as that section scrolls up and away, like a sheet being lifted.
 - **cta-sticky** v6 · component · homepage, landing, pricing, article · **one per page** · Mobile sticky bottom CTA bar - one join button always in the thumb zone on pages longer than two screens; hidden on desktop.
 - **faq-details** v3 · section · homepage, landing, pricing · Zero-JavaScript FAQ accordion on native details/summary - hairline rows, a plus that turns into a cross when the row opens.

@@ -69,7 +69,7 @@ literals.
 | Token | Meaning |
 |---|---|
 | `--font-heading`, `--font-body` | The two typefaces (with real fallback stacks) |
-| `--space-1` … `--space-12` | The spacing scale (0.25rem steps at the small end) |
+| `--space-1` `-2` `-3` `-4` `-5` `-6` `-8` `-12` | The spacing scale. Eight steps, not twelve — the gaps are deliberate, and a step that is not on this list is not defined on any brand |
 | `--container-max` | Content max width (commonly `72rem`) |
 
 ## The aesthetic dials

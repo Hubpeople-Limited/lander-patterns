@@ -12,23 +12,55 @@ RULE = re.compile(r"([^{}]*)\{([^{}]*)\}")
 
 
 def _rules(css):
-    """(selector, body, line) for every rule.
+    """(selector, body, line, nested) for every rule.
 
-    @keyframes blocks are dropped whole: `from { opacity: 0 }` is a starting
-    frame, not a state the page can be left in, and reading one as a rule
-    reports every honest animation as hidden content."""
+    `nested` is True when the rule sits inside an at-rule. That matters: a
+    media query is a legitimate place to hide something - a mobile bar has no
+    business on a desktop - whereas a base rule hiding content is content
+    waiting for a script.
+
+    @keyframes blocks are dropped whole, because `from { opacity: 0 }` is a
+    starting frame rather than a state a page can be left in, and reading one
+    as a rule reports every honest animation as hidden content."""
     stripped = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     stripped = re.sub(r"@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\}\s*)*\}", "",
                       stripped)
-    for m in RULE.finditer(stripped):
-        selector = m.group(1).strip()
-        line = stripped[:m.start()].count("\n") + 1
-        yield selector, m.group(2), line
+    depth, at_depth, buf, i = 0, [], "", 0
+    while i < len(stripped):
+        ch = stripped[i]
+        if ch == "{":
+            prelude = buf.strip()
+            buf = ""
+            depth += 1
+            if prelude.startswith("@"):
+                at_depth.append(depth)
+            else:
+                body_start = i + 1
+                j, inner = body_start, 1
+                while j < len(stripped) and inner:
+                    if stripped[j] == "{":
+                        inner += 1
+                    elif stripped[j] == "}":
+                        inner -= 1
+                    j += 1
+                yield (prelude, stripped[body_start:j - 1],
+                       stripped[:i].count("\n") + 1, bool(at_depth))
+                depth -= 1
+                i = j
+                continue
+        elif ch == "}":
+            if at_depth and at_depth[-1] == depth:
+                at_depth.pop()
+            depth -= 1
+            buf = ""
+        else:
+            buf += ch
+        i += 1
 
 
 def check(css, report):
     """`report(detail)` is called once per finding."""
-    for selector, body, line in _rules(css):
+    for selector, body, line, _nested in _rules(css):
         # A partial fade on text. The token promises 4.5:1 and opacity
         # silently divides it, so the guarantee stops holding at the exact
         # point somebody thought they were being subtle.
@@ -51,18 +83,21 @@ def check(css, report):
     # It is not legitimate when only the behaviour library's injected classes
     # bring it back, because then the no-JS render is missing content.
     revealed = set()
-    for selector, body, _ in _rules(css):
+    for selector, body, _line, _nested in _rules(css):
         if "hub-" in selector:
             continue
-        if re.search(r"(?<![-\w])(opacity\s*:\s*1|visibility\s*:\s*visible)",
-                     body):
+        if re.search(r"(?<![-\w])(opacity\s*:\s*1|visibility\s*:\s*visible|"
+                     r"display\s*:\s*(?!none)\w)", body):
             revealed.update(re.findall(r"\.([\w-]+)", selector))
 
-    for selector, body, line in _rules(css):
-        if "hub-" in selector:
+    for selector, body, line, nested in _rules(css):
+        # Nested in an at-rule: a media query hiding something is a design
+        # decision about a viewport, not content waiting for a script.
+        if "hub-" in selector or nested:
             continue
         hidden = re.search(
-            r"(?<![-\w])(opacity\s*:\s*0(?![.\d])|visibility\s*:\s*hidden)",
+            r"(?<![-\w])(opacity\s*:\s*0(?![.\d])|visibility\s*:\s*hidden|"
+            r"display\s*:\s*none)",
             body)
         if not hidden:
             continue

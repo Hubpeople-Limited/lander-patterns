@@ -51,8 +51,9 @@ introduction. Put it in the body of a long page rather than at the end: the
 rows are what earn the join, so something else should carry it afterwards.
 Avoid `steps-numbered` on the same page — two image-led runs and the reader
 stops telling them apart. Not with `hero-split` either, which is the same
-image-beside-copy shape at the top of the page — one of them is doing the
-other's job.
+image-beside-copy shape at the top of the page, nor `capability-tabs`, which
+answers the same "what you get" question with different furniture — one of
+them is doing the other's job.
 
 **Brand adaptability.** `--card-radius` and `--card-shadow` do most of the
 work — square and flat reads editorial, rounded and shadowed reads warm — and

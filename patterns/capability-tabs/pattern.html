@@ -1,0 +1,71 @@
+<!--
+name: capability-tabs
+version: 1
+type: section
+page-types: homepage, landing
+content-shape: peer set
+description: A topic switcher - a rail of pill tabs over one tinted panel pairing a claim, a ticked list of what is included and a half-panel image; with no behaviour library every panel renders stacked and readable.
+keywords: tabs, topic switcher, capabilities, what you get, panels
+needs: three to five real capability stories the brand can stand behind, each with a short tab label, a claim heading, one or two sentences, three to five true points and its own photograph with alt text; a section heading and one supporting line
+pairs-with: heading-block
+avoid-with: zigzag-rows
+tokens-used: --card-radius, --chip-radius, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+behaviours: tabs
+-->
+<!-- section-id: draw it from the section's heading. -->
+<section class="capability-tabs" aria-labelledby="slot:section-id">
+  <div class="capability-tabs-inner">
+    <h2 class="capability-tabs-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <p class="capability-tabs-sub"><!-- slot: section-sub --></p>
+    <!-- ONE ARTICLE PER TOPIC, and no tab buttons: the rail is built from the
+         data-hub-tab-label values below. Duplicate a whole <article> for each
+         real topic, renaming its placeholders to topic-4-* and so on; three to
+         five is the useful range. Keep every panel's own <h3> - stacked, those
+         headings are what a reader gets, so a label alone is not enough.
+         tab-label is two or three words; the <h3> is the claim. -->
+    <div class="capability-tabs-panels" data-hub-module="tabs" data-hub-tabs-label="slot:tablist-label">
+      <article class="capability-tabs-panel" data-hub-tab-label="slot:topic-1-label">
+        <div class="capability-tabs-copy">
+          <h3 class="capability-tabs-panel-title"><!-- slot: topic-1-title --></h3>
+          <p class="capability-tabs-lede"><!-- slot: topic-1-lede --></p>
+          <!-- One <li> per point, no class needed. The tick is drawn in CSS -
+               add no glyph, no icon file and no bullet character. -->
+          <ul class="capability-tabs-list" role="list">
+            <!-- slot: topic-1-points -->
+          </ul>
+        </div>
+        <figure class="capability-tabs-media">
+          <img class="capability-tabs-img" src="slot:topic-1-image" alt="slot:topic-1-image-alt" width="800" height="640" loading="lazy">
+        </figure>
+      </article>
+      <article class="capability-tabs-panel" data-hub-tab-label="slot:topic-2-label">
+        <div class="capability-tabs-copy">
+          <h3 class="capability-tabs-panel-title"><!-- slot: topic-2-title --></h3>
+          <p class="capability-tabs-lede"><!-- slot: topic-2-lede --></p>
+          <ul class="capability-tabs-list" role="list">
+            <!-- slot: topic-2-points -->
+          </ul>
+        </div>
+        <figure class="capability-tabs-media">
+          <img class="capability-tabs-img" src="slot:topic-2-image" alt="slot:topic-2-image-alt" width="800" height="640" loading="lazy">
+        </figure>
+      </article>
+      <article class="capability-tabs-panel" data-hub-tab-label="slot:topic-3-label">
+        <div class="capability-tabs-copy">
+          <h3 class="capability-tabs-panel-title"><!-- slot: topic-3-title --></h3>
+          <p class="capability-tabs-lede"><!-- slot: topic-3-lede --></p>
+          <ul class="capability-tabs-list" role="list">
+            <!-- slot: topic-3-points -->
+          </ul>
+        </div>
+        <figure class="capability-tabs-media">
+          <img class="capability-tabs-img" src="slot:topic-3-image" alt="slot:topic-3-image-alt" width="800" height="640" loading="lazy">
+        </figure>
+      </article>
+    </div>
+  </div>
+</section>
