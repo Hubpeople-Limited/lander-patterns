@@ -43,6 +43,9 @@ MOTION = {"none", "subtle", "expressive"}
 STATUS = {"active", "deprecated"}
 ONE_PER_PAGE = {"yes", "no"}
 README_MAX_LINES = 80
+# 80 lines of this library's prose runs about 5.5kB; the ceiling is set
+# above that so it binds only on a README that is long by any measure.
+README_MAX_CHARS = 7000
 # pattern.css is appended verbatim into a brand's stylesheet and cannot be
 # stripped, so its comments are permanently published: a tight ceiling, and
 # only notes that stop someone breaking the rule beside them.
@@ -276,7 +279,10 @@ def check_html(path, meta, folder_name):
              "behaviour library sets it at runtime, a pattern does not ship it")
     # The behaviour library's class prefix, which several checks treat as
     # "the platform put this here" and skip over.
-    for m in re.finditer(r'class="([^"]*)"', body):
+    # Single quotes too. Matching only double-quoted class attributes let one
+    # quote character both smuggle the prefix in and opt the element out of
+    # every check downstream that keys on a class.
+    for m in re.finditer(r"""class\s*=\s*["']([^"']*)["']""", body):
         if any(c.startswith("hub-") for c in m.group(1).split()):
             find(path, "legibility",
                  f'class="{m.group(1)}" carries the behaviour library prefix, '
@@ -321,9 +327,11 @@ def check_html(path, meta, folder_name):
                 find(path, "no-colour-literals",
                      f"{literal} in style attribute '{decl.strip()}' - the "
                      "property is allowed, the hardcoded value is not")
+            # Any dial, not only a radius. Keying on one substring left
+            # measure, gap, size, inset and ratio free to be hardcoded inline,
+            # which is the same defect wearing a different property name.
             if re.search(r"(^|\s)#[0-9a-fA-F]{3,8}\b", val) is None and \
-               re.search(r"\b\d+(\.\d+)?(px|rem|em)\b", val) and \
-               "radius" in prop:
+               re.search(r"\b\d+(\.\d+)?(px|rem|em)\b", val):
                 find(path, "no-hardcoded-dials",
                      f"hardcoded length in style attribute '{decl.strip()}'")
 
@@ -378,7 +386,9 @@ def check_html(path, meta, folder_name):
         if opens != closes:
             find(path, "unbalanced-tag", f"<{tag}> opens {opens}, closes {closes}")
 
-    for img in re.finditer(r"<img\b[^>]*>", body, re.I):
+    # <image> too: the HTML parser rewrites that tag name to img, so it
+    # renders as a picture while sailing past a check that matched only <img>.
+    for img in re.finditer(r"<im(?:g|age)\b[^>]*>", body, re.I):
         tag = img.group(0)
         for attr in ("alt", "width", "height"):
             if not re.search(rf"\b{attr}\s*=", tag, re.I):
@@ -803,6 +813,30 @@ def check_comment_policy(path, kind):
              "reasoning to README.md")
 
 
+def check_description_vocabulary(path, meta):
+    """The narration ban, applied to the field that gets read the most.
+
+    iter_comments skips the metadata header and check_narration covers
+    README.md, so `description` sat in the gap between them - while being the
+    text that reaches INDEX.md and patterns.json, and therefore the sentence
+    an agent reads before it opens anything at all.
+    """
+    low = (meta.get("description", "") + " " + meta.get("needs", "")).lower()
+    for term in BANNED_COMMENT_TERMS:
+        if re.search(rf"(?<!\w){re.escape(term.strip())}(?!\w)", low):
+            find(path, "comment-policy",
+                 f"description or needs says '{term.strip()}' - describe the "
+                 "pattern, not how it came to be")
+            return
+    # A contrast ratio in a description is always narration. The bare word
+    # "measured" is not: these two fields describe what a pattern is for, and
+    # source-note's entire subject is who measured a figure and when.
+    if re.search(r"\b\d+(\.\d+)?:1\b", low):
+        find(path, "comment-policy",
+             "description or needs states a contrast ratio - it belongs in "
+             "README.md, not in the line an agent reads to choose a pattern")
+
+
 def check_narration(path):
     """The vocabulary ban applies to prose files too. A README is public and
     is fetched by every agent that shortlists the pattern; how the file came
@@ -879,7 +913,11 @@ def check_token_sets_are_complete():
     use = re.compile(r"var\(\s*(--[\w-]+)\s*(,)?")
     # Unanchored: several declarations may share a line, and an anchored match
     # would see only the first and understate what a set defines.
-    define = re.compile(r"(--[\w-]+)\s*:")
+    # A value is required. `--color-primary: ;` and a commented-out
+    # definition both left the token "defined" while every var() using it
+    # resolved to nothing - which is the exact failure this check exists to
+    # make visible.
+    define = re.compile(r"(--[\w-]+)\s*:\s*(?=[^;}\s])")
     needed = set()
     for folder in sorted(p for p in PATTERNS.iterdir() if p.is_dir()):
         css = re.sub(r"/\*.*?\*/", "",
@@ -894,7 +932,13 @@ def check_token_sets_are_complete():
         find(ROOT / "preview", "token-sets", "no sample token sets found")
         return
     for path in sets:
-        missing = sorted(needed - set(define.findall(path.read_text(encoding="utf-8"))))
+        # Comments stripped first: a definition commented out is not a
+        # definition, and reading the file raw counted it as one - which left
+        # every var() using that token dropped in a preview the check had just
+        # called complete.
+        text = re.sub(r"/\*.*?\*/", " ",
+                      path.read_text(encoding="utf-8"), flags=re.S)
+        missing = sorted(needed - set(define.findall(text)))
         if missing:
             find(path, "token-sets",
                  f"does not define {len(missing)} token(s) the patterns use "
@@ -1043,10 +1087,15 @@ def main():
         # cost paid on every build. The ceiling stops the drift; the target
         # in CONTRIBUTING.md is about 50.
         if readme.is_file():
-            lines = len(readme.read_text(encoding="utf-8").splitlines())
-            if lines > README_MAX_LINES:
+            prose = readme.read_text(encoding="utf-8")
+            lines = len(prose.splitlines())
+            # Characters as well as lines. The cost being controlled is
+            # tokens, and the thing measured was newlines - so a README of one
+            # very long line came in at five lines and twenty kilobytes.
+            if lines > README_MAX_LINES or len(prose) > README_MAX_CHARS:
                 find(readme, "readme-length",
-                     f"{lines} lines, ceiling is {README_MAX_LINES} - put the "
+                     f"{lines} lines / {len(prose)} characters, ceiling is "
+                     f"{README_MAX_LINES} / {README_MAX_CHARS} - put the "
                      "decision first and cut the restatement")
         if not html.is_file():
             continue
@@ -1056,6 +1105,7 @@ def main():
         check_list_semantics(html, css, folder.name)
         check_motion_claim(html, css, meta)
         check_edges_documented(readme, meta)
+        check_description_vocabulary(html, meta)
         if css.is_file():
             legibility.check(
                 css.read_text(encoding="utf-8"),
