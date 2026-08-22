@@ -834,6 +834,44 @@ def check_leaks(path, needles):
                  "(the string itself is not printed)")
 
 
+def check_token_sets_are_complete():
+    """Every sample token set must define every token the patterns rely on.
+
+    A var() with no fallback and no definition invalidates the whole
+    declaration, so a token set missing one is a preview quietly rendering
+    without that rule - and a preview that cannot show a fault is worse than
+    no preview. This is also the check that would have caught the contract
+    naming five tokens no real brand defines: the original three sets were
+    written alongside the library and agreed with it by construction.
+
+    ci/brand_fit.py asks the harder version of the same question, against real
+    brand stylesheets rather than the samples here.
+    """
+    use = re.compile(r"var\(\s*(--[\w-]+)\s*(,)?")
+    # Unanchored: several declarations may share a line, and an anchored match
+    # would see only the first and understate what a set defines.
+    define = re.compile(r"(--[\w-]+)\s*:")
+    needed = set()
+    for folder in sorted(p for p in PATTERNS.iterdir() if p.is_dir()):
+        css = re.sub(r"/\*.*?\*/", "",
+                     (folder / "pattern.css").read_text(encoding="utf-8"),
+                     flags=re.S)
+        own = set(define.findall(css))
+        for token, fallback in use.findall(css):
+            if token not in own and not fallback:
+                needed.add(token)
+    sets = sorted((ROOT / "preview").glob("tokens-*.css"))
+    if not sets:
+        find(ROOT / "preview", "token-sets", "no sample token sets found")
+        return
+    for path in sets:
+        missing = sorted(needed - set(define.findall(path.read_text(encoding="utf-8"))))
+        if missing:
+            find(path, "token-sets",
+                 f"does not define {len(missing)} token(s) the patterns use "
+                 f"with no fallback: {', '.join(missing)}")
+
+
 def main():
     check_only = "--check" in sys.argv
     if not PATTERNS.is_dir():
@@ -871,6 +909,8 @@ def main():
             if needles:
                 check_leaks(path, needles)
             check_control_bytes(path)
+
+    check_token_sets_are_complete()
 
     rows = []
     names = set()
