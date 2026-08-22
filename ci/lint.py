@@ -952,6 +952,11 @@ def main():
                 if slot not in sample:
                     find(preview, "preview-content", f"no sample value for slot '{slot}'")
             for key, value in sample.items():
+                # A leading underscore marks builder configuration rather than
+                # content - _repeat says how many of an item to render. None of
+                # it reaches a page, so the sample rule below does not apply.
+                if key.startswith("_"):
+                    continue
                 text = str(value)
                 # A machine-readable value cannot also say "sample" and stay
                 # valid, and a datetime attribute is exactly that case. The
