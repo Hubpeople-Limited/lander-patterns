@@ -8,7 +8,33 @@ one has shipped somewhere before it was checked for.
 """
 import re
 
-RULE = re.compile(r"([^{}]*)\{([^{}]*)\}")
+# The behaviour library's injected classes, matched at a class boundary - a
+# substring test let any pattern whose own name contained "hub-" opt out of
+# every check in this file.
+HUB_CLASS = re.compile(r"\.hub-")
+
+HIDDEN = re.compile(
+    r"(?<![-\w])("
+    r"opacity\s*:\s*0(?![.\d])"
+    r"|visibility\s*:\s*hidden"
+    r"|display\s*:\s*none"
+    r"|content-visibility\s*:\s*hidden"
+    r"|color\s*:\s*transparent"
+    r"|font-size\s*:\s*0(?![.\d])"
+    r"|transform\s*:\s*scale\(\s*0\s*\)"
+    r")")
+
+# Deliberately absent from HIDDEN: clip-path and text-indent. Those are the
+# visually-hidden idiom for text meant only for a screen reader, and this
+# library uses them on purpose - a clipped radio input is still focusable and
+# still announced.
+
+SHOWN = re.compile(
+    r"(?<![-\w])("
+    r"opacity\s*:\s*1"
+    r"|visibility\s*:\s*visible"
+    r"|display\s*:\s*(?!none)\w"
+    r")")
 
 
 def _rules(css):
@@ -58,8 +84,22 @@ def _rules(css):
         i += 1
 
 
-def check(css, report):
-    """`report(detail)` is called once per finding."""
+def _carries(html, cls):
+    """Does any element in the markup actually carry this class? A reveal rule
+    for a class nothing wears reveals nothing."""
+    if not html:
+        return True
+    for m in re.finditer(r'class="([^"]*)"', html):
+        if cls in m.group(1).split():
+            return True
+    return False
+
+
+def check(css, report, html=""):
+    """`report(detail)` is called once per finding.
+
+    `html` is the pattern's markup. Without it a reveal rule is taken on
+    trust, and a class no element carries counts as one."""
     for selector, body, line, _nested in _rules(css):
         # A partial fade on text. The token promises 4.5:1 and opacity
         # silently divides it, so the guarantee stops holding at the exact
@@ -84,29 +124,26 @@ def check(css, report):
     # bring it back, because then the no-JS render is missing content.
     revealed = set()
     for selector, body, _line, _nested in _rules(css):
-        if "hub-" in selector:
+        if HUB_CLASS.search(selector) or not SHOWN.search(body):
             continue
-        if re.search(r"(?<![-\w])(opacity\s*:\s*1|visibility\s*:\s*visible|"
-                     r"display\s*:\s*(?!none)\w)", body):
-            revealed.update(re.findall(r"\.([\w-]+)", selector))
+        for cls in re.findall(r"\.([\w-]+)", selector):
+            if _carries(html, cls):
+                revealed.add(cls)
 
     for selector, body, line, nested in _rules(css):
-        # Nested in an at-rule: a media query hiding something is a design
-        # decision about a viewport, not content waiting for a script.
-        if "hub-" in selector or nested:
+        # Nested in an at-rule: a media query hiding something is a decision
+        # about a viewport, not content waiting for a script.
+        if HUB_CLASS.search(selector) or nested:
             continue
-        hidden = re.search(
-            r"(?<![-\w])(opacity\s*:\s*0(?![.\d])|visibility\s*:\s*hidden|"
-            r"display\s*:\s*none)",
-            body)
+        hidden = HIDDEN.search(body)
         if not hidden:
             continue
         # A modifier reveals its base: `.card` hidden and `.card--1` shown is
         # one mechanism, not two, so match on prefix rather than equality.
-        hidden_classes = re.findall(r"\.([\w-]+)", selector)
-        if any(r == h or r.startswith(h + "--")
-               for h in hidden_classes for r in revealed):
-            continue
-        report(f"line {line}: '{hidden.group(1).strip()}' with nothing in "
-               "this stylesheet to reveal it - the no-JS render is the page, "
-               "so content may not wait for a script")
+        for cls in re.findall(r"\.([\w-]+)", selector):
+            if any(r == cls or r.startswith(cls + "--") for r in revealed):
+                break
+        else:
+            report(f"line {line}: '{hidden.group(1).strip()}' with nothing in "
+                   "this stylesheet to reveal it - the no-JS render is the "
+                   "page, so content may not wait for a script")

@@ -1,11 +1,8 @@
-/* testimonial-carousel v1 - tokens only, selectors prefixed. */
+/* testimonial-carousel v2 - tokens only, selectors prefixed. */
 .testimonial-carousel {
   /* Phones show the active card alone; the three-up stage starts at 60rem.
      Two numbers place all three cards - change these, not the transforms. */
   --testimonial-carousel-card-w: min(100vw - 2 * var(--space-5), 34rem);
-  /* A stage that grows and shrinks moves the page under the reader. This
-     reserves the height once; raise it if the real quotes need it. */
-  --testimonial-carousel-stage-h: 22rem;
   --testimonial-carousel-target: 2.75rem;
   position: relative;
   /* Required: this is what crops the cards that hang outside the viewport. */
@@ -53,19 +50,21 @@
   left: 50%;
 }
 .testimonial-carousel-stage {
-  position: relative;
-  min-height: var(--testimonial-carousel-stage-h);
+  display: grid;
+  justify-items: center;
+  align-items: start;
 }
 .testimonial-carousel-card {
   /* A face is round on every brand, so this is not --card-radius. */
   --testimonial-carousel-avatar-radius: 50%;
-  position: absolute;
-  top: var(--space-8);
-  left: 50%;
+  /* Every card on the one cell: the stage is the tallest of them, so it
+     cannot grow over the dots and cannot resize as the reader moves. */
+  grid-area: 1 / 1;
+  margin-top: var(--space-8);
   width: var(--testimonial-carousel-card-w);
   min-height: 15.5rem;
-  margin: 0;
-  padding: var(--space-12) var(--space-6) var(--space-8);
+  /* Room for the portrait that hangs above the card. */
+  padding: max(var(--space-12), 4.5rem) var(--space-6) var(--space-8);
   background: var(--color-surface);
   /* --color-text: this is not large text. */
   color: var(--color-text);
@@ -75,7 +74,7 @@
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translateX(-50%) scale(0.88);
+  transform: scale(0.88);
 }
 .testimonial-carousel-avatar {
   position: absolute;
@@ -130,7 +129,7 @@
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transform: translateX(-50%) scale(1);
+  transform: scale(1);
   background: var(--color-primary);
   color: var(--color-on-primary);
   border-color: var(--color-primary);
@@ -199,7 +198,7 @@
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: translateX(calc(-50% - var(--testimonial-carousel-side-offset))) scale(0.94);
+    transform: translateX(calc(-1 * var(--testimonial-carousel-side-offset))) scale(0.94);
   }
   /* NEXT CARD. */
   .testimonial-carousel-input--1:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--2,
@@ -209,7 +208,7 @@
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transform: translateX(calc(-50% + var(--testimonial-carousel-side-offset))) scale(0.94);
+    transform: translateX(var(--testimonial-carousel-side-offset)) scale(0.94);
   }
 }
 @media (prefers-reduced-motion: no-preference) {

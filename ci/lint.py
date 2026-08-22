@@ -49,6 +49,10 @@ RESERVED_NAMES = {
     "site", "btn", "card", "chip", "grid", "container", "section", "wrapper",
     "breadcrumb", "canvas", "profile", "footer", "header", "nav", "visually",
     "index", "band", "bar", "statement", "table", "editorial", "split",
+    # The behaviour library injects .hub-* state classes. A pattern taking
+    # that prefix would collide with them, and would also opt itself out of
+    # every check that skips them.
+    "hub",
 }
 
 # Vendored platform furniture-token registry (see TOKENS.md). The logo, login
@@ -879,7 +883,8 @@ def main():
         if css.is_file():
             legibility.check(
                 css.read_text(encoding="utf-8"),
-                lambda d, _p=css: find(_p, "legibility", d))
+                lambda d, _p=css: find(_p, "legibility", d),
+                html.read_text(encoding="utf-8"))
         check_comment_policy(html, "html")
         if css.is_file():
             check_comment_policy(css, "css")
