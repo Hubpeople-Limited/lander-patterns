@@ -5,20 +5,21 @@ Each card is one photograph with a corner chip, and its heading, one line of
 copy and an arrow cue set over a dark bottom-up scrim. Use it for a set of
 peers that each have a real photograph and a real destination — audiences,
 solutions, places to go next. Do **not** use it without photography: a scrim
-over a flat fill is a dark box, and this pattern is the photograph. Do not use
-it for an ordered process (that is `steps-numbered`), and do not use it for
-more copy than one sentence — a card that needs a paragraph is a page, and the
-sentence is the link to it.
+over a flat fill is a dark box, and this pattern is the photograph. Not for an
+ordered process (`steps-numbered`), and not for more copy than one sentence — a
+card needing a paragraph is a page, and the sentence is the link to it.
 
-**The copy sits over the image, not below it.** Three of the four sources put
-it over a scrim and one put it below; over won, for two reasons. The card then
-has one visual object in it rather than two stacked ones, so a wrapping row of
-them reads as a set of photographs instead of a row of boxes; and the
-below-image treatment needs a card height tall enough for the worst copy in the
-set, which is what drove the source's `min-height: 640px`. There is no modifier
-for the other treatment. The two need different type colours, different
-contrast rules and different height behaviour, so one pattern carrying both
-would be two patterns sharing a name.
+**The copy sits over the image, not below it**, so the card holds one visual
+object rather than two stacked ones and a wrapping row reads as a set of
+photographs instead of a row of boxes. The below-image treatment is a separate
+pattern, `photo-cards`, not a modifier here: the two need different type
+colours, different contrast rules and different height behaviour, so one
+pattern carrying both would be two sharing a name.
+
+**Not on a page with `photo-cards`**, for that reason — a page carrying both
+shows one card run twice in different furniture. Choose on whether you control
+the photographs: this one is stronger when the imagery is good and yours,
+`photo-cards` safer when it is neither.
 
 **What it needs.** One real photograph per card, portrait-ish and at least
 1280px wide (cards render around 640×768 CSS pixels at the widest, so 2× for
@@ -53,12 +54,6 @@ card's entire text as the control's name. Here the heading is the link, and its
 `::after` stretches over the card to give the full hit area — so the accessible
 name is the destination, and there is never a second control inside the first.
 The arrow cue is `aria-hidden`: it is the visual affordance and repeats nothing.
-
-**Not on a page with `photo-cards`.** That pattern sets the copy below the
-photograph instead of over it, so a page carrying both shows one card run twice
-in different furniture. Choose by whether you control the photographs: this one
-is stronger when the imagery is good and yours, `photo-cards` safer when it is
-neither.
 
 **Pairing.** `heading-block` above it when the section needs an eyebrow and an
 intro, which is why this pattern carries only a plain `<h2>`. Avoid
