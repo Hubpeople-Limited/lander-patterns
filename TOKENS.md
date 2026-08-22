@@ -106,13 +106,20 @@ multi-tenant platform read as siblings. Colour is the axis brands already vary;
 size and rhythm were the two they could not.
 
 **`--type-scale` in practice.** `0.92` is a quieter, more editorial register;
-`1.08` to `1.15` reads as a consumer brand shouting. Useful range is roughly
-`0.9` to `1.2`. Past that the `clamp()` floors stop being sensible at 320px and
+`1.08` to `1.15` reads as a consumer brand shouting. Supported range `0.9` to
+`1.2`. Past that the `clamp()` floors stop being sensible at 320px and
 headlines held to `16ch` start breaking in the wrong places, so a brand wanting
 something outside it wants a different pattern rather than a bigger number.
 
 It multiplies the whole `clamp()`, floor and ceiling together, so the
 responsive behaviour is preserved rather than flattened.
+
+**The contrast guarantees are stated across this range, not just at `1`.**
+`--color-heading` carries 3:1 and is therefore valid only on large text, so
+every pattern using it holds a `clamp()` floor that still clears 24px at
+`0.9` — 28px, not the 24px that would clear it only on brands that never
+touched the dial. CI enforces that, and it is the reason the range is a
+documented number rather than a suggestion.
 
 **`--space-scale` in practice.** It is applied by the brand, not the pattern -
 each step is defined in terms of it, once:
@@ -120,15 +127,15 @@ each step is defined in terms of it, once:
 ```css
 :root {
   --space-scale: 1;
-  --space-1: calc(0.25rem * var(--space-scale));
-  --space-2: calc(0.5rem  * var(--space-scale));
+  --space-1: calc(0.25rem * var(--space-scale, 1));
+  --space-2: calc(0.5rem  * var(--space-scale, 1));
   /* and so on through --space-12 */
 }
 ```
 
-`0.85` is dense and utilitarian; `1.2` is airy and premium. Below `0.8` the
-44px target sizes stop having room around them, which is an accessibility
-floor rather than a taste one.
+Supported range `0.85` to `1.2`: `0.85` is dense and utilitarian, `1.2` airy
+and premium. Below `0.85` the 44px target sizes stop having room around them,
+which is an accessibility floor rather than a taste one.
 
 **Both are bare numbers, never lengths.** `--type-scale: 1.1rem` multiplies a length by a length, which makes the whole `calc()` invalid; the declaration drops and the heading falls back to inherited size. Nothing errors, the page just goes flat on every display size at once. `ci/brand_fit.py` checks for this, and it is the only place it can be caught, because a brand's stylesheet is outside this library's CI.
 

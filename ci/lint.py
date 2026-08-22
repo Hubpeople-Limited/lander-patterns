@@ -20,6 +20,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import legibility
+from _display_type import display_faults
+from _heading_size import heading_size_faults
+import _dials as dials
+import _heading_size as heading_size
 
 ROOT = Path(__file__).resolve().parent.parent
 PATTERNS = ROOT / "patterns"
@@ -875,28 +879,62 @@ def check_token_sets_are_complete():
                  f"with no fallback: {', '.join(missing)}")
 
 
+def check_dial_range_is_stated_once():
+    """The documented range and the enforced range must be the same numbers.
+
+    They are load-bearing in three places at once - brand_fit warns outside
+    them, the --color-heading floors are held above 24px at the bottom of
+    them, and TOKENS.md tells brands what is safe. Two of those drifting apart
+    is how a contract comes to promise something CI does not check.
+    """
+    # Normalised: the document is wrapped prose, and a check that demanded an
+    # unwrapped phrase would be a check fighting the format it reads.
+    doc = " ".join((ROOT / "TOKENS.md").read_text(encoding="utf-8").split())
+    for label, lo, hi in (("--type-scale", dials.TYPE_MIN, dials.TYPE_MAX),
+                          ("--space-scale", dials.SPACE_MIN, dials.SPACE_MAX)):
+        stated = f"Supported range `{lo}` to `{hi}`"
+        if stated not in doc:
+            find(ROOT / "TOKENS.md", "contract",
+                 f"{label} is enforced over {lo}-{hi} but TOKENS.md does not "
+                 f"say so - it must contain the exact words {stated!r}")
+    if heading_size.TYPE_MIN != dials.TYPE_MIN:
+        find(ROOT / "ci", "contract",
+             f"the heading-size check holds floors above the bar at "
+             f"{heading_size.TYPE_MIN} but the dial range starts at "
+             f"{dials.TYPE_MIN} - the guarantee and the range must agree")
+
+
+def check_heading_token_size(css, name):
+    """--color-heading only where it is guaranteed, across the whole dial range.
+
+    The token carries 3:1 and no more, so it is valid only on large text. Six
+    patterns cleared that bar by landing exactly on 24px, which stopped being
+    true the moment a brand could multiply it - and a seventh reached the
+    token through a ground modifier, where the obvious version of this check
+    could not see it at all. See ci/_heading_size.py.
+    """
+    for selector, floor, bar, at_min in heading_size_faults(css):
+        find(PATTERNS / name / "pattern.css", "heading-token",
+             f"{selector}: --color-heading at a {floor:.0f}px floor renders "
+             f"{at_min:.1f}px at --type-scale 0.9, under the {bar:.2f}px this "
+             f"token is guaranteed at. Raise the clamp floor so it clears the "
+             f"bar across the documented dial range, or take --color-text")
+
+
 def check_display_type_carries_the_dial(css, name):
     """Every display size must be multiplied by --type-scale.
 
     The dial is worth nothing if a pattern can quietly opt out of it: one
     hard-coded headline on a page is the one that does not move when a brand
-    turns the register up, and it will read as a mistake rather than a choice.
+    turns the register up, and it reads as a mistake rather than a choice.
 
-    A display size is a font-size in a rule that also sets --font-heading.
-    Body copy is deliberately out of scope - a brand asking for bigger
-    headlines is not asking for 19px paragraphs.
+    The rule this enforces is in TOKENS.md, and resolving it needs the whole
+    file rather than one rule - see ci/_display_type.py, which also records
+    what the first version of this check could not see.
     """
-    for m in re.finditer(r"\{([^{}]*)\}", re.sub(r"/\*.*?\*/", "", css, flags=re.S)):
-        body = m.group(1)
-        if "var(--font-heading)" not in body:
-            continue
-        fs = re.search(r"font-size:\s*([^;]+);", body)
-        if fs and "var(--type-scale" not in fs.group(1):
-            find(PATTERNS / name / "pattern.css", "type-scale",
-                 f"display size {fs.group(1).strip()} is not multiplied by "
-                 f"--type-scale, so it will not move when a brand sets the "
-                 f"dial - wrap it: calc({fs.group(1).strip()} "
-                 f"* var(--type-scale, 1))")
+    for selector, value, why in display_faults(css):
+        find(PATTERNS / name / "pattern.css", "type-scale",
+             f"{selector}: display size {value} does not carry the dial - {why}")
 
 
 def main():
@@ -991,6 +1029,8 @@ def main():
         if css.is_file():
             check_css(css, folder.name)
             check_display_type_carries_the_dial(
+                css.read_text(encoding="utf-8"), folder.name)
+            check_heading_token_size(
                 css.read_text(encoding="utf-8"), folder.name)
             # `tokens-used` names the CONTRACT tokens a pattern consumes. A
             # pattern's own custom properties (--<pattern-name>-*) are its
@@ -1108,6 +1148,7 @@ def main():
         # pattern may not hide content and wait for a script; this file IS
         # the script, and hiding a panel is the whole of what it does.
 
+    check_dial_range_is_stated_once()
     check_version_bumps(sorted(p for p in PATTERNS.iterdir() if p.is_dir()))
 
     for path, field, ref in cross_refs:

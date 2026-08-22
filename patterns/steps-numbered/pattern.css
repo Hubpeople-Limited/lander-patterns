@@ -94,14 +94,17 @@
   margin: 0;
 }
 /* Narrow cards cannot carry an 84px numeral beside the copy, so it steps down
-   and the pair stacks rather than the heading wrapping to one word a line. */
+   and the pair stacks rather than the heading wrapping to one word a line.
+   The step-down carries the dial too: without it the numeral jumped smaller
+   as the viewport narrowed past 30rem on any brand with the dial above 1,
+   which is a worse fault than a size that never moves at all. */
 @media (width < 30rem) {
   .steps-numbered-content {
     flex-direction: column;
     gap: var(--space-2);
   }
   .steps-numbered-content::before {
-    font-size: clamp(48px, 14vw, 64px);
+    font-size: calc(clamp(48px, 14vw, 64px) * var(--type-scale, 1));
   }
   .steps-numbered-scrim {
     padding: var(--space-5);

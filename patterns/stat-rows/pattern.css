@@ -20,7 +20,7 @@
   font-family: var(--font-heading);
   color: var(--color-heading);
   font-weight: var(--stat-rows-weight, 300);
-  /* Figure and sentence are sized as a pair; keep the ratio if retuning. */
+  /* Figure and sentence are sized as a pair - both carry the dial. */
   font-size: calc(clamp(1.875rem, 1.4rem + 2.2vw, 2.625rem) * var(--type-scale, 1));
   line-height: 1.04;
   letter-spacing: -0.03em;
@@ -29,7 +29,7 @@
   margin: 0;
   color: var(--color-text-soft);
   font-weight: var(--stat-rows-weight, 300);
-  font-size: clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem);
+  font-size: calc(clamp(1.375rem, 1.15rem + 0.9vw, 1.875rem) * var(--type-scale, 1));
   line-height: 1.18;
   text-wrap: pretty;
 }

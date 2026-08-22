@@ -20,9 +20,9 @@
 
   --space-scale: 1;
 
-  --space-1: calc(0.25rem * var(--space-scale));  --space-2: calc(0.5rem * var(--space-scale));  --space-3: calc(0.75rem * var(--space-scale));
-  --space-4: calc(1rem * var(--space-scale));     --space-5: calc(1.5rem * var(--space-scale));  --space-6: calc(2rem * var(--space-scale));
-  --space-8: calc(3rem * var(--space-scale));     --space-12: calc(8rem * var(--space-scale));
+  --space-1: calc(0.25rem * var(--space-scale, 1));  --space-2: calc(0.5rem * var(--space-scale, 1));  --space-3: calc(0.75rem * var(--space-scale, 1));
+  --space-4: calc(1rem * var(--space-scale, 1));     --space-5: calc(1.5rem * var(--space-scale, 1));  --space-6: calc(2rem * var(--space-scale, 1));
+  --space-8: calc(3rem * var(--space-scale, 1));     --space-12: calc(8rem * var(--space-scale, 1));
   --container-max: 72rem;
 
   --btn-radius: 999px;

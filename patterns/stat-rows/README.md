@@ -50,3 +50,9 @@ token — it carries each row's position so one row's parts do not arrive in
 lockstep with the row above. Duplicate a row and increment it. Without the
 library every attribute is inert and the strip renders complete, which is how
 it is designed to be read; the animation is never load-bearing.
+
+**The figure and its sentence are sized as a pair, and both carry
+`--type-scale`.** Scaling one half of a documented pair is how a ratio gets
+broken by accident: the figure would grow with the brand's dial while the
+sentence beside it stayed put, and the relationship the pattern is built on
+would quietly come apart on exactly the brands that had customised most.

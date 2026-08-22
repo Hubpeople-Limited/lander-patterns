@@ -67,7 +67,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "cta-assurance": {
@@ -217,7 +217,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "feature-panels": {
@@ -462,7 +462,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "media-card-grid": {
@@ -687,7 +687,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "7",
+  "version": "9",
   "whole-page": false
  },
  "prose-column": {
@@ -712,7 +712,7 @@
   ],
   "requires": "none",
   "type": "component",
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "quote-feature": {
@@ -832,7 +832,7 @@
   ],
   "requires": "none",
   "type": "section",
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "stats-band": {
@@ -887,7 +887,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "steps-plain": {
@@ -938,7 +938,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "testimonial-grid": {
@@ -963,7 +963,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "trust-row": {
@@ -1012,7 +1012,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "6",
+  "version": "7",
   "whole-page": false
  }
 }

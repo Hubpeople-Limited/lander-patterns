@@ -18,7 +18,7 @@
   margin: 0 0 var(--space-8);
   font-family: var(--font-heading);
   color: var(--color-heading);
-  font-size: calc(clamp(1.5rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
+  font-size: calc(clamp(1.75rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
   letter-spacing: -0.02em;
 }
 /* Full bleed: the neighbouring cards sit well outside any container. */

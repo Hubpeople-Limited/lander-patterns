@@ -20,8 +20,11 @@ it and the report goes to stdout, which is why this is not wired into CI.
 """
 import re
 import sys
+import sys
 from collections import defaultdict
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 ROOT = Path(__file__).resolve().parent.parent
 VAR_USE = re.compile(r"var\(\s*(--[\w-]+)\s*(,)?")
@@ -52,29 +55,7 @@ def pattern_needs():
     return out
 
 
-DIAL = re.compile(r"--(type|space)-scale\s*:\s*([^;}]+)")
-
-
-def check_dials(brand, text):
-    """The two dials are unitless multipliers, and a unit silently deletes type.
-
-    calc(clamp(2rem, 4vw, 3.5rem) * var(--type-scale, 1)) multiplies a length
-    by a number. Give it a length instead and the product is an area, the
-    whole calc is invalid, and font-size falls back to whatever is inherited -
-    which on a heading is body size. The page does not error; it just goes
-    flat, on every display size at once.
-
-    A brand is outside this library's CI, so this is the only place the
-    mistake can be caught before it ships.
-    """
-    out = []
-    for which, value in DIAL.findall(text):
-        v = value.strip()
-        if not re.fullmatch(r"\d*\.?\d+", v):
-            out.append(f"  {brand}: --{which}-scale is {v!r} - it must be a "
-                       f"bare number. A unit makes every declaration using it "
-                       f"invalid, and the type silently collapses to inherited size.")
-    return out
+from _dials import check_dials, check_ramp_resolves
 
 
 def main(argv):
@@ -97,16 +78,33 @@ def main(argv):
             if brand not in best or len(rel.parts) > len(best[brand].relative_to(base).parts):
                 best[brand] = css
         for brand, css in best.items():
-            raw = css.read_text(encoding="utf-8", errors="replace")
-            brands[brand] = defined_in(raw)
-            dial_faults.extend(check_dials(brand, raw))
+            brands[brand] = defined_in(css.read_text(encoding="utf-8",
+                                                     errors="replace"))
+        # Dials are scanned across every stylesheet, not just the one the
+        # token census picks. A brand ships more than one, and the fault only
+        # has to be in the sheet the live page loads.
+        for sheet in sorted(base.rglob("*.css")):
+            brand = sheet.relative_to(base).parts[0]
+            raw = sheet.read_text(encoding="utf-8", errors="replace")
+            where = f"{brand} ({sheet.relative_to(base).as_posix()})"
+            dial_faults.extend(check_dials(where, raw))
+            dial_faults.extend(check_ramp_resolves(where, raw))
     if not brands:
         print("no global.css found under: " + ", ".join(argv))
         return 2
 
-    if dial_faults:
-        print("dial faults - these break type outright:")
-        print(chr(10).join(dial_faults) + chr(10))
+    fatal = [m for bad, m in dial_faults if bad]
+    warned = [m for bad, m in dial_faults if not bad]
+    if fatal:
+        print("dial faults - each of these breaks a live page:")
+        for m in fatal:
+            print("  " + m)
+        print()
+    if warned:
+        print("dial warnings:")
+        for m in warned:
+            print("  " + m)
+        print()
 
     needs = pattern_needs()
     every = sorted({t for n in needs.values() for t in n})
@@ -133,7 +131,10 @@ def main(argv):
         print(f"\ndefined by no brand at all ({len(unmet)}):")
         for t in unmet:
             print(f"  {t}")
-    return 1 if unmet else 0
+    # A dial fault fails the build. The first version of this printed the
+    # fault and returned an exit code derived from the token census, so
+    # anything gating on exit status shipped it regardless.
+    return 1 if (unmet or fatal) else 0
 
 
 if __name__ == "__main__":

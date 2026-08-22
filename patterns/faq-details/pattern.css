@@ -12,7 +12,7 @@
 .faq-details-title {
   font-family: var(--font-heading);
   color: var(--color-heading);
-  font-size: calc(clamp(1.5rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
+  font-size: calc(clamp(1.75rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
   margin: 0 0 var(--space-6);
 }
 /* A rule under every item, plus one above the first. */
