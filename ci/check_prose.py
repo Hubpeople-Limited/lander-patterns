@@ -95,18 +95,21 @@ def needles():
 
 def check(where, text, leak_list):
     low = text.lower()
-    # A term inside BACKTICKS is being mentioned, not used. A commit that
-    # changes which words a checker bans has to be able to name them, and this
-    # gate rejected exactly that commit, which makes the rule unstateable in
-    # its own history.
+    # A term inside backticks or double quotes is being mentioned, not used. A
+    # commit that changes which words a checker bans has to be able to name
+    # them, and this gate rejected exactly the commit that did so - which
+    # makes the rule unstateable in its own history.
     #
-    # Backticks only, and capped at 40 characters. Quotation marks cannot be
-    # used for this: an apostrophe is a quotation mark, so "it doesn't matter"
-    # opened a span that ran to the next apostrophe and blanked whatever sat
-    # between them - ordinary English silently switching the gate off. The cap
-    # is what stops the exemption becoming a way to smuggle a paragraph of
-    # narration through by wrapping it.
-    unquoted = re.sub(r"`[^`\n]{1,40}`", " ", low)
+    # SINGLE quotes are not a delimiter here, because an apostrophe is one:
+    # "it doesn't matter" opened a span that ran to the next apostrophe and
+    # blanked whatever sat between them, so ordinary English switched the gate
+    # off. Double quotes carry no such ambiguity.
+    #
+    # Capped at 80 characters, which is a phrase rather than a paragraph. The
+    # cap is what stops the exemption becoming a wrapper to smuggle narration
+    # through, and 40 was too tight for a repository about CSS: `text-overflow:
+    # ellipsis; overflow: hidden` is 41.
+    unquoted = re.sub(r"`[^`\n]{1,80}`|\"[^\"\n]{1,80}\"", " ", low)
     for name, terms, why in CATEGORIES:
         for term in terms:
             if re.search(rf"(?<!\w){re.escape(term)}(?!\w)", unquoted):

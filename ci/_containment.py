@@ -19,6 +19,8 @@ unenforceable the day it shipped.
 import html
 import re
 
+from _textutil import blank_comments
+
 # @namespace is deliberately not here. It takes a URL that identifies an XML
 # namespace and fetches nothing, so banning it would fail correct SVG.
 AT_IMPORT = re.compile(r"@import\b", re.I)
@@ -56,25 +58,13 @@ RAMP_FLOOR_PX = 4.0
 RAMP_UNITS = {"px", "rem", "pt", "cm", "mm", "in", "pc", "q"}
 
 
-def _blank_comments(text):
-    """Comments removed, newlines kept.
-
-    Replacing a comment with a single space destroyed the newlines inside it,
-    which moved the reported line number of everything after a multi-line
-    comment - and this file reports line numbers.
-    """
-    return re.sub(r"/\*.*?\*/",
-                  lambda m: re.sub("[^" + chr(10) + "]", " ", m.group(0)),
-                  text, flags=re.S)
-
-
 def external_faults(text, kind):
     """(what, why) for every reference that leaves the host."""
     out = []
     if kind == "css":
         # Before the FIRST scan. Stripping between two of them left the
         # @import loop reading commented-out code.
-        text = _blank_comments(text)
+        text = blank_comments(text)
         text = re.sub(r"@namespace[^;]*;",
                       lambda m: re.sub("[^" + chr(10) + "]", " ", m.group(0)),
                       text, flags=re.I)
@@ -90,7 +80,7 @@ def external_faults(text, kind):
             carried = URL_FN.search(text, m.end(),
                                     end if end != -1 else len(text))
             if carried:
-                seen.add((line, carried.group(1).strip()))
+                seen.add(carried.start(1))
         for m in IMAGE_SET.finditer(text):
             for target in QUOTED.findall(m.group(1)):
                 target = target.strip()
@@ -99,9 +89,9 @@ def external_faults(text, kind):
                 line = text[:m.start()].count(chr(10)) + 1
                 # url() inside an image-set() is found by both scans, and one
                 # reference is one finding.
-                if (line, target) in seen:
+                if m.start() + m.group(0).find(target) in seen:
                     continue
-                seen.add((line, target))
+                seen.add(m.start() + m.group(0).find(target))
                 out.append((f"line {line}: image-set({target})",
                             "a pattern renders from the token contract and "
                             "pulls nothing in from elsewhere"))
@@ -113,9 +103,9 @@ def external_faults(text, kind):
             line = text[:m.start()].count("\n") + 1
             # One reference is one finding. A url() inside an image-set(), or
             # the one an @import carries, is found twice and reported once.
-            if (line, target) in seen:
+            if m.start(1) in seen:
                 continue
-            seen.add((line, target))
+            seen.add(m.start(1))
             out.append((f"line {line}: url({target})",
                         "a pattern renders from the token contract and pulls "
                         "nothing in from elsewhere"))
@@ -142,7 +132,7 @@ def external_faults(text, kind):
 
 def spacing_faults(css):
     """(line, declaration) for spacing set in a length instead of the ramp."""
-    text = re.sub(r"/\*.*?\*/", " ", css, flags=re.S)
+    text = blank_comments(css)
     out = []
     # A pattern-local property is only off the ramp if its own definition is.
     # `--x-pad: 96px; padding: var(--x-pad)` is the natural way to write it and
@@ -163,9 +153,13 @@ def spacing_faults(css):
             value += " " + resolve(ref, seen + (name,))
         return value
 
+    def strip_names(value):
+        """Token names removed, values kept. `--gutter-16px` is a name."""
+        return re.sub(r"var\(\s*--[\w-]+", "var(", value)
+
     local_lengths = {}
     for name in declared:
-        chain = resolve(name)
+        chain = strip_names(resolve(name))
         if "--space-" not in chain and LENGTH.search(chain):
             local_lengths[name] = chain
 
@@ -185,8 +179,7 @@ def spacing_faults(css):
         # is a name, not a sixteen-pixel gutter, and the lookbehind permits a
         # preceding hyphen. The fallback text after the comma is kept, so
         # var(--nothing, 96px) is still read.
-        bare = re.sub(r"var\(\s*--[\w-]+", "var(", value)
-        lengths = LENGTH.findall(bare) + [
+        lengths = LENGTH.findall(strip_names(value)) + [
             x for r in refs if r in local_lengths
             for x in LENGTH.findall(local_lengths[r])]
         if not lengths:

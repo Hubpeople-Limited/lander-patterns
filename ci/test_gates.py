@@ -161,6 +161,18 @@ LEGIBILITY = [
     ('.t-label[data-x~="a b"] { opacity: 0.3; }', 1,
      "an attribute selector on text"),
     ('.t-label { filter: opacity(0); }', 1, "a fully-zero filter fade"),
+    # Every spelling of nothing. Narrowing one regex left two of these
+    # matching neither it nor the other.
+    ('.t-label { opacity: .0; }', 1, "a fade written .0"),
+    ('.t-label { opacity: 00%; }', 1, "a fade written 00%"),
+    ('.t-label { opacity: 1; }', 0, "fully opaque"),
+    ('.t-label { opacity: 100%; }', 0, "fully opaque, as a percentage"),
+    # Subjects that a change made for one reason switched off.
+    ('.btn[disabled] { opacity: 0.4; }', 0, "a disabled control by attribute"),
+    ('.btn[aria-disabled="true"] { opacity: 0.4; }', 0, "aria-disabled"),
+    ('.card :is(img, svg) { opacity: 0.4; }', 0, ":is() naming the subject"),
+    ('.card :where(img, svg) { opacity: 0.4; }', 0, ":where() naming it"),
+    ('.card:has(> img) { opacity: 0.4; }', 1, ":has() qualifying text"),
 ]
 
 # ci/_containment.py, spacing half.
@@ -185,6 +197,10 @@ SPACING = [
     # A token NAME that embeds a unit is a name, not a length.
     ("a { padding: var(--gutter-16px); }", 0, "a token name embedding a unit"),
     ("a { gap: var(--icon-24px); }", 0, "the same, on a gap"),
+    (":root{--a:var(--gutter-16px);} a { padding: var(--a); }", 0,
+     "a unit-bearing name surviving one hop"),
+    (":root{--a:96px;} a { padding: var(--a); }", 1,
+     "a real length through one hop"),
 ]
 
 # ci/_containment.py, external half.
@@ -203,6 +219,13 @@ EXTERNAL_CSS = [
     ("a { background: url(data:image/svg+xml,%3Csvg/%3E); }", 0, "a data URI"),
     ('/* was: @import url("https://x.invalid/e.css"); */', 0,
      "a commented-out import"),
+    # One reference is one finding - and two references are two, even when
+    # they name the same URL on the same line.
+    ("a { background: url(https://a.invalid/1.png), "
+     "url(https://a.invalid/1.png); }", 2, "the same URL twice on one line"),
+    ("a{background:url(https://x.invalid/a.png);"
+     "background-image:url(https://x.invalid/b.png);}", 2,
+     "two distinct URLs"),
 ]
 
 EXTERNAL_HTML = [
@@ -250,11 +273,15 @@ def check_modules():
     failures = []
 
     def run(label, cases, fn):
+        # EXACT counts, not truthiness. A `want` of 1 compared with `if fn(x)`
+        # passed on one finding or five, so the deduplication work in
+        # _containment had no test that could have failed if it regressed.
         for source, want, name in cases:
-            got = 1 if fn(source) else 0
+            got = len(fn(source))
             ok = got == want
             verb = "catches" if want else "quiet on"
-            print(f"  {'ok  ' if ok else 'FAIL'} {label} {verb}: {name}")
+            extra = "" if ok else f" (got {got}, want {want})"
+            print(f"  {'ok  ' if ok else 'FAIL'} {label} {verb}: {name}{extra}")
             if not ok:
                 failures.append(f"{label}: {name}")
 

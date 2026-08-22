@@ -16,6 +16,8 @@ and keep reading the previews.
 import re
 from pathlib import Path
 
+from _textutil import blank_comments
+
 HUB_CLASS = re.compile(r"\.hub-")
 
 # A class attribute in any of its three legal spellings.
@@ -39,7 +41,17 @@ ALWAYS_TRUE_AT = re.compile(
 
 HIDDEN = re.compile(
     r"(?<![-\w])("
-    r"opacity\s*:\s*0(?:\.0+)?(?:%)?(?![.\d])"
+    # `0`, `0.0`, `.0`, `0%`, `00%` - every spelling of nothing. Narrowing
+    # OPACITY to exclude the fully-zero forms left `.0` and `00%` matching
+    # neither regex, so two legal spellings of invisible were caught by
+    # nothing at all.
+    # `0`, `00`, `0.0`, `.0`, `0%`, `00%` - every spelling of nothing.
+    # Narrowing OPACITY to exclude the fully-zero forms left `.0` and `00%`
+    # matching neither regex, so two legal spellings of invisible were caught
+    # by nothing at all. The alternation must consume at least one digit:
+    # written as `0*(?:\.0+)?%?` every part is optional, so it matched the
+    # empty string straight after the colon and fired on every opacity there is.
+    r"opacity\s*:\s*(?:0+(?:\.0+)?|\.0+)\s*%?(?![.\d1-9])"
     r"|visibility\s*:\s*(?:hidden|collapse)"
     r"|display\s*:\s*none"
     r"|content-visibility\s*:\s*hidden"
@@ -143,8 +155,12 @@ def _rules(css):
 
     @keyframes blocks are dropped whole, because `from { opacity: 0 }` is a
     starting frame rather than a state a page can be left in."""
-    stripped = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
-    stripped = re.sub(r"@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\}\s*)*\}", "",
+    # Newlines kept on both removals: this generator yields a line number for
+    # every rule, and collapsing a multi-line comment or a @keyframes block
+    # moved every line reported after it.
+    stripped = blank_comments(css)
+    stripped = re.sub(r"@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\}\s*)*\}",
+                      lambda m: re.sub("[^" + chr(10) + "]", " ", m.group(0)),
                       stripped)
     depth, at_depth, buf, i = 0, [], "", 0
     while i < len(stripped):
@@ -235,10 +251,16 @@ def _subject(part):
     whole selector string let any element name anywhere in an ancestor chain
     excuse a rule about text.
     """
-    # _bare() first, then attribute selectors blanked: a combinator inside
-    # :not(...) or inside [alt~="icon"] is not a combinator in this selector,
-    # and splitting on it took the wrong compound as the subject.
-    flat = re.sub(r"\[[^\]]*\]", "[]", _bare(part))
+    # Only the arguments that do NOT determine the subject are removed.
+    # `:not()` and `:has()` qualify the compound they hang off, so the subject
+    # is that compound - but `:is()` and `:where()` ARE the subject, and
+    # stripping them made `.card :is(img, svg)` look like a rule about .card.
+    flat = re.sub(r":(?:not|has)\([^()]*\)", "", part)
+    # Attribute VALUES blanked, names kept. Blanking the whole bracket also
+    # blanked `[disabled]` and `[aria-disabled]`, which are two of the three
+    # alternatives in DECORATIVE_SUBJECT - so a change made to fix combinator
+    # splitting silently switched off the check sitting beside it.
+    flat = re.sub(r"\[([\w-]+)[^\]]*\]", r"[\1]", flat)
     return re.split(r"\s*[\s>+~]\s*", flat.strip())[-1]
 
 
