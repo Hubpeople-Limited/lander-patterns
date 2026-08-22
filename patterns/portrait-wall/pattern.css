@@ -1,4 +1,4 @@
-/* portrait-wall v1 - tokens only, selectors prefixed */
+/* portrait-wall v2 - tokens only, selectors prefixed */
 .portrait-wall {
   padding-block: var(--space-8);
 }
@@ -41,9 +41,11 @@
   grid-column: calc(3 + var(--portrait-wall-offset));
   grid-row: 1;
 }
+/* -2 / -1 is the last row, not `-1`: a bare -1 is a start line, and outside a
+   subgrid it opens a fourth row instead of filling the third. */
 .portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile:last-of-type {
   grid-column: calc(3 + var(--portrait-wall-offset));
-  grid-row: -1;
+  grid-row: -2 / -1;
 }
 .portrait-wall-tile,
 .portrait-wall-focal {
@@ -52,14 +54,15 @@
   background: var(--color-surface-soft);
   box-shadow: var(--portrait-wall-shadow, var(--card-shadow));
 }
+/* height: auto is load-bearing: without it the img's height attribute stays a
+   definite height and the aspect-ratio below never applies. */
 .portrait-wall-img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: var(--portrait-wall-ratio);
   object-fit: cover;
 }
-/* The centre cell is sized by the tiles beside it, so its photograph is laid
-   over the cell rather than sized by its own ratio. */
 .portrait-wall-focal {
   position: relative;
   z-index: 1;
@@ -73,7 +76,6 @@
   height: 100%;
   object-fit: cover;
 }
-/* The outer ring only exists where there are five columns to hold it. */
 .portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile {
   display: none;
 }

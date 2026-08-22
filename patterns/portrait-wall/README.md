@@ -1,7 +1,8 @@
 # portrait-wall
 
-**What it is and when to use it.** A five-by-three lattice of portrait tiles
-with a larger focal photograph in the centre cell. It is a full-section image
+**What it is and when to use it.** A five-by-three lattice of portrait tiles,
+the centre one of which gets its own slot for the strongest photograph — it is
+the same size as its neighbours and it is where the eye lands. A full-section
 wall whose only job is scale — "there are a lot of people here" — and it has no
 heading, no copy and no link. **It is decorative and carries no message on its
 own, so it needs a section around it that does**: a heading block above it, or a
@@ -58,8 +59,11 @@ each ring is addressed as a unit by `:nth-of-type` instead of every tile being
 positioned by hand. Keep the layers, their order, and their 6 / 6 / 2 counts.
 `--portrait-wall-offset` reflows five columns to three by shifting the
 centre-column references, so the mobile layout is one number rather than a
-restated grid. Browsers without `subgrid` fall back to `display: contents` on
-the layers plus dense auto-placement, which resolves the same lattice.
+restated grid. The focal cell has no ratio of its own — it takes its height from
+the tiles beside it and its photograph is laid over it, which is why that image
+is absolutely positioned. Browsers without `subgrid` fall back to
+`display: contents` on the layers plus dense auto-placement; both paths were
+checked and resolve the identical lattice at 1280px and 390px.
 
 **Behaviour (gated).** The grid carries the `reveal` hook with
 `data-hub-reveal-children`, which staggers the three rings and the focal image

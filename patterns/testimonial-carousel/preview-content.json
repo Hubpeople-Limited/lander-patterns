@@ -1,0 +1,23 @@
+{
+  "section-title": "Sample testimonials heading",
+  "carousel-title-id": "testimonial-carousel-sample-heading",
+  "carousel-group": "testimonial-carousel-sample-slides",
+  "slide-id-1": "testimonial-carousel-sample-slide-1",
+  "slide-id-2": "testimonial-carousel-sample-slide-2",
+  "slide-id-3": "testimonial-carousel-sample-slide-3",
+  "avatar-1": "sample-portrait.svg",
+  "avatar-alt-1": "Sample portrait placeholder, preview only",
+  "quote-1": "A sample quotation, written only to render the first preview card.",
+  "person-name-1": "Sample Person One",
+  "person-role-1": "Sample attribution line for the preview",
+  "avatar-2": "sample-portrait.svg",
+  "avatar-alt-2": "Sample portrait placeholder, preview only",
+  "quote-2": "A second sample quotation, longer than the first so the preview shows how the stage handles an uneven set.",
+  "person-name-2": "Sample Person Two",
+  "person-role-2": "Sample attribution line for the preview",
+  "avatar-3": "sample-portrait.svg",
+  "avatar-alt-3": "Sample portrait placeholder, preview only",
+  "quote-3": "A third sample quotation, kept short for the preview.",
+  "person-name-3": "Sample Person Three",
+  "person-role-3": "Sample attribution line for the preview"
+}

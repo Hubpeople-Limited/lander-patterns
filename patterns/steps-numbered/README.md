@@ -35,8 +35,9 @@ large-text bar, this card's 14-16px body has no guarantee to stand on.
 **Pairing.** `heading-block` above it when the section needs an eyebrow and an
 intro line. Put it late: the step that follows "here is how it works" is
 joining, so whatever carries the join should be the next thing a reader meets.
-Not on a page with `gallery-scroll`, `media-card-grid` or `zigzag-rows`: all
-four are image-led runs, and a reader who meets two of them stops telling them
+Not on a page with `gallery-scroll`, `media-card-grid`, `portrait-wall` or
+`zigzag-rows`: all are image-led runs, and a reader who meets two stops telling
+them
 apart. This is the pattern to drop if the page needs one of the others.
 
 **Brand adaptability.** `--card-radius` and `--card-shadow` set nearly all the

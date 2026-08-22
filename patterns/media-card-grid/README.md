@@ -58,8 +58,8 @@ The arrow cue is `aria-hidden`: it is the visual affordance and repeats nothing.
 intro, which is why this pattern carries only a plain `<h2>`. Avoid
 `steps-numbered` on the same page — both are
 portrait image cards with a scrim, and side by side the numbering stops reading
-as meaning. `gallery-scroll` is out for the same reason: a third set of
-image cards on one page and none of them means anything.
+as meaning. `gallery-scroll` and `portrait-wall` are out for the same reason:
+another run of images and none of them means anything.
 
 **Brand adaptability.** `--card-radius` and `--card-shadow` set nearly all the
 feel: rounded-and-shadowed reads friendly, square-and-flat reads editorial.

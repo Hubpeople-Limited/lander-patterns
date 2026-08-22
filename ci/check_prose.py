@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Check commit messages and pull-request text against the writing policy.
 
+This checks PROSE WE PUBLISH ABOUT the code - commit messages, pull-request
+titles and bodies - not the code itself. Pointing it at a source file will
+produce false positives, because ordinary code contains ordinary words.
+
 Usage:
   python ci/check_prose.py --range origin/main..HEAD   commit messages in a range
   python ci/check_prose.py --file body.txt             a pull-request body
@@ -37,7 +41,7 @@ PEOPLE = [
 BLAME = [
     "should have", "shouldn't have", "should never have", "failed to",
     "forgot to", "neglected to", "didn't bother", "did not bother",
-    "sloppy", "careless", "lazy", "obviously wrong", "clearly wrong",
+    "sloppy", "careless", "obviously wrong", "clearly wrong",
     "nonsense", "no idea why", "who thought", "makes no sense",
     "badly written", "poorly written", "a mess", "hack job",
 ]

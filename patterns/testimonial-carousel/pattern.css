@@ -1,0 +1,235 @@
+/* testimonial-carousel v1 - tokens only, selectors prefixed. */
+.testimonial-carousel {
+  /* Phones show the active card alone; the three-up stage starts at 60rem.
+     Two numbers place all three cards - change these, not the transforms. */
+  --testimonial-carousel-card-w: min(100vw - 2 * var(--space-5), 34rem);
+  /* A stage that grows and shrinks moves the page under the reader. This
+     reserves the height once; raise it if the real quotes need it. */
+  --testimonial-carousel-stage-h: 22rem;
+  --testimonial-carousel-target: 2.75rem;
+  position: relative;
+  /* Required: this is what crops the cards that hang outside the viewport. */
+  overflow: hidden;
+  padding-block: var(--space-12);
+}
+.testimonial-carousel-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  text-align: center;
+}
+.testimonial-carousel-title {
+  margin: 0 0 var(--space-8);
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  letter-spacing: -0.02em;
+}
+/* Full bleed: the neighbouring cards sit well outside any container. */
+.testimonial-carousel-machine {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-top: var(--space-8);
+}
+/* Clipped, NOT hidden. display:none, visibility:hidden and the hidden
+   attribute each drop these out of the tab order, and the radio group is the
+   keyboard interface. They must also stay siblings, ahead of the stage. */
+.testimonial-carousel-input,
+.testimonial-carousel-dot-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+/* Pinned mid-stage: at the machine's own start edge it sits off-screen, and
+   focusing it would scroll the cropped section sideways. */
+.testimonial-carousel-input {
+  top: 0;
+  left: 50%;
+}
+.testimonial-carousel-stage {
+  position: relative;
+  min-height: var(--testimonial-carousel-stage-h);
+}
+.testimonial-carousel-card {
+  /* A face is round on every brand, so this is not --card-radius. */
+  --testimonial-carousel-avatar-radius: 50%;
+  position: absolute;
+  top: var(--space-8);
+  left: 50%;
+  width: var(--testimonial-carousel-card-w);
+  min-height: 15.5rem;
+  margin: 0;
+  padding: var(--space-12) var(--space-6) var(--space-8);
+  background: var(--color-surface);
+  /* --color-text: this is not large text. */
+  color: var(--color-text);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%) scale(0.88);
+}
+.testimonial-carousel-avatar {
+  position: absolute;
+  top: calc(-1 * var(--space-6));
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: 5.5rem;
+  height: 5.5rem;
+  object-fit: cover;
+  border-radius: var(--testimonial-carousel-avatar-radius);
+  border: var(--space-1) solid var(--color-surface);
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
+}
+.testimonial-carousel-quote {
+  margin: 0 auto;
+  max-width: 27rem;
+}
+.testimonial-carousel-quote p {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.0625rem, 0.95rem + 0.6vw, 1.3125rem);
+  line-height: 1.28;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: inherit;
+}
+.testimonial-carousel-person {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-6);
+}
+.testimonial-carousel-name {
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  font-weight: 500;
+}
+/* Size and weight, not colour: the active card changes ground. */
+.testimonial-carousel-role {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 400;
+}
+/* ACTIVE CARD. One line per slide, here and in each list that follows. */
+.testimonial-carousel-input--1:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--1,
+.testimonial-carousel-input--2:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--2,
+.testimonial-carousel-input--3:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--3 {
+  z-index: 2;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) scale(1);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+.testimonial-carousel-dots {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-4);
+}
+.testimonial-carousel-dot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* The tap target is the label; the pill inside it is only the mark. */
+  min-width: var(--testimonial-carousel-target);
+  min-height: var(--testimonial-carousel-target);
+  cursor: pointer;
+}
+.testimonial-carousel-dot::before {
+  content: "";
+  display: block;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--chip-radius);
+  /* Not --color-rule: brands may set that as soft as they like, and these
+     are the only controls on the pattern. */
+  background: var(--color-text-soft);
+}
+.testimonial-carousel-dot:hover::before {
+  background: var(--color-primary);
+}
+/* ACTIVE DOT. Width carries the state as well as colour. */
+.testimonial-carousel-input--1:checked ~ .testimonial-carousel-dots .testimonial-carousel-dot--1::before,
+.testimonial-carousel-input--2:checked ~ .testimonial-carousel-dots .testimonial-carousel-dot--2::before,
+.testimonial-carousel-input--3:checked ~ .testimonial-carousel-dots .testimonial-carousel-dot--3::before {
+  width: var(--space-5);
+  background: var(--color-primary);
+}
+/* FOCUS. It lands on a clipped input, so it is painted on the two things the
+   reader can see. Drop either half and the carousel is focusable with no
+   visible focus at all. */
+.testimonial-carousel-input--1:focus-visible ~ .testimonial-carousel-dots .testimonial-carousel-dot--1::before,
+.testimonial-carousel-input--2:focus-visible ~ .testimonial-carousel-dots .testimonial-carousel-dot--2::before,
+.testimonial-carousel-input--3:focus-visible ~ .testimonial-carousel-dots .testimonial-carousel-dot--3::before,
+.testimonial-carousel-input--1:focus-visible ~ .testimonial-carousel-stage .testimonial-carousel-card--1,
+.testimonial-carousel-input--2:focus-visible ~ .testimonial-carousel-stage .testimonial-carousel-card--2,
+.testimonial-carousel-input--3:focus-visible ~ .testimonial-carousel-stage .testimonial-carousel-card--3 {
+  outline: 3px solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+@media (min-width: 60rem) {
+  .testimonial-carousel {
+    --testimonial-carousel-card-w: clamp(22.5rem, 34vw, 34rem);
+    /* Centre to centre. Keep it larger than the card width or the neighbours
+       climb on top of the active card. */
+    --testimonial-carousel-side-offset: clamp(25.5rem, 45vw, 42rem);
+  }
+  /* PREVIOUS CARD. */
+  .testimonial-carousel-input--1:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--3,
+  .testimonial-carousel-input--2:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--1,
+  .testimonial-carousel-input--3:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--2 {
+    z-index: 1;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(calc(-50% - var(--testimonial-carousel-side-offset))) scale(0.94);
+  }
+  /* NEXT CARD. */
+  .testimonial-carousel-input--1:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--2,
+  .testimonial-carousel-input--2:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--3,
+  .testimonial-carousel-input--3:checked ~ .testimonial-carousel-stage .testimonial-carousel-card--1 {
+    z-index: 1;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(calc(-50% + var(--testimonial-carousel-side-offset))) scale(0.94);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .testimonial-carousel-card {
+    transition:
+      transform var(--transition-slow) ease,
+      opacity var(--transition-slow) ease,
+      visibility var(--transition-slow) ease,
+      background var(--transition-fast) ease,
+      color var(--transition-fast) ease,
+      border-color var(--transition-fast) ease;
+  }
+  .testimonial-carousel-dot::before {
+    transition: width var(--transition-fast) ease,
+      background var(--transition-fast) ease;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-carousel-card,
+  .testimonial-carousel-dot::before {
+    transition: none;
+  }
+}

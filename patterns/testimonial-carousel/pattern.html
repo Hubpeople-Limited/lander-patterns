@@ -1,0 +1,80 @@
+<!--
+name: testimonial-carousel
+version: 1
+type: section
+page-types: homepage, landing, pricing
+content-shape: peer set
+description: Reader-driven testimonial carousel on a radio group - one card centre stage, its neighbours peeking at reduced scale, no script and nothing that moves on its own.
+keywords: testimonials, carousel, slider, social proof, quotes, reviews
+needs: at least three real testimonials - each quote as the person actually wrote it, with a real name and a true attribution line; one real portrait per person with real alt text; a section heading
+pairs-with: heading-block
+avoid-with: none
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-12, --space-2, --space-4, --space-5, --space-6, --space-8, --transition-fast, --transition-slow
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<section class="testimonial-carousel">
+  <div class="testimonial-carousel-inner">
+    <h2 class="testimonial-carousel-title" id="slot:carousel-title-id"><!-- slot: section-title --></h2>
+    <!-- Every id and the radio group name are slots: fill them with something
+         specific to this page and keep each id in step with the label that
+         points at it. Three slides ship; three to about eight read well.
+         TO ADD A SLIDE: copy a whole <figure>, add one <input> and one
+         <label>, give all three the same number, and add that number to each
+         of the five selector lists in pattern.css. Every accessible name
+         below says "of 3" - change all of them when the count changes. -->
+    <div class="testimonial-carousel-machine" role="group" aria-labelledby="slot:carousel-title-id">
+      <!-- These inputs are the keyboard interface: arrow keys move between
+           them and the stage follows. They are clipped, never hidden, and
+           they must stay here, ahead of the stage. -->
+      <input class="testimonial-carousel-input testimonial-carousel-input--1" type="radio" name="slot:carousel-group" id="slot:slide-id-1" checked>
+      <input class="testimonial-carousel-input testimonial-carousel-input--2" type="radio" name="slot:carousel-group" id="slot:slide-id-2">
+      <input class="testimonial-carousel-input testimonial-carousel-input--3" type="radio" name="slot:carousel-group" id="slot:slide-id-3">
+      <div class="testimonial-carousel-stage">
+        <!-- ONE <figure> per testimonial. Every quote must be one the person
+             actually wrote, with a real name and a true attribution line.
+             There is deliberately no star rating. -->
+        <figure class="testimonial-carousel-card testimonial-carousel-card--1" role="group" aria-label="Testimonial 1 of 3">
+          <img class="testimonial-carousel-avatar" src="slot:avatar-1" alt="slot:avatar-alt-1" width="88" height="88" loading="lazy">
+          <blockquote class="testimonial-carousel-quote">
+            <p><!-- slot: quote-1 --></p>
+          </blockquote>
+          <figcaption class="testimonial-carousel-person">
+            <span class="testimonial-carousel-name"><!-- slot: person-name-1 --></span>
+            <span class="testimonial-carousel-role"><!-- slot: person-role-1 --></span>
+          </figcaption>
+        </figure>
+        <figure class="testimonial-carousel-card testimonial-carousel-card--2" role="group" aria-label="Testimonial 2 of 3">
+          <img class="testimonial-carousel-avatar" src="slot:avatar-2" alt="slot:avatar-alt-2" width="88" height="88" loading="lazy">
+          <blockquote class="testimonial-carousel-quote">
+            <p><!-- slot: quote-2 --></p>
+          </blockquote>
+          <figcaption class="testimonial-carousel-person">
+            <span class="testimonial-carousel-name"><!-- slot: person-name-2 --></span>
+            <span class="testimonial-carousel-role"><!-- slot: person-role-2 --></span>
+          </figcaption>
+        </figure>
+        <figure class="testimonial-carousel-card testimonial-carousel-card--3" role="group" aria-label="Testimonial 3 of 3">
+          <img class="testimonial-carousel-avatar" src="slot:avatar-3" alt="slot:avatar-alt-3" width="88" height="88" loading="lazy">
+          <blockquote class="testimonial-carousel-quote">
+            <p><!-- slot: quote-3 --></p>
+          </blockquote>
+          <figcaption class="testimonial-carousel-person">
+            <span class="testimonial-carousel-name"><!-- slot: person-name-3 --></span>
+            <span class="testimonial-carousel-role"><!-- slot: person-role-3 --></span>
+          </figcaption>
+        </figure>
+      </div>
+      <!-- One label per input, in the same order. The label's words are the
+           radio's accessible name, so they have to say which slide it picks;
+           they are clipped, and the pill is drawn in CSS. -->
+      <div class="testimonial-carousel-dots">
+        <label class="testimonial-carousel-dot testimonial-carousel-dot--1" for="slot:slide-id-1"><span class="testimonial-carousel-dot-text">Testimonial 1 of 3</span></label>
+        <label class="testimonial-carousel-dot testimonial-carousel-dot--2" for="slot:slide-id-2"><span class="testimonial-carousel-dot-text">Testimonial 2 of 3</span></label>
+        <label class="testimonial-carousel-dot testimonial-carousel-dot--3" for="slot:slide-id-3"><span class="testimonial-carousel-dot-text">Testimonial 3 of 3</span></label>
+      </div>
+    </div>
+  </div>
+</section>

@@ -31,7 +31,8 @@ is deleted outright.
 **Pairing.** `heading-block` above it gives the section its opener, which is
 why this pattern carries only a plain `<h2>`. Do not put it directly next to a
 second card grid — two rows of cards in a row stop reading as distinct
-sections. And not on a page with `quote-feature`, which spends a whole screen
+sections — and not on a page with `portrait-wall`, which is a third run of
+faces. And not on a page with `quote-feature`, which spends a whole screen
 on a single testimonial: between them they say the same thing twice, and the
 choice is whether the brand has one strong quote or several.
 

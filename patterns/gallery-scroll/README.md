@@ -17,9 +17,10 @@ element otherwise. Duplicate the item element once per image.
 
 **Pairing.** Fine mid-page on a homepage or article. Keep it away from
 `hero-split` and `hero-overlay` — two large visual moments on one page compete
-and neither wins — and off any page carrying `steps-numbered` or
-`media-card-grid`, both of which are already runs of image cards. This is the
-most image-hungry pattern in the library and it wants the page to itself.
+and neither wins — and off any page carrying `steps-numbered`,
+`media-card-grid` or `portrait-wall`, all of which are already runs of images.
+This is the most image-hungry pattern in the library and it wants the page to
+itself.
 
 **Brand adaptability.** `--card-radius` and `--card-shadow` restyle every
 tile. Item width (`min(70vw, 22rem)`) shows a deliberate sliver of the next
