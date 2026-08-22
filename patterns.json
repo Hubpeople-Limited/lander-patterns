@@ -784,6 +784,33 @@
   "version": "2",
   "whole-page": false
  },
+ "source-note": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "The line under a claim saying where it came from - who measured it, what they counted, and when - placeable under any figure, statement, answer or card.",
+  "motion": "none",
+  "needs": "for the claim it sits under - who produced the figure, one phrase saying what it counts, and when it was measured. All three, in that order. A figure whose source cannot be named does not get this component; it comes off the page",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article"
+  ],
+  "pairs-with": [
+   "stat-rows",
+   "stats-band",
+   "rating-mark",
+   "faq-details",
+   "quote-feature"
+  ],
+  "requires": "none",
+  "type": "component",
+  "version": "1",
+  "whole-page": false
+ },
  "stat-rows": {
   "avoid-with": [
    "stats-band"
