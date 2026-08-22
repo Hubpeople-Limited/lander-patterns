@@ -1,0 +1,9 @@
+/* source-note v1 - tokens only, selectors prefixed */
+.source-note {
+  margin: var(--space-2) 0 var(--space-4);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.45;
+  max-width: 60ch;
+  text-wrap: pretty;
+}

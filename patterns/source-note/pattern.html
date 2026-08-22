@@ -1,0 +1,23 @@
+<!--
+name: source-note
+version: 1
+type: component
+page-types: homepage, landing, pricing, safety, article
+requires: none
+content-shape: reference
+description: The line under a claim saying where it came from - who measured it, what they counted, and when - placeable under any figure, statement, answer or card.
+keywords: source, provenance, citation, footnote, substantiation, evidence
+needs: for the claim it sits under - who produced the figure, one phrase saying what it counts, and when it was measured. All three, in that order. A figure whose source cannot be named does not get this component; it comes off the page
+pairs-with: stat-rows, stats-band, rating-mark, faq-details, quote-feature
+avoid-with: none
+tokens-used: --space-2, --space-4
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- Directly under the claim it belongs to, inside whatever wraps it. One
+     line, three parts, in this order: who produced the figure, what it counts,
+     and the date it covers. Never "source: internal", never "research
+     shows", never a bare link. See the README. -->
+<p class="source-note"><!-- slot: source --></p>
