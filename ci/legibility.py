@@ -338,6 +338,12 @@ def _find_group(selector, names):
         elif selector[j] == ")":
             depth -= 1
         j += 1
+    if depth:
+        # Unterminated. Returning j - 1 named an ordinary character as the
+        # closing bracket, which dropped the last character of the member -
+        # and `:is(imgx` truncated to `img`, calling a text subject
+        # decorative. An unclosed group is not a group.
+        return None
     return m.start(), m.end(), j - 1
 
 
@@ -349,7 +355,15 @@ def _expand(subject, depth=0):
     Every group is expanded, not just the first, so the verdict cannot depend
     on which group happens to be written last.
     """
-    found = _find_group(subject, MATCHES_ANY) if depth < 4 else None
+    # The cap fails CLOSED. Returning the subject with an unexpanded
+    # `:is(...)` still in it handed the raw group text to the decorative
+    # search, where a bare `img` among the members matched the element-name
+    # branch and excused the whole rule - which is the exact defect this
+    # expansion exists to prevent, reappearing past the fifth group. An empty
+    # string matches no branch, so a subject too deep to expand is reported.
+    if depth >= 4:
+        return [""]
+    found = _find_group(subject, MATCHES_ANY)
     if not found:
         return [subject]
     start, inner, close = found
@@ -415,7 +429,13 @@ def _is_decorative(selector, body):
     # for `:is(.lead, .meta)::before` - which broke the $-anchored
     # pseudo-element branch of DECORATIVE_SUBJECT and reported every
     # decorative pseudo-element fade that happened to carry an :is().
-    if not all(DECORATIVE_SUBJECT.search(s) for s in _expand(_subject(selector))):
+    # Each expansion has its OWN subject re-taken. A member of an :is() list
+    # may itself be a complex selector, and substituting it whole left its
+    # ancestor in the string: `.x:is(img .b, svg .b)` expands to `.x&img .b`,
+    # whose subject is `.b` - a label inside an image - and searching the
+    # whole string saw the `img` and excused it.
+    if not all(DECORATIVE_SUBJECT.search(_subject(s))
+               for s in _expand(_subject(selector))):
         return False
     content = re.search(r"(?<![-\w])content\s*:\s*([^;}]+)", body, re.I)
     if content and re.search(r"[\"'][^\"']*\w{2,}", content.group(1)):

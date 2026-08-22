@@ -143,35 +143,46 @@ def spacing_faults(css):
     declared = {n: v.strip() for n, v in
                 re.findall(r"(--[\w-]+)\s*:\s*([^;}]+)", text)}
 
-    def resolve(name, seen=()):
-        if name in seen or name not in declared:
-            return ""
-        value = declared[name]
-        if "--space-" in value:
-            return value
-        for ref in re.findall(r"var\(\s*(--[\w-]+)", value):
-            value += " " + resolve(ref, seen + (name,))
-        return value
-
     def strip_names(value):
         """Token names removed, values kept. `--gutter-16px` is a name."""
         return re.sub(r"var\(\s*--[\w-]+", "var(", value)
 
+    def off_ramp(name, seen=()):
+        """The first hardcoded length reached from this token, or None.
+
+        Per DECLARATION, not over a flattened chain. Three earlier versions
+        of this test each read the wrong string:
+
+        - the STRIPPED value, which blinded it entirely, because
+          `var(--space-6` is exactly the text the strip rewrites;
+        - the RESOLVED chain, where a `--space-` anywhere in it excused every
+          literal length in it, so `--a: var(--b) 96px` went silent;
+        - the token's OWN value, which then missed the ramp one hop further
+          out, so `--a: var(--b)` with `--b` computed from the ramp was
+          reported.
+
+        Walking declarations one at a time answers all three: a declaration
+        whose own value reaches the ramp contributes nothing, and each
+        reference is asked the same question in turn.
+        """
+        if name in seen or name not in declared:
+            return None
+        value = declared[name]
+        if "--space-" in value:
+            return None
+        if LENGTH.search(strip_names(value)):
+            return strip_names(value)
+        for ref in re.findall(r"var\(\s*(--[\w-]+)", value):
+            found = off_ramp(ref, seen + (name,))
+            if found:
+                return found
+        return None
+
     local_lengths = {}
     for name in declared:
-        chain = resolve(name)
-        # The guard reads this token's OWN value; only the length scan reads
-        # the resolved chain.
-        #
-        # Reading the stripped value blinded the guard entirely, because
-        # `var(--space-6` is exactly the text the strip rewrites. Reading the
-        # resolved chain instead over-corrected the other way: a `--space-`
-        # anywhere in a chain then excused every literal length in it, so
-        # `--a: var(--b) 96px` with `--b` on the ramp went silent. The
-        # declaration's own value is the thing the inline rule below tests,
-        # and it is the thing to test here.
-        if "--space-" not in declared[name] and LENGTH.search(strip_names(chain)):
-            local_lengths[name] = strip_names(chain)
+        found = off_ramp(name)
+        if found:
+            local_lengths[name] = found
 
     for m in SPACING.finditer(text):
         value = m.group(6).strip()

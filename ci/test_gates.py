@@ -202,6 +202,15 @@ LEGIBILITY = [
     ('.card :is(.t-label, :is(img)) { opacity: 0.3; }', 1, "a nested :is()"),
     ('.t-label:is() { opacity: 0.3; }', 1,
      "an empty list stands for nothing, not for everything"),
+    # Expansion has to fail CLOSED wherever it gives up.
+    ('.card :is(.x,.y):is(.x,.y):is(.x,.y):is(.x,.y):is(img,.t-label)'
+     ' { opacity: 0.3; }', 1, "more groups than the expansion will expand"),
+    ('.card :is(.x:is(.x:is(.x:is(.x:is(img,.t-label))))) { opacity: 0.3; }',
+     1, "nested deeper than the expansion will go"),
+    ('.t-label:is(imgx { opacity: 0.3; }', 1, "an unterminated group"),
+    ('.card .x:is(img .b, svg .b) { opacity: 0.3; }', 1,
+     "a complex member whose ancestor is decorative and whose subject is not"),
+    ('.card :is(img .b, svg .b) { opacity: 0.3; }', 1, "the headless form"),
 ]
 
 # ci/_containment.py, spacing half.
@@ -243,6 +252,14 @@ SPACING = [
      " a { padding: var(--a); }", 1, "the same, two hops down"),
     (":root{--b:var(--space-2);} a { padding: var(--b) 96px; }", 1,
      "the inline equivalent of both"),
+    (":root{--a:var(--b); --b:calc(var(--space-4) + 8px);}"
+     " a { padding: var(--a); }", 0, "the ramp reached two hops out"),
+    (":root{--a:var(--b); --b:var(--space-6, 96px);}"
+     " a { padding: var(--a); }", 0, "the same, with a fallback"),
+    (":root{--a:var(--b); --b:96px;} a { padding: var(--a); }", 1,
+     "a hardcoded length two hops out"),
+    (":root{--a:var(--b); --b:var(--a);} a { padding: var(--a); }", 0,
+     "a reference cycle must terminate"),
 ]
 
 # ci/_containment.py, external half.
