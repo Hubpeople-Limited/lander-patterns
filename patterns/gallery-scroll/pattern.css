@@ -1,0 +1,43 @@
+/* gallery-scroll v2 - tokens only, selectors prefixed */
+.gallery-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  padding-block: var(--space-3);
+  /* room for the focus ring, so it is not clipped by the overflow */
+  scroll-padding-inline: var(--space-4);
+}
+.gallery-scroll-track {
+  display: flex;
+  gap: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--space-4);
+  width: max-content;
+}
+.gallery-scroll-item {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+  width: min(70vw, 22rem);
+}
+.gallery-scroll-item img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+.gallery-scroll-caption {
+  color: var(--color-text-soft);
+  font-size: 0.9rem;
+  margin: var(--space-2) 0 0;
+}
+/* A visible edge on the scroller when it has keyboard focus */
+.gallery-scroll:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-scroll {
+    scroll-behavior: smooth;
+  }
+}

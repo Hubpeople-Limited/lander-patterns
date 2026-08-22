@@ -1,0 +1,16 @@
+{
+  "section-id": "zigzag-rows-sample",
+  "section-title": "Sample section title",
+  "row-1-image": "sample-wide.svg",
+  "row-1-image-alt": "Preview placeholder image for the first row",
+  "row-1-heading": "Sample heading for the first row",
+  "row-1-body": "One or two sentences of sample body copy, used only to render this preview.",
+  "row-1-link-url": "#sample-destination",
+  "row-1-link-text": "Sample link text",
+  "row-2-image": "sample-wide.svg",
+  "row-2-image-alt": "Preview placeholder image for the second row",
+  "row-2-heading": "Sample heading for the mirrored row",
+  "row-2-body": "The second sample row, which mirrors the first so the preview shows the alternation.",
+  "row-2-link-url": "#sample-destination-two",
+  "row-2-link-text": "Sample link text"
+}

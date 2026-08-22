@@ -1,0 +1,41 @@
+<!--
+name: cta-curtain
+version: 6
+type: section
+page-types: homepage, landing, pricing
+content-shape: single claim
+description: Full-viewport closing CTA pinned behind the last content section and uncovered as that section scrolls up and away, like a sheet being lifted.
+keywords: cta, curtain, reveal, finale, close, sticky
+needs: a closing headline and one supporting line of real copy; the page's last content section, which becomes the covering sheet
+pairs-with: hero-split, pricing-tiers
+avoid-with: cta-sticky
+tokens-used: --btn-radius, --card-radius, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-primary-dark, --color-scrim, --color-surface-soft, --color-text, --color-text-soft, --font-heading, --space-3, --space-4, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-21
+-->
+<!-- ONE EFFECT, TWO ELEMENTS - read the README before placing this.
+     The panel is pinned; the cover is the page's LAST content section, moved
+     inside .cta-curtain-cover so it slides up and off, uncovering the panel.
+     Nothing animates: this is layout responding to the page's own scroll.
+     Order matters and cannot be changed - the panel must come first for the
+     pin to hold. The spacer gives back the scroll height the cover's negative
+     margin removes; deleting it ends the page a screen early and the panel
+     never fully uncovers. Use once per page, as the page's last block. -->
+<div class="cta-curtain">
+  <section class="cta-curtain-panel" aria-labelledby="cta-curtain-title">
+    <div class="cta-curtain-inner">
+      <h2 class="cta-curtain-title" id="cta-curtain-title"><!-- slot: title --></h2>
+      <p class="cta-curtain-lead"><!-- slot: lead --></p>
+      <a class="cta-curtain-btn" href="{{join.url}}">{{join.text}}</a>
+    </div>
+  </section>
+  <!-- Move the page's existing last content section in here, unchanged. The
+       wrapper carries the opaque background and the leading-edge shadow, so
+       the section inside keeps its own pattern's markup and styling. -->
+  <div class="cta-curtain-cover">
+    <!-- slot: cover-section -->
+  </div>
+  <div class="cta-curtain-spacer" aria-hidden="true"></div>
+</div>

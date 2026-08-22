@@ -1,0 +1,35 @@
+<!--
+name: picker-chips
+version: 4
+type: component
+page-types: homepage, landing
+content-shape: peer set
+description: The first sign-up decision as one tap - a question, a helper line, and a row of pill links that each go straight into the join flow.
+keywords: picker, chips, pills, choice, join, sign-up, conversion
+needs: the real opening question the brand asks; two to four real options in the brand's own words; one helper line saying what picking does; a decision from the platform on whether the join flow reads a preference parameter
+pairs-with: hero-split
+avoid-with: none
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --font-heading, --space-2, --space-3, --space-4, --space-5
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-21
+-->
+<!-- picker-id is a slot: fill it with something specific to this page, and
+     keep the two references in step. -->
+<div class="picker-chips" role="group" aria-labelledby="slot:picker-id">
+  <h2 class="picker-chips-title" id="slot:picker-id"><!-- slot: picker-question --></h2>
+  <p class="picker-chips-helper"><!-- slot: picker-helper --></p>
+  <!-- ONE <li> per real option; duplicate the whole <li>. Two to four is the
+       useful range. Every pill points at {{join.url}} and nothing else - add a
+       query parameter only if the platform has confirmed the brand's join flow
+       reads one. -->
+  <ul class="picker-chips-list" role="list">
+    <li class="picker-chips-item">
+      <a class="picker-chips-link" href="{{join.url}}">
+        <!-- slot: option-label -->
+        <span class="picker-chips-arrow" aria-hidden="true">&#8594;</span>
+      </a>
+    </li>
+  </ul>
+</div>

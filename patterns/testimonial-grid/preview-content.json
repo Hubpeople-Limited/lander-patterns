@@ -1,0 +1,10 @@
+{
+  "section-title": "Sample testimonials heading",
+  "avatar": "sample-portrait.svg",
+  "avatar-alt": "Sample portrait placeholder, preview only",
+  "quote": "A sample quotation, written only to render this preview card.",
+  "person-name": "Sample Person",
+  "person-role": "Sample attribution line for the preview",
+  "source-url": "#sample-source",
+  "source-text": "Sample source link"
+}

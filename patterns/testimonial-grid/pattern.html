@@ -1,0 +1,45 @@
+<!--
+name: testimonial-grid
+version: 4
+type: section
+page-types: homepage, landing, pricing
+content-shape: peer set
+description: Three equal-height testimonial cards with portraits overlapping the card edge; one card may be filled and is named as featured in words.
+keywords: testimonials, quotes, social proof, reviews, cards
+needs: three real testimonials - each quote as the person actually wrote it, their name, and their attribution; one real portrait per person with real alt text; a public source URL only where the testimonial genuinely has one
+pairs-with: heading-block
+avoid-with: none
+tokens-used: --card-border, --card-radius, --card-shadow, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-12, --space-2, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-21
+-->
+<section class="testimonial-grid">
+  <div class="testimonial-grid-inner">
+    <h2 class="testimonial-grid-title"><!-- slot: section-title --></h2>
+    <!-- Three testimonials reads best; the row locks to three columns from
+         60rem. Every quote must be one the person actually wrote, with a real
+         name and attribution. Delete the source link unless there is a real
+         public page to point at. There is deliberately no star rating. -->
+    <ul class="testimonial-grid-list" role="list">
+      <!-- ONE <li> per testimonial; duplicate this whole block. To feature one
+           of the set, add testimonial-grid-item--featured to its <li> and put a
+           testimonial-grid-flag paragraph above its <blockquote>. At most one
+           card carries either. -->
+      <li class="testimonial-grid-item">
+        <figure class="testimonial-grid-card">
+          <img class="testimonial-grid-avatar" src="slot:avatar" alt="slot:avatar-alt" width="80" height="80" loading="lazy">
+          <blockquote class="testimonial-grid-quote">
+            <p><!-- slot: quote --></p>
+          </blockquote>
+          <figcaption class="testimonial-grid-person">
+            <span class="testimonial-grid-name"><!-- slot: person-name --></span>
+            <span class="testimonial-grid-role"><!-- slot: person-role --></span>
+            <a class="testimonial-grid-source" href="slot:source-url"><!-- slot: source-text --></a>
+          </figcaption>
+        </figure>
+      </li>
+    </ul>
+  </div>
+</section>

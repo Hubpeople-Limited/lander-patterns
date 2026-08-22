@@ -1,0 +1,160 @@
+/* media-card-grid v5 - tokens only, selectors prefixed */
+.media-card-grid {
+  /* Contrast floor. The words sit on a photograph, so the scrim carries the
+   contrast; clamp() holds it whatever the dial is set to. */
+  --media-card-grid-scrim-floor: clamp(0.92, var(--media-card-grid-scrim-strength, 0.92), 1);
+  --media-card-grid-ratio: 5 / 6;
+  padding-block: var(--space-8);
+}
+.media-card-grid-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.media-card-grid-title {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-6);
+  text-wrap: balance;
+}
+.media-card-grid-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+  gap: var(--space-5);
+  align-items: stretch;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* One grid cell, two stacked layers: photograph and scrim. */
+.media-card-grid-item {
+  position: relative;
+  display: grid;
+  grid-template-areas: "media";
+  aspect-ratio: var(--media-card-grid-ratio);
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  background: var(--color-surface-soft);
+  isolation: isolate;
+}
+.media-card-grid-img,
+.media-card-grid-scrim {
+  grid-area: media;
+}
+.media-card-grid-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The full level is held to the top of the text band, then fades. */
+.media-card-grid-scrim {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: var(--space-5);
+  color: var(--color-on-scrim);
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-scrim) calc(var(--media-card-grid-scrim-floor) * 100%), transparent) 0%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--media-card-grid-scrim-floor) * 100%), transparent) 45%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--media-card-grid-scrim-floor) * 58%), transparent) 70%,
+    transparent 100%
+  );
+}
+/* The chip stays in flow, so a wrapping label pushes rather than covers. */
+.media-card-grid-chip {
+  margin: 0;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--chip-radius);
+}
+/* margin-top:auto keeps the cue on the floor of every card. */
+.media-card-grid-text {
+  margin-top: auto;
+  padding-top: var(--space-6);
+}
+.media-card-grid-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 0.95rem + 0.7vw, 1.4375rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-2);
+  text-wrap: balance;
+}
+/* One link per card, and it is the heading. ::after makes the whole card
+   the target without nesting anything inside the link. */
+.media-card-grid-link {
+  color: inherit;
+  text-decoration: none;
+}
+.media-card-grid-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.media-card-grid-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* Drawn inside the card's edge, which clips overflow. Three bands, so one
+   of them contrasts against any photograph. */
+.media-card-grid-link:focus-visible::after {
+  outline: 2px solid var(--color-focus);
+  outline-offset: calc(-1 * var(--space-1));
+  /* Name the radius: border-radius is not inherited, so `inherit` would take
+   the parent's, which is none. */
+  border-radius: var(--card-radius);
+  box-shadow: 0 0 0 2px var(--color-on-scrim) inset,
+              0 0 0 6px var(--color-scrim) inset;
+}
+.media-card-grid-copy {
+  margin: 0;
+  font-size: clamp(0.875rem, 0.82rem + 0.25vw, 0.9375rem);
+  line-height: 1.45;
+}
+.media-card-grid-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.media-card-grid-cue::after {
+  content: "\2192";
+}
+/* On hover the gap widens, so the arrow steps away from its words. */
+@media (prefers-reduced-motion: no-preference) {
+  .media-card-grid-cue {
+    transition: gap var(--transition-fast) ease-out;
+  }
+  .media-card-grid-img {
+    transition: scale var(--transition-slow) ease-out;
+  }
+  .media-card-grid-item:hover .media-card-grid-cue,
+  .media-card-grid-item:focus-within .media-card-grid-cue {
+    gap: var(--space-4);
+  }
+  .media-card-grid-item:hover .media-card-grid-img,
+  .media-card-grid-item:focus-within .media-card-grid-img {
+    scale: 1.03;
+  }
+}
+/* Narrow cards cannot carry the full inset and still leave the copy room. */
+@media (width < 30rem) {
+  .media-card-grid-scrim {
+    padding: var(--space-4);
+  }
+  .media-card-grid-text {
+    padding-top: var(--space-5);
+  }
+}

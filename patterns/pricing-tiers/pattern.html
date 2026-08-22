@@ -1,0 +1,38 @@
+<!--
+name: pricing-tiers
+version: 5
+type: section
+page-types: pricing
+content-shape: reference
+description: Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.
+keywords: pricing, tiers, plans, membership, comparison
+needs: the real tiers - names, real prices with currency, and each tier's actual features from brand material; a stated recommended tier or none
+pairs-with: stats-band
+avoid-with: none
+tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-primary-dark, --color-rule, --color-surface, --color-text, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-21
+behaviours: reveal
+-->
+<section class="pricing-tiers">
+  <div class="pricing-tiers-inner">
+    <h2 class="pricing-tiers-title"><!-- slot: section-title --></h2>
+    <div class="pricing-tiers-grid" data-hub-module="reveal" data-hub-reveal-children>
+      <!-- One article per tier. Duplicate for each real tier; delete the
+           pricing-tiers-flag line on tiers that are not the recommended one.
+           Every card keeps the same structure - heading, price, features,
+           CTA - so the row reads as one set. -->
+      <article class="pricing-tiers-card">
+        <p class="pricing-tiers-flag"><!-- slot: recommended-label --></p>
+        <h3 class="pricing-tiers-name"><!-- slot: tier-name --></h3>
+        <p class="pricing-tiers-price"><!-- slot: tier-price --></p>
+        <ul class="pricing-tiers-features" role="list">
+          <!-- slot: tier-features -->
+        </ul>
+        <a class="pricing-tiers-btn" href="{{join.url}}">{{join.text}}</a>
+      </article>
+    </div>
+  </div>
+</section>

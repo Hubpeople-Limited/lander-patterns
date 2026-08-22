@@ -1,0 +1,24 @@
+<!--
+name: heading-block
+version: 3
+type: component
+page-types: homepage, landing, pricing, safety, article
+content-shape: single claim
+description: Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
+keywords: header, eyebrow, title, intro, section
+needs: a short eyebrow label, a title, and one supporting sentence - all real copy; the intro line is optional and deleted when there is nothing true to say
+pairs-with: testimonial-grid, pricing-tiers
+avoid-with: none
+tokens-used: --chip-radius, --color-heading, --color-primary, --color-text-soft, --font-heading, --space-2, --space-4, --space-5, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- Delete the intro paragraph entirely when the section needs no supporting
+     line. The eyebrow's flanking rules are decorative and drawn in CSS. -->
+<div class="heading-block">
+  <p class="heading-block-eyebrow"><!-- slot: eyebrow --></p>
+  <h2 class="heading-block-title"><!-- slot: title --></h2>
+  <p class="heading-block-intro"><!-- slot: intro --></p>
+</div>

@@ -1,0 +1,141 @@
+/* testimonial-grid v4 - tokens only, selectors prefixed */
+.testimonial-grid {
+  padding-block: var(--space-8);
+}
+.testimonial-grid-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.testimonial-grid-title {
+  margin: 0 0 var(--space-8);
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  letter-spacing: -0.02em;
+}
+.testimonial-grid-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+  gap: var(--space-8) var(--space-5);
+  align-items: stretch;
+  list-style: none;
+  margin: 0;
+  /* headroom for the portraits, which overhang the top edge of the first row */
+  padding: var(--space-6) 0 0;
+}
+.testimonial-grid-item {
+  display: flex;
+}
+.testimonial-grid-card {
+  /* The portrait is a face, not a panel: round on every brand. */
+  --testimonial-grid-avatar-radius: 50%;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+  background: var(--color-surface);
+  /* --color-text: this is not large text. */
+  color: var(--color-text);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  /* deep top padding clears the overhanging portrait */
+  padding: var(--space-12) var(--space-5) var(--space-6);
+}
+/* The portrait breaks the top edge, centred on it, ringed in the surface
+   colour so it reads as lifted off the card rather than pasted onto it. */
+.testimonial-grid-avatar {
+  position: absolute;
+  top: calc(-1 * var(--space-6));
+  left: 50%;
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  border-radius: var(--testimonial-grid-avatar-radius);
+  border: var(--space-1) solid var(--color-surface);
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
+}
+/* The fill is decoration; this is the meaning. */
+.testimonial-grid-flag {
+  margin: 0 0 var(--space-4);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* --color-text: --color-primary-dark is for light grounds only. */
+  color: var(--color-text);
+}
+.testimonial-grid-quote {
+  margin: 0;
+  max-width: 27rem;
+}
+/* The weight contrast the card is built on: the quote heavy and tightly
+   tracked, the name below it light. */
+.testimonial-grid-quote p {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.0625rem, 0.95rem + 0.6vw, 1.3125rem);
+  line-height: 1.28;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: inherit;
+}
+/* margin-top:auto bottom-aligns the attribution across a row. */
+.testimonial-grid-person {
+  margin-top: auto;
+  padding-top: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+.testimonial-grid-name {
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  font-weight: 500;
+  color: inherit;
+}
+.testimonial-grid-role {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-text-soft);
+}
+.testimonial-grid-source {
+  margin-top: var(--space-2);
+  font-size: 0.875rem;
+  /* --color-text: --color-primary-dark is for light grounds only. */
+  color: var(--color-text);
+}
+.testimonial-grid-source:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+/* One card may invert to --color-primary with --color-on-primary. */
+.testimonial-grid-item--featured .testimonial-grid-card {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: color-mix(in srgb, var(--color-on-primary) 30%, transparent);
+}
+/* Ring from --color-on-primary: the featured ground is --color-primary. */
+.testimonial-grid-item--featured .testimonial-grid-source:focus-visible {
+  outline-color: var(--color-on-primary);
+}
+.testimonial-grid-item--featured .testimonial-grid-flag,
+.testimonial-grid-item--featured .testimonial-grid-role,
+.testimonial-grid-item--featured .testimonial-grid-source {
+  color: var(--color-on-primary);
+}
+/* Lock the row to three from tablet-landscape up; below that the cards fall
+   to two and then one on their own. */
+@media (min-width: 60rem) {
+  .testimonial-grid-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,37 @@
+<!--
+name: faq-details
+version: 3
+type: section
+page-types: homepage, landing, pricing
+content-shape: question and answer
+description: Zero-JavaScript FAQ accordion on native details/summary - hairline rows, a plus that turns into a cross when the row opens.
+keywords: faq, accordion, questions, answers, disclosure, details
+needs: the real questions people actually ask, each with a true answer in the brand's own words; a section heading
+pairs-with: heading-block
+avoid-with: none
+tokens-used: --color-focus, --color-heading, --color-rule, --color-text, --color-text-soft, --font-heading, --space-3, --space-4, --space-5, --space-6, --space-8, --transition-fast
+motion: subtle
+one-per-page: no
+status: active
+added: 2026-08-21
+-->
+<section class="faq-details">
+  <div class="faq-details-inner">
+    <h2 class="faq-details-title"><!-- slot: section-title --></h2>
+    <!-- One <details> per question. Duplicate the whole block below for each
+         real question - the structure never changes between rows, only the
+         question and its answer. Every row ships closed: see the README before
+         adding an `open` attribute to the first one. The icon span is
+         decorative and drawn in CSS; the open/closed state itself is carried
+         by <details> and announced by the browser. -->
+    <details class="faq-details-item">
+      <summary class="faq-details-summary">
+        <span class="faq-details-question"><!-- slot: question --></span>
+        <span class="faq-details-icon" aria-hidden="true"></span>
+      </summary>
+      <div class="faq-details-answer">
+        <!-- slot: answer -->
+      </div>
+    </details>
+  </div>
+</section>

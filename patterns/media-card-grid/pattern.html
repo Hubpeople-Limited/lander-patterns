@@ -1,0 +1,42 @@
+<!--
+name: media-card-grid
+version: 5
+type: section
+page-types: homepage, landing
+content-shape: peer set
+description: A responsive grid of portrait image cards, each with a corner chip and its heading, one line of copy and an arrow cue set on a tuned bottom-up scrim over the photograph.
+keywords: cards, grid, media, features, audiences, image cards, overlay
+needs: one real photograph per card, portrait-ish and at least 1280px wide, each with its own alt text; a short heading, one sentence of copy and a real destination URL per card; a short chip label per card only where the brand genuinely has one
+pairs-with: heading-block
+avoid-with: steps-numbered, gallery-scroll
+tokens-used: --card-radius, --card-shadow, --chip-radius, --color-focus, --color-heading, --color-on-scrim, --color-scrim, --color-surface, --color-surface-soft, --color-text, --container-max, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --transition-fast, --transition-slow
+motion: subtle
+one-per-page: no
+status: active
+added: 2026-08-21
+behaviours: reveal
+-->
+<section class="media-card-grid">
+  <div class="media-card-grid-inner">
+    <h2 class="media-card-grid-title"><!-- slot: section-title --></h2>
+    <ul class="media-card-grid-list" role="list" data-hub-module="reveal" data-hub-reveal-children>
+      <!-- ONE card. Duplicate this whole <li> per real item - three, four or six
+         read best. Each needs its own photograph and alt text. The heading is
+         the only link; do not add a second. The chip is optional - delete the
+         paragraph if the item has no real label. -->
+      <li class="media-card-grid-item">
+        <img class="media-card-grid-img" src="slot:card-image" alt="slot:card-image-alt" width="640" height="768" loading="lazy">
+        <div class="media-card-grid-scrim">
+          <p class="media-card-grid-chip"><!-- slot: card-chip --></p>
+          <div class="media-card-grid-text">
+            <h3 class="media-card-grid-heading">
+              <a class="media-card-grid-link" href="slot:card-url"><!-- slot: card-heading --></a>
+            </h3>
+            <p class="media-card-grid-copy"><!-- slot: card-copy --></p>
+            <p class="media-card-grid-cue" aria-hidden="true"><!-- slot: card-cue --></p>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>

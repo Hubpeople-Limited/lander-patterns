@@ -1,0 +1,35 @@
+/* Sample token set: sharp-editorial, flat. Preview only - a real brand
+   supplies its own :root in global.css. */
+:root {
+  --color-bg: oklch(0.99 0 0);
+  --color-surface: oklch(1 0 0);
+  --color-surface-soft: oklch(0.96 0 0);
+  --color-text: oklch(0.2 0 0);
+  --color-text-soft: oklch(0.42 0 0);
+  --color-heading: oklch(0.12 0 0);
+  --color-primary: oklch(0.4 0.15 265);
+  --color-primary-dark: oklch(0.3 0.13 265);
+  --color-on-primary: oklch(0.99 0 0);
+  --color-scrim: oklch(0.14 0.01 260);
+  --color-on-scrim: oklch(1 0 0);
+  --color-rule: oklch(0.55 0 0);
+  --color-focus: oklch(0.5 0.19 255);
+
+  --font-heading: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --space-1: 0.25rem;  --space-2: 0.5rem;  --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.5rem;  --space-6: 2rem;
+  --space-8: 3rem;     --space-12: 5rem;
+  --container-max: 72rem;
+
+  --btn-radius: 0;
+  --card-radius: 0;
+  --card-shadow: none;
+  --card-border: 1px solid oklch(0.2 0 0 / 0.25);
+  --chip-radius: 0;
+  --logo-height: 2.75rem;
+
+  --transition-fast: 150ms;
+  --transition-slow: 400ms;
+}

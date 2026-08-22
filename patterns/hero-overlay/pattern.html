@@ -1,0 +1,54 @@
+<!--
+name: hero-overlay
+version: 5
+type: section
+page-types: homepage, landing
+content-shape: single claim
+description: Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.
+keywords: hero, overlay, full-bleed, cinematic, above-the-fold, cta
+needs: one landscape photograph strong enough to fill a whole screen, at least 2400px wide, with its own alt text and a CDN srcset ladder; a headline of one or two lines and one supporting sentence, both from real brand material
+pairs-with: stats-band
+avoid-with: hero-split, gallery-scroll
+tokens-used: --btn-radius, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-primary-dark, --color-text, --color-text-soft, --container-max, --font-heading, --space-12, --space-3, --space-4, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-21
+-->
+<section class="hero-overlay">
+  <!-- The largest asset on the page and, on every full-bleed hero, its LCP
+       element. So: never deferred - no lazy loading, high fetch priority, and
+       width/height carrying the real file's intrinsic pixel size so the box is
+       reserved before a byte of image arrives. The 1920x1280 shipped here is a
+       stand-in ratio, not a promise about your file. Fill the srcset attribute
+       with a CDN ladder (the README gives the widths); sizes is 100vw because
+       the image is genuinely full-bleed at every viewport.
+       The alt is a real, filled slot - this photograph is the page's whole first
+       impression and the copy never says what it shows. An empty value is the
+       right fill only for a pure texture or gradient - empty the value, never
+       delete the attribute. -->
+  <img class="hero-overlay-img"
+       src="slot:hero-image"
+       srcset="slot:hero-image-srcset"
+       sizes="100vw"
+       alt="slot:hero-image-alt"
+       width="1920"
+       height="1280"
+       fetchpriority="high"
+       decoding="async">
+  <div class="hero-overlay-inner">
+    <div class="hero-overlay-copy">
+      <!-- The page's only h1. -->
+      <h1 class="hero-overlay-title"><!-- slot: headline --></h1>
+      <p class="hero-overlay-sub"><!-- slot: subhead --></p>
+      <!-- Two platform controls, no invented destinations: join for the new
+           visitor, login for the one coming back. Delete the second anchor for
+           a pure acquisition page - never repoint it at a hash or a hand-typed
+           URL. -->
+      <div class="hero-overlay-actions">
+        <a class="hero-overlay-btn" href="{{join.url}}">{{join.text}}</a>
+        <a class="hero-overlay-ghost" href="{{login.url}}">{{login.text}}</a>
+      </div>
+    </div>
+  </div>
+</section>

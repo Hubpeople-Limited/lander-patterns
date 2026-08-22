@@ -1,0 +1,28 @@
+<!--
+name: gallery-scroll
+version: 2
+type: component
+page-types: homepage, landing, article
+content-shape: peer set
+description: User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances.
+keywords: gallery, carousel, scroll-snap, images
+needs: three or more real images of the same kind, each with real alt text, sized for the slot via the CDN
+pairs-with: pricing-tiers
+avoid-with: hero-split, hero-overlay, steps-numbered, media-card-grid
+tokens-used: --card-radius, --card-shadow, --color-focus, --color-text-soft, --space-2, --space-3, --space-4
+motion: subtle
+one-per-page: no
+status: active
+added: 2026-08-21
+-->
+<!-- The visitor scrolls or swipes; nothing moves by itself. Duplicate one
+     gallery-scroll-item per real image. tabindex="0" keeps the scroller
+     keyboard-reachable; the label tells assistive tech what it is. -->
+<div class="gallery-scroll" tabindex="0" role="region" aria-label="slot:gallery-label">
+  <ul class="gallery-scroll-track" role="list">
+    <li class="gallery-scroll-item">
+      <img src="slot:image" alt="slot:image-alt" width="480" height="360" loading="lazy">
+      <p class="gallery-scroll-caption"><!-- slot: caption --></p>
+    </li>
+  </ul>
+</div>

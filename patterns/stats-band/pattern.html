@@ -1,0 +1,41 @@
+<!--
+name: stats-band
+version: 5
+type: section
+page-types: homepage, landing, pricing
+content-shape: peer set
+description: Full-bleed inverted proof band - a hairline lattice of real figures, each one paired with its label in a definition list; renders complete with no script.
+keywords: stats, statistics, proof, numbers, figures, band, metrics
+needs: an eyebrow, a short band title, and the real figures with their labels - every number taken from brand material and written into the markup as text, never computed on the page
+pairs-with: pricing-tiers, hero-split, hero-overlay
+avoid-with: stat-rows
+tokens-used: --card-radius, --color-on-primary, --color-primary, --container-max, --font-body, --font-heading, --space-12, --space-2, --space-3, --space-4, --space-6, --space-8
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-21
+behaviours: reveal
+-->
+<section class="stats-band">
+  <div class="stats-band-inner">
+    <div class="stats-band-head">
+      <p class="stats-band-eyebrow"><!-- slot: eyebrow --></p>
+      <h2 class="stats-band-title"><!-- slot: band-title --></h2>
+    </div>
+    <dl class="stats-band-grid" data-hub-module="reveal" data-hub-reveal-children>
+      <!-- One group per real statistic. Duplicate this whole
+           stats-band-item block once for each figure the brand actually
+           has, and delete this one if there is nothing true to put in it.
+           The figure is written out in full as text - "20+", "24/7",
+           "50-65%" - because it is the claim, and a claim that only
+           appears once a script runs is a page that ships the wrong
+           number. Nothing counts up, and nothing needs to.
+           Fill each row: three per row from tablet up, two below that,
+           so 3 or 6 figures sit flush and 4 or 5 leave a gap. -->
+      <div class="stats-band-item">
+        <dt class="stats-band-figure"><!-- slot: stat-figure --></dt>
+        <dd class="stats-band-label"><!-- slot: stat-label --></dd>
+      </div>
+    </dl>
+  </div>
+</section>

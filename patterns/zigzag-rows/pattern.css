@@ -1,0 +1,124 @@
+/* zigzag-rows v3 - tokens only, selectors prefixed */
+.zigzag-rows {
+  /* One ratio for every media box, set once: equal-height rows are what hold
+   the rhythm down the page. */
+  --zigzag-rows-media-ratio: 1 / 1;
+  padding-block: var(--space-8);
+}
+.zigzag-rows-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  display: grid;
+  gap: var(--space-8);
+}
+/* Same title setting as the library's other list sections. */
+.zigzag-rows-title {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+/* Phones: one column and no order property - source order already puts the
+   image first, so there is nothing to undo. */
+.zigzag-rows-row {
+  display: grid;
+  gap: var(--space-5);
+  align-items: center;
+}
+.zigzag-rows-media {
+  aspect-ratio: var(--zigzag-rows-media-ratio);
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  background: var(--color-surface-soft);
+}
+.zigzag-rows-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.zigzag-rows-heading {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+/* Body copy is body copy: it starts at 16px and grows. The source this came
+   from set it clamp(13px, 0.9vw, 14px), which is caption size. */
+.zigzag-rows-body {
+  color: var(--color-text-soft);
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+  line-height: 1.6;
+  max-width: 46ch;
+  margin: 0;
+}
+.zigzag-rows-action {
+  margin: var(--space-5) 0 0;
+}
+/* Underlined, body size, 44px target. */
+.zigzag-rows-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  /* --color-text: --color-primary-dark is for light grounds only. */
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.2em;
+}
+.zigzag-rows-link:hover {
+  color: var(--color-primary);
+}
+.zigzag-rows-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+@media (min-width: 48rem) {
+  .zigzag-rows {
+    padding-block: var(--space-12);
+  }
+  .zigzag-rows-inner {
+    gap: var(--space-12);
+  }
+  .zigzag-rows-row {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+  /* Both halves are placed explicitly, so the alternation is a stated
+     property of the row and not a side effect of auto-placement. */
+  .zigzag-rows-media {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .zigzag-rows-copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .zigzag-rows-row--mirrored .zigzag-rows-media {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .zigzag-rows-row--mirrored .zigzag-rows-copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  /* Guard: a mirrored row whose media holds a link, button or anything
+   tabbable renders unmirrored, because flipping it would send focus
+   right-then-left. A safety net where :has() is supported, not a licence. */
+  .zigzag-rows-row--mirrored:has(.zigzag-rows-media :is(a, button, [tabindex])) .zigzag-rows-media {
+    grid-column: 1;
+  }
+  .zigzag-rows-row--mirrored:has(.zigzag-rows-media :is(a, button, [tabindex])) .zigzag-rows-copy {
+    grid-column: 2;
+  }
+}

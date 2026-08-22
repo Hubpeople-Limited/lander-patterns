@@ -1,0 +1,22 @@
+<!--
+name: cta-sticky
+version: 5
+type: component
+page-types: homepage, landing, pricing, article
+content-shape: single claim
+description: Mobile sticky bottom CTA bar - one join button always in the thumb zone on pages longer than two screens; hidden on desktop.
+keywords: cta, sticky, mobile, thumb-zone, conversion
+needs: nothing beyond the page it sits on being longer than two mobile screens
+pairs-with: none
+avoid-with: cta-curtain
+tokens-used: --btn-radius, --color-focus, --color-on-primary, --color-primary, --color-primary-dark, --color-rule, --color-surface, --space-2, --space-3, --space-4
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-21
+-->
+<!-- Place immediately before </body>. The page-bottom clearance rule ships
+     in this pattern's CSS - nothing further to add. -->
+<div class="cta-sticky">
+  <a class="cta-sticky-btn" href="{{join.url}}">{{join.text}}</a>
+</div>

@@ -1,0 +1,44 @@
+<!--
+name: steps-numbered
+version: 3
+type: section
+page-types: homepage, landing
+content-shape: ordered set
+description: How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
+keywords: steps, how it works, process, onboarding, numbered
+needs: one real photograph per step, portrait-ish and at least 1020px wide, each with its own alt text; a short step title and one sentence of body copy per step, in the real order they happen
+pairs-with: heading-block
+avoid-with: gallery-scroll, media-card-grid, zigzag-rows
+tokens-used: --card-radius, --card-shadow, --color-heading, --color-on-scrim, --color-scrim, --color-surface-soft, --container-max, --font-heading, --space-2, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-21
+behaviours: reveal
+-->
+<section class="steps-numbered">
+  <div class="steps-numbered-inner">
+    <h2 class="steps-numbered-title"><!-- slot: section-title --></h2>
+    <ol class="steps-numbered-list" role="list" data-hub-module="reveal" data-hub-reveal-children>
+      <!-- ONE step. Duplicate this whole <li> once per real step - three or
+           four is the useful range; two is a list, five stops being a
+           sequence anyone remembers. Do not type a number anywhere: the
+           numeral is a CSS counter off the <ol>, so duplicating, reordering
+           or deleting a step renumbers the set on its own. Set width and
+           height on the image element to the real image's intrinsic pixel
+           size; the shipped 510x590 is a stand-in for the card's ratio, not a
+           promise about your file. -->
+      <li class="steps-numbered-item">
+        <img class="steps-numbered-img" loading="lazy" src="slot:step-image" alt="slot:step-image-alt" width="510" height="590">
+        <div class="steps-numbered-scrim">
+          <div class="steps-numbered-content">
+            <div class="steps-numbered-text">
+              <h3 class="steps-numbered-heading"><!-- slot: step-title --></h3>
+              <p class="steps-numbered-body"><!-- slot: step-body --></p>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>

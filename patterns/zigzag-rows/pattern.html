@@ -1,0 +1,62 @@
+<!--
+name: zigzag-rows
+version: 3
+type: section
+page-types: homepage, landing
+content-shape: peer set
+description: Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.
+keywords: zigzag, alternating, features, image and text, rows
+needs: one real photograph per row, at least 1000px on the short side, each with its own alt text; a short heading and one or two sentences per row; optionally one destination link per row
+pairs-with: heading-block
+avoid-with: steps-numbered, hero-split
+tokens-used: --card-radius, --card-shadow, --color-focus, --color-heading, --color-primary, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-12, --space-3, --space-4, --space-5, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-21
+behaviours: reveal
+-->
+<!-- section-id: draw it from the section's heading. -->
+<section class="zigzag-rows" aria-labelledby="slot:section-id">
+  <div class="zigzag-rows-inner" data-hub-module="reveal" data-hub-reveal-children>
+    <!-- The section's own h2. Delete it only when heading-block sits directly
+         above, and drop the aria-labelledby with it. -->
+    <h2 class="zigzag-rows-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <!-- A PAIR OF ROWS, one plain and one mirrored. To add a third, copy either
+         row, rename its placeholders to row-3-*, and keep alternating so every
+         second row carries zigzag-rows-row--mirrored. Three to five rows is the
+         useful range.
+
+         Only the media ever moves, and the alternation is stated on the row -
+         never inferred with :nth-child - so inserting anything between rows
+         cannot invert every row below it.
+
+         Never wrap a row's image in a link: in a mirrored row that puts a focus
+         stop in the half that moves. The row's destination belongs in the copy
+         link. -->
+    <div class="zigzag-rows-row">
+      <div class="zigzag-rows-media">
+        <img class="zigzag-rows-img" loading="lazy" src="slot:row-1-image" alt="slot:row-1-image-alt" width="800" height="800">
+      </div>
+      <div class="zigzag-rows-copy">
+        <h3 class="zigzag-rows-heading"><!-- slot: row-1-heading --></h3>
+        <p class="zigzag-rows-body"><!-- slot: row-1-body --></p>
+        <p class="zigzag-rows-action">
+          <a class="zigzag-rows-link" href="slot:row-1-link-url"><!-- slot: row-1-link-text --></a>
+        </p>
+      </div>
+    </div>
+    <div class="zigzag-rows-row zigzag-rows-row--mirrored">
+      <div class="zigzag-rows-media">
+        <img class="zigzag-rows-img" loading="lazy" src="slot:row-2-image" alt="slot:row-2-image-alt" width="800" height="800">
+      </div>
+      <div class="zigzag-rows-copy">
+        <h3 class="zigzag-rows-heading"><!-- slot: row-2-heading --></h3>
+        <p class="zigzag-rows-body"><!-- slot: row-2-body --></p>
+        <p class="zigzag-rows-action">
+          <a class="zigzag-rows-link" href="slot:row-2-link-url"><!-- slot: row-2-link-text --></a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,5 @@
+{
+  "section-title": "Sample questions heading",
+  "question": "A sample question, phrased the way a visitor would ask it?",
+  "answer": "<p>Sample answer paragraph, used only to render this preview.</p><p>A second sample paragraph, to show how the preview handles more than one.</p>"
+}

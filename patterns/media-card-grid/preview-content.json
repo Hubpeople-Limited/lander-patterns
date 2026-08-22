@@ -1,0 +1,10 @@
+{
+  "section-title": "Sample media card heading for preview",
+  "card-image": "sample-portrait.svg",
+  "card-image-alt": "Preview placeholder image",
+  "card-chip": "Sample chip",
+  "card-heading": "Sample card heading",
+  "card-copy": "One sentence of sample copy, here only to render this preview.",
+  "card-cue": "Sample cue",
+  "card-url": "#sample-destination"
+}

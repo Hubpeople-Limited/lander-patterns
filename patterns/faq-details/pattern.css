@@ -1,0 +1,115 @@
+/* faq-details v3 - tokens only, selectors prefixed.
+   No script anywhere: <details>/<summary> gives keyboard operation, the
+   expanded/collapsed announcement and find-in-page for free. */
+.faq-details {
+  padding-block: var(--space-8);
+}
+/* Keep the measure: answers read badly at full width. */
+.faq-details-inner {
+  width: min(100% - 2 * var(--space-4), 48rem);
+  margin-inline: auto;
+}
+.faq-details-title {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+  margin: 0 0 var(--space-6);
+}
+/* A rule under every item, plus one above the first. */
+.faq-details-item {
+  border-block-end: 1px solid var(--color-rule);
+}
+.faq-details-item:first-of-type {
+  border-block-start: 1px solid var(--color-rule);
+}
+.faq-details-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+  cursor: pointer;
+  font-family: var(--font-heading);
+  /* --color-text: this is not large text. */
+  color: var(--color-text);
+  /* Both lines are needed to drop the default triangle. */
+  list-style: none;
+}
+.faq-details-summary::-webkit-details-marker {
+  display: none;
+}
+/* Required: removing the marker above removes the focus affordance some
+   browsers hang off it. */
+.faq-details-summary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+.faq-details-question {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+/* The indicator is a shape, not a glyph and never colour alone. */
+.faq-details-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--space-5);
+  height: var(--space-5);
+}
+.faq-details-icon::before,
+.faq-details-icon::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 2px;
+  margin-block-start: -1px;
+  background: var(--color-text-soft);
+}
+.faq-details-icon::after {
+  transform: rotate(90deg);
+}
+/* A state change, not an animation: it applies under reduced motion too. */
+.faq-details-item[open] .faq-details-icon {
+  transform: rotate(45deg);
+}
+.faq-details-answer {
+  padding-block-end: var(--space-4);
+  padding-inline-end: var(--space-6);
+  color: var(--color-text-soft);
+}
+.faq-details-answer p {
+  margin: 0 0 var(--space-3);
+  line-height: 1.65;
+}
+.faq-details-answer p:last-child {
+  margin-block-end: 0;
+}
+/* Motion is opt-in and only ever eases a state the page already reached. */
+@media (prefers-reduced-motion: no-preference) {
+  .faq-details-icon {
+    transition: transform var(--transition-fast) ease-out;
+  }
+  .faq-details-item[open] .faq-details-answer {
+    animation: faq-details-open var(--transition-fast) ease-out;
+  }
+}
+@keyframes faq-details-open {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Belt and braces if a brand reintroduces a transition on these. */
+@media (prefers-reduced-motion: reduce) {
+  .faq-details-icon {
+    transition: none;
+  }
+  .faq-details-answer {
+    animation: none;
+  }
+}

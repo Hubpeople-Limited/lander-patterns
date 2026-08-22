@@ -1,0 +1,86 @@
+/* stats-band v5 - tokens only, selectors prefixed */
+
+/* The one inverted block on the page: --color-on-primary on
+   --color-primary, the only pair the contract guarantees inverted. */
+.stats-band {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  padding-block: var(--space-12);
+}
+.stats-band-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.stats-band-head {
+  max-width: 40rem;
+  margin: 0 auto var(--space-8);
+  text-align: center;
+}
+.stats-band-eyebrow {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.stats-band-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.625rem, 1.1rem + 2.2vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+/* The hairlines are the cells' own borders, not a gap showing through, so
+   the lattice never doubles or breaks. */
+.stats-band-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+  border-radius: var(--card-radius);
+  overflow: clip;
+}
+.stats-band-item {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  border-right: 1px solid color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+}
+.stats-band-figure {
+  font-family: var(--font-heading);
+  font-size: clamp(2.125rem, 1.4rem + 3vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+/* The label is a <dd>, so its default indent has to go. It separates from the
+   figure by size and weight, never by fading the text - a translucent label
+   would put the contrast guarantee back in question on every brand. */
+.stats-band-label {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+/* 1 column -> 2 -> 3. The lattice needs no changes at either step. */
+@media (min-width: 26rem) {
+  .stats-band-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 48rem) {
+  .stats-band-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .stats-band-item {
+    padding: var(--space-8) var(--space-4);
+  }
+}

@@ -1,0 +1,59 @@
+/* heading-block v3 - tokens only, selectors prefixed */
+.heading-block {
+  /* Same gutter idiom as every other pattern, so the block lines up with
+     the section it introduces instead of touching the viewport edge. */
+  width: min(100% - 2 * var(--space-4), 45rem);
+  margin-inline: auto;
+  margin-block-end: var(--space-8);
+  text-align: start;
+}
+.heading-block-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+/* Hairline rules either side of the label. Decorative only - the label's own
+   words carry the meaning. */
+.heading-block-eyebrow::before,
+.heading-block-eyebrow::after {
+  content: "";
+  display: block;
+  width: var(--space-5);
+  height: 2px;
+  border-radius: var(--chip-radius);
+  background: color-mix(in srgb, var(--color-primary) 45%, transparent);
+}
+.heading-block-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  color: var(--color-heading);
+  text-wrap: balance;
+}
+.heading-block-intro {
+  max-width: 42rem;
+  margin: var(--space-4) 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text-soft);
+}
+/* From tablet up the block centres; phones keep it left-aligned, which reads
+   better in a narrow measure. */
+@media (min-width: 48rem) {
+  .heading-block {
+    text-align: center;
+  }
+  .heading-block-intro {
+    margin-inline: auto;
+  }
+}

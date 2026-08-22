@@ -1,0 +1,84 @@
+/* picker-chips v4 - tokens only, selectors prefixed */
+.picker-chips {
+  /* The touch-target floor. Every pill is at least this tall and wide. */
+  --picker-chips-target: 48px;
+  max-width: 32rem;
+  margin: 0;
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+.picker-chips-title {
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-heading);
+  /* --color-text: this is not large text. */
+  color: var(--color-text);
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  line-height: 1.2;
+}
+.picker-chips-helper {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+}
+/* Phones first: one full-width pill per row. */
+.picker-chips-list {
+  display: flex;
+  flex-direction: column;
+  /* gap, not margin: the clear space between targets stops a mis-tap. */
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.picker-chips-item {
+  display: flex;
+}
+.picker-chips-link {
+  box-sizing: border-box;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--picker-chips-target);
+  min-width: var(--picker-chips-target);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface);
+  /* --color-text: --color-primary-dark is for light grounds only. */
+  color: var(--color-text);
+  border: 2px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-surface));
+  border-radius: var(--chip-radius);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+}
+/* The picked state commits to both halves of the guaranteed pair. */
+.picker-chips-link:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.picker-chips-link:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+/* Decoration only - aria-hidden in the markup, so it carries no meaning. */
+.picker-chips-arrow {
+  flex: none;
+  font-weight: 400;
+  line-height: 1;
+}
+/* Wide phone up: pills share a row and wrap. */
+@media (min-width: 26rem) {
+  .picker-chips-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .picker-chips-item {
+    flex: 0 0 auto;
+  }
+}

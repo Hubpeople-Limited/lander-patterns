@@ -1,0 +1,148 @@
+/* hero-overlay v5 - tokens only, selectors prefixed. Nothing here moves. */
+.hero-overlay {
+  /* Contrast floor: the scrim carries it, never the photo. */
+  --hero-overlay-scrim-floor: clamp(0.92, var(--hero-overlay-scrim-strength, 0.92), 1);
+  position: relative;
+  /* Own stacking context: the image/scrim/copy ladder must not interleave. */
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  background: var(--color-bg);
+  /* svh, not vh: 100vh is the largest viewport, so the address bar would
+   cover the hero's foot. Do not change. */
+  min-height: 100svh;
+}
+.hero-overlay-img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Anchor to the top: faces and horizons live in the upper third. */
+  object-position: center top;
+}
+/* A vignette plus a wash that resolves to the page background. */
+.hero-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 50% 18%,
+      color-mix(in srgb, var(--color-bg) 4%, transparent) 0%,
+      color-mix(in srgb, var(--color-bg) 26%, transparent) 42%,
+      color-mix(in srgb, var(--color-bg) 82%, transparent) 88%),
+    linear-gradient(to top,
+      var(--color-bg) 0%,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 100%), transparent) 8%,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 100%), transparent) 44%,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 32%), transparent) 72%,
+      transparent 100%);
+}
+.hero-overlay-inner {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  padding-block: var(--space-12) var(--space-8);
+}
+/* Held narrow: the copy must stay inside the scrim's guaranteed band. */
+.hero-overlay-copy {
+  max-width: 34rem;
+}
+.hero-overlay-title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-heading);
+  /* --color-text: the ground here is a scrim over a photograph. */
+  color: var(--color-text);
+  font-size: clamp(2.25rem, 1.4rem + 3.4vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.hero-overlay-sub {
+  margin: 0 0 var(--space-6);
+  max-width: 32rem;
+  /* --color-text-soft, not a dimmed white: only the token is guaranteed. */
+  color: var(--color-text-soft);
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.1875rem);
+  line-height: 1.55;
+}
+.hero-overlay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.hero-overlay-btn,
+.hero-overlay-ghost {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 48px target: above the 44px AAA floor. */
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.hero-overlay-btn {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.hero-overlay-btn:hover {
+  background: var(--color-primary-dark);
+}
+/* --color-text edge: no token is guaranteed over a photograph. */
+.hero-overlay-ghost {
+  border: 2px solid var(--color-text);
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  /* --color-text: this is not large text. */
+  color: var(--color-text);
+}
+.hero-overlay-ghost:hover {
+  background: var(--color-bg);
+}
+/* Both controls need a visible focus ring. */
+.hero-overlay-btn:focus-visible,
+.hero-overlay-ghost:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* Phones: copy to the top, and the scrim inverts with it. */
+@media (width < 48rem) {
+  .hero-overlay {
+    align-items: flex-start;
+  }
+  .hero-overlay::after {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 32%), transparent) 13svh,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 100%), transparent) 25svh,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 100%), transparent) 88%,
+      var(--color-bg) 100%
+    );
+  }
+  .hero-overlay-inner {
+    padding-block: max(var(--space-12), 26svh) var(--space-8);
+  }
+  .hero-overlay-title {
+    line-height: 1.12;
+  }
+}
+
+/* Short viewports: unpin, or the copy is unreachable. */
+@media (height < 34rem) {
+  .hero-overlay {
+    min-height: auto;
+  }
+  .hero-overlay-inner {
+    padding-block: var(--space-8);
+  }
+}

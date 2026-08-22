@@ -1,0 +1,151 @@
+/* cta-curtain v6 - tokens only, selectors prefixed. */
+.cta-curtain {
+  position: relative;
+  display: block;
+}
+
+/* 100svh, not 100vh: a mobile address bar showing or hiding would
+   otherwise break the pin. The cover's negative margin and the spacer carry
+   the same pair and must stay in step. */
+.cta-curtain-panel {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--space-4);
+  background: var(--color-surface-soft);
+}
+/* Do not remove: without it a focused control in the panel sits behind the
+   cover, which nothing scrolls out of the way. */
+.cta-curtain-panel:focus-within {
+  z-index: 3;
+}
+.cta-curtain-inner {
+  width: min(100%, 42rem);
+  margin-inline: auto;
+  text-align: center;
+}
+.cta-curtain-title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-heading);
+  /* --color-text: --color-heading is not guaranteed on a surface. */
+  color: var(--color-text);
+  font-size: clamp(1.75rem, 1.2rem + 3vw, 3rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.cta-curtain-lead {
+  margin: 0 0 var(--space-6);
+  color: var(--color-text-soft);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.cta-curtain-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1.5;
+  border-radius: var(--btn-radius);
+}
+.cta-curtain-btn:hover {
+  background: var(--color-primary-dark);
+}
+.cta-curtain-btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* The cover must stay opaque or the panel shows through, and flow-root
+   stops its inner margin collapsing out and opening a gap. */
+.cta-curtain-cover {
+  position: relative;
+  z-index: 2;
+  display: flow-root;
+  margin-top: -100vh;
+  margin-top: -100svh;
+  background: var(--color-bg);
+  /* The rounded lower edge is what makes this read as a curtain. */
+  border-end-start-radius: calc(var(--card-radius) * 2);
+  border-end-end-radius: calc(var(--card-radius) * 2);
+  /* Set --cta-curtain-lift: none for a flat brand. */
+  box-shadow: var(--cta-curtain-lift, 0 40px 80px -20px
+    color-mix(in srgb, var(--color-scrim) 30%, transparent));
+}
+
+/* Do not remove: without it the panel never fully uncovers. */
+.cta-curtain-spacer {
+  display: block;
+  height: 100vh;
+  height: 100svh;
+}
+
+/* No sticky support: unwind to an ordinary closing section in flow. */
+@supports not (position: sticky) {
+  .cta-curtain-panel {
+    position: static;
+    height: auto;
+  }
+  .cta-curtain-cover {
+    margin-top: 0;
+    box-shadow: none;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .cta-curtain-spacer {
+    display: none;
+  }
+}
+
+/* Too short to hold the panel's own content: same unwind. */
+@media (height < 34rem) {
+  .cta-curtain-panel {
+    position: static;
+    height: auto;
+    padding-block: var(--space-6);
+  }
+  .cta-curtain-cover {
+    margin-top: 0;
+    box-shadow: none;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .cta-curtain-spacer {
+    display: none;
+  }
+}
+
+/* Reduced motion: flatten the depth cue. */
+@media (prefers-reduced-motion: reduce) {
+  .cta-curtain-cover {
+    box-shadow: none;
+  }
+}
+
+/* Phones: off. A full-screen panel behind a cover is least legible on the
+   smallest screen. */
+@media (width < 35rem) {
+  .cta-curtain-panel {
+    position: static;
+    height: auto;
+    padding-block: var(--space-6);
+  }
+  .cta-curtain-cover {
+    margin-top: 0;
+    box-shadow: none;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .cta-curtain-spacer {
+    display: none;
+  }
+}

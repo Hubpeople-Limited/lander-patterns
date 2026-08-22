@@ -1,0 +1,118 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history and all refs. The version-bump check compares each
+          # pattern against the merge base with origin/main, and a shallow
+          # checkout has no origin/main at all - the check then found no base
+          # and returned silently, so it never ran anywhere it mattered.
+          fetch-depth: 0
+      - name: Make origin/main resolvable
+        run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Regenerates INDEX.md as part of validation, so a contributor in the
+      # web editor never has to touch it - the release job commits the
+      # regenerated copy on merge.
+      - name: Lint patterns (regenerates INDEX.md)
+        env:
+          # The strings that must never reach a public file are not in this
+          # repo in any form. Without the list the scan refuses to report
+          # clean rather than passing silently.
+          #
+          # GitHub does not pass secrets to a pull request raised from a fork,
+          # so on those runs the variable arrives empty and the scan cannot
+          # run. That must not fail a contributor's build for something they
+          # cannot fix, and it must not pass silently either: the scan is
+          # skipped explicitly here and runs on the push to main, before
+          # anything is released. LANDER_LEAK_SKIP is honoured only when it is
+          # a fork PR, which the expression below decides, never by the
+          # linter's own logic.
+          LANDER_LEAK_NEEDLES: ${{ secrets.LANDER_LEAK_NEEDLES }}
+          LANDER_LEAK_SKIP: ${{ github.event.pull_request.head.repo.fork }}
+        run: python ci/lint.py
+      - name: Build previews
+        run: python ci/build_preview.py
+      # On a PR the previews are attached as a downloadable artifact so the
+      # contributor can review both feels without local tooling; on main they
+      # go to Pages.
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: pattern-previews
+          path: preview/site
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name == 'push'
+        with:
+          path: preview/site
+
+  release:
+    # Every merge to main becomes the release agents fetch: regenerate
+    # INDEX.md, point LATEST at the new tag, commit, tag that commit.
+    # Requires the repo to allow this workflow to push to main (see the
+    # maintainer setup notes in CONTRIBUTING.md).
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Regenerate INDEX, update LATEST, commit and tag
+        env:
+          # The release job runs the same linter, so it needs the same secret.
+          # Without it the leak scan refuses to pass, lint exits 1, and the
+          # step aborts before LATEST is written or the tag is cut - no
+          # release at all, which is how this was left after the scan was
+          # externalised.
+          LANDER_LEAK_NEEDLES: ${{ secrets.LANDER_LEAK_NEEDLES }}
+        run: |
+          TAG="v${{ github.run_number }}"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "tag $TAG already exists; nothing to do"
+            exit 0
+          fi
+          git pull --rebase origin main
+          python ci/lint.py
+          echo "$TAG" > LATEST
+          git config user.name "pattern-ci"
+          git config user.email "pattern-ci@users.noreply.github.com"
+          git add INDEX.md LATEST
+          git commit -m "ci: release $TAG [skip ci]" || true
+          git tag "$TAG"
+          git push --atomic origin main "refs/tags/$TAG"
+
+  publish-preview:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

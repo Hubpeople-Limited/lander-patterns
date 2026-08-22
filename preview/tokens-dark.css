@@ -1,0 +1,50 @@
+/* Sample token set: dark ground, display heading. Preview only - a real brand
+   supplies its own :root in global.css.
+
+   This set exists to make a specific class of defect visible. The other two
+   sample sets are light brands whose --color-heading is near-black, so any
+   pattern that wrongly grounds text on --color-heading looks fine in both and
+   ships broken. Here --color-heading is a saturated display colour measuring
+   3.04:1 against --color-bg - just over the 3:1 large-text bar, and all the
+   contract promises of it. Text set in it that is not large text therefore
+   fails visibly in this preview instead of silently on a real brand.
+
+   THAT VALUE IS LOAD-BEARING. Do not lighten it for looks. The first version
+   of this file used oklch(0.72 0.19 330), which measures 7.16:1 - two and a
+   half times the bar it claimed in this very comment to sit at. It certified
+   the defect class as absent while six patterns went on failing it. A
+   detector calibrated above the threshold it detects is worse than no
+   detector, because it turns an open question into a false clean. */
+:root {
+  --color-bg: oklch(0.16 0.02 275);
+  --color-surface: oklch(0.22 0.03 275);
+  --color-surface-soft: oklch(0.27 0.03 275);
+  --color-text: oklch(0.93 0.01 275);
+  --color-text-soft: oklch(0.78 0.02 275);
+  --color-heading: oklch(0.51 0.19 330);
+  --color-primary: oklch(0.68 0.2 330);
+  --color-primary-dark: oklch(0.55 0.19 330);
+  --color-on-primary: oklch(0.14 0.02 330);
+  --color-scrim: oklch(0.12 0.02 275);
+  --color-on-scrim: oklch(0.97 0.01 275);
+  --color-rule: oklch(0.35 0.03 275);
+  --color-focus: oklch(0.78 0.16 200);
+
+  --font-heading: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --space-1: 0.25rem;  --space-2: 0.5rem;  --space-3: 0.75rem;
+  --space-4: 1rem;     --space-5: 1.5rem;  --space-6: 2rem;
+  --space-8: 3rem;     --space-12: 5rem;
+  --container-max: 76rem;
+
+  --btn-radius: 0.25rem;
+  --card-radius: 0.5rem;
+  --card-shadow: 0 12px 32px oklch(0 0 0 / 0.5);
+  --card-border: 1px solid oklch(0.35 0.03 275);
+  --chip-radius: 0.25rem;
+  --logo-height: 2.5rem;
+
+  --transition-fast: 150ms;
+  --transition-slow: 400ms;
+}

@@ -1,0 +1,109 @@
+/* steps-numbered v3 - tokens only, selectors prefixed */
+.steps-numbered {
+  /* Contrast floor. The words sit on a photograph, so the scrim carries the
+   contrast; clamp() holds it whatever the dial is set to. */
+  --steps-numbered-scrim-floor: clamp(0.92, var(--steps-numbered-scrim-strength, 0.92), 1);
+  padding-block: var(--space-8);
+}
+.steps-numbered-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.steps-numbered-title {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 0 0 var(--space-6);
+  text-wrap: balance;
+}
+.steps-numbered-list {
+  counter-reset: steps-numbered-count;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: var(--space-5);
+}
+/* Full-bleed image at a fixed portrait ratio, clipped to the brand's corner. */
+.steps-numbered-item {
+  counter-increment: steps-numbered-count;
+  position: relative;
+  aspect-ratio: 510 / 590;
+  overflow: hidden;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  background: var(--color-surface-soft);
+}
+.steps-numbered-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Three-stop scrim: near-solid where the words are, then fading. */
+.steps-numbered-scrim {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-6);
+  /* Hold the full level to the top of the text band - the copy is a block,
+   not a line. */
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-scrim) calc(var(--steps-numbered-scrim-floor) * 100%), transparent) 0%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--steps-numbered-scrim-floor) * 100%), transparent) 55%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--steps-numbered-scrim-floor) * 43%), transparent) 78%,
+    transparent 100%
+  );
+}
+.steps-numbered-content {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  color: var(--color-on-scrim);
+}
+/* line-height below 1 sets the numeral's cap flush with the heading. */
+.steps-numbered-content::before {
+  content: counter(steps-numbered-count);
+  font-family: var(--font-heading);
+  font-size: clamp(64px, 6vw, 84px);
+  font-weight: 700;
+  line-height: 0.8;
+  flex: none;
+}
+.steps-numbered-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.steps-numbered-heading {
+  font-family: var(--font-heading);
+  font-size: clamp(1.125rem, 0.9rem + 0.6vw, 1.375rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+.steps-numbered-body {
+  font-size: clamp(0.875rem, 0.8rem + 0.3vw, 1rem);
+  line-height: 1.4;
+  margin: 0;
+}
+/* Narrow cards cannot carry an 84px numeral beside the copy, so it steps down
+   and the pair stacks rather than the heading wrapping to one word a line. */
+@media (width < 30rem) {
+  .steps-numbered-content {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .steps-numbered-content::before {
+    font-size: clamp(48px, 14vw, 64px);
+  }
+  .steps-numbered-scrim {
+    padding: var(--space-5);
+  }
+}
