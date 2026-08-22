@@ -56,27 +56,52 @@ RAMP_FLOOR_PX = 4.0
 RAMP_UNITS = {"px", "rem", "pt", "cm", "mm", "in", "pc", "q"}
 
 
+def _blank_comments(text):
+    """Comments removed, newlines kept.
+
+    Replacing a comment with a single space destroyed the newlines inside it,
+    which moved the reported line number of everything after a multi-line
+    comment - and this file reports line numbers.
+    """
+    return re.sub(r"/\*.*?\*/",
+                  lambda m: re.sub("[^" + chr(10) + "]", " ", m.group(0)),
+                  text, flags=re.S)
+
+
 def external_faults(text, kind):
     """(what, why) for every reference that leaves the host."""
     out = []
     if kind == "css":
+        # Before the FIRST scan. Stripping between two of them left the
+        # @import loop reading commented-out code.
+        text = _blank_comments(text)
+        text = re.sub(r"@namespace[^;]*;",
+                      lambda m: re.sub("[^" + chr(10) + "]", " ", m.group(0)),
+                      text, flags=re.I)
+        seen = set()
         for m in AT_IMPORT.finditer(text):
             line = text[:m.start()].count("\n") + 1
             out.append((f"line {line}: @import",
                         "@import does exactly what <link> is banned for, from "
                         "the file that is concatenated into the brand's "
                         "stylesheet"))
-        # Comments first: `[^;]*;` run over a comment mentioning @namespace
-        # swallowed whatever declaration came after it, which is a hole opened
-        # by the fix for a false positive. @namespace's own url() identifies
-        # an XML namespace and fetches nothing, so it is removed after that.
-        text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
-        text = re.sub(r"@namespace[^;]*;", " ", text, flags=re.I)
+            # The url() this @import carries is the same reference.
+            end = text.find(";", m.end())
+            carried = URL_FN.search(text, m.end(),
+                                    end if end != -1 else len(text))
+            if carried:
+                seen.add((line, carried.group(1).strip()))
         for m in IMAGE_SET.finditer(text):
             for target in QUOTED.findall(m.group(1)):
-                if not re.match(r"(https?:)?//", target.strip(), re.I):
+                target = target.strip()
+                if not re.match(r"(https?:)?//", target, re.I):
                     continue
                 line = text[:m.start()].count(chr(10)) + 1
+                # url() inside an image-set() is found by both scans, and one
+                # reference is one finding.
+                if (line, target) in seen:
+                    continue
+                seen.add((line, target))
                 out.append((f"line {line}: image-set({target})",
                             "a pattern renders from the token contract and "
                             "pulls nothing in from elsewhere"))
@@ -86,6 +111,11 @@ def external_faults(text, kind):
                     r"(https?:)?//", target, re.I):
                 continue
             line = text[:m.start()].count("\n") + 1
+            # One reference is one finding. A url() inside an image-set(), or
+            # the one an @import carries, is found twice and reported once.
+            if (line, target) in seen:
+                continue
+            seen.add((line, target))
             out.append((f"line {line}: url({target})",
                         "a pattern renders from the token contract and pulls "
                         "nothing in from elsewhere"))
@@ -151,7 +181,12 @@ def spacing_faults(css):
         # references resolve to. Skipping the declaration whenever its refs
         # were unknown threw away a var() FALLBACK sitting in the same value:
         # `padding: var(--nothing, 96px)` was silent.
-        lengths = LENGTH.findall(value) + [
+        # The token NAME is stripped before lengths are read: `--gutter-16px`
+        # is a name, not a sixteen-pixel gutter, and the lookbehind permits a
+        # preceding hyphen. The fallback text after the comma is kept, so
+        # var(--nothing, 96px) is still read.
+        bare = re.sub(r"var\(\s*--[\w-]+", "var(", value)
+        lengths = LENGTH.findall(bare) + [
             x for r in refs if r in local_lengths
             for x in LENGTH.findall(local_lengths[r])]
         if not lengths:
@@ -166,10 +201,11 @@ def spacing_faults(css):
         #     come from the ramp: a hairline between grid cells, or an optical
         #     nudge between two glyphs, is not the brand's rhythm.
         #
-        # A percentage is handled by not being in RAMP_UNITS, per length. The
-        # blanket "any % skips the declaration" that used to sit here let one
-        # percentage in a shorthand hide every other length beside it, so
-        # `padding: 96px 1%` was silent.
+        # A percentage never enters `lengths` at all - `%` is not in the
+        # LENGTH unit list - so it neither counts as ramp spacing nor hides
+        # anything beside it. The blanket "any % skips the declaration" that
+        # used to sit here let one percentage in a shorthand hide every other
+        # length in the same value, so `padding: 96px 1%` was silent.
         if all(unit.lower() not in RAMP_UNITS
                or abs(float(n)) * (16 if unit.lower() == "rem" else 1) <= RAMP_FLOOR_PX
                for n, unit in lengths):

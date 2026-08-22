@@ -51,6 +51,13 @@ def strip_comments(text):
 # build passed with every heading computed to three thousandths of a pixel.
 COLLAPSE = 0.5
 
+# The same unit set _containment uses. A shorter list here meant calc(1.1vmin)
+# and seven other spellings walked through the check that exists to stop
+# exactly this.
+UNIT = re.compile(
+    r"\d\s*(px|rem|em|ch|ex|vw|vh|vmin|vmax|svw|svh|lvw|lvh|dvw|dvh"
+    r"|cm|mm|in|pt|pc|q|%)", re.I)
+
 
 def check_dials(brand, text):
     """Every way --type-scale or --space-scale can be set wrong.
@@ -88,7 +95,7 @@ def check_dials(brand, text):
         if v and re.match(r"^var\s*\(", v, re.I):
             continue
         if v and re.match(r"^(calc|clamp|min|max)\s*\(", v, re.I):
-            if re.search(r"\d\s*(px|rem|em|ch|ex|vw|vh|pt|pc|cm|mm|in|%)", v, re.I):
+            if UNIT.search(v):
                 out.append((True, f"{brand}: {token} is {raw.strip()!r}, which "
                                   f"computes to a length rather than a number. "
                                   f"A math function is not an escape from the "

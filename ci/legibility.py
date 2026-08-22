@@ -200,14 +200,17 @@ def _carries(html, cls):
 # this check exists to refuse.
 OPACITY = re.compile(
     r"(?<![-\w])opacity\s*:\s*("
-    r"0?\.\d+"
-    r"|0*(?:[0-9]|[1-8][0-9])(?:\.\d+)?%"
+    r"0?\.0*[1-9]\d*"
+    r"|0*(?:[1-9]|[1-8][0-9]|9[0-9])(?:\.\d+)?%"
     r"|var\([^;}]*\)"
     r"|calc\([^;}]*\)"
     r")"
     # filter: opacity() is the same fade through a different property, and
     # HIDDEN only ever matched the fully-zero form of it.
-    r"|(?<![-\w])filter\s*:\s*opacity\(\s*(0?\.\d+|0*(?:[0-9]|[1-8][0-9])(?:\.\d+)?%)\s*\)",
+    # Not the fully-zero forms: HIDDEN reports those, and two findings for
+    # one declaration is noise that teaches people to skim the output.
+    r"|(?<![-\w])filter\s*:\s*opacity\(\s*(0?\.0*[1-9]\d*"
+    r"|0*(?:[1-9]|[1-8][0-9])(?:\.\d+)?%)\s*\)",
     re.I)
 
 # Above this, a fade is cosmetic rather than a legibility decision. Firing on
@@ -232,7 +235,11 @@ def _subject(part):
     whole selector string let any element name anywhere in an ancestor chain
     excuse a rule about text.
     """
-    return re.split(r"\s*[\s>+~]\s*", part.strip())[-1]
+    # _bare() first, then attribute selectors blanked: a combinator inside
+    # :not(...) or inside [alt~="icon"] is not a combinator in this selector,
+    # and splitting on it took the wrong compound as the subject.
+    flat = re.sub(r"\[[^\]]*\]", "[]", _bare(part))
+    return re.split(r"\s*[\s>+~]\s*", flat.strip())[-1]
 
 
 def _fade_value(match):
@@ -269,23 +276,25 @@ def check(css, report, html=""):
         # dropping it caught that, and started firing on every legitimate
         # decorative fade instead. Neither is the question. The question is
         # whether the thing being faded carries words.
+        # SCOPED, never `continue`. Every check below runs on the same rule in
+        # the same loop, so skipping ahead when a rule had no fade - or a
+        # cosmetic one - silently disabled the ink-is-ground, off-canvas and
+        # transparent-mix checks, which are what this file is actually for.
         faded = OPACITY.search(body)
-        if not faded:
-            continue
-        alpha = _fade_value(faded)
-        if alpha is not None and alpha > COSMETIC_ABOVE:
-            continue
-        # Per PART, not per selector list. One decorative member of a list
-        # excused every other member with it, which is the same defect the
-        # HIDDEN check below was already fixed for.
-        for part in split_parts(selector):
-            if _is_decorative(part, body):
-                continue
-            shown = faded.group(1) or faded.group(2)
-            report(f"line {line}: opacity {shown.strip()} on {part.strip()} - "
-                   "dim with --color-text-soft, which carries a guarantee, "
-                   "not with opacity, which removes one")
-            break
+        alpha = _fade_value(faded) if faded else None
+        if faded and not (alpha is not None and alpha > COSMETIC_ABOVE):
+            # Per PART, not per selector list. One decorative member of a list
+            # excused every other member with it, which is the same defect the
+            # HIDDEN check below was already fixed for.
+            for part in split_parts(selector):
+                if _is_decorative(part, body):
+                    continue
+                shown = faded.group(1) or faded.group(2)
+                report(f"line {line}: opacity {shown.strip()} on "
+                       f"{part.strip()} - dim with --color-text-soft, which "
+                       "carries a guarantee, not with opacity, which removes "
+                       "one")
+                break
 
         if re.search(r"(?<![-\w])color\s*:[^;]*color-mix\([^;]*transparent",
                      body, re.I):

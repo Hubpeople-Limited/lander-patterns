@@ -1278,9 +1278,12 @@ def main():
                 # and hid every attribute after it. An unterminated tag counts
                 # as a tag too - it is markup the moment it reaches a page.
                 decoded = re.sub(r"[\t\n\r]", " ", html_mod.unescape(text))
-                tags = " ".join(
-                    re.findall(r"""<(?:[^>"']|"[^"]*"|'[^']*')*(?:>|$)""",
-                               decoded))
+                # A tag starts with a letter or a slash. Without that, a
+                # stray `<` in prose - "5 < 10, online = yes" - opened a span
+                # that ran to the end of the value and was read as markup.
+                tags = " ".join(re.findall(
+                    r"""<(?=[a-zA-Z/])(?:[^>"']|"[^"]*"|'[^']*')*(?:>|$)""",
+                    decoded))
                 for probe, why in (
                         (r"<\s*(script|iframe|object|embed|style|link|base)\b",
                          "an element that executes or pulls something in"),

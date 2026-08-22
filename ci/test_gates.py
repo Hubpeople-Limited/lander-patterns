@@ -42,6 +42,13 @@ CASES = [
     ("valid with a comment",  ":root{%s--type-scale:1.1 /* airy */;}", 0),
     ("valid, plain",          ":root{%s--type-scale:1.1;}", 0),
     ("valid, no dial at all", ":root{%s}", 0),
+    ("a unit inside calc()", ":root{%s--type-scale:calc(1.1px);}", 1),
+    ("a viewport unit inside calc()", ":root{%s--type-scale:calc(1.1vmin);}", 1),
+    ("a unit inside clamp()",
+     ":root{%s--type-scale:clamp(0.9, 1.1vmin, 1.2);}", 1),
+    ("a genuine computation", ":root{%s--type-scale:calc(16 / 16);}", 0),
+    ("the brand's own indirection",
+     ":root{%s--type-scale:var(--brand-density, 1);}", 0),
     ("ramp defined on a dial that is never declared",
      ":root{%s--space-1:calc(0.25rem * var(--space-scale));}", 1),
     ("ramp on a dial with a fallback",
@@ -132,6 +139,28 @@ LEGIBILITY = [
      "an at-rule true on every engine"),
     ('@media (min-width: 48rem) { .t-label { display: none; } }', 0,
      "an at-rule that genuinely discriminates"),
+    # These three had NO coverage, and that is why a `continue` added to the
+    # fade block above them turned all three off without anything noticing.
+    # They are the checks this file exists for: nothing else in the repository
+    # compares an ink to a ground.
+    ('.t-label { color: var(--color-bg); }', 1,
+     "ink painted in the page's own ground"),
+    ('.t-label { color: var(--color-surface-soft); }', 1,
+     "ink painted in a surface"),
+    ('.t-label { position: absolute; left: -9999px; }', 1, "moved off canvas"),
+    ('.t-label { color: color-mix(in srgb, var(--color-text) 8%, '
+     'transparent); }', 1, "ink mixed to near-transparent"),
+    ('.t-label { opacity: 0.95; color: var(--color-bg); }', 1,
+     "a cosmetic fade must not mask the ground check beneath it"),
+    ('.t-label { color: var(--color-text); }', 0, "an ordinary ink"),
+    # Subject resolution, which decides whether a fade is on text.
+    ('.t img[alt~="icon"] { opacity: 0.3; }', 0,
+     "an attribute selector on an image"),
+    ('.t img:not(.a > .b) { opacity: 0.3; }', 0,
+     "a functional pseudo-class on an image"),
+    ('.t-label[data-x~="a b"] { opacity: 0.3; }', 1,
+     "an attribute selector on text"),
+    ('.t-label { filter: opacity(0); }', 1, "a fully-zero filter fade"),
 ]
 
 # ci/_containment.py, spacing half.
@@ -153,6 +182,9 @@ SPACING = [
     ("a { margin: 0 auto; }", 0, "auto centring"),
     ("a { margin-left: calc(50% - 50vw); }", 0, "a full-bleed breakout"),
     ("a { margin-top: -100vh; }", 0, "a curtain pulled up one screen"),
+    # A token NAME that embeds a unit is a name, not a length.
+    ("a { padding: var(--gutter-16px); }", 0, "a token name embedding a unit"),
+    ("a { gap: var(--icon-24px); }", 0, "the same, on a gap"),
 ]
 
 # ci/_containment.py, external half.
@@ -169,6 +201,8 @@ EXTERNAL_CSS = [
      "a real namespace declaration"),
     ("a { background: url(./local.png); }", 0, "a relative path"),
     ("a { background: url(data:image/svg+xml,%3Csvg/%3E); }", 0, "a data URI"),
+    ('/* was: @import url("https://x.invalid/e.css"); */', 0,
+     "a commented-out import"),
 ]
 
 EXTERNAL_HTML = [
@@ -282,7 +316,7 @@ def main():
     failures += check_modules()
     print()
     if failures:
-        print(f"{len(failures)} dial check(s) not behaving: "
+        print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
         return 1
     total = (len(CASES) + 1 + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)

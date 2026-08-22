@@ -95,13 +95,18 @@ def needles():
 
 def check(where, text, leak_list):
     low = text.lower()
-    # A term inside quotes or backticks is being MENTIONED, not used. A commit
-    # that changes which words a checker bans has to be able to name them, and
-    # this gate rejected exactly that commit - which makes the rule
-    # unstateable in its own history. Quoting is the escape hatch, and it is
-    # deliberately narrow: narration in quotation marks is still narration and
-    # still reads as narration, so nothing is gained by hiding it there.
-    unquoted = re.sub(r"\"[^\"]*\"|'[^']*'|`[^`]*`", " ", low)
+    # A term inside BACKTICKS is being mentioned, not used. A commit that
+    # changes which words a checker bans has to be able to name them, and this
+    # gate rejected exactly that commit, which makes the rule unstateable in
+    # its own history.
+    #
+    # Backticks only, and capped at 40 characters. Quotation marks cannot be
+    # used for this: an apostrophe is a quotation mark, so "it doesn't matter"
+    # opened a span that ran to the next apostrophe and blanked whatever sat
+    # between them - ordinary English silently switching the gate off. The cap
+    # is what stops the exemption becoming a way to smuggle a paragraph of
+    # narration through by wrapping it.
+    unquoted = re.sub(r"`[^`\n]{1,40}`", " ", low)
     for name, terms, why in CATEGORIES:
         for term in terms:
             if re.search(rf"(?<!\w){re.escape(term)}(?!\w)", unquoted):
