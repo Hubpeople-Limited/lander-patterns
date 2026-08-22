@@ -245,6 +245,24 @@ def check_html(path, meta, folder_name):
     if re.search(r"<meta\b[^>]*http-equiv", body, re.I):
         find(path, "no-embedded-content",
              "<meta http-equiv> can redirect or re-scope the whole page")
+    # Two ways to hide content that are not CSS at all, so no stylesheet check
+    # can see them. <template> content never renders in any engine, and the
+    # hidden attribute is the markup spelling of display: none.
+    if re.search(r"<template\b", body, re.I):
+        find(path, "legibility",
+             "<template> content never renders - a pattern's markup is what "
+             "the page shows")
+    if re.search(r"<[a-z][^>]*\shidden(\s|=|>|/)", body, re.I):
+        find(path, "legibility",
+             "the hidden attribute leaves a reader with nothing; the "
+             "behaviour library sets it at runtime, a pattern does not ship it")
+    # The behaviour library's class prefix, which several checks treat as
+    # "the platform put this here" and skip over.
+    for m in re.finditer(r'class="([^"]*)"', body):
+        if any(c.startswith("hub-") for c in m.group(1).split()):
+            find(path, "legibility",
+                 f'class="{m.group(1)}" carries the behaviour library prefix, '
+                 "which other checks treat as the platform's and skip")
     for m in re.finditer(r"<form\b([^>]*)>", body, re.I):
         if re.search(r"action\s*=\s*[\"']?\s*(https?:)?//", m.group(1), re.I):
             find(path, "no-embedded-content",

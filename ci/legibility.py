@@ -3,24 +3,74 @@
 A contrast ratio cannot be computed in this repository, because the tokens
 belong to the brand rather than to us. So the guarantee the contract gives is
 only ever as good as the ink being used at full strength on a ground the
-contract covers. These are the routes that quietly take that away, and each
-one has shipped somewhere before it was checked for.
+contract covers. These are the routes that quietly take that away.
+
+WHAT THIS IS NOT. CSS has no bounded set of ways to make something invisible,
+and this file does not pretend to enumerate them. It catches the accidents and
+the obvious shortcuts. Someone determined to hide content from a reader while
+passing CI can still do it - by moving it off-canvas, by scaling it to nothing,
+by painting the ink in the ground colour - and no amount of pattern-matching
+here will change that. Treat a clean run as "nothing obvious", never as proof,
+and keep reading the previews.
 """
 import re
 
-# The behaviour library's injected classes. Testing the whole prelude for
-# this leaked twice over: `:not(.hub-x)` mentions it without depending on it,
-# and in a selector LIST one comma-part mentioning it exempted every other
-# part. Both are checked against each part with :not() stripped, which is what
-# the stylesheet checks in lint.py already do.
 HUB_CLASS = re.compile(r"\.hub-")
 
+# @layer takes no condition, so "inside an at-rule" was a way straight out.
+# Only a conditional at-rule is a decision about the environment - and only
+# when the condition actually discriminates: `@media screen` and
+# `(min-width: 0px)` are true everywhere and excuse nothing.
+CONDITIONAL_AT = re.compile(r"@(media|supports|container)\b", re.I)
+ALWAYS_TRUE_AT = re.compile(
+    r"@media\s*(screen|all)\s*$"
+    r"|min-(width|height|inline-size|block-size)\s*:\s*0(?![.\d])"
+    r"|@supports\s*\(\s*display\s*:\s*(block|none|flex|grid)\s*\)",
+    re.I)
 
-def _exempt(selector):
-    """True only when EVERY part of the selector list genuinely depends on a
-    class the behaviour library injects."""
-    parts = []
-    depth, buf = 0, ""
+HIDDEN = re.compile(
+    r"(?<![-\w])("
+    r"opacity\s*:\s*0(?:\.0+)?(?:%)?(?![.\d])"
+    r"|visibility\s*:\s*(?:hidden|collapse)"
+    r"|display\s*:\s*none"
+    r"|content-visibility\s*:\s*hidden"
+    r"|color\s*:\s*transparent"
+    r"|-webkit-text-fill-color\s*:\s*transparent"
+    r"|font-size\s*:\s*0(?:\.0+)?(?:px|rem|em|pt)?(?![.\d])"
+    r"|transform\s*:\s*scale\(\s*0[\s,]*[0\s]*\)"
+    r"|scale\s*:\s*0(?![.\d])"
+    r"|(?:max-)?(?:height|block-size)\s*:\s*0(?![.\d])"
+    r"|filter\s*:\s*opacity\(\s*0(?:\.0+)?(?:%)?\s*\)"
+    r")", re.I)
+
+# Ink painted in the page's own ground. Nothing else in the repository compares
+# an ink to a ground, and this is squarely what this file is about.
+INK_IS_GROUND = re.compile(
+    r"(?<![-\w])color\s*:\s*var\(\s*(--color-(?:bg|surface|surface-soft))\s*\)",
+    re.I)
+
+# Moved out of the viewport rather than hidden.
+OFF_CANVAS = re.compile(
+    r"(?<![-\w])(left|right|top|bottom|inset-inline-start|translate)\s*:\s*"
+    r"-\s*\d{3,}(px|vw|vh|rem|em)", re.I)
+
+SHOWN = re.compile(
+    r"(?<![-\w])("
+    r"opacity\s*:\s*1"
+    r"|visibility\s*:\s*visible"
+    r"|display\s*:\s*(?!none)\w"
+    r")", re.I)
+
+# A state a reader can reach without script. `[data-open]` set by nobody is
+# not a reveal, it is a decoration on a permanently hidden element.
+REACHABLE_STATE = re.compile(
+    r":(checked|target|focus-within|focus-visible|focus|open|hover|"
+    r"first-of-type|last-of-type|nth-of-type|not|is|where)\b", re.I)
+
+
+def split_parts(selector):
+    """Split a selector list on its top-level commas only."""
+    parts, buf, depth = [], "", 0
     for ch in selector:
         if ch in "([":
             depth += 1
@@ -32,18 +82,14 @@ def _exempt(selector):
         else:
             buf += ch
     parts.append(buf)
-    parts = [p.strip() for p in parts if p.strip()]
-    if not parts:
-        return False
-    return all(HUB_CLASS.search(_bare(p)) for p in parts)
+    return [p.strip() for p in parts if p.strip()]
 
 
 def _bare(selector):
     """A selector with every functional pseudo-class argument removed.
 
     `:not(.hub-x)` mentions a class without depending on it, and so do
-    `:is()`, `:where()` and `:has()`. Stripping only `:not()` left the other
-    three as the same escape."""
+    `:is()`, `:where()` and `:has()`."""
     for _ in range(5):
         stripped = re.sub(r":(?:not|is|where|has|matches|any)\([^()]*\)", "",
                           selector)
@@ -53,57 +99,41 @@ def _bare(selector):
     return selector
 
 
-def _is_state(selector):
-    """Does this selector name a STATE rather than the plain element?
+def _exempt(selector):
+    """True only when EVERY part of the list depends on a class the behaviour
+    library injects."""
+    parts = split_parts(selector)
+    return bool(parts) and all(HUB_CLASS.search(_bare(p)) for p in parts)
 
-    A pattern's own `.x { display: grid }` is the default, not a reveal. Only
-    something carrying a pseudo-class, an attribute or a modifier can bring
-    hidden content back, so only those count."""
+
+def _is_reveal(selector, html):
+    """Can this selector actually bring hidden content back for a reader?
+
+    A pattern's own `.x { display: grid }` is the element's default, not a way
+    back. A state nobody can enter is no better: an attribute selector counts
+    only if the markup carries that attribute, and a hover-only reveal is
+    unreachable on a touch screen."""
     bare = _bare(selector)
-    return bool(re.search(r"[:\[]", bare) or "--" in bare)
-
-HIDDEN = re.compile(
-    r"(?<![-\w])("
-    r"opacity\s*:\s*0(?:\.0+)?(?![.\d])"
-    r"|visibility\s*:\s*(?:hidden|collapse)"
-    r"|display\s*:\s*none"
-    r"|content-visibility\s*:\s*hidden"
-    r"|color\s*:\s*transparent"
-    r"|-webkit-text-fill-color\s*:\s*transparent"
-    r"|font-size\s*:\s*0(?:\.0+)?(?:px|rem|em)?(?![.\d])"
-    r"|transform\s*:\s*scale\(\s*0\s*\)"
-    r"|scale\s*:\s*0(?![.\d])"
-    r"|max-height\s*:\s*0(?![.\d])"
-    r")")
-
-# @layer takes no condition, so "inside an at-rule" was a way straight out.
-# Only a conditional at-rule is a decision about the environment.
-CONDITIONAL_AT = re.compile(r"@(media|supports|container)\b")
-
-# Deliberately absent from HIDDEN: clip-path and text-indent. Those are the
-# visually-hidden idiom for text meant only for a screen reader, and this
-# library uses them on purpose - a clipped radio input is still focusable and
-# still announced.
-
-SHOWN = re.compile(
-    r"(?<![-\w])("
-    r"opacity\s*:\s*1"
-    r"|visibility\s*:\s*visible"
-    r"|display\s*:\s*(?!none)\w"
-    r")")
+    if REACHABLE_STATE.search(bare):
+        # Hover alone leaves a touch reader with no way in.
+        hover_only = ":hover" in bare.lower() and not re.search(
+            r":(checked|target|focus|open)", bare, re.I)
+        return not hover_only
+    for attr in re.findall(r"\[([\w-]+)", bare):
+        if html and re.search(rf"(?<![-\w]){re.escape(attr)}[\s=>]", html):
+            return True
+    return "--" in bare
 
 
 def _rules(css):
-    """(selector, body, line, nested) for every rule.
+    """(selector, body, line, excused) for every rule.
 
-    `nested` is True when the rule sits inside an at-rule. That matters: a
-    media query is a legitimate place to hide something - a mobile bar has no
-    business on a desktop - whereas a base rule hiding content is content
-    waiting for a script.
+    `excused` is True when the rule sits inside an at-rule whose condition
+    genuinely discriminates - a media query hiding a mobile bar on a desktop
+    is a decision about a viewport, not content waiting for a script.
 
     @keyframes blocks are dropped whole, because `from { opacity: 0 }` is a
-    starting frame rather than a state a page can be left in, and reading one
-    as a rule reports every honest animation as hidden content."""
+    starting frame rather than a state a page can be left in."""
     stripped = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     stripped = re.sub(r"@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\}\s*)*\}", "",
                       stripped)
@@ -115,7 +145,9 @@ def _rules(css):
             buf = ""
             depth += 1
             if prelude.startswith("@"):
-                at_depth.append((depth, bool(CONDITIONAL_AT.match(prelude))))
+                excuses = bool(CONDITIONAL_AT.match(prelude)) and \
+                    not ALWAYS_TRUE_AT.search(prelude)
+                at_depth.append((depth, excuses))
             else:
                 body_start = i + 1
                 j, inner = body_start, 1
@@ -127,7 +159,7 @@ def _rules(css):
                     j += 1
                 yield (prelude, stripped[body_start:j - 1],
                        stripped[:i].count("\n") + 1,
-                       any(cond for _d, cond in at_depth))
+                       any(e for _d, e in at_depth))
                 depth -= 1
                 i = j
                 continue
@@ -142,76 +174,66 @@ def _rules(css):
 
 
 def _carries(html, cls):
-    """Does any element in the markup actually carry this class? A reveal rule
-    for a class nothing wears reveals nothing."""
+    """Does any element in the markup carry this class? A reveal rule for a
+    class nothing wears reveals nothing."""
     if not html:
         return True
-    for m in re.finditer(r'class="([^"]*)"', html):
-        if cls in m.group(1).split():
-            return True
-    return False
+    return any(cls in m.group(1).split()
+               for m in re.finditer(r'class="([^"]*)"', html))
 
 
 def check(css, report, html=""):
-    """`report(detail)` is called once per finding.
-
-    `html` is the pattern's markup. Without it a reveal rule is taken on
-    trust, and a class no element carries counts as one."""
-    for selector, body, line, _nested in _rules(css):
-        # A partial fade on text. The token promises 4.5:1 and opacity
-        # silently divides it, so the guarantee stops holding at the exact
-        # point somebody thought they were being subtle.
-        faded = re.search(r"(?<![-\w])opacity\s*:\s*(0?\.\d+)", body)
-        if faded and re.search(r"(?<![-\w])color\s*:", body):
+    """`report(detail)` is called once per finding."""
+    for selector, body, line, _excused in _rules(css):
+        faded = re.search(r"(?<![-\w])opacity\s*:\s*(0?\.\d+)", body, re.I)
+        if faded and re.search(r"(?<![-\w])color\s*:", body, re.I):
             report(f"line {line}: opacity {faded.group(1)} on a rule that "
                    "also sets color - dim with --color-text-soft, which "
                    "carries a guarantee, not with opacity, which removes one")
 
-        # The same move wearing the contract's clothes: color-mix() of
-        # contract tokens is blessed, and `transparent` is not a colour
-        # literal, so this reads as compliant and is not.
         if re.search(r"(?<![-\w])color\s*:[^;]*color-mix\([^;]*transparent",
-                     body):
+                     body, re.I):
             report(f"line {line}: text colour mixed toward transparent - "
                    "the result carries no guarantee, whatever went into it")
 
-    # Content hidden by default is legitimate when this same stylesheet can
-    # reveal it again - a carousel card waiting on :checked needs no script.
-    # It is not legitimate when only the behaviour library's injected classes
-    # bring it back, because then the no-JS render is missing content.
+        ground = INK_IS_GROUND.search(body)
+        if ground:
+            report(f"line {line}: ink set to {ground.group(1)}, which is a "
+                   "ground token - text painted in the colour behind it")
+
+        off = OFF_CANVAS.search(body)
+        if off and not _excused:
+            report(f"line {line}: '{off.group(0).strip()}' moves content off "
+                   "the canvas - if it is for a screen reader, clip it; if it "
+                   "is hidden, say so")
+
     revealed = set()
-    for selector, body, _line, _nested in _rules(css):
-        # Only a STATE selector reveals. A pattern's own `.x { display: grid }`
-        # is the element's default, not a way back from hidden - and counting
-        # it made the whole check inert for any pattern that styles display,
-        # which is most of them.
+    for selector, body, _line, _excused in _rules(css):
         if _exempt(selector) or not SHOWN.search(body):
             continue
-        if not _is_state(selector):
+        if not _is_reveal(selector, html):
             continue
         for cls in re.findall(r"\.([\w-]+)", _bare(selector)):
             if _carries(html, cls):
                 revealed.add(cls)
 
-    for selector, body, line, nested in _rules(css):
-        # Nested in an at-rule: a media query hiding something is a decision
-        # about a viewport, not content waiting for a script.
-        if _exempt(selector) or nested:
-            continue
-        # A pseudo-element is not the page's content: hiding ::marker or
-        # ::-webkit-details-marker removes a disclosure triangle the browser
-        # drew, which is the ordinary way to style a <details>.
-        if "::" in selector:
+    for selector, body, line, excused in _rules(css):
+        if _exempt(selector) or excused:
             continue
         hidden = HIDDEN.search(body)
         if not hidden:
             continue
-        # A modifier reveals its base: `.card` hidden and `.card--1` shown is
-        # one mechanism, not two, so match on prefix rather than equality.
-        for cls in re.findall(r"\.([\w-]+)", selector):
-            if any(r == cls or r.startswith(cls + "--") for r in revealed):
-                break
-        else:
+        # Per PART, not per list: one pseudo-element in a comma list used to
+        # exempt every other part of it. A pseudo-element is the browser's own
+        # drawing - hiding a disclosure triangle is not hiding the page.
+        for part in split_parts(selector):
+            if "::" in part:
+                continue
+            classes = re.findall(r"\.([\w-]+)", part)
+            if any(r == c or r.startswith(c + "--")
+                   for c in classes for r in revealed):
+                continue
             report(f"line {line}: '{hidden.group(1).strip()}' with nothing in "
                    "this stylesheet to reveal it - the no-JS render is the "
                    "page, so content may not wait for a script")
+            break
