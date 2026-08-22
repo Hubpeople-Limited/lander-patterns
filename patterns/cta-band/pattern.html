@@ -1,0 +1,27 @@
+<!--
+name: cta-band
+version: 1
+type: section
+page-types: homepage, landing, pricing, safety, article
+content-shape: single claim
+description: Plain full-bleed closing call to action on the brand colour - a centred claim, one supporting line and one control; the ordinary page finale the library had no answer for.
+keywords: cta, closing, band, conversion, footer-cta
+needs: a closing headline and one supporting line of real copy, both saying something the page has earned the right to say
+pairs-with: pricing-tiers, faq-details, safety-protections
+avoid-with: cta-curtain, cta-image
+tokens-used: --btn-radius, --color-on-primary, --color-primary, --container-max, --font-heading, --space-3, --space-4, --space-6, --space-12
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- Place as the page's last content block, before the footer. Delete the
+     eyebrow when there is nothing true to put in it. -->
+<section class="cta-band" aria-labelledby="slot:cta-band-id">
+  <div class="cta-band-inner">
+    <p class="cta-band-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="cta-band-title" id="slot:cta-band-id"><!-- slot: title --></h2>
+    <p class="cta-band-lead"><!-- slot: lead --></p>
+    <a class="cta-band-btn" href="{{join.url}}">{{join.text}}</a>
+  </div>
+</section>

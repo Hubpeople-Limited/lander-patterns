@@ -34,6 +34,10 @@ That is the pattern's one unusual demand: it spans two elements.
 makes a good covering sheet — the tiers lift away and the join CTA is what is
 left. Never with `cta-sticky`: a full-screen finale and a fixed bottom bar
 fight for the same decision, and the bar sits over the panel the whole reveal.
+Never with `cta-band` or `cta-image` either, for a plainer reason: all three
+close a page, and a page that closes three times has not decided how it ends.
+Reach for this one only when the uncovering is the point; `cta-band` is the
+ordinary finale and `cta-image` the photographic one.
 Note the reading order — the panel precedes the covering section in the DOM, so
 a screen-reader or keyboard visitor meets the join link before the content that
 visually sits above it. The link's own words carry the meaning, which keeps

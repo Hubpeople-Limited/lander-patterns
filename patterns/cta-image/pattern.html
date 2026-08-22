@@ -1,0 +1,47 @@
+<!--
+name: cta-image
+version: 1
+type: section
+page-types: homepage, landing, pricing
+content-shape: single claim
+description: Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
+keywords: cta, closing, photograph, full-bleed, conversion
+needs: one landscape photograph strong enough to fill a band at least 2000px wide, with its own alt text and a CDN srcset ladder; a closing headline and one supporting line of real copy
+pairs-with: pricing-tiers, faq-details
+avoid-with: cta-band, cta-curtain
+tokens-used: --btn-radius, --color-on-scrim, --color-primary, --color-on-primary, --color-scrim, --container-max, --font-heading, --space-3, --space-4, --space-6, --space-12
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-22
+-->
+<!-- Place as the page's last content block, before the footer.
+
+     The image is decoration under a scrim, but it is the section's whole
+     atmosphere, so it takes real alt text unless it is a pure texture - then
+     empty the value, never delete the attribute. Fill srcset with a CDN
+     ladder; sizes is 100vw because the band is genuinely full-bleed.
+     loading is eager and absent on purpose: this sits at the foot of a long
+     page, so lazy is right and the attribute below says so. -->
+<section class="cta-image" aria-labelledby="slot:cta-image-id">
+  <img class="cta-image-img"
+       src="slot:background-image"
+       srcset="slot:background-image-srcset"
+       sizes="100vw"
+       alt="slot:background-image-alt"
+       width="2000"
+       height="1125"
+       loading="lazy"
+       decoding="async">
+  <div class="cta-image-inner">
+    <p class="cta-image-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="cta-image-title" id="slot:cta-image-id"><!-- slot: title --></h2>
+    <p class="cta-image-lead"><!-- slot: lead --></p>
+    <!-- Two platform controls, no invented destinations. Delete the second
+         anchor for a pure acquisition page; never repoint it by hand. -->
+    <div class="cta-image-actions">
+      <a class="cta-image-btn" href="{{join.url}}">{{join.text}}</a>
+      <a class="cta-image-ghost" href="{{login.url}}">{{login.text}}</a>
+    </div>
+  </div>
+</section>
