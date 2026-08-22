@@ -41,10 +41,6 @@ ALWAYS_TRUE_AT = re.compile(
 
 HIDDEN = re.compile(
     r"(?<![-\w])("
-    # `0`, `0.0`, `.0`, `0%`, `00%` - every spelling of nothing. Narrowing
-    # OPACITY to exclude the fully-zero forms left `.0` and `00%` matching
-    # neither regex, so two legal spellings of invisible were caught by
-    # nothing at all.
     # `0`, `00`, `0.0`, `.0`, `0%`, `00%` - every spelling of nothing.
     # Narrowing OPACITY to exclude the fully-zero forms left `.0` and `00%`
     # matching neither regex, so two legal spellings of invisible were caught
@@ -244,6 +240,57 @@ DECORATIVE_SUBJECT = re.compile(
     re.I)
 
 
+def _drop_balanced(selector, names):
+    """Remove `:name(...)` and everything inside it, brackets balanced.
+
+    A regex cannot do this: `[^()]*` stops at the first nested paren, and
+    `:not(:is(img))` is ordinary CSS.
+    """
+    out, i = "", 0
+    while i < len(selector):
+        m = re.compile(r":(?:%s)\(" % "|".join(names),
+                       re.I).match(selector, i)
+        if not m:
+            out += selector[i]
+            i += 1
+            continue
+        depth, j = 1, m.end()
+        while j < len(selector) and depth:
+            if selector[j] == "(":
+                depth += 1
+            elif selector[j] == ")":
+                depth -= 1
+            j += 1
+        i = j
+    return out
+
+
+def _split_combinators(selector):
+    """Split on combinators at the TOP LEVEL only.
+
+    `:is()` and `:where()` are kept, because they are the subject - which
+    means their argument lists are now in the string, commas and spaces and
+    all. A plain regex split then cut inside them, so the subject of
+    `.card :is(img, .t-label)` came out as a fragment and the verdict flipped
+    depending on which member happened to be written last.
+    """
+    parts, buf, depth = [], "", 0
+    for ch in selector:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        if depth == 0 and ch in " \t\n>+~":
+            if buf:
+                parts.append(buf)
+            buf = ""
+        else:
+            buf += ch
+    if buf:
+        parts.append(buf)
+    return parts or [selector]
+
+
 def _subject(part):
     """The compound selector the rule actually applies to - the last one.
 
@@ -255,13 +302,18 @@ def _subject(part):
     # `:not()` and `:has()` qualify the compound they hang off, so the subject
     # is that compound - but `:is()` and `:where()` ARE the subject, and
     # stripping them made `.card :is(img, svg)` look like a rule about .card.
-    flat = re.sub(r":(?:not|has)\([^()]*\)", "", part)
+    #
+    # Balanced removal, because `[^()]*` cannot cross a nested paren and
+    # `:not(:is(img))` is a real thing to write - a rule that explicitly
+    # excludes images was being excused as an image.
+    flat = _drop_balanced(part, ("not", "has"))
     # Attribute VALUES blanked, names kept. Blanking the whole bracket also
     # blanked `[disabled]` and `[aria-disabled]`, which are two of the three
     # alternatives in DECORATIVE_SUBJECT - so a change made to fix combinator
     # splitting silently switched off the check sitting beside it.
-    flat = re.sub(r"\[([\w-]+)[^\]]*\]", r"[\1]", flat)
-    return re.split(r"\s*[\s>+~]\s*", flat.strip())[-1]
+    # `\s*` after the bracket: `[ alt="x" ]` is legal CSS.
+    flat = re.sub(r"\[\s*([\w-]+)[^\]]*\]", r"[\1]", flat)
+    return _split_combinators(flat)[-1]
 
 
 def _fade_value(match):
@@ -282,7 +334,18 @@ def _is_decorative(selector, body):
     pseudo-element carrying a real string is text like any other, and this is
     how a counter or a label gets hidden by accident.
     """
-    if not DECORATIVE_SUBJECT.search(_subject(selector)):
+    subject = _subject(selector)
+    # An :is()/:where() list is decorative only if EVERY member is. One image
+    # among them does not make the label beside it an image, and searching the
+    # list as one string let a single decorative member excuse the rest -
+    # the same defect as the selector list, one level further in.
+    members = re.search(r":(?:is|where|matches|any)\(([^()]*)\)", subject, re.I)
+    if members:
+        outer = re.sub(r":(?:is|where|matches|any)\([^()]*\)", "", subject)
+        listed = [m.strip() for m in members.group(1).split(",") if m.strip()]
+        if not all(DECORATIVE_SUBJECT.search(outer + m) for m in listed):
+            return False
+    elif not DECORATIVE_SUBJECT.search(subject):
         return False
     content = re.search(r"(?<![-\w])content\s*:\s*([^;}]+)", body, re.I)
     if content and re.search(r"[\"'][^\"']*\w{2,}", content.group(1)):

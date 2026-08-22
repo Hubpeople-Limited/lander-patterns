@@ -78,6 +78,19 @@ CATEGORIES = [
      "describe the fix, not the weakness - older versions are still in use"),
 ]
 
+# Backticks hold CODE, so 80 characters: 40 was under the length of an
+# ordinary CSS declaration pair, in a repository about CSS.
+BACKTICKED = re.compile(r"`[^`\n]{1,80}`")
+
+# Double quotes NAME a term - at most three words, checked at the call site.
+# A quoted sentence is narration wearing quotation marks.
+#
+# The lookarounds matter: a double quote only opens a span when it follows a
+# word boundary. Inch marks do not, and `the card is 3" wide and the reviewer
+# failed to note the 6" gutter` was blanking everything between two
+# measurements - the apostrophe defect transplanted onto a different mark.
+QUOTED_TERM = re.compile(r"(?<![\w])\"[^\"\n]{1,40}\"(?![\w])")
+
 findings = []
 
 
@@ -105,11 +118,10 @@ def check(where, text, leak_list):
     # blanked whatever sat between them, so ordinary English switched the gate
     # off. Double quotes carry no such ambiguity.
     #
-    # Capped at 80 characters, which is a phrase rather than a paragraph. The
-    # cap is what stops the exemption becoming a wrapper to smuggle narration
-    # through, and 40 was too tight for a repository about CSS: `text-overflow:
-    # ellipsis; overflow: hidden` is 41.
-    unquoted = re.sub(r"`[^`\n]{1,80}`|\"[^\"\n]{1,80}\"", " ", low)
+    unquoted = re.sub(QUOTED_TERM,
+                      lambda m: " " if len(m.group(0).split()) <= 3
+                      else m.group(0), low)
+    unquoted = re.sub(BACKTICKED, " ", unquoted)
     for name, terms, why in CATEGORIES:
         for term in terms:
             if re.search(rf"(?<!\w){re.escape(term)}(?!\w)", unquoted):

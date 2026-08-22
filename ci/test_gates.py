@@ -173,6 +173,20 @@ LEGIBILITY = [
     ('.card :is(img, svg) { opacity: 0.4; }', 0, ":is() naming the subject"),
     ('.card :where(img, svg) { opacity: 0.4; }', 0, ":where() naming it"),
     ('.card:has(> img) { opacity: 0.4; }', 1, ":has() qualifying text"),
+    # Subject resolution across nested brackets. Each of these came from a
+    # fix that worked on the simple form and not on the nested one.
+    ('.t-label:not(:is(img)) { opacity: 0.3; }', 1,
+     "a rule that explicitly excludes images"),
+    ('.card:has(.media :is(img, svg)) { opacity: 0.3; }', 1,
+     ":has() wrapping an :is()"),
+    ('.card :is(img, .t-label) { opacity: 0.3; }', 1,
+     "a mixed :is() list, decorative member first"),
+    ('.card :is(.t-label, img) { opacity: 0.3; }', 1,
+     "the same list, other order - the verdict must not depend on it"),
+    ('img[ alt="x" ] { opacity: 0.3; }', 0,
+     "legal whitespace inside a bracket"),
+    ('img/*c*/.hero-label { opacity: 0.3; }', 0,
+     "a comment inside a compound selector joins, it does not separate"),
 ]
 
 # ci/_containment.py, spacing half.
@@ -201,6 +215,12 @@ SPACING = [
      "a unit-bearing name surviving one hop"),
     (":root{--a:96px;} a { padding: var(--a); }", 1,
      "a real length through one hop"),
+    (":root{--a:var(--space-6, 96px);} a { padding: var(--a); }", 0,
+     "a local that reaches the ramp, with a fallback"),
+    (":root{--a:calc(var(--space-4) + 8px);} a { padding: var(--a); }", 0,
+     "a local computed from the ramp"),
+    ("a { padding: calc(var(--space-4) + 8px); }", 0,
+     "the same value written inline"),
 ]
 
 # ci/_containment.py, external half.
