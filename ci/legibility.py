@@ -316,6 +316,78 @@ def _subject(part):
     return _split_combinators(flat)[-1]
 
 
+MATCHES_ANY = ("is", "where", "matches", "any")
+
+
+def _find_group(selector, names):
+    """(start, open, close) of the first `:name(...)`, brackets balanced.
+
+    Balanced, because `[^()]*` stops at a nested paren - and
+    `:is(.a:nth-of-type(2), img)` is ordinary CSS. Reading only the
+    unnested form made the whole all-members rule fall through to the
+    permissive check it was written to replace.
+    """
+    pattern = re.compile(r":(?:%s)\(" % "|".join(names), re.I)
+    m = pattern.search(selector)
+    if not m:
+        return None
+    depth, j = 1, m.end()
+    while j < len(selector) and depth:
+        if selector[j] == "(":
+            depth += 1
+        elif selector[j] == ")":
+            depth -= 1
+        j += 1
+    return m.start(), m.end(), j - 1
+
+
+def _expand(subject, depth=0):
+    """Every concrete selector an :is()/:where() subject stands for.
+
+    `:is(.a, .b)::before` becomes `.a::before` and `.b::before` - real
+    selectors, each of which DECORATIVE_SUBJECT can be asked about directly.
+    Every group is expanded, not just the first, so the verdict cannot depend
+    on which group happens to be written last.
+    """
+    found = _find_group(subject, MATCHES_ANY) if depth < 4 else None
+    if not found:
+        return [subject]
+    start, inner, close = found
+    members = [m.strip() for m in _split_top(subject[inner:close]) if m.strip()]
+    # An empty list stands for nothing. Returning the subject unexpanded
+    # keeps it answerable, where `all([])` would have called it decorative
+    # by vacuum.
+    if not members:
+        members = [""]
+    out = []
+    for m in members:
+        head = subject[:start]
+        # `&` between two halves of a compound: it is CSS nesting's own
+        # "this element" and, more to the point here, it is not a word
+        # character. Joining `.a` and `img` directly gave `.aimg`, where the
+        # element-name lookbehind cannot see an element name at all.
+        joined = head + ("&" if head else "") + m + subject[close + 1:]
+        out.extend(_expand(joined, depth + 1))
+    return out
+
+
+def _split_top(text):
+    """Split on commas at the top bracket level only."""
+    parts, buf, depth = [], "", 0
+    for ch in text:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        if ch == "," and depth == 0:
+            parts.append(buf)
+            buf = ""
+        else:
+            buf += ch
+    parts.append(buf)
+    return parts
+
+
 def _fade_value(match):
     """The declared alpha as a float, or None when it cannot be resolved."""
     raw = (match.group(1) or match.group(2) or "").strip()
@@ -334,18 +406,16 @@ def _is_decorative(selector, body):
     pseudo-element carrying a real string is text like any other, and this is
     how a counter or a label gets hidden by accident.
     """
-    subject = _subject(selector)
-    # An :is()/:where() list is decorative only if EVERY member is. One image
-    # among them does not make the label beside it an image, and searching the
-    # list as one string let a single decorative member excuse the rest -
-    # the same defect as the selector list, one level further in.
-    members = re.search(r":(?:is|where|matches|any)\(([^()]*)\)", subject, re.I)
-    if members:
-        outer = re.sub(r":(?:is|where|matches|any)\([^()]*\)", "", subject)
-        listed = [m.strip() for m in members.group(1).split(",") if m.strip()]
-        if not all(DECORATIVE_SUBJECT.search(outer + m) for m in listed):
-            return False
-    elif not DECORATIVE_SUBJECT.search(subject):
+    # An :is()/:where() list is decorative only if EVERY member is: one image
+    # among them does not make the label beside it an image.
+    #
+    # The subject is EXPANDED into the concrete selectors it stands for,
+    # rather than having its list members concatenated onto the rest of it.
+    # Concatenation produced strings no selector could be - `::before.lead`
+    # for `:is(.lead, .meta)::before` - which broke the $-anchored
+    # pseudo-element branch of DECORATIVE_SUBJECT and reported every
+    # decorative pseudo-element fade that happened to carry an :is().
+    if not all(DECORATIVE_SUBJECT.search(s) for s in _expand(_subject(selector))):
         return False
     content = re.search(r"(?<![-\w])content\s*:\s*([^;}]+)", body, re.I)
     if content and re.search(r"[\"'][^\"']*\w{2,}", content.group(1)):

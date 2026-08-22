@@ -187,6 +187,21 @@ LEGIBILITY = [
      "legal whitespace inside a bracket"),
     ('img/*c*/.hero-label { opacity: 0.3; }', 0,
      "a comment inside a compound selector joins, it does not separate"),
+    # The subject is expanded into the selectors it stands for. Every one of
+    # these was a defect in a previous version of that expansion.
+    ('.tile :is(.lead, .meta)::before { opacity: 0.4; content: ""; }', 0,
+     "a decorative pseudo-element whose compound carries an :is()"),
+    ('.card :is(.a, .b):is(img, svg) { opacity: 0.3; }', 0,
+     "two :is() groups, decorative group last"),
+    ('.card :is(img, svg):is(.a, .b) { opacity: 0.3; }', 0,
+     "the same two groups, decorative group first"),
+    ('.card :is(img, svg).b { opacity: 0.3; }', 0,
+     "a class written after the group"),
+    ('.card :is(.t-label:nth-of-type(2), img) { opacity: 0.3; }', 1,
+     "a nested paren inside the :is() argument"),
+    ('.card :is(.t-label, :is(img)) { opacity: 0.3; }', 1, "a nested :is()"),
+    ('.t-label:is() { opacity: 0.3; }', 1,
+     "an empty list stands for nothing, not for everything"),
 ]
 
 # ci/_containment.py, spacing half.
@@ -221,6 +236,13 @@ SPACING = [
      "a local computed from the ramp"),
     ("a { padding: calc(var(--space-4) + 8px); }", 0,
      "the same value written inline"),
+    (":root{--a:var(--b) 96px; --b:var(--space-2);}"
+     " a { padding: var(--a); }", 1,
+     "a literal beside a ramp reference, one hop"),
+    (":root{--a:var(--b); --b:var(--c) 96px; --c:var(--space-2);}"
+     " a { padding: var(--a); }", 1, "the same, two hops down"),
+    (":root{--b:var(--space-2);} a { padding: var(--b) 96px; }", 1,
+     "the inline equivalent of both"),
 ]
 
 # ci/_containment.py, external half.

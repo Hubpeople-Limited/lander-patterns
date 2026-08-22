@@ -160,13 +160,17 @@ def spacing_faults(css):
     local_lengths = {}
     for name in declared:
         chain = resolve(name)
-        # The ramp guard reads the RAW chain; only the length scan reads the
-        # stripped one. Stripping first rewrote `var(--space-6` to `var(`, so
-        # the guard on the next line could never see a ramp reference - a
-        # local token that reaches the ramp was filed as a hardcoded length,
-        # and only in its one-hop form, which contradicted the inline rule
-        # below saying a calc() reaching the ramp is still on the ramp.
-        if "--space-" not in chain and LENGTH.search(strip_names(chain)):
+        # The guard reads this token's OWN value; only the length scan reads
+        # the resolved chain.
+        #
+        # Reading the stripped value blinded the guard entirely, because
+        # `var(--space-6` is exactly the text the strip rewrites. Reading the
+        # resolved chain instead over-corrected the other way: a `--space-`
+        # anywhere in a chain then excused every literal length in it, so
+        # `--a: var(--b) 96px` with `--b` on the ramp went silent. The
+        # declaration's own value is the thing the inline rule below tests,
+        # and it is the thing to test here.
+        if "--space-" not in declared[name] and LENGTH.search(strip_names(chain)):
             local_lengths[name] = strip_names(chain)
 
     for m in SPACING.finditer(text):
