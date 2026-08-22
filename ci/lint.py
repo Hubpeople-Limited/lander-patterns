@@ -1273,15 +1273,23 @@ def main():
                 # matching it as if it were markup produced nonsense: "//"
                 # in a sentence was called a third-party URL, and the words
                 # "once =" were called an event handler.
-                decoded = html_mod.unescape(text)
-                tags = " ".join(re.findall(r"<[^>]*>",
-                                           re.sub(r"[\t\n\r]", " ", decoded)))
+                # Quote-aware: `<[^>]*>` stops at the first `>`, including one
+                # inside an attribute value, so alt="a>b" truncated the tag
+                # and hid every attribute after it. An unterminated tag counts
+                # as a tag too - it is markup the moment it reaches a page.
+                decoded = re.sub(r"[\t\n\r]", " ", html_mod.unescape(text))
+                tags = " ".join(
+                    re.findall(r"""<(?:[^>"']|"[^"]*"|'[^']*')*(?:>|$)""",
+                               decoded))
                 for probe, why in (
                         (r"<\s*(script|iframe|object|embed|style|link|base)\b",
                          "an element that executes or pulls something in"),
                         (r"(?<![-\w])on[a-z]{3,}\s*=", "an event handler"),
                         (r"javascript\s*:", "a javascript: URL"),
-                        (r"=\s*[\"']?\s*(?:https?:)?//", "a third-party URL")):
+                        # url( too: a third-party host in a style attribute
+                        # has no `=` in front of it.
+                        (r"(?:=\s*[\"']?\s*|url\(\s*[\"']?)(?:https?:)?//",
+                         "a third-party URL")):
                     if re.search(probe, tags, re.I):
                         find(preview, "preview-content",
                              f"value for '{key}' contains {why} - sample "

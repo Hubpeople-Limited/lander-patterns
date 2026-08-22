@@ -194,26 +194,56 @@ def _carries(html, cls):
     return False
 
 
-# Every way of writing a fade, not just `0.08`. `8%` is valid CSS and was
-# silent; so were a var() and a calc(), which cannot be resolved here and are
-# therefore reported rather than assumed innocent - an unverifiable fade on
-# text is exactly the thing this check exists to refuse.
+# Every way of writing a fade: the decimal, the percentage, the filter form,
+# and a var() or calc() which cannot be resolved here and so are reported
+# rather than assumed innocent. An unverifiable fade on text is exactly what
+# this check exists to refuse.
 OPACITY = re.compile(
     r"(?<![-\w])opacity\s*:\s*("
     r"0?\.\d+"
-    r"|0*(?:[0-9]|[1-8][0-9]|9[0-9])(?:\.\d+)?%"
+    r"|0*(?:[0-9]|[1-8][0-9])(?:\.\d+)?%"
     r"|var\([^;}]*\)"
     r"|calc\([^;}]*\)"
-    r")", re.I)
+    r")"
+    # filter: opacity() is the same fade through a different property, and
+    # HIDDEN only ever matched the fully-zero form of it.
+    r"|(?<![-\w])filter\s*:\s*opacity\(\s*(0?\.\d+|0*(?:[0-9]|[1-8][0-9])(?:\.\d+)?%)\s*\)",
+    re.I)
+
+# Above this, a fade is cosmetic rather than a legibility decision. Firing on
+# `opacity: 0.95` - a 19:1 ink still measuring 19:1 - and telling the author
+# to reach for --color-text-soft is advice about something they were not doing.
+COSMETIC_ABOVE = 0.85
 
 # Contexts where a fade is not a fade of text. A pseudo-element with content
 # that is not words, a replaced element, and a disabled control - which the
 # platform's own conventions fade, and which carries its own state semantics.
-DECORATIVE_SELECTOR = re.compile(
-    r"::(before|after|backdrop|marker|placeholder)"
-    r"|(?<![-\w])(img|svg|picture|video|canvas|iframe|use|path|figure)(?![-\w])"
+DECORATIVE_SUBJECT = re.compile(
+    r"::(before|after|backdrop|marker|placeholder)$"
+    r"|(?<![-\w])(img|svg|picture|video|canvas|iframe|use|path)(?![-\w])"
     r"|:disabled|\[disabled\]|\[aria-disabled",
     re.I)
+
+
+def _subject(part):
+    """The compound selector the rule actually applies to - the last one.
+
+    `.card svg + .card-label` styles the label, not the svg, so searching the
+    whole selector string let any element name anywhere in an ancestor chain
+    excuse a rule about text.
+    """
+    return re.split(r"\s*[\s>+~]\s*", part.strip())[-1]
+
+
+def _fade_value(match):
+    """The declared alpha as a float, or None when it cannot be resolved."""
+    raw = (match.group(1) or match.group(2) or "").strip()
+    if raw.endswith("%"):
+        return float(raw[:-1]) / 100
+    try:
+        return float(raw)
+    except ValueError:
+        return None
 
 
 def _is_decorative(selector, body):
@@ -223,7 +253,7 @@ def _is_decorative(selector, body):
     pseudo-element carrying a real string is text like any other, and this is
     how a counter or a label gets hidden by accident.
     """
-    if not DECORATIVE_SELECTOR.search(selector):
+    if not DECORATIVE_SUBJECT.search(_subject(selector)):
         return False
     content = re.search(r"(?<![-\w])content\s*:\s*([^;}]+)", body, re.I)
     if content and re.search(r"[\"'][^\"']*\w{2,}", content.group(1)):
@@ -240,11 +270,22 @@ def check(css, report, html=""):
         # decorative fade instead. Neither is the question. The question is
         # whether the thing being faded carries words.
         faded = OPACITY.search(body)
-        if faded and not _is_decorative(selector, body):
-            value = faded.group(1).strip()
-            report(f"line {line}: opacity {value} on {selector.strip()} - dim "
-                   "with --color-text-soft, which carries a guarantee, not "
-                   "with opacity, which removes one")
+        if not faded:
+            continue
+        alpha = _fade_value(faded)
+        if alpha is not None and alpha > COSMETIC_ABOVE:
+            continue
+        # Per PART, not per selector list. One decorative member of a list
+        # excused every other member with it, which is the same defect the
+        # HIDDEN check below was already fixed for.
+        for part in split_parts(selector):
+            if _is_decorative(part, body):
+                continue
+            shown = faded.group(1) or faded.group(2)
+            report(f"line {line}: opacity {shown.strip()} on {part.strip()} - "
+                   "dim with --color-text-soft, which carries a guarantee, "
+                   "not with opacity, which removes one")
+            break
 
         if re.search(r"(?<![-\w])color\s*:[^;]*color-mix\([^;]*transparent",
                      body, re.I):

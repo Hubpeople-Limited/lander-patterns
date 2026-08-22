@@ -77,10 +77,23 @@ def check_dials(brand, text):
         lo, hi = (TYPE_MIN, TYPE_MAX) if which == "type" else (SPACE_MIN, SPACE_MAX)
 
         # A dial reached through the brand's own indirection is a reasonable
-        # thing to write and cannot be resolved from one file, so it is left
-        # alone rather than called a fault. calc() likewise computes to a
-        # number; the unit trap this check exists for is not available there.
-        if v and re.match(r"^(var|calc|clamp|min|max)\s*\(", v, re.I):
+        # thing to write, cannot be resolved from one file, and is therefore
+        # left alone rather than called a fault.
+        #
+        # calc() and its relatives are NOT exempt, however convenient that
+        # was. calc(1.1px) computes to a length, not a number, so the unit
+        # trap this whole check exists for is fully available inside one -
+        # and exempting them reopened it. A math function is read for units
+        # like anything else.
+        if v and re.match(r"^var\s*\(", v, re.I):
+            continue
+        if v and re.match(r"^(calc|clamp|min|max)\s*\(", v, re.I):
+            if re.search(r"\d\s*(px|rem|em|ch|ex|vw|vh|pt|pc|cm|mm|in|%)", v, re.I):
+                out.append((True, f"{brand}: {token} is {raw.strip()!r}, which "
+                                  f"computes to a length rather than a number. "
+                                  f"A math function is not an escape from the "
+                                  f"unit rule - every declaration using the "
+                                  f"dial would still be invalid."))
             continue
 
         if v is None or not NUMBER.match(v):

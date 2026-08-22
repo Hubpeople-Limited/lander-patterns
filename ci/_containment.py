@@ -24,7 +24,11 @@ import re
 AT_IMPORT = re.compile(r"@import\b", re.I)
 # url() and the bare-string form of image-set(), which is valid CSS and
 # reaches a host just as directly.
-URL_FN = re.compile(r"(?:url\(\s*['\"]?|image-set\(\s*['\"])([^'\")]+)", re.I)
+# Every quoted string inside an image-set(), not just the first - a
+# third-party candidate is as reachable at 2x as at 1x - plus every url().
+URL_FN = re.compile(r"""url\(\s*['"]?([^'")]+)""", re.I)
+IMAGE_SET = re.compile(r"""image-set\(([^)]*)\)""", re.I)
+QUOTED = re.compile(r"""['"]([^'"]+)['"]""")
 
 # Properties that lay out the page and therefore belong to the brand's ramp.
 SPACING = re.compile(
@@ -62,9 +66,20 @@ def external_faults(text, kind):
                         "@import does exactly what <link> is banned for, from "
                         "the file that is concatenated into the brand's "
                         "stylesheet"))
-        # @namespace's url() identifies an XML namespace and fetches nothing,
-        # so it is removed before the scan rather than excused after it.
+        # Comments first: `[^;]*;` run over a comment mentioning @namespace
+        # swallowed whatever declaration came after it, which is a hole opened
+        # by the fix for a false positive. @namespace's own url() identifies
+        # an XML namespace and fetches nothing, so it is removed after that.
+        text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
         text = re.sub(r"@namespace[^;]*;", " ", text, flags=re.I)
+        for m in IMAGE_SET.finditer(text):
+            for target in QUOTED.findall(m.group(1)):
+                if not re.match(r"(https?:)?//", target.strip(), re.I):
+                    continue
+                line = text[:m.start()].count(chr(10)) + 1
+                out.append((f"line {line}: image-set({target})",
+                            "a pattern renders from the token contract and "
+                            "pulls nothing in from elsewhere"))
         for m in URL_FN.finditer(text):
             target = m.group(1).strip()
             if target.startswith(("data:", "#")) or not re.match(
@@ -102,10 +117,27 @@ def spacing_faults(css):
     # A pattern-local property is only off the ramp if its own definition is.
     # `--x-pad: 96px; padding: var(--x-pad)` is the natural way to write it and
     # was silent, because any var() at all was treated as reaching the ramp.
+    # Resolved transitively: `--a: 96px; --b: var(--a); padding: var(--b)` is
+    # the same declaration wearing one more hop, and stopping at one hop meant
+    # the second hop was free.
+    declared = {n: v.strip() for n, v in
+                re.findall(r"(--[\w-]+)\s*:\s*([^;}]+)", text)}
+
+    def resolve(name, seen=()):
+        if name in seen or name not in declared:
+            return ""
+        value = declared[name]
+        if "--space-" in value:
+            return value
+        for ref in re.findall(r"var\(\s*(--[\w-]+)", value):
+            value += " " + resolve(ref, seen + (name,))
+        return value
+
     local_lengths = {}
-    for name, value in re.findall(r"(--[\w-]+)\s*:\s*([^;}]+)", text):
-        if "--space-" not in value and LENGTH.search(value):
-            local_lengths[name] = value.strip()
+    for name in declared:
+        chain = resolve(name)
+        if "--space-" not in chain and LENGTH.search(chain):
+            local_lengths[name] = chain
 
     for m in SPACING.finditer(text):
         value = m.group(6).strip()
@@ -115,9 +147,11 @@ def spacing_faults(css):
         if "--space-" in value:
             continue
         refs = re.findall(r"var\(\s*(--[\w-]+)", value)
-        if refs and not any(r in local_lengths for r in refs):
-            continue
-        lengths = LENGTH.findall(value) or [
+        # Both the literal lengths in the declaration AND whatever its
+        # references resolve to. Skipping the declaration whenever its refs
+        # were unknown threw away a var() FALLBACK sitting in the same value:
+        # `padding: var(--nothing, 96px)` was silent.
+        lengths = LENGTH.findall(value) + [
             x for r in refs if r in local_lengths
             for x in LENGTH.findall(local_lengths[r])]
         if not lengths:
@@ -131,8 +165,11 @@ def spacing_faults(css):
         #   - anything below the ramp's smallest step, 0.25rem, cannot have
         #     come from the ramp: a hairline between grid cells, or an optical
         #     nudge between two glyphs, is not the brand's rhythm.
-        if "%" in value:
-            continue
+        #
+        # A percentage is handled by not being in RAMP_UNITS, per length. The
+        # blanket "any % skips the declaration" that used to sit here let one
+        # percentage in a shorthand hide every other length beside it, so
+        # `padding: 96px 1%` was silent.
         if all(unit.lower() not in RAMP_UNITS
                or abs(float(n)) * (16 if unit.lower() == "rem" else 1) <= RAMP_FLOOR_PX
                for n, unit in lengths):
