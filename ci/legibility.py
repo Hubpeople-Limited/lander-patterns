@@ -14,8 +14,12 @@ here will change that. Treat a clean run as "nothing obvious", never as proof,
 and keep reading the previews.
 """
 import re
+from pathlib import Path
 
 HUB_CLASS = re.compile(r"\.hub-")
+
+# A class attribute in any of its three legal spellings.
+CLASS_ATTR = re.compile(r"""class\s*=\s*(?:["']([^"']*)["']|([^\s>]+))""")
 
 # @layer takes no condition, so "inside an at-rule" was a way straight out.
 # Only a conditional at-rule is a decision about the environment - and only
@@ -183,21 +187,64 @@ def _carries(html, cls):
     class nothing wears reveals nothing."""
     if not html:
         return True
-    return any(cls in m.group(1).split()
-               for m in re.finditer(r'class="([^"]*)"', html))
+    for m in re.finditer(CLASS_ATTR, html):
+        value = next(g for g in m.groups() if g is not None)
+        if cls in value.split():
+            return True
+    return False
+
+
+# Every way of writing a fade, not just `0.08`. `8%` is valid CSS and was
+# silent; so were a var() and a calc(), which cannot be resolved here and are
+# therefore reported rather than assumed innocent - an unverifiable fade on
+# text is exactly the thing this check exists to refuse.
+OPACITY = re.compile(
+    r"(?<![-\w])opacity\s*:\s*("
+    r"0?\.\d+"
+    r"|0*(?:[0-9]|[1-8][0-9]|9[0-9])(?:\.\d+)?%"
+    r"|var\([^;}]*\)"
+    r"|calc\([^;}]*\)"
+    r")", re.I)
+
+# Contexts where a fade is not a fade of text. A pseudo-element with content
+# that is not words, a replaced element, and a disabled control - which the
+# platform's own conventions fade, and which carries its own state semantics.
+DECORATIVE_SELECTOR = re.compile(
+    r"::(before|after|backdrop|marker|placeholder)"
+    r"|(?<![-\w])(img|svg|picture|video|canvas|iframe|use|path|figure)(?![-\w])"
+    r"|:disabled|\[disabled\]|\[aria-disabled",
+    re.I)
+
+
+def _is_decorative(selector, body):
+    """True when the faded thing does not carry words.
+
+    A ::before is only decorative when its content is empty or a symbol - a
+    pseudo-element carrying a real string is text like any other, and this is
+    how a counter or a label gets hidden by accident.
+    """
+    if not DECORATIVE_SELECTOR.search(selector):
+        return False
+    content = re.search(r"(?<![-\w])content\s*:\s*([^;}]+)", body, re.I)
+    if content and re.search(r"[\"'][^\"']*\w{2,}", content.group(1)):
+        return False
+    return True
 
 
 def check(css, report, html=""):
     """`report(detail)` is called once per finding."""
     for selector, body, line, _excused in _rules(css):
-        faded = re.search(r"(?<![-\w])opacity\s*:\s*(0?\.\d+)", body, re.I)
-        # The "and it also sets color" guard exempted the plainer version of
-        # the same defect: a rule that only fades. Text at 8% is unreadable
-        # whether or not an ink is named in the same block.
-        if faded:
-            report(f"line {line}: opacity {faded.group(1)} - dim with "
-                   "--color-text-soft, which carries a guarantee, not with "
-                   "opacity, which removes one")
+        # The defect is faded *text*. The original guard for that was "the
+        # rule also sets color", which exempted a rule that only fades;
+        # dropping it caught that, and started firing on every legitimate
+        # decorative fade instead. Neither is the question. The question is
+        # whether the thing being faded carries words.
+        faded = OPACITY.search(body)
+        if faded and not _is_decorative(selector, body):
+            value = faded.group(1).strip()
+            report(f"line {line}: opacity {value} on {selector.strip()} - dim "
+                   "with --color-text-soft, which carries a guarantee, not "
+                   "with opacity, which removes one")
 
         if re.search(r"(?<![-\w])color\s*:[^;]*color-mix\([^;]*transparent",
                      body, re.I):
@@ -245,3 +292,34 @@ def check(css, report, html=""):
                    "this stylesheet to reveal it - the no-JS render is the "
                    "page, so content may not wait for a script")
             break
+
+
+def main():
+    """Run the legibility rules over every pattern.
+
+    This module is imported by lint.py, which is where it does its work - but
+    it was also documented as a command, and had no entry point at all. So
+    `python ci/legibility.py` printed nothing and exited 0 whatever the state
+    of the library, which is the most complete way a check can lie: it was
+    quoted as evidence of a clean run several times over.
+    """
+    root = Path(__file__).resolve().parent.parent
+    findings = []
+    folders = sorted(p for p in (root / "patterns").iterdir() if p.is_dir())
+    for folder in folders:
+        css, html = folder / "pattern.css", folder / "pattern.html"
+        if not css.is_file():
+            continue
+        check(css.read_text(encoding="utf-8"),
+              lambda d, _n=folder.name: findings.append(f"{_n}: {d}"),
+              html.read_text(encoding="utf-8") if html.is_file() else "")
+    if findings:
+        print("\n".join(findings))
+        print(f"\n{len(findings)} finding(s).")
+        return 1
+    print(f"clean: {len(folders)} pattern(s) checked for legibility.")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

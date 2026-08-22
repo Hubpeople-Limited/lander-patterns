@@ -146,16 +146,26 @@ COLOUR_FUNCTIONS = r"\b(rgb|rgba|hsl|hsla|oklch|oklab|lab|lch|hwb|color|device-c
 # container does not break the pattern - it swallows the rest of the document.
 # The list therefore has to cover everything a pattern may legally contain,
 # not the subset the patterns happened to use when it was written.
+#
+# It deliberately EXCLUDES the table and select internals - tr, td, th,
+# thead, tbody, tfoot, colgroup, option, optgroup - whose end tags are
+# optional in HTML5. The parser closes those itself, so an omitted one
+# swallows nothing, and requiring them would fail valid, ordinary markup.
+# li, p, dt and dd stay: their end tags are optional too, but every pattern
+# here closes them and the check has been holding that line since before the
+# list was widened.
 BALANCED_TAGS = ["section", "article", "div", "ul", "ol", "li", "main",
                  "header", "footer", "nav", "a", "p", "h1", "h2", "h3",
                  "h4", "h5", "h6", "dl", "dt", "dd", "button", "details",
                  "summary", "figure", "figcaption", "blockquote", "span",
-                 "label", "table", "thead", "tbody", "tfoot", "tr", "td",
-                 "th", "caption", "colgroup", "aside", "picture", "video",
+                 "label", "table", "caption", "aside", "picture", "video",
                  "audio", "svg", "form", "fieldset", "legend", "select",
-                 "option", "optgroup", "textarea", "time", "strong", "em",
+                 "textarea", "time", "strong", "em",
                  "b", "i", "small", "pre", "code", "dialog", "address",
                  "hgroup", "search", "noscript"]
+
+# A class attribute in any of its three legal spellings.
+CLASS_ATTR = re.compile(r"""class\s*=\s*(?:["']([^"']*)["']|([^\s>]+))""")
 
 SLOT_CANONICAL = re.compile(r"<!-- slot: [\w-]+ -->")
 SLOT_ANYWHERE = re.compile(r"<!--\s*slot\s*:", re.I)
@@ -212,6 +222,17 @@ def colour_literal(value):
         if re.search(rf"\b{word}\b", value):
             return f"CSS system colour '{word}'"
     return None
+
+
+_CONTRACT_CACHE = []
+
+
+def contract():
+    """The contract token set, read once. check_html runs before main() has
+    built its local copy, and re-parsing TOKENS.md per pattern is waste."""
+    if not _CONTRACT_CACHE:
+        _CONTRACT_CACHE.append(contract_tokens())
+    return _CONTRACT_CACHE[0]
 
 
 def check_html(path, meta, folder_name):
@@ -282,10 +303,14 @@ def check_html(path, meta, folder_name):
     # Single quotes too. Matching only double-quoted class attributes let one
     # quote character both smuggle the prefix in and opt the element out of
     # every check downstream that keys on a class.
-    for m in re.finditer(r"""class\s*=\s*["']([^"']*)["']""", body):
-        if any(c.startswith("hub-") for c in m.group(1).split()):
+    # Unquoted too. Closing the single-quote hole left the third spelling
+    # open, and one quote character is all it took to opt an element out of
+    # every check downstream that keys on a class.
+    for m in re.finditer(CLASS_ATTR, body):
+        value = next(g for g in m.groups() if g is not None)
+        if any(c.startswith("hub-") for c in value.split()):
             find(path, "legibility",
-                 f'class="{m.group(1)}" carries the behaviour library prefix, '
+                 f'class="{value}" carries the behaviour library prefix, '
                  "which other checks treat as the platform's and skip")
     # Decoded, because browsers decode entities and so must this - the handler
     # and javascript: checks below already do, and this one read raw markup,
@@ -327,10 +352,14 @@ def check_html(path, meta, folder_name):
                 find(path, "no-colour-literals",
                      f"{literal} in style attribute '{decl.strip()}' - the "
                      "property is allowed, the hardcoded value is not")
-            # Any dial, not only a radius. Keying on one substring left
-            # measure, gap, size, inset and ratio free to be hardcoded inline,
-            # which is the same defect wearing a different property name.
-            if re.search(r"(^|\s)#[0-9a-fA-F]{3,8}\b", val) is None and \
+            # A CONTRACT token, or anything radius-shaped. Not every custom
+            # property: a pattern's own per-instance dial is set inline on
+            # purpose - stat-rows documents --stat-rows-row-height as exactly
+            # that - and flagging those forbids the mechanism the pattern
+            # describes, which is worse than missing the rarer defect.
+            name = prop.strip()
+            if (name in contract() or "radius" in name) and \
+               re.search(r"(^|\s)#[0-9a-fA-F]{3,8}\b", val) is None and \
                re.search(r"\b\d+(\.\d+)?(px|rem|em)\b", val):
                 find(path, "no-hardcoded-dials",
                      f"hardcoded length in style attribute '{decl.strip()}'")
@@ -381,17 +410,25 @@ def check_html(path, meta, folder_name):
 
     counted = re.sub(r"<!--.*?-->", "", body, flags=re.S)
     for tag in BALANCED_TAGS:
-        opens = len(re.findall(rf"<{tag}(?=[\s>])", counted))
+        # A self-closing start tag needs no end tag. That spelling is valid on
+        # foreign elements and is how icon markup is normally written, so
+        # counting <svg .../> as an unclosed <svg> rejected correct markup.
+        opens = len(re.findall(rf"<{tag}(?=[\s>])(?:[^>]*[^/>])?>", counted))
         closes = len(re.findall(rf"</{tag}\s*>", counted))
         if opens != closes:
             find(path, "unbalanced-tag", f"<{tag}> opens {opens}, closes {closes}")
 
     # <image> too: the HTML parser rewrites that tag name to img, so it
     # renders as a picture while sailing past a check that matched only <img>.
+    # But SVG has its own <image>, which is addressed by href and has no alt
+    # at all - so only an <image> carrying src is the HTML one in disguise.
     for img in re.finditer(r"<im(?:g|age)\b[^>]*>", body, re.I):
         tag = img.group(0)
+        if tag.lower().startswith("<image") and not re.search(r"(?<![-\w])src\s*=",
+                                                              tag, re.I):
+            continue
         for attr in ("alt", "width", "height"):
-            if not re.search(rf"\b{attr}\s*=", tag, re.I):
+            if not re.search(rf"(?<![-\w]){attr}\s*=", tag, re.I):
                 find(path, "img-attrs", f"an <img> is missing '{attr}'")
 
     # Behaviours: hooks in the markup and the header field must agree, and
@@ -771,6 +808,10 @@ BANNED_COMMENT_TERMS = [
 
 # A shipped comment may state a measured limit, but not walk through the
 # working. These read as workings.
+# Banned in a comment, ordinary in a description. A dating brand has
+# conversations and profile prompts; a figure can be claimed or corrected.
+DOMAIN_WORDS = {"conversation", "prompt", "corrected", "claimed"}
+
 BANNED_COMMENT_PATTERNS = [
     (r"\bmeasured\b", "a measurement belongs in README.md"),
     (r"\b\d+(\.\d+)?:1\b", "a contrast ratio belongs in README.md"),
@@ -823,6 +864,14 @@ def check_description_vocabulary(path, meta):
     """
     low = (meta.get("description", "") + " " + meta.get("needs", "")).lower()
     for term in BANNED_COMMENT_TERMS:
+        # These two fields describe what a pattern is FOR, in the vocabulary of
+        # the thing being built. A few banned terms are ordinary words in this
+        # domain - a dating brand has conversations and profile prompts, and a
+        # figure can be corrected or claimed - so they are held to the comment
+        # rule but not to this one. Everything about the file's own history
+        # still fires.
+        if term.strip() in DOMAIN_WORDS:
+            continue
         if re.search(rf"(?<!\w){re.escape(term.strip())}(?!\w)", low):
             find(path, "comment-policy",
                  f"description or needs says '{term.strip()}' - describe the "
@@ -1220,14 +1269,20 @@ def main():
                 # Markup itself is legitimate here - several slots take a run
                 # of list items or a nested component - so this bans what a
                 # sample value can never need rather than tags as such.
+                # The probes look inside tags only. Sample copy is prose, and
+                # matching it as if it were markup produced nonsense: "//"
+                # in a sentence was called a third-party URL, and the words
+                # "once =" were called an event handler.
                 decoded = html_mod.unescape(text)
+                tags = " ".join(re.findall(r"<[^>]*>",
+                                           re.sub(r"[\t\n\r]", " ", decoded)))
                 for probe, why in (
                         (r"<\s*(script|iframe|object|embed|style|link|base)\b",
                          "an element that executes or pulls something in"),
-                        (r"(?<![-\w])on\w+\s*=", "an event handler"),
+                        (r"(?<![-\w])on[a-z]{3,}\s*=", "an event handler"),
                         (r"javascript\s*:", "a javascript: URL"),
-                        (r"(?:https?:)?//", "a third-party URL")):
-                    if re.search(probe, re.sub(r"[\t\n\r]", "", decoded), re.I):
+                        (r"=\s*[\"']?\s*(?:https?:)?//", "a third-party URL")):
+                    if re.search(probe, tags, re.I):
                         find(preview, "preview-content",
                              f"value for '{key}' contains {why} - sample "
                              "values are substituted into published preview "

@@ -36,6 +36,22 @@ def read_dial(raw):
     return v.strip() or None
 
 
+def strip_comments(text):
+    """A commented-out declaration is not a declaration.
+
+    This cut both ways and neither was right: a commented-out dial was
+    reported as a fatal fault although it ships nothing, and a commented-out
+    `--space-scale: 1` satisfied the ramp check while resolving to nothing.
+    """
+    return re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
+
+
+# Below this, a multiplier is not a smaller page - it is a blank one. The
+# first version made only an exact 0 fatal, so 0.0001 was a warning and the
+# build passed with every heading computed to three thousandths of a pixel.
+COLLAPSE = 0.5
+
+
 def check_dials(brand, text):
     """Every way --type-scale or --space-scale can be set wrong.
 
@@ -55,10 +71,17 @@ def check_dials(brand, text):
       worth a softer word, because a brand may mean it.
     """
     out = []
-    for which, raw in DIAL.findall(text):
+    for which, raw in DIAL.findall(strip_comments(text)):
         v = read_dial(raw)
         token = "--%s-scale" % which
         lo, hi = (TYPE_MIN, TYPE_MAX) if which == "type" else (SPACE_MIN, SPACE_MAX)
+
+        # A dial reached through the brand's own indirection is a reasonable
+        # thing to write and cannot be resolved from one file, so it is left
+        # alone rather than called a fault. calc() likewise computes to a
+        # number; the unit trap this check exists for is not available there.
+        if v and re.match(r"^(var|calc|clamp|min|max)\s*\(", v, re.I):
+            continue
 
         if v is None or not NUMBER.match(v):
             out.append((True, f"{brand}: {token} is {raw.strip()!r}. It must be "
@@ -68,10 +91,10 @@ def check_dials(brand, text):
             continue
 
         n = float(v)
-        if n == 0:
-            out.append((True, f"{brand}: {token} is 0, which computes every "
-                              f"size it touches to 0px. The text is not small, "
-                              f"it is gone."))
+        if 0 <= n < COLLAPSE:
+            out.append((True, f"{brand}: {token} is {v}, which computes the "
+                              f"sizes it touches to nothing readable. Below "
+                              f"{COLLAPSE} the text is not small, it is gone."))
         elif n < 0:
             out.append((True, f"{brand}: {token} is {v}. A negative multiplier "
                               f"makes the result invalid, so the declaration "
@@ -95,7 +118,11 @@ def check_ramp_resolves(brand, text):
     reason it is worth a check of its own: the name is there, and the value is
     not.
     """
-    uses_bare = re.search(r"calc\([^)]*var\(\s*--space-scale\s*\)", text)
+    text = strip_comments(text)
+    # Not `calc\([^)]*` - that cannot cross a nested closing bracket, so a
+    # ramp written as calc(var(--base, 0.25rem) * var(--space-scale)) was
+    # missed. Any bare use of the dial inside a calc is the same hazard.
+    uses_bare = re.search(r"calc\(.*?var\(\s*--space-scale\s*\)", text, re.S)
     declares = re.search(r"--space-scale\s*:", text)
     if uses_bare and not declares:
         return [(True, f"{brand}: the spacing ramp is defined in terms of "

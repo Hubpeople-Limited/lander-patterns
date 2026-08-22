@@ -48,8 +48,9 @@ card, and on a brand-coloured band without changing a line.
 
 **The count inherits with everything else.** `--color-text-soft` states its
 ratio against a page ground, and this pattern's whole purpose is sitting on
-scrims and brand bands, where it measures between 1.12:1 and 3.04:1. A stated
-ratio is only worth having against the ground it was stated for.
+scrims and brand bands — where it falls as low as 1.13:1, on
+`--color-primary`. A stated ratio is only worth having against the ground it
+was stated for.
 
 Dimming with `opacity` is where a contrast guarantee stops holding, so the
 count is not dimmed at all — it is subordinated by size and position, the same

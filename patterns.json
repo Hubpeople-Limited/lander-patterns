@@ -404,7 +404,7 @@
   ],
   "requires": "photography",
   "type": "section",
-  "version": "5",
+  "version": "6",
   "whole-page": true
  },
  "hero-stated": {
@@ -758,7 +758,7 @@
   ],
   "requires": "none",
   "type": "component",
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "safety-protections": {

@@ -15,12 +15,15 @@ sizes checked.
 import re
 
 RULE = re.compile(r"([^{}]+)\{([^{}]*)\}", re.S)
-FACE = "var(--font-heading)"
+# The token, not the exact string. `var(--font-heading, Georgia, serif)` is
+# an ordinary fallback stack, and matching to the closing bracket made a
+# heading written that way invisible to this whole module.
+FACE = re.compile(r"var\(\s*--font-heading\b")
 
 # A font-size may be the last declaration in a rule with no trailing
 # semicolon, and a rule may carry more than one - a base size and an override.
 # Matching only `...;` and only the first occurrence missed both.
-SIZE = re.compile(r"font-size\s*:\s*([^;}]+)")
+SIZE = re.compile(r"(?<![-\w])font-size\s*:\s*([^;}]+)")
 SHORTHAND = re.compile(r"(?<![-\w])font\s*:\s*([^;}]+)")
 
 # A keyword size takes its value from somewhere that already carries the dial,
@@ -53,7 +56,7 @@ def display_faults(css):
     # each member of a selector list that shares one declaration.
     faced = set()
     for sels, body in rules:
-        if FACE in body:
+        if FACE.search(body):
             faced.update(sels)
 
     # Pass two: the sizes.

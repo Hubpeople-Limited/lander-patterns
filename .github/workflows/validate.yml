@@ -58,6 +58,13 @@ jobs:
           LANDER_LEAK_NEEDLES: ${{ secrets.LANDER_LEAK_NEEDLES }}
           LANDER_LEAK_SKIP: ${{ github.event.pull_request.head.repo.fork }}
         run: python ci/lint.py
+      # The gate tests, both directions: every fault fires and every
+      # valid form stays quiet. Added because the suite existed and
+      # nothing ran it, which is a test file and no test.
+      - name: Check the gates still catch what they claim
+        run: python ci/test_dials.py
+      - name: Legibility
+        run: python ci/legibility.py
       - name: Build previews
         run: python ci/build_preview.py
       # On a PR the previews are attached as a downloadable artifact so the
@@ -109,6 +116,7 @@ jobs:
           fi
           git pull --rebase origin main
           python ci/lint.py
+          python ci/test_dials.py
           echo "$TAG" > LATEST
           git config user.name "pattern-ci"
           git config user.email "pattern-ci@users.noreply.github.com"

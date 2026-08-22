@@ -57,42 +57,75 @@ def _locals(css):
     return {n: resolve(n) for n in raw}
 
 
+SIZE = re.compile(r"(?<![-\w])font-size\s*:\s*([^;}]+)")
+COLOUR = re.compile(r"(?<![-\w])color\s*:\s*([^;}]+)")
+WEIGHT = re.compile(r"(?<![-\w])font-weight\s*:\s*(\d+)")
+LENGTH = re.compile(r"(?<![-\w.])(\d+(?:\.\d+)?)\s*(rem|px|em)(?![\w-])")
+
+
 def _floor_px(value):
-    """The smallest size a font-size can render at, in px."""
+    """The smallest size a font-size can render at, in px.
+
+    A clamp() floor if there is one; otherwise the smallest length anywhere in
+    the value. Reading only a leading clamp( or a leading number could not
+    read `calc(1.25rem * var(--type-scale, 1))` - which is the exact form the
+    display-type check tells authors to write, so following one gate's advice
+    switched this one off.
+    """
     m = re.search(r"clamp\(\s*([^,]+),", value)
-    first = (m.group(1) if m else value).strip()
-    n = re.match(r"([\d.]+)\s*(rem|px|em)", first)
-    if not n:
+    if m:
+        candidates = LENGTH.findall(m.group(1))
+    else:
+        candidates = LENGTH.findall(value)
+    if not candidates:
         return None
-    unit = n.group(2)
-    return float(n.group(1)) * (16 if unit in ("rem", "em") else 1)
+    return min(float(n) * (16 if unit in ("rem", "em") else 1)
+               for n, unit in candidates)
 
 
 def heading_size_faults(css):
     """(selector, floor_px, bar, at_min) for every --color-heading rule whose
-    size stops being large enough at the bottom of the documented dial range."""
+    size stops being large enough at the bottom of the documented dial range.
+
+    Colour and size are resolved across the file, not within one rule. They
+    are routinely declared apart - a shared rule for the ink, a per-element
+    rule for the size - and three patterns were changed to inherit the ink
+    entirely, which is the same shape seen from further away.
+    """
     text = re.sub(r"/\*.*?\*/", " ", css, flags=re.S)
     locals_ = _locals(text)
-    out = []
-    for m in RULE.finditer(text):
-        selector, body = m.group(1).strip(), m.group(2)
-        colour = re.search(r"(?<!-)color\s*:\s*([^;}]+)", body)
-        size = re.search(r"font-size\s*:\s*([^;}]+)", body)
-        if not colour or not size:
-            continue
+    rules = [(m.group(1).strip(), m.group(2)) for m in RULE.finditer(text)]
+
+    def takes_heading(body):
+        colour = COLOUR.search(body)
+        if not colour:
+            return False
         reached = set()
         for ref in VAR.findall(colour.group(1)):
             reached |= locals_.get(ref, {ref})
-        if "--color-heading" not in reached:
+        return "--color-heading" in reached
+
+    # Pass one: every selector the file gives the heading ink to.
+    inked = set()
+    for selector, body in rules:
+        if takes_heading(body):
+            inked.update(s.strip() for s in selector.split(",") if s.strip())
+
+    out = []
+    for selector, body in rules:
+        parts = [s.strip() for s in selector.split(",") if s.strip()]
+        if not any(p in inked for p in parts):
             continue
-        floor = _floor_px(size.group(1))
-        if floor is None:
-            continue
-        weight = re.search(r"font-weight\s*:\s*(\d+)", body)
-        # Unstated weight is treated as not bold. A brand's own stylesheet may
-        # set heading weights, so the UA default is not something to rely on.
-        bar = LARGE_BOLD_PX if (weight and int(weight.group(1)) >= 700) else LARGE_PX
-        at_min = floor * TYPE_MIN
-        if at_min < bar:
-            out.append((selector.split(",")[0].strip(), floor, bar, at_min))
+        for size in SIZE.finditer(body):
+            floor = _floor_px(size.group(1))
+            if floor is None:
+                continue
+            weight = WEIGHT.search(body)
+            # Unstated weight is treated as not bold. A brand's own stylesheet
+            # may set heading weights, so the UA default is not relyable.
+            bar = (LARGE_BOLD_PX if (weight and int(weight.group(1)) >= 700)
+                   else LARGE_PX)
+            at_min = floor * TYPE_MIN
+            if at_min < bar:
+                out.append((parts[0], floor, bar, at_min))
     return out

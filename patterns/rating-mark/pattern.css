@@ -18,6 +18,9 @@
   width: 1em;
   height: 1em;
 }
+.rating-mark-count {
+  font-size: 0.8125rem;
+}
 .rating-mark-value {
   font-weight: 700;
 }
