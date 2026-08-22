@@ -945,6 +945,47 @@ def check_token_sets_are_complete():
                  f"with no fallback: {', '.join(missing)}")
 
 
+def check_hub_tokens(contract):
+    """The behaviour library's injected CSS goes through the contract too.
+
+    hub.js reaches every page that uses a behaviour, exactly as a pattern's
+    stylesheet does, but check_contract_membership is called per pattern
+    folder and check_token_sets_are_complete collects its needs from
+    patterns/*/pattern.css - so an invented token here dropped its whole
+    declaration on every page, and a real one no sample set defines was never
+    counted. Two holes in the same file, from the same cause: it is not in
+    patterns/.
+    """
+    hub = ROOT / "lib" / "hub.js"
+    if not hub.is_file() or not contract:
+        return
+    text = hub.read_text(encoding="utf-8")
+    sets = sorted((ROOT / "preview").glob("tokens-*.css"))
+    defined = [set(re.findall(r"(--[\w-]+)\s*:\s*(?=[^;}\s])",
+                              re.sub(r"/\*.*?\*/", " ", s.read_text(encoding="utf-8"),
+                                     flags=re.S)))
+               for s in sets]
+    for m in re.finditer(r"`([^`]*)`", text, re.S):
+        block = re.sub(r"\$\{[^{}]*\}", "0", m.group(1))
+        if not re.search(r"\{[^{}]*[\w-]+\s*:", block):
+            continue
+        own = set(re.findall(r"(--[\w-]+)\s*:", block))
+        for token, fallback in re.findall(r"var\(\s*(--[\w-]+)\s*(,)?", block):
+            if token in own or token.startswith("--hub-"):
+                continue
+            if token not in contract:
+                find(hub, "unknown-token",
+                     f"{token} is not in TOKENS.md and not a --hub-* local, "
+                     f"so it resolves to nothing and drops its declaration on "
+                     f"every page that loads a behaviour")
+            elif not fallback:
+                for s, d in zip(sets, defined):
+                    if token not in d:
+                        find(s, "token-sets",
+                             f"does not define {token}, which lib/hub.js uses "
+                             f"with no fallback")
+
+
 def check_dial_range_is_stated_once():
     """The documented range and the enforced range must be the same numbers.
 
@@ -1174,6 +1215,24 @@ def main():
                 if "sample" not in text.lower() and "preview" not in text.lower():
                     find(preview, "preview-content",
                          f"value for '{key}' must self-declare as sample/preview")
+                # Sample values are substituted into pages published to
+                # GitHub Pages, and nothing checked them as markup at all.
+                # Markup itself is legitimate here - several slots take a run
+                # of list items or a nested component - so this bans what a
+                # sample value can never need rather than tags as such.
+                decoded = html_mod.unescape(text)
+                for probe, why in (
+                        (r"<\s*(script|iframe|object|embed|style|link|base)\b",
+                         "an element that executes or pulls something in"),
+                        (r"(?<![-\w])on\w+\s*=", "an event handler"),
+                        (r"javascript\s*:", "a javascript: URL"),
+                        (r"(?:https?:)?//", "a third-party URL")):
+                    if re.search(probe, re.sub(r"[\t\n\r]", "", decoded), re.I):
+                        find(preview, "preview-content",
+                             f"value for '{key}' contains {why} - sample "
+                             "values are substituted into published preview "
+                             "pages, so this would be live there")
+                        break
 
         name = meta.get("name", folder.name)
         if name in names:
@@ -1250,6 +1309,7 @@ def main():
         # the script, and hiding a panel is the whole of what it does.
 
     check_dial_range_is_stated_once()
+    check_hub_tokens(CONTRACT)
     check_version_bumps(sorted(p for p in PATTERNS.iterdir() if p.is_dir()))
 
     for path, field, ref in cross_refs:
@@ -1272,14 +1332,24 @@ def main():
         "Shortlist here, then read only the chosen pattern's folder.\n\n"
         + "\n".join(rows) + "\n"
     )
+    manifest_text = json.dumps(manifest, indent=1, sort_keys=True) + "\n"
     if check_only:
         current = INDEX.read_text(encoding="utf-8") if INDEX.is_file() else ""
         if current != index_text:
             find(INDEX, "stale-index", "INDEX.md does not match the patterns; run ci/lint.py")
+        # The manifest is checked too. It was written and never compared to
+        # anything, so hand-editing a version, a description or a one-per-page
+        # flag inside it passed --check clean - and this is the file an agent
+        # fetches to shortlist patterns without opening one, so a drifted
+        # manifest is an agent choosing on figures that are not true.
+        held = MANIFEST.read_text(encoding="utf-8") if MANIFEST.is_file() else ""
+        if held != manifest_text:
+            find(MANIFEST, "stale-manifest",
+                 "patterns.json does not match the patterns it describes; "
+                 "run ci/lint.py")
     elif not findings:
         INDEX.write_text(index_text, encoding="utf-8", newline="\n")
-        MANIFEST.write_text(json.dumps(manifest, indent=1, sort_keys=True) + "\n",
-                            encoding="utf-8", newline="\n")
+        MANIFEST.write_text(manifest_text, encoding="utf-8", newline="\n")
 
     if findings:
         print("\n".join(findings))
