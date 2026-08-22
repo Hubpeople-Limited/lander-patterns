@@ -318,6 +318,11 @@ def _subject(part):
 
 MATCHES_ANY = ("is", "where", "matches", "any")
 
+# Distinct from None. "no group here" and "a group that never closes" are
+# different answers, and collapsing them into one produced a fail-open in
+# whichever direction the collapse pointed.
+UNTERMINATED = object()
+
 
 def _find_group(selector, names):
     """(start, open, close) of the first `:name(...)`, brackets balanced.
@@ -339,11 +344,15 @@ def _find_group(selector, names):
             depth -= 1
         j += 1
     if depth:
-        # Unterminated. Returning j - 1 named an ordinary character as the
-        # closing bracket, which dropped the last character of the member -
-        # and `:is(imgx` truncated to `img`, calling a text subject
-        # decorative. An unclosed group is not a group.
-        return None
+        # Unterminated, and that is NOT the same answer as "no group here".
+        # Returning j - 1 named an ordinary character as the closing bracket
+        # and dropped the last character of the member, so `:is(imgx`
+        # truncated to `img` and called a text subject decorative. Returning
+        # None instead sent the raw unterminated text to the decorative
+        # search, where `:is(img` matched on the element name - the same
+        # fail-open wearing the opposite fix. UNTERMINATED is its own answer,
+        # and the caller reports rather than guessing.
+        return UNTERMINATED
     return m.start(), m.end(), j - 1
 
 
@@ -355,6 +364,16 @@ def _expand(subject, depth=0):
     Every group is expanded, not just the first, so the verdict cannot depend
     on which group happens to be written last.
     """
+    found = _find_group(subject, MATCHES_ANY)
+    # An unterminated group cannot be expanded and must not be read raw.
+    if found is UNTERMINATED:
+        return [""]
+    # No group left: the subject is already concrete, whatever the depth.
+    # Testing the cap BEFORE looking discarded a subject that had just been
+    # fully expanded, so four groups reported and three did not - a false
+    # positive standing exactly where the fail-open used to be.
+    if not found:
+        return [subject]
     # The cap fails CLOSED. Returning the subject with an unexpanded
     # `:is(...)` still in it handed the raw group text to the decorative
     # search, where a bare `img` among the members matched the element-name
@@ -363,9 +382,6 @@ def _expand(subject, depth=0):
     # string matches no branch, so a subject too deep to expand is reported.
     if depth >= 4:
         return [""]
-    found = _find_group(subject, MATCHES_ANY)
-    if not found:
-        return [subject]
     start, inner, close = found
     members = [m.strip() for m in _split_top(subject[inner:close]) if m.strip()]
     # An empty list stands for nothing. Returning the subject unexpanded
@@ -376,11 +392,19 @@ def _expand(subject, depth=0):
     out = []
     for m in members:
         head = subject[:start]
-        # `&` between two halves of a compound: it is CSS nesting's own
-        # "this element" and, more to the point here, it is not a word
-        # character. Joining `.a` and `img` directly gave `.aimg`, where the
-        # element-name lookbehind cannot see an element name at all.
-        joined = head + ("&" if head else "") + m + subject[close + 1:]
+        # `:is()` attaches to its compound, so a COMPLEX member contributes
+        # its ancestors as ancestors and only its last compound joins the
+        # head. Joining the whole member put its ancestor after the head -
+        # `img:where(.prose *)` became `img&.prose *`, whose subject reads as
+        # `*` - and a faded image was reported as faded text.
+        pieces = _split_combinators(m)
+        # `&` between two halves of ONE compound: CSS nesting's own "this
+        # element", and not a word character. Joining `.a` and `img` directly
+        # gave `.aimg`, where the element-name lookbehind sees no element.
+        tail = head + ("&" if head else "") + pieces[-1] if pieces else head
+        ancestors = " ".join(pieces[:-1])
+        joined = ((ancestors + " ") if ancestors else "") + tail \
+            + subject[close + 1:]
         out.extend(_expand(joined, depth + 1))
     return out
 

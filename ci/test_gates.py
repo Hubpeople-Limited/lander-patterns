@@ -211,6 +211,28 @@ LEGIBILITY = [
     ('.card .x:is(img .b, svg .b) { opacity: 0.3; }', 1,
      "a complex member whose ancestor is decorative and whose subject is not"),
     ('.card :is(img .b, svg .b) { opacity: 0.3; }', 1, "the headless form"),
+    # The cap must not fire on a subject that is already concrete: testing it
+    # before looking for a group made four groups report and three not.
+    (".card:is(.dark,.light):is(.a0,.b0):is(.a1,.b1):is(.a2,.b2)::after"
+     " { content: ''; opacity: 0.35; }", 0,
+     "four groups, fully expanded, decorative"),
+    (".card:is(.dark,.light):is(.a0,.b0):is(.a1,.b1)::after"
+     " { content: ''; opacity: 0.35; }", 0, "three groups, the control"),
+    # An unterminated group fails closed in BOTH directions - the raw text
+    # must never reach the decorative search.
+    ('.t-label:is(img { opacity: 0.3; }', 1,
+     "unterminated, with a decorative name inside it"),
+    ('.t-label:where(svg { opacity: 0.3; }', 1, "unterminated :where()"),
+    ('.card :is(.t-label, .z:is(img) { opacity: 0.3; }', 1,
+     "unterminated outer group, terminated inner one"),
+    # :is() attaches to its compound, so a complex member contributes its
+    # ancestors as ancestors - only its last compound joins the head.
+    ('img:where(.prose *) { opacity: 0.4; }', 0,
+     "an image qualified by an ancestor"),
+    ('img:is(.card *, .tile *) { opacity: 0.4; }', 0,
+     "the same, with two members"),
+    ('svg:where(.btn *) { opacity: 0.4; }', 0,
+     "an svg qualified by an ancestor"),
 ]
 
 # ci/_containment.py, spacing half.
