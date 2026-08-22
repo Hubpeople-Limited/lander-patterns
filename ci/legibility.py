@@ -401,7 +401,9 @@ def _expand(subject, depth=0):
         # `&` between two halves of ONE compound: CSS nesting's own "this
         # element", and not a word character. Joining `.a` and `img` directly
         # gave `.aimg`, where the element-name lookbehind sees no element.
-        tail = head + ("&" if head else "") + pieces[-1] if pieces else head
+        # _split_combinators never returns an empty list, so pieces[-1] is
+        # always there.
+        tail = head + ("&" if head else "") + pieces[-1]
         ancestors = " ".join(pieces[:-1])
         joined = ((ancestors + " ") if ancestors else "") + tail \
             + subject[close + 1:]
