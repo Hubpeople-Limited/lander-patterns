@@ -21,8 +21,8 @@ added: 2026-08-22
      atmosphere, so it takes real alt text unless it is a pure texture - then
      empty the value, never delete the attribute. Fill srcset with a CDN
      ladder; sizes is 100vw because the band is genuinely full-bleed.
-     loading is eager and absent on purpose: this sits at the foot of a long
-     page, so lazy is right and the attribute below says so. -->
+     loading is lazy on purpose: this sits at the foot of a long page, so it
+     is never the LCP element. -->
 <section class="cta-image" aria-labelledby="slot:cta-image-id">
   <img class="cta-image-img"
        src="slot:background-image"

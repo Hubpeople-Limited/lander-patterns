@@ -4,9 +4,10 @@
   --opener-split-intro-measure: 42ch;
   display: grid;
   gap: var(--space-5);
-  width: min(100% - 2 * var(--space-4), var(--container-max));
+  max-width: var(--container-max);
   margin-inline: auto;
-  padding-block: var(--space-8) var(--space-6);
+  /* Section gutter idiom, so this lines up with what it introduces. */
+  padding: var(--space-8) var(--space-4) var(--space-6);
 }
 .opener-split-eyebrow {
   color: var(--color-text-soft);
@@ -37,10 +38,15 @@
 }
 .opener-split--ruled {
   border-bottom: 1px solid var(--color-rule);
-  padding-bottom: var(--space-6);
+  padding-bottom: var(--space-8);
 }
 /* Side by side only from 64rem: two half-width columns at tablet width leave
    the title too narrow to hold a heading. See the README. */
+@media (min-width: 48rem) {
+  .opener-split {
+    padding-inline: var(--space-6);
+  }
+}
 @media (min-width: 64rem) {
   .opener-split {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

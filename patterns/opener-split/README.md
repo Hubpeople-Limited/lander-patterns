@@ -11,10 +11,6 @@ different registers. This one suits a page that wants to look like it was
 designed rather than assembled, and it gives the supporting line real weight
 instead of treating it as a subtitle.
 
-**This shape appeared five times across two independently authored designer
-pages**, which is why it is here at all. Nothing else in the second batch
-recurred that often.
-
 **Pick one opener style per page and hold it.** `heading-block` and this pattern
 answer exactly the same question, so a page carrying both looks like two people
 built it. There is no `avoid-with` entry between them, because that field is for

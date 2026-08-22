@@ -10,7 +10,7 @@ The library had no mid-page ask. `hero-split` is the opener and `one-per-page`;
 `cta-band` and `cta-image` are finales that read as endings wherever they are
 put; `pricing-tiers` is a reference table. A page that needs to make one offer
 halfway down — after the how-it-works, before the questions — had nothing, and a
-designer built this twice.
+designer had nothing to reach for.
 
 It is also, with `benefit-tiles` and `steps-plain`, one of the three sections a
 brand with no usable photography can actually build a page out of.

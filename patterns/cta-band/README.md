@@ -6,8 +6,7 @@ ordinary way a page ends, and until now the library had no answer for it: the
 only closing patterns were `cta-curtain`, a full-viewport pinned panel uncovered
 by the section above it, and `cta-sticky`, a mobile bar. Every page wanting a
 plain finale had to take the curtain, which is an elaborate thing to place and
-`one-per-page` besides. Three separate designers built this band independently,
-which is the clearest signal in the set that it was missing.
+`one-per-page` besides.
 
 Reach for it when the page has made its case and needs to ask. Reach for
 `cta-image` instead when a photograph is doing the asking, and for `cta-curtain`

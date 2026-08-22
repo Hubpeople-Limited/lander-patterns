@@ -1,0 +1,122 @@
+/* prose-column v1 - tokens only, selectors prefixed */
+.prose-column {
+  --prose-column-measure: 68ch;
+  width: min(100% - 2 * var(--space-4), var(--prose-column-measure));
+  margin-inline: auto;
+  padding-block: var(--space-6);
+  color: var(--color-text);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+.prose-column > :first-child {
+  margin-top: 0;
+}
+.prose-column > :last-child {
+  margin-bottom: 0;
+}
+.prose-column p {
+  margin: 0 0 var(--space-5);
+}
+.prose-column h2,
+.prose-column h3 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+/* --color-heading on an h2 only: the clamp floor is 28px, above the size the
+   token is promised at, and the column paints no ground of its own. */
+.prose-column h2 {
+  color: var(--color-heading);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 600;
+  margin: var(--space-8) 0 var(--space-4);
+}
+/* h3 is under the size the heading token covers, so it takes the body ink. */
+.prose-column h3 {
+  color: var(--color-text);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: var(--space-6) 0 var(--space-3);
+}
+.prose-column ul,
+.prose-column ol {
+  margin: 0 0 var(--space-5);
+  padding-inline-start: var(--space-6);
+}
+.prose-column li {
+  margin-bottom: var(--space-2);
+}
+.prose-column li::marker {
+  color: var(--color-text-soft);
+}
+.prose-column a {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.prose-column a:hover {
+  text-decoration-thickness: 2px;
+}
+.prose-column a:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.prose-column blockquote {
+  margin: var(--space-6) 0;
+  padding-inline-start: var(--space-5);
+  /* The rule is decoration beside a quote the <blockquote> already marks up,
+   so a brand may set it as soft as it likes. */
+  border-inline-start: 3px solid var(--color-rule);
+}
+.prose-column blockquote p {
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  margin-bottom: var(--space-3);
+}
+.prose-column cite {
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  font-style: normal;
+}
+/* A table is wider than a phone and says so: it scrolls inside its own box
+   rather than making the page scroll sideways. */
+.prose-column figure {
+  margin: var(--space-6) 0;
+  overflow-x: auto;
+}
+.prose-column table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 28rem;
+  font-size: 0.9375rem;
+}
+.prose-column caption {
+  color: var(--color-text-soft);
+  font-size: 0.875rem;
+  text-align: start;
+  margin-bottom: var(--space-3);
+}
+.prose-column th,
+.prose-column td {
+  text-align: start;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-rule);
+  vertical-align: top;
+}
+.prose-column thead th {
+  background: var(--color-surface-soft);
+  border-bottom-width: 2px;
+}
+.prose-column tbody th {
+  font-weight: 700;
+}
+.prose-column td {
+  color: var(--color-text-soft);
+}
+.prose-column thead th:first-child {
+  border-start-start-radius: var(--card-radius);
+}
+.prose-column thead th:last-child {
+  border-start-end-radius: var(--card-radius);
+}

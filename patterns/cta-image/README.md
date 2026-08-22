@@ -8,8 +8,7 @@ where the last thing a reader should see is a person rather than a sentence.
 
 The library's other photographic full-bleed section is `hero-overlay`, which is
 `one-per-page` and explicitly the opener. There was no closing equivalent, so a
-page wanting to end on an image had nothing. Two designers built one
-independently, and a third built the flat-colour version, `cta-band`.
+page wanting to end on an image had nothing.
 
 Choose between the three by what is doing the work. `cta-band` when the words
 are; this when the picture is; `cta-curtain` only when the uncovering itself is
@@ -57,8 +56,7 @@ same reason. A brand may make the scrim heavier and cannot make it lighter.
 which is worth knowing before anyone removes it. It is not decoration: an image
 that fails to load, is slow, or is later deleted from the CDN leaves the copy on
 the exact colour its contrast was measured against, rather than on whatever the
-page ground happens to be. Two of the designer pages this came from carried the
-same guard, arrived at independently.
+page ground happens to be.
 
 **The focus indicator is two bands rather than one ring.** What sits behind a
 control here is a photograph, which no token describes and no ratio covers, so

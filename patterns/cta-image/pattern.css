@@ -21,13 +21,20 @@
   height: 100%;
   object-fit: cover;
 }
+/* Floor across the middle band where the copy sits, falling away top and
+   bottom so the photograph is still a photograph. See the README. */
 .cta-image::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: color-mix(in srgb, var(--color-scrim)
-              calc(var(--cta-image-scrim-floor) * 100%), transparent);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-scrim) calc(var(--cta-image-scrim-floor) * 34%), transparent) 0%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--cta-image-scrim-floor) * 100%), transparent) 22%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--cta-image-scrim-floor) * 100%), transparent) 78%,
+    color-mix(in srgb, var(--color-scrim) calc(var(--cta-image-scrim-floor) * 34%), transparent) 100%
+  );
 }
 .cta-image-inner {
   max-width: var(--container-max);
@@ -79,6 +86,9 @@
   text-decoration: none;
 }
 .cta-image-btn {
+  /* The edge identifies the control, not the fill: no token promises
+   --color-primary against --color-scrim. See the README. */
+  border: 2px solid var(--color-on-scrim);
   background: var(--color-primary);
   color: var(--color-on-primary);
 }

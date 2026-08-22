@@ -68,11 +68,10 @@ That gate is why a phone in landscape, a short window and a desktop at 200%
 browser zoom all get the plain stack, as does a browser without
 `position: sticky`. **The plain stack is a correct render, not a fallback.**
 
-This is not hypothetical: one of the designer pages this library was built from
-set `height: 100%; overflow: hidden` on a full-viewport section and became
-unscrollable at 200% zoom, failing WCAG 1.4.4. The card here uses `min-height`,
-never `height`, for the same reason — copy that outgrows its card must grow the
-card rather than overflow it.
+For the same reason the card uses `min-height` and never `height`: a
+full-viewport section with a fixed height and `overflow: hidden` becomes
+unscrollable at 200% zoom, which fails WCAG 1.4.4. Copy that outgrows its card
+has to grow the card rather than overflow it.
 
 **Nothing animates.** The cards are laid out by the page's own scroll position,
 so there is no motion to remove under `prefers-reduced-motion` and the pattern

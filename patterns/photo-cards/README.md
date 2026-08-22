@@ -18,9 +18,6 @@ photographs?** If you do, `media-card-grid` is the stronger composition. If you
 do not, use this. They refuse each other, because two card runs answering the
 same question with different furniture is the section appearing twice.
 
-Three designers built a card of roughly this shape. Two of them put a button in
-every card, and **that has deliberately not been carried across** — see below.
-
 **What it needs.** One real photograph per card with its own alt text, a short
 heading, one or two sentences, and a real destination. Three or four cards read
 best; the grid is `auto-fit`, so any count fills its row rather than leaving a

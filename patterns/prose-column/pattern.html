@@ -1,0 +1,57 @@
+<!--
+name: prose-column
+version: 1
+type: component
+page-types: article, safety, homepage, landing, pricing
+content-shape: narrative
+description: The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+keywords: prose, article, body, editorial, measure, longform
+needs: real writing. Headings that say what their section contains, each section opening with a complete one-sentence answer to the question its heading raises
+pairs-with: article-masthead, heading-block, gallery-scroll
+avoid-with: none
+tokens-used: --card-radius, --color-heading, --color-focus, --color-primary-dark, --color-rule, --color-surface-soft, --color-text, --color-text-soft, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-22
+-->
+<!-- A worked skeleton, not a fixed structure: keep the elements the writing
+     uses and delete the rest. Nothing here takes a class - the column styles
+     its own descendants. Headings start at h2; do not skip a level. -->
+<div class="prose-column">
+  <p><!-- slot: opening-paragraph --></p>
+
+  <h2><!-- slot: section-heading --></h2>
+  <p><!-- slot: section-opening-sentence-then-the-rest --></p>
+
+  <!-- A list only where the material is one. -->
+  <ul>
+    <li><!-- slot: list-item --></li>
+  </ul>
+
+  <!-- Delete unless someone actually said this. -->
+  <blockquote>
+    <p><!-- slot: quote --></p>
+    <cite><!-- slot: quote-attribution --></cite>
+  </blockquote>
+
+  <!-- A table where the material is a comparison; keep the scope attributes.
+       Delete the whole figure otherwise. -->
+  <figure>
+    <table>
+      <caption><!-- slot: table-caption --></caption>
+      <thead>
+        <tr>
+          <th scope="col"><!-- slot: column-heading --></th>
+          <th scope="col"><!-- slot: column-heading-2 --></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row"><!-- slot: row-heading --></th>
+          <td><!-- slot: cell --></td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+</div>
