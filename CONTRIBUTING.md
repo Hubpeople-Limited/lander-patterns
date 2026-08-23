@@ -110,6 +110,32 @@ Then the markup. Three rules:
   and transition inside the reduced-motion guard pattern shown in existing
   patterns, and nothing auto-moves for more than five seconds.
 
+### The ground ladder — one vocabulary, four rungs
+
+A pattern that offers a choice of ground names it from this list and no other:
+
+| Modifier | Ground | Ink |
+|---|---|---|
+| `--plain` | `--color-bg`, the page's own ground | `--color-text`, or `--color-heading` on genuinely large text |
+| `--soft` | `--color-surface-soft`, the tinted fill | `--color-text` |
+| `--brand` | `--color-primary` | `--color-on-primary` — the contract's stated pair |
+| `--deep` | `--color-scrim` | `--color-on-scrim` — the contract's stated pair |
+
+Offer the rungs that suit the pattern; nothing has to offer all four. **Do not
+invent a fifth name for one of these, and do not invent a fifth rung.** Two
+patterns spelling the same idea differently is a choice a builder cannot
+generalise, and this is the axis that most cheaply stops two pages on one brand
+looking alike — which only works if it is the same axis everywhere.
+
+Set the ground's ink and its ground as `--<pattern-name>-*` properties on the
+modifier, then have every rule read those rather than a contract token. Nothing
+in the file should know which ground it is on: that is what stops a rule being
+correct on two rungs and wrong on the third.
+
+`feature-panels` spells its first rung `--light` and predates this table. Its
+three grounds are a fixed ranked ladder rather than a choice, so it is left as
+it is; a pattern offering a real choice uses the names above.
+
 ## What may be written down, and where
 
 This repository is public and its files are published twice over: `pattern.css`

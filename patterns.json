@@ -70,6 +70,33 @@
   "version": "5",
   "whole-page": false
  },
+ "claim-stack": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Three to five promises set very large, one to a screenful, separated by hairlines and nothing else - the section with nowhere to hide, for words the brand can stand behind.",
+  "motion": "none",
+  "needs": "three to five claims the brand genuinely stands behind, each true, each said in about twelve words or fewer, and each carrying something the one above it did not. An optional line of plain support under any of them where a claim needs a condition stating. Nothing else - no figures, no photographs, no logos",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "safety",
+   "pricing",
+   "article"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "opener-split",
+   "cta-assurance",
+   "cta-band",
+   "safety-protections"
+  ],
+  "requires": "none",
+  "type": "section",
+  "version": "1",
+  "whole-page": false
+ },
  "comparison-table": {
   "avoid-with": [],
   "behaviours": [],
@@ -487,6 +514,34 @@
   "requires": "none",
   "type": "section",
   "version": "4",
+  "whole-page": false
+ },
+ "listing-rows": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "Full-width ruled rows rather than a grid of cards - each row carries a linked title, a real sentence, and up to two true attributes aligned down their own columns; the index for a set of five or more things with no photograph between them.",
+  "motion": "none",
+  "needs": "five or more real destinations or items of the same kind, each with the brand's own title, one true sentence about it, and at least one genuine attribute per row - a date, a category, a place, a count. Every link resolves to a page that already has content on it. An attribute column is deleted rather than filled with something invented",
+  "one-per-page": false,
+  "page-types": [
+   "articles-landing",
+   "features",
+   "homepage",
+   "landing",
+   "safety",
+   "pricing"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "opener-split",
+   "faq-details",
+   "cta-band",
+   "link-cluster"
+  ],
+  "requires": "none",
+  "type": "section",
+  "version": "1",
   "whole-page": false
  },
  "media-card-grid": {

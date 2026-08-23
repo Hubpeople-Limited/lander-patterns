@@ -1,0 +1,36 @@
+<!--
+name: claim-stack
+version: 1
+type: section
+page-types: homepage, landing, safety, pricing, article
+content-shape: single claim
+requires: none
+description: Three to five promises set very large, one to a screenful, separated by hairlines and nothing else - the section with nowhere to hide, for words the brand can stand behind.
+keywords: statements, promises, claims, manifesto, safety, commitments, no-photography
+needs: three to five claims the brand genuinely stands behind, each true, each said in about twelve words or fewer, and each carrying something the one above it did not. An optional line of plain support under any of them where a claim needs a condition stating. Nothing else - no figures, no photographs, no logos
+pairs-with: heading-block, opener-split, cta-assurance, cta-band, safety-protections
+avoid-with: none
+tokens-used: --color-bg, --color-heading, --color-on-primary, --color-on-scrim, --color-primary, --color-rule, --color-scrim, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-4, --space-8, --space-12, --type-scale
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-23
+-->
+<!-- Take one ground modifier: --plain, --soft, --brand or --deep. See the
+     README for what each is and which inks it uses.
+
+     Duplicate the whole claim-stack-item for each claim. Three is the floor
+     and five the ceiling: this is a punctuation mark, not a page.
+
+     Delete the claim-stack-note when a claim needs no condition stating.
+     Most do not, and a note under every claim turns the device into a
+     two-column list with extra steps. -->
+<section class="claim-stack claim-stack--plain" aria-labelledby="slot:section-id">
+  <h2 class="claim-stack-heading" id="slot:section-id"><!-- slot: section-title --></h2>
+  <div class="claim-stack-inner">
+    <div class="claim-stack-item">
+      <p class="claim-stack-claim"><!-- slot: claim --></p>
+      <p class="claim-stack-note"><!-- slot: claim-note --></p>
+    </div>
+  </div>
+</section>
