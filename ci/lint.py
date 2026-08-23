@@ -201,6 +201,9 @@ def parse_header(text, path):
     return meta
 
 
+# The ground ladder, named once for the library. CONTRIBUTING.md carries the
+# table; this is the half a machine can hold you to.
+GROUND_RUNGS = {"plain", "soft", "brand", "deep"}
 VARIANT_LINE = re.compile(r"^[a-z][a-z-]*=[a-z][a-z-]*(\|[a-z][a-z-]*)*$")
 
 
@@ -228,6 +231,18 @@ def check_variants(html_path, css_path, meta, folder_name):
     if not raw:
         return
     axes = parse_variants(raw)
+    if axes is not None and "ground" in axes:
+        # The ground ladder is one vocabulary for the whole library. Three
+        # patterns grew ground modifiers independently and two spelled the
+        # lightest rung differently, which is a choice a builder cannot
+        # generalise - and this is the axis that most cheaply stops two pages
+        # on one brand reading alike, which only works when it is the same
+        # axis everywhere.
+        for value in axes["ground"]:
+            if value not in GROUND_RUNGS:
+                find(html_path, "variants",
+                     f"ground={value} is not one of the ladder's rungs "
+                     f"{sorted(GROUND_RUNGS)} - see CONTRIBUTING.md")
     if axes is None:
         find(html_path, "variants",
              f"malformed variants line {raw!r} - the form is "

@@ -114,7 +114,14 @@ def main(argv):
     print("  /* Shape: the brand's scale, under the names the patterns use. */")
     print("  /* Dials: bare numbers, never lengths. See TOKENS.md. */")
     print("  --type-scale: 1;   /* 0.92 quieter, 1.15 louder */")
-    print("  --space-scale: 1;  /* 0.85 dense, 1.2 airy */")
+    # --space-scale is deliberately not printed. Patterns read --type-scale
+    # directly, so setting it works the moment it is there; the spacing ramp is
+    # applied by the brand and no pattern references it, so --space-scale does
+    # nothing at all until every --space-* step is defined in terms of it.
+    # Emitting it hands a brand a dial that silently does nothing.
+    print("  /* --space-scale is NOT set here: it changes nothing until each")
+    print("     --space-* step is defined as calc(<value> * var(--space-scale, 1)),")
+    print("     which is a change to the brand's own ramp. See TOKENS.md. */")
     for role, source, default in (
             ("--card-radius", "--radius-lg", "0.75rem"),
             ("--btn-radius", "--radius-md", "0.5rem"),
