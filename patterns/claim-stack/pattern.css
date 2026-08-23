@@ -1,0 +1,87 @@
+/* claim-stack v2 - tokens only, selectors prefixed */
+/* Each ground names its own ink pair, and every rule below reads the pair.
+   The base carries the plain ground's values, so a copy that loses its
+   modifier still has a ground, a hairline and its inks. */
+.claim-stack,
+.claim-stack--plain {
+  --claim-stack-ground: var(--color-bg);
+  --claim-stack-ink: var(--color-heading, var(--color-text));
+  --claim-stack-quiet: var(--color-text-soft);
+  --claim-stack-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
+}
+.claim-stack--soft {
+  --claim-stack-ground: var(--color-surface-soft);
+  --claim-stack-ink: var(--color-text);
+  --claim-stack-quiet: var(--color-text-soft);
+  --claim-stack-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
+}
+.claim-stack--brand {
+  --claim-stack-ground: var(--color-primary);
+  --claim-stack-ink: var(--color-on-primary, var(--color-surface));
+  --claim-stack-quiet: color-mix(in srgb, var(--color-on-primary, var(--color-surface)) 78%, var(--color-primary));
+  --claim-stack-edge: color-mix(in srgb, var(--color-on-primary, var(--color-surface)) 35%, transparent);
+}
+.claim-stack--deep {
+  --claim-stack-ground: var(--color-scrim, var(--color-text));
+  --claim-stack-ink: var(--color-on-scrim, var(--color-bg));
+  --claim-stack-quiet: color-mix(in srgb, var(--color-on-scrim, var(--color-bg)) 78%, var(--color-scrim, var(--color-text)));
+  --claim-stack-edge: color-mix(in srgb, var(--color-on-scrim, var(--color-bg)) 30%, transparent);
+}
+.claim-stack {
+  padding-block: var(--space-8);
+  padding-inline: var(--space-4);
+  background: var(--claim-stack-ground);
+  color: var(--claim-stack-ink);
+}
+.claim-stack-inner {
+  max-width: var(--container-max, 72rem);
+  margin-inline: auto;
+}
+.claim-stack-heading {
+  max-width: var(--container-max, 72rem);
+  margin: 0 auto var(--space-8);
+  font-family: var(--font-heading);
+  color: var(--claim-stack-quiet);
+  font-size: calc(1.75rem * var(--type-scale, 1));
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+.claim-stack-item {
+  /* The ceiling is in vh, not on the spacing ramp. Do not "restore" a token
+     here: the ramp's top step is below 10vh on most screens, which pins this
+     to one value and the claim never gets a screenful. */
+  padding-block: clamp(var(--space-8), 10vh, 20vh);
+  border-block-start: 1px solid var(--claim-stack-edge);
+}
+.claim-stack-item:first-child {
+  border-block-start: 0;
+  padding-block-start: 0;
+}
+.claim-stack-claim {
+  font-family: var(--font-heading);
+  color: var(--claim-stack-ink);
+  font-size: calc(clamp(2rem, 1rem + 4.5vw, 4rem) * var(--type-scale, 1));
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  max-width: 18ch;
+  margin: 0;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.claim-stack-note {
+  color: var(--claim-stack-quiet);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 44ch;
+  margin: var(--space-4) 0 0;
+}
+@media (min-width: 48rem) {
+  .claim-stack {
+    padding-inline: var(--space-8);
+  }
+  .claim-stack-heading {
+    margin-block-end: var(--space-12);
+  }
+}

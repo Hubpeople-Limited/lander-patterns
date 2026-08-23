@@ -1,4 +1,38 @@
 {
+ "anchored-split": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "A short panel that stays put on one side while the evidence for it scrolls past on the other - unequal columns, no photograph, and one claim held in view for as long as it takes to read the case for it.",
+  "motion": "none",
+  "needs": "one claim the section is about, said in a title and at most two sentences - short enough to sit inside a phone-height panel and stay there. Then three or more real items that are the evidence for it, each with its own subheading and a paragraph from real material. Fewer than three and there is nothing to scroll past",
+  "one-per-page": true,
+  "page-types": [
+   "safety",
+   "features",
+   "article",
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "cta-band",
+   "cta-assurance",
+   "faq-details",
+   "safety-protections"
+  ],
+  "requires": "none",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft"
+   ]
+  },
+  "version": "2",
+  "whole-page": false
+ },
  "article-masthead": {
   "avoid-with": [
    "hero-centred",
@@ -8,7 +42,7 @@
    "hero-stated"
   ],
   "behaviours": [],
-  "content-shape": "single article",
+  "content-shape": "narrative",
   "description": "Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.",
   "motion": "none",
   "needs": "a real article title and a real lede of one or two sentences; the category the piece genuinely sits in; an honest read time and a genuine publication date; the name and role of the person who actually wrote it, with their real portrait and real alt text",
@@ -21,6 +55,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -43,6 +78,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -67,7 +103,67 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "5",
+  "whole-page": false
+ },
+ "claim-stack": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Three to five promises set very large, one to a screenful, separated by hairlines and nothing else - the section with nowhere to hide, for words the brand can stand behind.",
+  "motion": "none",
+  "needs": "three to five claims the brand genuinely stands behind, each true, each said in about twelve words or fewer, and each carrying something the one above it did not. An optional line of plain support under any of them where a claim needs a condition stating. Nothing else - no figures, no photographs, no logos",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "safety",
+   "pricing",
+   "article"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "opener-split",
+   "cta-assurance",
+   "safety-protections"
+  ],
+  "requires": "none",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand",
+    "deep"
+   ]
+  },
+  "version": "2",
+  "whole-page": false
+ },
+ "comparison-table": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "comparison",
+  "description": "A real table comparing three things against the same criteria - tier names across the top, one criterion per row, the recommended column named in words and never by colour alone.",
+  "motion": "none",
+  "needs": "two or three real things the brand offers that are genuinely measured against the same criteria, and the criteria themselves - one per row, in the brand's own words. Each cell says what that thing actually gives, not a tick borrowed from a competitor. A recommended column only where the brand recommends one",
+  "one-per-page": true,
+  "page-types": [
+   "features",
+   "pricing",
+   "landing"
+  ],
+  "pairs-with": [
+   "pricing-tiers",
+   "heading-block",
+   "opener-split",
+   "faq-details"
+  ],
+  "requires": "none",
+  "type": "section",
+  "variants": {},
+  "version": "2",
   "whole-page": false
  },
  "cta-assurance": {
@@ -94,6 +190,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "2",
   "whole-page": false
  },
@@ -122,6 +219,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -149,6 +247,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "10",
   "whole-page": false
  },
@@ -174,6 +273,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -196,6 +296,7 @@
   "pairs-with": [],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -217,6 +318,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -241,6 +343,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -269,6 +372,7 @@
   ],
   "requires": "photography",
   "type": "component",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -293,6 +397,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -321,6 +426,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "5",
   "whole-page": false
  },
@@ -348,6 +454,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "10",
   "whole-page": false
  },
@@ -376,6 +483,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -404,6 +512,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": true
  },
@@ -436,6 +545,17 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {
+   "alignment": [
+    "default",
+    "centred"
+   ],
+   "ground": [
+    "plain",
+    "brand",
+    "deep"
+   ]
+  },
   "version": "3",
   "whole-page": false
  },
@@ -462,7 +582,49 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand"
+   ]
+  },
   "version": "4",
+  "whole-page": false
+ },
+ "listing-rows": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "Full-width ruled rows rather than a grid of cards - each row carries a linked title, a real sentence, and up to two true attributes aligned down their own columns; the index for a set of five or more things with no photograph between them.",
+  "motion": "none",
+  "needs": "five or more real destinations or items of the same kind, each with the brand's own title, one true sentence about it, and at least one genuine attribute per row - a date, a category, a place, a count. Every link resolves to a page that already has content on it. An attribute column is deleted rather than filled with something invented",
+  "one-per-page": false,
+  "page-types": [
+   "articles-landing",
+   "features",
+   "homepage",
+   "landing",
+   "safety",
+   "pricing"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "opener-split",
+   "faq-details",
+   "cta-band",
+   "link-cluster"
+  ],
+  "requires": "none",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand"
+   ]
+  },
+  "version": "2",
   "whole-page": false
  },
  "media-card-grid": {
@@ -489,6 +651,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "9",
   "whole-page": false
  },
@@ -516,6 +679,7 @@
   ],
   "requires": "consented-people",
   "type": "component",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -539,6 +703,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -565,6 +730,12 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {
+   "rule": [
+    "default",
+    "ruled"
+   ]
+  },
   "version": "3",
   "whole-page": false
  },
@@ -594,6 +765,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -614,6 +786,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -622,7 +795,7 @@
    "cta-curtain"
   ],
   "behaviours": [],
-  "content-shape": "ordered set",
+  "content-shape": "progression",
   "description": "Full-screen photographic cards that pin as the page scrolls, each one sliding over the last like a dealt hand; pure CSS, and a plain stack of readable sections wherever it cannot pin.",
   "motion": "none",
   "needs": "one strong landscape photograph per card, at least 1600px wide, each with its own alt text; a short title and one or two sentences per card, in an order that means something. Two to four cards - a fifth stops being a hand and starts being a slideshow",
@@ -638,6 +811,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -666,6 +840,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -687,6 +862,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "9",
   "whole-page": false
  },
@@ -712,6 +888,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -733,6 +910,7 @@
   "pairs-with": [],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -758,6 +936,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -781,6 +960,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -808,6 +988,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "1",
   "whole-page": false
  },
@@ -832,6 +1013,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -859,6 +1041,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -873,7 +1056,7 @@
   "behaviours": [
    "reveal"
   ],
-  "content-shape": "ordered set",
+  "content-shape": "progression",
   "description": "How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.",
   "motion": "none",
   "needs": "one real photograph per step, portrait-ish and at least 1020px wide, each with its own alt text; a short step title and one sentence of body copy per step, in the real order they happen",
@@ -887,6 +1070,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -897,7 +1081,7 @@
   "behaviours": [
    "reveal"
   ],
-  "content-shape": "ordered set",
+  "content-shape": "progression",
   "description": "How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.",
   "motion": "none",
   "needs": "three to five real steps in the order they actually happen, each with a short title and one or two sentences; a section heading. No photography of any kind - that is the point of it",
@@ -915,6 +1099,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -938,6 +1123,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -963,6 +1149,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -986,6 +1173,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -1012,6 +1200,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": false
  }

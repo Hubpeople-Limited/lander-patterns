@@ -1,0 +1,7 @@
+{
+  "section-id": "sample-claim-stack",
+  "section-title": "Sample section heading",
+  "claim": "A sample promise, set large for the preview.",
+  "claim-note": "One sample line of supporting detail, preview only.",
+  "_repeat": { "class": "claim-stack-item", "count": 4 }
+}

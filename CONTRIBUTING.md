@@ -56,8 +56,8 @@ agent parses and the README is what a person reads. What each field means:
 | Field | Value |
 |---|---|
 | `type` | `component`, `section` or `page` |
-| `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `peer set`, `single claim`, `reference`, `ordered set`, `narrative`, `question and answer`, `single article`. It is what an agent matches a pattern against before it opens one |
-| `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip twelve patterns without reading twelve `needs` lines |
+| `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `narrative`, `peer set`, `comparison`, `progression`, `single claim`, `question and answer`, `reference`. It is what an agent matches a pattern against before it opens one, so it is **that** list rather than a second one that reads like it — CI holds you to it. Two spellings for one idea is a lookup that quietly returns nothing, and adding a value here means adding it to the skill's own table in the same change |
+| `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip eighteen patterns without reading eighteen `needs` lines. It is on the index row for that reason |
 | `whole-page` | `yes` if this pattern IS the page and nothing follows it. One pattern carries it today. Omit it otherwise |
 | `behaviours` | Names from `lib/REGISTRY.md`, where the pattern carries `data-hub-module` hooks. Omit it if there are none. The header, the markup and the registry must all agree, and CI checks all three |
 | `needs` | The real content this consumes. It gates use: no material, wrong pattern. Say "real" and mean it |
@@ -65,6 +65,7 @@ agent parses and the README is what a person reads. What each field means:
 | `avoid-with` | Patterns that must not both appear on one page, or `none` — two image-led card runs, a full-screen finale and a fixed bar. It is the strong reading on purpose: follow it and the weaker adjacency problems cannot arise either. Mutual by nature, so CI checks both sides name each other. A constraint that is only ever about *neighbours* ("not directly above this") is prose in the README, not an edge here |
 | `one-per-page` | `yes` if a page may hold at most one. Two heroes or two sticky bars are a mistake, not a layout choice. This is where cardinality lives, not in `avoid-with`; where two patterns are **alternatives**, set it on both and say which to pick when in both READMEs |
 | `tokens-used` | The contract tokens your `pattern.css` references. Your own `--<pattern-name>-*` properties are yours and are ignored |
+| `variants` | The axes this pattern can be varied along, as `axis=value\|value; axis=value\|value` — for example `ground=plain\|soft\|brand; alignment=default\|centred`. Omit it where there are none. Every value must be a real `.<pattern-name>*--<value>` selector, and CI checks that: two READMEs once described a "Variant" with no CSS behind it, which is an instruction to hand-edit a file the version pin then names. `default` means the pattern with no modifier on it, which is a real choice and has no class. This is the field that makes a second look **visible while shortlisting** — a pattern that ships one look is one that will be recognised across the estate, and an axis nobody can see is one nobody turns |
 | `motion` | `none`, `subtle` or `expressive` — this pattern's OWN CSS as shipped. Behaviour-driven motion is declared by `behaviours:` and is always reduced-motion-safe. CI checks `none` against the stylesheet |
 | `status` | `active`, or `deprecated` with a `replaced-by: <name>` line |
 | `version` | Bump it whenever `pattern.css` or the markup changes. A brand pins `name@version` in its own stylesheet, so an unbumped change makes that pin name two different files. CI compares against the merge base |
@@ -109,6 +110,32 @@ Then the markup. Three rules:
 - If the pattern moves (`motion: subtle`/`expressive`), keep every animation
   and transition inside the reduced-motion guard pattern shown in existing
   patterns, and nothing auto-moves for more than five seconds.
+
+### The ground ladder — one vocabulary, four rungs
+
+A pattern that offers a choice of ground names it from this list and no other:
+
+| Modifier | Ground | Ink |
+|---|---|---|
+| `--plain` | `--color-bg`, the page's own ground | `--color-text`, or `--color-heading` on genuinely large text |
+| `--soft` | `--color-surface-soft`, the tinted fill | `--color-text` |
+| `--brand` | `--color-primary` | `--color-on-primary` — the contract's stated pair |
+| `--deep` | `--color-scrim` | `--color-on-scrim` — the contract's stated pair |
+
+Offer the rungs that suit the pattern; nothing has to offer all four. **Do not
+invent a fifth name for one of these, and do not invent a fifth rung.** Two
+patterns spelling the same idea differently is a choice a builder cannot
+generalise, and this is the axis that most cheaply stops two pages on one brand
+looking alike — which only works if it is the same axis everywhere.
+
+Set the ground's ink and its ground as `--<pattern-name>-*` properties on the
+modifier, then have every rule read those rather than a contract token. Nothing
+in the file should know which ground it is on: that is what stops a rule being
+correct on two rungs and wrong on the third.
+
+`feature-panels` spells its first rung `--light` and predates this table. Its
+three grounds are a fixed ranked ladder rather than a choice, so it is left as
+it is; a pattern offering a real choice uses the names above.
 
 ## What may be written down, and where
 

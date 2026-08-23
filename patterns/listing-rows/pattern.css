@@ -1,0 +1,134 @@
+/* listing-rows v2 - tokens only, selectors prefixed */
+/* Each ground names its own ink set, and every rule below reads that set. The
+   base carries the plain ground's values, so a copy that loses its modifier
+   still has a ground, a hairline and a focus ring. */
+.listing-rows,
+.listing-rows--plain {
+  --listing-rows-ground: var(--color-bg);
+  --listing-rows-ink: var(--color-text);
+  --listing-rows-quiet: var(--color-text-soft);
+  --listing-rows-title-ink: var(--color-heading, var(--color-text));
+  --listing-rows-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
+  --listing-rows-ring: var(--color-focus, var(--color-primary));
+}
+.listing-rows--soft {
+  --listing-rows-ground: var(--color-surface-soft);
+  --listing-rows-ink: var(--color-text);
+  --listing-rows-quiet: var(--color-text-soft);
+  --listing-rows-title-ink: var(--color-text);
+  --listing-rows-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
+  --listing-rows-ring: var(--color-focus, var(--color-primary));
+}
+/* The fallback ink here is --color-surface, not --color-bg. Do not "tidy" it
+   to match the other grounds: on some brands the page ground fails against
+   the primary and the surface does not. See the README. */
+.listing-rows--brand {
+  --listing-rows-ground: var(--color-primary);
+  --listing-rows-ink: var(--color-on-primary, var(--color-surface));
+  --listing-rows-quiet: var(--color-on-primary, var(--color-surface));
+  --listing-rows-title-ink: var(--color-on-primary, var(--color-surface));
+  --listing-rows-edge: color-mix(in srgb, var(--color-on-primary, var(--color-surface)) 35%, transparent);
+  --listing-rows-ring: var(--color-on-primary, var(--color-surface));
+}
+.listing-rows {
+  padding-block: var(--space-8);
+  padding-inline: var(--space-4);
+  background: var(--listing-rows-ground);
+  color: var(--listing-rows-ink);
+}
+.listing-rows-inner {
+  max-width: var(--container-max, 72rem);
+  margin-inline: auto;
+}
+.listing-rows-title {
+  font-family: var(--font-heading);
+  color: var(--listing-rows-title-ink);
+  font-size: calc(clamp(1.75rem, 3vw, 2.5rem) * var(--type-scale, 1));
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.listing-rows-intro {
+  color: var(--listing-rows-quiet);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 52ch;
+  margin: 0 0 var(--space-6);
+}
+.listing-rows-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  border-block-start: 1px solid var(--listing-rows-edge);
+}
+.listing-rows-item {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: var(--space-2) var(--space-5);
+  padding-block: var(--space-5);
+  border-block-end: 1px solid var(--listing-rows-edge);
+}
+.listing-rows-link {
+  font-family: var(--font-heading);
+  color: var(--listing-rows-ink);
+  font-size: calc(1.1875rem * var(--type-scale, 1));
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none;
+  /* 24px, held independently of the type scale: at --type-scale 0.9 the line
+     box alone is 22.2px and this is the only tap target in the row. */
+  min-block-size: 1.5rem;
+}
+.listing-rows-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.listing-rows-link:focus-visible {
+  outline: 3px solid var(--listing-rows-ring);
+  outline-offset: 3px;
+}
+.listing-rows-summary {
+  color: var(--listing-rows-quiet);
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 64ch;
+  margin: 0;
+}
+.listing-rows-meta,
+.listing-rows-when {
+  color: var(--listing-rows-quiet);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+@media (min-width: 48rem) {
+  .listing-rows {
+    padding-inline: var(--space-8);
+  }
+  /* Change the column count here and in the markup together. */
+  .listing-rows-list {
+    grid-template-columns: 1fr auto auto;
+  }
+  .listing-rows-item {
+    grid-template-columns: subgrid;
+  }
+  .listing-rows-link {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .listing-rows-meta {
+    grid-column: 2;
+    grid-row: 1;
+    text-align: right;
+  }
+  .listing-rows-when {
+    grid-column: 3;
+    grid-row: 1;
+    text-align: right;
+  }
+  .listing-rows-summary {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

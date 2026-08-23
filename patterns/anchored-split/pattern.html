@@ -1,0 +1,42 @@
+<!--
+name: anchored-split
+version: 2
+type: section
+page-types: safety, features, article, homepage, landing, pricing
+content-shape: single claim
+requires: none
+description: A short panel that stays put on one side while the evidence for it scrolls past on the other - unequal columns, no photograph, and one claim held in view for as long as it takes to read the case for it.
+keywords: sticky, anchored, split, two-column, evidence, safety, context
+needs: one claim the section is about, said in a title and at most two sentences - short enough to sit inside a phone-height panel and stay there. Then three or more real items that are the evidence for it, each with its own subheading and a paragraph from real material. Fewer than three and there is nothing to scroll past
+pairs-with: heading-block, cta-band, cta-assurance, faq-details, safety-protections
+avoid-with: none
+tokens-used: --color-bg, --color-heading, --color-rule, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale
+variants: ground=plain|soft
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-23
+-->
+<!-- Take one ground modifier: --plain or --soft. Both sides share it.
+
+     Duplicate the whole anchored-split-entry for each real item; three is
+     the floor. Delete the eyebrow when nothing true fills it.
+
+     KEEP THE ANCHOR SHORT - a title and at most two sentences. A panel
+     taller than the viewport sticks at the top and its own foot can never
+     be scrolled to. -->
+<section class="anchored-split anchored-split--plain" aria-labelledby="slot:section-id">
+  <div class="anchored-split-inner">
+    <div class="anchored-split-anchor">
+      <p class="anchored-split-eyebrow"><!-- slot: eyebrow --></p>
+      <h2 class="anchored-split-title" id="slot:section-id"><!-- slot: claim --></h2>
+      <p class="anchored-split-lede"><!-- slot: lede --></p>
+    </div>
+    <div class="anchored-split-flow">
+      <article class="anchored-split-entry">
+        <h3 class="anchored-split-entry-title"><!-- slot: entry-title --></h3>
+        <p class="anchored-split-entry-body"><!-- slot: entry-body --></p>
+      </article>
+    </div>
+  </div>
+</section>

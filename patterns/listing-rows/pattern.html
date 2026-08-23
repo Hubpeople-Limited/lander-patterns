@@ -1,0 +1,38 @@
+<!--
+name: listing-rows
+version: 2
+type: section
+page-types: articles-landing, features, homepage, landing, safety, pricing
+content-shape: peer set
+requires: none
+description: Full-width ruled rows rather than a grid of cards - each row carries a linked title, a real sentence, and up to two true attributes aligned down their own columns; the index for a set of five or more things with no photograph between them.
+keywords: index, list, rows, directory, articles, guides, catalogue, no-photography
+needs: five or more real destinations or items of the same kind, each with the brand's own title, one true sentence about it, and at least one genuine attribute per row - a date, a category, a place, a count. Every link resolves to a page that already has content on it. An attribute column is deleted rather than filled with something invented
+pairs-with: heading-block, opener-split, faq-details, cta-band, link-cluster
+avoid-with: none
+tokens-used: --color-bg, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale
+variants: ground=plain|soft|brand
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-23
+-->
+<!-- Take one ground modifier: --plain, --soft or --brand.
+     EVERY section-id must differ; two of these on one page is a stated use.
+     Duplicate listing-rows-item for each real entry; five is the floor.
+     TWO ATTRIBUTE COLUMNS SHIP. Delete what the material cannot fill, from
+     every row and from the grid's column count in the same pass. -->
+<section class="listing-rows listing-rows--plain" aria-labelledby="slot:section-id">
+  <div class="listing-rows-inner">
+    <h2 class="listing-rows-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <p class="listing-rows-intro"><!-- slot: section-intro --></p>
+    <ul class="listing-rows-list" role="list">
+      <li class="listing-rows-item">
+        <a class="listing-rows-link" href="slot:entry-url"><!-- slot: entry-title --></a>
+        <span class="listing-rows-meta"><!-- slot: entry-meta --></span>
+        <span class="listing-rows-when"><!-- slot: entry-when --></span>
+        <p class="listing-rows-summary"><!-- slot: entry-summary --></p>
+      </li>
+    </ul>
+  </div>
+</section>

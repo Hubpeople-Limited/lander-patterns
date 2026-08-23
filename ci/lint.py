@@ -39,6 +39,15 @@ REQUIRED_FIELDS = [
     "one-per-page",
 ]
 TYPES = {"component", "section", "page"}
+# The building skill matches a pattern against the shape of the content before
+# it opens one, so this list is ITS list and not a second one that reads like
+# it. Two spellings for one idea is a lookup that silently returns nothing:
+# the skill asked for `progression` and `comparison` while this library said
+# `ordered set` and offered no comparison at all, and neither side could see
+# the miss. Adding a value here means adding it to the skill's own table in
+# the same change.
+SHAPES = {"narrative", "peer set", "comparison", "progression", "single claim",
+          "question and answer", "reference"}
 MOTION = {"none", "subtle", "expressive"}
 STATUS = {"active", "deprecated"}
 ONE_PER_PAGE = {"yes", "no"}
@@ -192,6 +201,51 @@ def parse_header(text, path):
     return meta
 
 
+VARIANT_LINE = re.compile(r"^[a-z][a-z-]*=[a-z][a-z-]*(\|[a-z][a-z-]*)*$")
+
+
+def parse_variants(value):
+    """`variants: ground=plain|soft|brand; alignment=default|centred` ->
+    {"ground": [...], "alignment": [...]}. Returns None on a malformed line."""
+    out = {}
+    for clause in [c.strip() for c in value.split(";") if c.strip()]:
+        if not VARIANT_LINE.match(clause):
+            return None
+        axis, _, values = clause.partition("=")
+        out[axis] = values.split("|")
+    return out or None
+
+
+def check_variants(html_path, css_path, meta, folder_name):
+    """A declared variant has to be a modifier class that exists.
+
+    Two READMEs described a "Variant" with no CSS behind it - an instruction to
+    hand-edit a file that the version pin then names, so two brands could carry
+    the same version and different code. A variant an agent can see in the index
+    and cannot apply is the same defect with a wider audience.
+    """
+    raw = meta.get("variants")
+    if not raw:
+        return
+    axes = parse_variants(raw)
+    if axes is None:
+        find(html_path, "variants",
+             f"malformed variants line {raw!r} - the form is "
+             "'axis=value|value; axis=value|value', lowercase and hyphens")
+        return
+    css = re.sub(r"/\*.*?\*/", "", css_path.read_text(encoding="utf-8"), flags=re.S)
+    for axis, values in axes.items():
+        for value in values:
+            # `default` names the pattern with no modifier on it, which is a
+            # real choice and has no class of its own.
+            if value == "default":
+                continue
+            if not re.search(rf"\.{re.escape(folder_name)}[\w-]*--{re.escape(value)}(?![\w-])", css):
+                find(css_path, "variants",
+                     f"variants declares {axis}={value} but no "
+                     f".{folder_name}*--{value} selector exists")
+
+
 def furniture_ok(token):
     if token in FURNITURE:
         return True
@@ -257,6 +311,11 @@ def check_html(path, meta, folder_name):
              f"name starts with reserved chassis word '{folder_name.split('-')[0]}'")
     if meta.get("type") and meta["type"] not in TYPES:
         find(path, "header", f"type '{meta['type']}' not in {sorted(TYPES)}")
+    if meta.get("content-shape") and meta["content-shape"] not in SHAPES:
+        find(path, "header",
+             f"content-shape '{meta['content-shape']}' not in {sorted(SHAPES)} "
+             "- this is the building skill's vocabulary, and a spelling only "
+             "this library uses is a match that never happens")
     if meta.get("motion") and meta["motion"] not in MOTION:
         find(path, "header", f"motion '{meta['motion']}' not in {sorted(MOTION)}")
     if meta.get("one-per-page") and meta["one-per-page"] not in ONE_PER_PAGE:
@@ -1192,6 +1251,7 @@ def main():
 
         meta = parse_header(html.read_text(encoding="utf-8"), html)
         slots = check_html(html, meta, folder.name)
+        check_variants(html, folder / "pattern.css", meta, folder.name)
         check_list_semantics(html, css, folder.name)
         check_motion_claim(html, css, meta)
         check_edges_documented(readme, meta)
@@ -1327,6 +1387,19 @@ def main():
         # arrives thousands of tokens after the decision it was meant to
         # inform; behaviours decides whether the brand needs the bundle at all.
         shape = meta.get("content-shape", "")
+        # `requires` is the coarse material gate and is read before `needs`, so
+        # a brand with no pictures can drop a third of the library without
+        # opening a folder. Printed only where it bites: `none` holds on more
+        # than half the patterns and would be noise on every one of them.
+        material = {
+            "photography": " · **needs photography**",
+            "consented-people": " · **needs consented people**",
+        }.get(meta.get("requires", "none"), "")
+        # Which axes a pattern can be varied along, on the row. Two pages on
+        # one brand taking the same pattern is only sameness if nothing said
+        # the pattern had a second look in it.
+        axes = parse_variants(meta.get("variants", ""))
+        varies = f" · varies: {', '.join(axes)}" if axes else ""
         beh = meta.get("behaviours", "")
         needs = meta.get("needs", "")
         manifest[name] = {
@@ -1343,12 +1416,14 @@ def main():
             "pairs-with": [s.strip() for s in meta.get("pairs-with", "").split(",")
                            if s.strip() and s.strip() != "none"],
             "behaviours": [s.strip() for s in beh.split(",") if s.strip()],
+            "variants": parse_variants(meta.get("variants", "")) or {},
             "motion": meta.get("motion"),
             "description": meta.get("description", ""),
         }
         rows.append(
             f"- **{name}** v{meta.get('version', '?')} · {meta.get('type', '?')} · "
-            f"{meta.get('page-types', '?')}{limit} · {meta.get('description', '?')}"
+            f"{shape or '?'} · {meta.get('page-types', '?')}"
+            f"{material}{varies}{limit} · {meta.get('description', '?')}"
         )
 
     # The behaviour library injects CSS into every page that gets it, so its
