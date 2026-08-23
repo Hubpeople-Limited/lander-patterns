@@ -1327,6 +1327,14 @@ def main():
         # arrives thousands of tokens after the decision it was meant to
         # inform; behaviours decides whether the brand needs the bundle at all.
         shape = meta.get("content-shape", "")
+        # `requires` is the coarse material gate and is read before `needs`, so
+        # a brand with no pictures can drop a third of the library without
+        # opening a folder. Printed only where it bites: `none` holds on more
+        # than half the patterns and would be noise on every one of them.
+        material = {
+            "photography": " · **needs photography**",
+            "consented-people": " · **needs consented people**",
+        }.get(meta.get("requires", "none"), "")
         beh = meta.get("behaviours", "")
         needs = meta.get("needs", "")
         manifest[name] = {
@@ -1348,7 +1356,8 @@ def main():
         }
         rows.append(
             f"- **{name}** v{meta.get('version', '?')} · {meta.get('type', '?')} · "
-            f"{meta.get('page-types', '?')}{limit} · {meta.get('description', '?')}"
+            f"{shape or '?'} · {meta.get('page-types', '?')}"
+            f"{material}{limit} · {meta.get('description', '?')}"
         )
 
     # The behaviour library injects CSS into every page that gets it, so its
