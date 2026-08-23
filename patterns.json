@@ -8,7 +8,7 @@
    "hero-stated"
   ],
   "behaviours": [],
-  "content-shape": "single article",
+  "content-shape": "narrative",
   "description": "Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.",
   "motion": "none",
   "needs": "a real article title and a real lede of one or two sentences; the category the piece genuinely sits in; an honest read time and a genuine publication date; the name and role of the person who actually wrote it, with their real portrait and real alt text",
@@ -68,6 +68,30 @@
   "requires": "photography",
   "type": "section",
   "version": "5",
+  "whole-page": false
+ },
+ "comparison-table": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "comparison",
+  "description": "A real table comparing three things against the same criteria - tier names across the top, one criterion per row, the recommended column named in words and never by colour alone.",
+  "motion": "none",
+  "needs": "two or three real things the brand offers that are genuinely measured against the same criteria, and the criteria themselves - one per row, in the brand's own words. Each cell says what that thing actually gives, not a tick borrowed from a competitor. A recommended column only where the brand recommends one",
+  "one-per-page": true,
+  "page-types": [
+   "features",
+   "pricing",
+   "landing"
+  ],
+  "pairs-with": [
+   "pricing-tiers",
+   "heading-block",
+   "opener-split",
+   "faq-details"
+  ],
+  "requires": "none",
+  "type": "section",
+  "version": "1",
   "whole-page": false
  },
  "cta-assurance": {
@@ -622,7 +646,7 @@
    "cta-curtain"
   ],
   "behaviours": [],
-  "content-shape": "ordered set",
+  "content-shape": "progression",
   "description": "Full-screen photographic cards that pin as the page scrolls, each one sliding over the last like a dealt hand; pure CSS, and a plain stack of readable sections wherever it cannot pin.",
   "motion": "none",
   "needs": "one strong landscape photograph per card, at least 1600px wide, each with its own alt text; a short title and one or two sentences per card, in an order that means something. Two to four cards - a fifth stops being a hand and starts being a slideshow",
@@ -873,7 +897,7 @@
   "behaviours": [
    "reveal"
   ],
-  "content-shape": "ordered set",
+  "content-shape": "progression",
   "description": "How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.",
   "motion": "none",
   "needs": "one real photograph per step, portrait-ish and at least 1020px wide, each with its own alt text; a short step title and one sentence of body copy per step, in the real order they happen",
@@ -897,7 +921,7 @@
   "behaviours": [
    "reveal"
   ],
-  "content-shape": "ordered set",
+  "content-shape": "progression",
   "description": "How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.",
   "motion": "none",
   "needs": "three to five real steps in the order they actually happen, each with a short title and one or two sentences; a section heading. No photography of any kind - that is the point of it",

@@ -1,0 +1,61 @@
+<!--
+name: comparison-table
+version: 1
+type: section
+page-types: features, pricing, landing
+content-shape: comparison
+requires: none
+description: A real table comparing three things against the same criteria - tier names across the top, one criterion per row, the recommended column named in words and never by colour alone.
+keywords: comparison, table, matrix, tiers, features, what you get
+needs: two or three real things the brand offers that are genuinely measured against the same criteria, and the criteria themselves - one per row, in the brand's own words. Each cell says what that thing actually gives, not a tick borrowed from a competitor. A recommended column only where the brand recommends one
+pairs-with: pricing-tiers, heading-block, opener-split, faq-details
+avoid-with: none
+tokens-used: --card-radius, --color-bg, --color-focus, --color-heading, --color-primary, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-23
+-->
+<!-- THREE COLUMNS SHIP. For two, delete the -c cell from the head row and
+     from every body row. For four, duplicate the -c cell in both places and
+     name the new slots. Head and body must always carry the same count.
+
+     Duplicate the whole comparison-table-row for each criterion.
+
+     The recommended flag: delete the whole comparison-table-flag span, and
+     the --recommended modifier beside it, when the brand recommends nothing.
+     Never keep the tint without the word. -->
+<section class="comparison-table" aria-labelledby="slot:section-id">
+  <div class="comparison-table-inner">
+    <h2 class="comparison-table-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <p class="comparison-table-intro"><!-- slot: section-intro --></p>
+    <div class="comparison-table-scroll" tabindex="0" role="region" aria-label="slot:table-label">
+      <table class="comparison-table-grid">
+        <caption class="comparison-table-caption"><!-- slot: table-caption --></caption>
+        <thead>
+          <tr>
+            <td class="comparison-table-corner"></td>
+            <th scope="col" class="comparison-table-head">
+              <span class="comparison-table-name"><!-- slot: tier-a --></span>
+            </th>
+            <th scope="col" class="comparison-table-head comparison-table-head--recommended">
+              <span class="comparison-table-name"><!-- slot: tier-b --></span>
+              <span class="comparison-table-flag"><!-- slot: tier-b-flag --></span>
+            </th>
+            <th scope="col" class="comparison-table-head">
+              <span class="comparison-table-name"><!-- slot: tier-c --></span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="comparison-table-row">
+            <th scope="row" class="comparison-table-criterion"><!-- slot: criterion --></th>
+            <td class="comparison-table-cell"><!-- slot: cell-a --></td>
+            <td class="comparison-table-cell comparison-table-cell--recommended"><!-- slot: cell-b --></td>
+            <td class="comparison-table-cell"><!-- slot: cell-c --></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

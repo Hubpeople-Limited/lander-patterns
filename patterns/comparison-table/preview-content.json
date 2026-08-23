@@ -1,0 +1,16 @@
+{
+  "section-id": "sample-comparison-table",
+  "section-title": "Sample comparison heading",
+  "section-intro": "One supporting sentence, used only to render this preview.",
+  "table-label": "Sample comparison for preview",
+  "table-caption": "A sample caption for the preview render.",
+  "tier-a": "Sample A",
+  "tier-b": "Sample B",
+  "tier-b-flag": "Sample flag",
+  "tier-c": "Sample C",
+  "criterion": "Sample criterion",
+  "cell-a": "Sample value",
+  "cell-b": "Sample value, preview only",
+  "cell-c": "Sample value",
+  "_repeat": { "class": "comparison-table-row", "count": 5 }
+}

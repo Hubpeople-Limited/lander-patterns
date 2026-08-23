@@ -39,6 +39,15 @@ REQUIRED_FIELDS = [
     "one-per-page",
 ]
 TYPES = {"component", "section", "page"}
+# The building skill matches a pattern against the shape of the content before
+# it opens one, so this list is ITS list and not a second one that reads like
+# it. Two spellings for one idea is a lookup that silently returns nothing:
+# the skill asked for `progression` and `comparison` while this library said
+# `ordered set` and offered no comparison at all, and neither side could see
+# the miss. Adding a value here means adding it to the skill's own table in
+# the same change.
+SHAPES = {"narrative", "peer set", "comparison", "progression", "single claim",
+          "question and answer", "reference"}
 MOTION = {"none", "subtle", "expressive"}
 STATUS = {"active", "deprecated"}
 ONE_PER_PAGE = {"yes", "no"}
@@ -257,6 +266,11 @@ def check_html(path, meta, folder_name):
              f"name starts with reserved chassis word '{folder_name.split('-')[0]}'")
     if meta.get("type") and meta["type"] not in TYPES:
         find(path, "header", f"type '{meta['type']}' not in {sorted(TYPES)}")
+    if meta.get("content-shape") and meta["content-shape"] not in SHAPES:
+        find(path, "header",
+             f"content-shape '{meta['content-shape']}' not in {sorted(SHAPES)} "
+             "- this is the building skill's vocabulary, and a spelling only "
+             "this library uses is a match that never happens")
     if meta.get("motion") and meta["motion"] not in MOTION:
         find(path, "header", f"motion '{meta['motion']}' not in {sorted(MOTION)}")
     if meta.get("one-per-page") and meta["one-per-page"] not in ONE_PER_PAGE:

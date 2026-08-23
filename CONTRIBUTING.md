@@ -56,8 +56,8 @@ agent parses and the README is what a person reads. What each field means:
 | Field | Value |
 |---|---|
 | `type` | `component`, `section` or `page` |
-| `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `peer set`, `single claim`, `reference`, `ordered set`, `narrative`, `question and answer`, `single article`. It is what an agent matches a pattern against before it opens one |
-| `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip twelve patterns without reading twelve `needs` lines |
+| `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `narrative`, `peer set`, `comparison`, `progression`, `single claim`, `question and answer`, `reference`. It is what an agent matches a pattern against before it opens one, so it is **that** list rather than a second one that reads like it — CI holds you to it. Two spellings for one idea is a lookup that quietly returns nothing, and adding a value here means adding it to the skill's own table in the same change |
+| `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip eighteen patterns without reading eighteen `needs` lines. It is on the index row for that reason |
 | `whole-page` | `yes` if this pattern IS the page and nothing follows it. One pattern carries it today. Omit it otherwise |
 | `behaviours` | Names from `lib/REGISTRY.md`, where the pattern carries `data-hub-module` hooks. Omit it if there are none. The header, the markup and the registry must all agree, and CI checks all three |
 | `needs` | The real content this consumes. It gates use: no material, wrong pattern. Say "real" and mean it |

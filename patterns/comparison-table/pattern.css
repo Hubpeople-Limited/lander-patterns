@@ -1,0 +1,115 @@
+/* comparison-table v1 - tokens only, selectors prefixed */
+/* Every contract token here carries a fallback to another contract token, so
+   the table still reads on a brand that has not adopted the role names. */
+.comparison-table {
+  padding-block: var(--space-8);
+  padding-inline: var(--space-4);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.comparison-table-inner {
+  max-width: var(--container-max, 72rem);
+  margin-inline: auto;
+}
+.comparison-table-title {
+  font-family: var(--font-heading);
+  color: var(--color-heading, var(--color-text));
+  font-size: calc(clamp(1.75rem, 3vw, 2.5rem) * var(--type-scale, 1));
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-3);
+  text-wrap: balance;
+}
+.comparison-table-intro {
+  color: var(--color-text-soft);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 52ch;
+  margin: 0 0 var(--space-6);
+}
+/* Both axes scroll and the container has a real height. Setting only
+   overflow-x makes the vertical axis scrollable too, and the sticky head then
+   sticks to a container that never scrolls, so it appears not to work. */
+.comparison-table-scroll {
+  overflow: auto;
+  max-block-size: 80vh;
+  border-radius: var(--card-radius, 0.5rem);
+}
+.comparison-table-scroll:focus-visible {
+  outline: 3px solid var(--color-focus, var(--color-primary));
+  outline-offset: 3px;
+}
+/* separate, not collapse: with collapsed borders the table paints the border
+   rather than the cell, and a sticky head loses its bottom edge as it moves.
+   The box-shadow below draws that edge instead. */
+.comparison-table-grid {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-inline-size: 40rem;
+  inline-size: 100%;
+  text-align: left;
+}
+.comparison-table-caption {
+  caption-side: top;
+  text-align: left;
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  padding-block-end: var(--space-3);
+}
+.comparison-table-corner,
+.comparison-table-head {
+  position: sticky;
+  inset-block-start: 0;
+  background: var(--color-surface, var(--color-bg));
+  box-shadow: inset 0 -1px 0 var(--color-rule, var(--color-surface-soft));
+  padding: var(--space-4) var(--space-5);
+  vertical-align: bottom;
+}
+.comparison-table-name {
+  display: block;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-size: calc(1.125rem * var(--type-scale, 1));
+  font-weight: 700;
+  line-height: 1.25;
+}
+/* The tint says which column is recommended a second time. The word in the
+   flag says it first, and is what a screen reader and a monochrome print
+   both get. Never ship one without the other. */
+.comparison-table-flag {
+  display: inline-block;
+  margin-block-start: var(--space-2);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.comparison-table-head--recommended,
+.comparison-table-cell--recommended {
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface, var(--color-bg)));
+}
+.comparison-table-criterion {
+  font-weight: 600;
+  color: var(--color-text);
+  padding: var(--space-4) var(--space-5);
+  border-block-end: 1px solid var(--color-rule, var(--color-surface-soft));
+  vertical-align: top;
+}
+.comparison-table-cell {
+  color: var(--color-text);
+  padding: var(--space-4) var(--space-5);
+  border-block-end: 1px solid var(--color-rule, var(--color-surface-soft));
+  vertical-align: top;
+  line-height: 1.5;
+}
+.comparison-table-row:last-child .comparison-table-criterion,
+.comparison-table-row:last-child .comparison-table-cell {
+  border-block-end: 0;
+}
+@media (min-width: 48rem) {
+  .comparison-table {
+    padding-inline: var(--space-8);
+  }
+}
