@@ -1,4 +1,32 @@
 {
+ "anchored-split": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "A short panel that stays put on one side while the evidence for it scrolls past on the other - unequal columns, no photograph, and one claim held in view for as long as it takes to read the case for it.",
+  "motion": "none",
+  "needs": "one claim the section is about, said in a title and at most two sentences - short enough to sit inside a phone-height panel and stay there. Then three or more real items that are the evidence for it, each with its own subheading and a paragraph from real material. Fewer than three and there is nothing to scroll past",
+  "one-per-page": true,
+  "page-types": [
+   "safety",
+   "features",
+   "article",
+   "homepage",
+   "landing",
+   "pricing"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "cta-band",
+   "cta-assurance",
+   "faq-details",
+   "safety-protections"
+  ],
+  "requires": "none",
+  "type": "section",
+  "version": "1",
+  "whole-page": false
+ },
  "article-masthead": {
   "avoid-with": [
    "hero-centred",

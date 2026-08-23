@@ -1,0 +1,97 @@
+/* anchored-split v1 - tokens only, selectors prefixed */
+/* Both sides share one ground; every rule reads this set rather than a token. */
+.anchored-split--plain {
+  --anchored-split-ground: var(--color-bg);
+  --anchored-split-ink: var(--color-text);
+  --anchored-split-quiet: var(--color-text-soft);
+  --anchored-split-title-ink: var(--color-heading, var(--color-text));
+  --anchored-split-edge: var(--color-rule, var(--color-surface-soft));
+}
+.anchored-split--soft {
+  --anchored-split-ground: var(--color-surface-soft);
+  --anchored-split-ink: var(--color-text);
+  --anchored-split-quiet: var(--color-text-soft);
+  --anchored-split-title-ink: var(--color-text);
+  --anchored-split-edge: var(--color-rule, var(--color-bg));
+}
+.anchored-split {
+  padding-block: var(--space-8);
+  padding-inline: var(--space-4);
+  background: var(--anchored-split-ground);
+  color: var(--anchored-split-ink);
+}
+.anchored-split-inner {
+  max-width: var(--container-max, 72rem);
+  margin-inline: auto;
+  display: grid;
+  gap: var(--space-6);
+}
+.anchored-split-eyebrow {
+  color: var(--anchored-split-quiet);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
+}
+.anchored-split-title {
+  font-family: var(--font-heading);
+  color: var(--anchored-split-title-ink);
+  font-size: calc(clamp(1.75rem, 3vw, 2.75rem) * var(--type-scale, 1));
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-4);
+  max-width: 18ch;
+  text-wrap: balance;
+}
+.anchored-split-lede {
+  color: var(--anchored-split-quiet);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 40ch;
+  margin: 0;
+}
+.anchored-split-entry {
+  padding-block: var(--space-5);
+  border-block-start: 1px solid var(--anchored-split-edge);
+}
+.anchored-split-entry:first-child {
+  border-block-start: 0;
+  padding-block-start: 0;
+}
+.anchored-split-entry-title {
+  font-family: var(--font-heading);
+  color: var(--anchored-split-ink);
+  font-size: calc(1.25rem * var(--type-scale, 1));
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 var(--space-3);
+}
+.anchored-split-entry-body {
+  color: var(--anchored-split-ink);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 62ch;
+  margin: 0;
+}
+/* The asymmetry is the point - 40/60, never 50/50, which reads as
+   indecision. Below this width the two stack and nothing sticks, which is
+   the correct behaviour rather than a fallback: on a phone there is no
+   second column for the anchor to stay beside. */
+@media (min-width: 60rem) {
+  .anchored-split {
+    padding-inline: var(--space-8);
+  }
+  .anchored-split-inner {
+    grid-template-columns: 4fr 6fr;
+    gap: var(--space-8);
+    align-items: start;
+  }
+  /* align-self is what keeps the panel its own height. Without it the grid
+     stretches it to the row and it sticks with nothing above it to hold. */
+  .anchored-split-anchor {
+    position: sticky;
+    inset-block-start: var(--space-6);
+    align-self: start;
+  }
+}
