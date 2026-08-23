@@ -1416,6 +1416,12 @@ def main():
         axes = parse_variants(meta.get("variants", ""))
         varies = f" · varies: {', '.join(axes)}" if axes else ""
         beh = meta.get("behaviours", "")
+        # Whether a pattern brings motion with it, on the row. The comment
+        # above this block has always named `behaviours` as one of the fields
+        # the choice runs on, and it was the one left off - so an agent
+        # shortlisting could not see which patterns carry a behaviour, and the
+        # bundle only ever came up after a folder had been opened.
+        moves = f" · **brings {beh.strip()}**" if beh.strip() else ""
         needs = meta.get("needs", "")
         manifest[name] = {
             "version": meta.get("version"),
@@ -1438,7 +1444,7 @@ def main():
         rows.append(
             f"- **{name}** v{meta.get('version', '?')} · {meta.get('type', '?')} · "
             f"{shape or '?'} · {meta.get('page-types', '?')}"
-            f"{material}{varies}{limit} · {meta.get('description', '?')}"
+            f"{material}{varies}{moves}{limit} · {meta.get('description', '?')}"
         )
 
     # The behaviour library injects CSS into every page that gets it, so its

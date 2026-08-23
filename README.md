@@ -19,7 +19,8 @@ Read little, fetch late:
    library cannot change shape mid-session.
 2. **`INDEX.md`** — one line per pattern: name, version, type, **content shape**,
    page types, **the material it requires** where it requires any, **the axes it
-   can be varied along**, the one-per-page limit, and a one-line description. Everything the choice runs
+   can be varied along**, **the behaviour it brings** where it brings one, the
+   one-per-page limit, and a one-line description. Everything the choice runs
    on is on the row, because inside the folder it arrives after the decision it
    was meant to inform. Grep or scan it to shortlist; never read the whole
    library.
