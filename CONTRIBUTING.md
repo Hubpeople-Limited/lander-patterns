@@ -197,7 +197,7 @@ On every pull request, CI:
   the token vocabulary real brands actually ship. Read `dark` as a test rather
   than a style: it exists to fail patterns that ground text on tokens
   the contract does not guarantee. The pages attach to your pull request as
-  the `pattern-previews` artifact, so you see all three before anyone merges;
+  the `pattern-previews` artifact, so you see all four before anyone merges;
   on merge they publish to the repo's Pages site.
 
 A red check names the file and the rule. Fix and push again — nothing merges
