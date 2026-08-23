@@ -201,6 +201,51 @@ def parse_header(text, path):
     return meta
 
 
+VARIANT_LINE = re.compile(r"^[a-z][a-z-]*=[a-z][a-z-]*(\|[a-z][a-z-]*)*$")
+
+
+def parse_variants(value):
+    """`variants: ground=plain|soft|brand; alignment=default|centred` ->
+    {"ground": [...], "alignment": [...]}. Returns None on a malformed line."""
+    out = {}
+    for clause in [c.strip() for c in value.split(";") if c.strip()]:
+        if not VARIANT_LINE.match(clause):
+            return None
+        axis, _, values = clause.partition("=")
+        out[axis] = values.split("|")
+    return out or None
+
+
+def check_variants(html_path, css_path, meta, folder_name):
+    """A declared variant has to be a modifier class that exists.
+
+    Two READMEs described a "Variant" with no CSS behind it - an instruction to
+    hand-edit a file that the version pin then names, so two brands could carry
+    the same version and different code. A variant an agent can see in the index
+    and cannot apply is the same defect with a wider audience.
+    """
+    raw = meta.get("variants")
+    if not raw:
+        return
+    axes = parse_variants(raw)
+    if axes is None:
+        find(html_path, "variants",
+             f"malformed variants line {raw!r} - the form is "
+             "'axis=value|value; axis=value|value', lowercase and hyphens")
+        return
+    css = re.sub(r"/\*.*?\*/", "", css_path.read_text(encoding="utf-8"), flags=re.S)
+    for axis, values in axes.items():
+        for value in values:
+            # `default` names the pattern with no modifier on it, which is a
+            # real choice and has no class of its own.
+            if value == "default":
+                continue
+            if not re.search(rf"\.{re.escape(folder_name)}[\w-]*--{re.escape(value)}(?![\w-])", css):
+                find(css_path, "variants",
+                     f"variants declares {axis}={value} but no "
+                     f".{folder_name}*--{value} selector exists")
+
+
 def furniture_ok(token):
     if token in FURNITURE:
         return True
@@ -1206,6 +1251,7 @@ def main():
 
         meta = parse_header(html.read_text(encoding="utf-8"), html)
         slots = check_html(html, meta, folder.name)
+        check_variants(html, folder / "pattern.css", meta, folder.name)
         check_list_semantics(html, css, folder.name)
         check_motion_claim(html, css, meta)
         check_edges_documented(readme, meta)
@@ -1349,6 +1395,11 @@ def main():
             "photography": " · **needs photography**",
             "consented-people": " · **needs consented people**",
         }.get(meta.get("requires", "none"), "")
+        # Which axes a pattern can be varied along, on the row. Two pages on
+        # one brand taking the same pattern is only sameness if nothing said
+        # the pattern had a second look in it.
+        axes = parse_variants(meta.get("variants", ""))
+        varies = f" · varies: {', '.join(axes)}" if axes else ""
         beh = meta.get("behaviours", "")
         needs = meta.get("needs", "")
         manifest[name] = {
@@ -1365,13 +1416,14 @@ def main():
             "pairs-with": [s.strip() for s in meta.get("pairs-with", "").split(",")
                            if s.strip() and s.strip() != "none"],
             "behaviours": [s.strip() for s in beh.split(",") if s.strip()],
+            "variants": parse_variants(meta.get("variants", "")) or {},
             "motion": meta.get("motion"),
             "description": meta.get("description", ""),
         }
         rows.append(
             f"- **{name}** v{meta.get('version', '?')} · {meta.get('type', '?')} · "
             f"{shape or '?'} · {meta.get('page-types', '?')}"
-            f"{material}{limit} · {meta.get('description', '?')}"
+            f"{material}{varies}{limit} · {meta.get('description', '?')}"
         )
 
     # The behaviour library injects CSS into every page that gets it, so its

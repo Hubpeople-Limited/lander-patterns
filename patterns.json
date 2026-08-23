@@ -24,6 +24,12 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft"
+   ]
+  },
   "version": "1",
   "whole-page": false
  },
@@ -49,6 +55,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -71,6 +78,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -95,6 +103,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "5",
   "whole-page": false
  },
@@ -122,6 +131,14 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand",
+    "deep"
+   ]
+  },
   "version": "1",
   "whole-page": false
  },
@@ -146,6 +163,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "1",
   "whole-page": false
  },
@@ -173,6 +191,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "2",
   "whole-page": false
  },
@@ -201,6 +220,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -228,6 +248,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "10",
   "whole-page": false
  },
@@ -253,6 +274,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -275,6 +297,7 @@
   "pairs-with": [],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -296,6 +319,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -320,6 +344,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -348,6 +373,7 @@
   ],
   "requires": "photography",
   "type": "component",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -372,6 +398,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -400,6 +427,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "5",
   "whole-page": false
  },
@@ -427,6 +455,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "10",
   "whole-page": false
  },
@@ -455,6 +484,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -483,6 +513,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": true
  },
@@ -515,6 +546,17 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {
+   "alignment": [
+    "default",
+    "centred"
+   ],
+   "ground": [
+    "plain",
+    "brand",
+    "deep"
+   ]
+  },
   "version": "3",
   "whole-page": false
  },
@@ -541,6 +583,13 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand"
+   ]
+  },
   "version": "4",
   "whole-page": false
  },
@@ -569,6 +618,13 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand"
+   ]
+  },
   "version": "1",
   "whole-page": false
  },
@@ -596,6 +652,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "9",
   "whole-page": false
  },
@@ -623,6 +680,7 @@
   ],
   "requires": "consented-people",
   "type": "component",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -646,6 +704,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -672,6 +731,12 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {
+   "rule": [
+    "default",
+    "ruled"
+   ]
+  },
   "version": "3",
   "whole-page": false
  },
@@ -701,6 +766,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -721,6 +787,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -745,6 +812,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -773,6 +841,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -794,6 +863,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "9",
   "whole-page": false
  },
@@ -819,6 +889,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -840,6 +911,7 @@
   "pairs-with": [],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -865,6 +937,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "4",
   "whole-page": false
  },
@@ -888,6 +961,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -915,6 +989,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "1",
   "whole-page": false
  },
@@ -939,6 +1014,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -966,6 +1042,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": false
  },
@@ -994,6 +1071,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -1022,6 +1100,7 @@
   ],
   "requires": "none",
   "type": "section",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -1045,6 +1124,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "6",
   "whole-page": false
  },
@@ -1070,6 +1150,7 @@
   ],
   "requires": "consented-people",
   "type": "section",
+  "variants": {},
   "version": "8",
   "whole-page": false
  },
@@ -1093,6 +1174,7 @@
   ],
   "requires": "none",
   "type": "component",
+  "variants": {},
   "version": "3",
   "whole-page": false
  },
@@ -1119,6 +1201,7 @@
   ],
   "requires": "photography",
   "type": "section",
+  "variants": {},
   "version": "7",
   "whole-page": false
  }
