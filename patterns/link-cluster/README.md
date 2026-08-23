@@ -63,8 +63,8 @@ links are still links: underlined on hover, focusable, and carrying their own
 words.
 
 **The focus ring is each ground's own ink**, so one rule is correct on all
-three. `--color-focus` would be wrong on `--brand`, where it measures 1.14, 1.58
-and 1.75 against the brand colour across the sample brands, against a 3:1 bar.
+three. `--color-focus` would be wrong on `--brand`, where it measures 1.00, 1.14,
+1.58 and 1.75 against the brand colour across the sample sets, against a 3:1 bar.
 
 `--chip-radius` shapes the pills — pill-shaped on a soft brand, squared on a
 sharp one — and the 44px minimum height is a target size rather than a

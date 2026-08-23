@@ -59,9 +59,10 @@ ink. Contrast is symmetric, so the stated ratio holds either way round.
 
 **The focus ring is `--color-on-primary`, not `--color-focus`, and the reason is
 measured.** The control sits inside a panel of the brand colour, and
-`--color-focus` is itself a brand colour: across the three sample token sets
-that ring measures **1.14, 1.58 and 1.75** against a `--color-primary` ground,
-against a 3:1 bar. `--color-on-primary` measures **5.14, 9.26 and 6.28** on the
+`--color-focus` is itself a brand colour: across the four sample token sets
+that ring measures **1.00, 1.14, 1.58 and 1.75** against a `--color-primary`
+ground, against a 3:1 bar. `--color-on-primary` measures **5.14, 6.28, 7.59 and
+9.26** on the
 same brands, and the `4px` offset leaves a panel-coloured gap so the guaranteed
 pair sits either side of the ring. `cta-band` does the same thing for the same
 reason. Re-derive from `preview/tokens-*.css` before changing either value.

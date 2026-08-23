@@ -29,6 +29,7 @@ version: 1
 type: section
 page-types: homepage, landing
 content-shape: single claim
+requires: none
 description: One line - what it is and the job it does.
 keywords: three or four words someone would search for
 needs: the real content this consumes, named precisely
@@ -55,6 +56,10 @@ agent parses and the README is what a person reads. What each field means:
 | Field | Value |
 |---|---|
 | `type` | `component`, `section` or `page` |
+| `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `peer set`, `single claim`, `reference`, `ordered set`, `narrative`, `question and answer`, `single article`. It is what an agent matches a pattern against before it opens one |
+| `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip twelve patterns without reading twelve `needs` lines |
+| `whole-page` | `yes` if this pattern IS the page and nothing follows it. One pattern carries it today. Omit it otherwise |
+| `behaviours` | Names from `lib/REGISTRY.md`, where the pattern carries `data-hub-module` hooks. Omit it if there are none. The header, the markup and the registry must all agree, and CI checks all three |
 | `needs` | The real content this consumes. It gates use: no material, wrong pattern. Say "real" and mean it |
 | `pairs-with` | Patterns that read well after this one. Not page furniture — `cta-sticky` belongs to the page, decided once |
 | `avoid-with` | Patterns that must not both appear on one page, or `none` — two image-led card runs, a full-screen finale and a fixed bar. It is the strong reading on purpose: follow it and the weaker adjacency problems cannot arise either. Mutual by nature, so CI checks both sides name each other. A constraint that is only ever about *neighbours* ("not directly above this") is prose in the README, not an edge here |
@@ -186,10 +191,11 @@ On every pull request, CI:
   `pattern.css` references — your own `--<pattern-name>-*` properties are
   yours to use freely and are ignored by this check;
 - refuses certain internal strings (the check reports position only);
-- renders every pattern against three sample token sets — soft-rounded,
-  sharp-flat, and `dark`, a hostile brand whose `--color-heading` sits at the
-  3:1 large-text bar and whose surfaces are dark. Read `dark` as a test rather
-  than a third style: it exists to fail patterns that ground text on tokens
+- renders every pattern against four sample token sets — soft-rounded,
+  sharp-flat, `dark`, a hostile brand whose `--color-heading` sits at the
+  3:1 large-text bar and whose surfaces are dark, and `brand`, which carries
+  the token vocabulary real brands actually ship. Read `dark` as a test rather
+  than a style: it exists to fail patterns that ground text on tokens
   the contract does not guarantee. The pages attach to your pull request as
   the `pattern-previews` artifact, so you see all three before anyone merges;
   on merge they publish to the repo's Pages site.

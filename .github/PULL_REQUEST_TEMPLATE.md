@@ -17,6 +17,6 @@
 - [ ] The title, this description and every commit message follow
       [WRITING.md](../WRITING.md) — they say what the change does, name no
       person or role, carry nothing internal, and describe no weakness
-- [ ] I looked at all three preview renders — the checks attach them to this PR
+- [ ] I looked at all four preview renders — the checks attach them to this PR
       as the `pattern-previews` artifact — and my pattern looks intentional on
-      each, including `dark`, which is a hostile brand rather than a third style
+      each, including `dark`, which is a hostile brand rather than a style

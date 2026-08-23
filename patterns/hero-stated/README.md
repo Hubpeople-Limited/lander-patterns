@@ -62,8 +62,8 @@ promised at. On `--brand` and `--deep` the title takes that ground's own ink,
 because `--color-heading` promises nothing off the page ground.
 
 **The focus ring is the ground's own ink**, which is one rule that is correct on
-all three. `--color-focus` would not be: on `--color-primary` it measures 1.14,
-1.58 and 1.75 across the sample brands against a 3:1 bar. Re-derive from
+all three. `--color-focus` would not be: on `--color-primary` it measures 1.00,
+1.14, 1.58 and 1.75 across the sample sets against a 3:1 bar. Re-derive from
 `preview/tokens-*.css` before changing it.
 
 The control is 52px rather than 48. On a page whose opener carries no image, the

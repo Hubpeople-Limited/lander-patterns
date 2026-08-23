@@ -92,9 +92,10 @@ the page.
 
 ## Previews
 
-Every pattern is rendered against three sample token sets — soft-rounded,
-sharp-flat, and a deliberately hostile dark brand whose `--color-heading` sits
-at the 3:1 large-text bar the contract permits. That third set is a test, not a
+Every pattern is rendered against four sample token sets — soft-rounded,
+sharp-flat, a deliberately hostile dark brand whose `--color-heading` sits at
+the 3:1 large-text bar the contract permits, and `brand`, which carries the
+token vocabulary real brands actually ship. The dark set is a test, not a
 taste: anything that looks wrong on it is a defect in the pattern. Previews at
 **https://hubpeople-limited.github.io/lander-patterns/** — rebuilt on every
 merge. Pull requests get the same pages attached as the `pattern-previews`

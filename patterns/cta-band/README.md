@@ -54,9 +54,10 @@ of the brand colour it is the only fill that reads.
 and the reason is measured.** Every other pattern draws
 `outline: … var(--color-focus)`, which works because the ring lands on a page
 ground. Here it would land on `--color-primary`, and `--color-focus` is itself a
-brand colour: across the three sample token sets that ring measures **1.14, 1.58
-and 1.75** against the band, against a 3:1 bar — invisible on all three. The
-ring is therefore `--color-on-primary`, which measures **5.14, 9.26 and 6.28**
+brand colour: across the four sample token sets that ring measures **1.00, 1.14,
+1.58 and 1.75** against the band, against a 3:1 bar — invisible on all four.
+The ring is therefore `--color-on-primary`, which measures **5.14, 6.28, 7.59
+and 9.26**
 on the same brands, and the `4px` offset leaves a band-coloured gap so the
 guaranteed pair sits on both sides of it. Re-derive from `preview/tokens-*.css`
 before changing either value.
