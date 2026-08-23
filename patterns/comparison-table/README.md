@@ -41,26 +41,38 @@ table survives it disappearing entirely because the columns still align and the
 head still sticks. `--type-scale` moves the section title and the tier names
 together.
 
-The recommended column is a 7% mix of the brand colour into the surface, so it
-tints on any brand without a second token. **It is never the only thing saying
-which column is recommended** — the flag above it carries the brand's own word,
-and that is what reaches a screen reader, a monochrome print and anyone who does
-not see the tint. Delete both together or neither.
+The recommended column mixes 10% of the brand colour into the **page ground**,
+which is what the cells beside it sit on. Mixing into the surface instead makes
+the tint *lighter* than its neighbours on some brands. It is a slight
+difference by design — about 1.05 to 1.14 against the plain cells on the six
+measured — because **the tint is never what says which column is recommended**.
+The flag above it carries the brand's own word, and that is what reaches a
+screen reader, a monochrome print and anyone who does not see a tint. Delete
+both together or neither.
 
-**Every contract token here carries a fallback to another contract token**, so
-the table renders on a brand that has not adopted the role names: the heading
-ink falls back to `--color-text`, the rule to `--color-surface-soft`, the head's
-ground to `--color-bg`, the focus ring to `--color-primary`. Nothing falls back
-to a literal colour, and nothing falls back to something that would land ink on
-a ground it does not clear.
+The flag is `--color-text`, not the brand colour: it is 13px, so small text, and
+the contract promises `--color-text` on every page ground while promising
+nothing about the brand colour as an ink. On the tint that ink measures 4.29 to
+4.50 across the six.
+
+**The five tokens no brand defines carry a fallback to another contract token**
+— `--color-heading`, `--color-on-primary`, `--color-on-scrim`, `--color-rule`
+and `--color-scrim`. Nothing falls back to a literal colour, and nothing falls
+back to something that would land ink on a ground it does not clear. The rest of
+the contract — the palette, the faces, the spacing ramp — is used bare, as
+everywhere else in the library, because every brand defines it.
 
 **The scroll container is focusable on purpose.** Firefox and Safari do not let a
 keyboard user scroll a container that cannot take focus, so without `tabindex`
-the right-hand columns are unreachable without a mouse. The `role` and the label
-are what stop that focus stop being a mystery to a screen-reader user, and the
-ring is drawn on the container rather than suppressed.
+the right-hand columns are unreachable without a mouse. The `role` and label stop
+that focus stop being a mystery. It is a tab stop even on a desktop where nothing
+scrolls, which is the price of the keyboard access.
 
-The head sticks only because the container has a real height. `overflow: auto`
-on both axes with a `max-block-size` is deliberate: setting only `overflow-x`
-makes the vertical axis scrollable too, and the head then sticks to something
-that never scrolls.
+The head sticks only because the container has a height, and it only gets one
+above `48rem` — a `max-block-size` on a phone nests a vertical scroller inside
+the page scroll on a table already scrolling sideways. `svh`, not `vh`, so the
+address bar cannot eat into it.
+
+**The criterion column stays put while the values scroll sideways**, so a phone
+reader is never looking at three columns of answers with no question against
+them.

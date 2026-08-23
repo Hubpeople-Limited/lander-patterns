@@ -30,9 +30,14 @@ qualifier, a limit — and most claims need none. A note under every one turns t
 device into a two-column list with extra steps.
 
 **Pairing.** `heading-block` or `opener-split` above it where the run needs
-introducing beyond its own small heading. `cta-assurance` or `cta-band` after
-it, where the reader has just been told what the brand promises and the next
-question is what to do about it. On a safety page it sits well above
+introducing beyond its own small heading. `cta-assurance` after it, where the reader has
+just been told what the brand promises and the next question is what to do about
+it.
+
+**Not `cta-band` directly after it on the `--brand` ground.** Both are then
+full-bleed runs of large claims on the brand colour, one after the other, which
+is the sameness the ground ladder exists to prevent. Either put something with
+texture between them or take a different rung. On a safety page it sits well above
 `safety-protections`: the promises first, then what actually happens.
 
 **Brand adaptability.** Four ground modifiers — `--plain` on the page ground,
@@ -49,14 +54,23 @@ on the scrim as a declaration.
 `--type-scale` moves the claims and the section heading together. The section
 heading is deliberately small against the claims — it is a label, not a title,
 and a heading that competes with them turns this into an ordinary section with
-big text in it.
+big text in it. On the two light grounds it is also quieter in colour; on
+`--brand` and `--deep` there is no second ink the contract promises on those
+grounds, so it is the ground's own ink mixed back 22% toward the ground, which
+is as quiet as it can be made without inventing a pairing nothing guarantees.
 
-**Every contract token carries a fallback to another contract token**, so this
-renders on a brand that has adopted none of the role names: the scrim falls back
-to the brand's own text colour, which is a dark neutral on every brand measured,
-and its ink to the page background. Nothing falls back to a literal colour and
-nothing falls back to something that would land ink on a ground it does not
-clear.
+**The five tokens no brand defines carry a fallback to another contract token**
+— `--color-heading`, `--color-on-primary`, `--color-on-scrim`, `--color-rule`
+and `--color-scrim`. Nothing falls back to a literal colour, and nothing falls
+back to something that would land ink on a ground it does not clear. The rest of
+the contract — the palette, the faces, the spacing ramp — is used bare, as
+everywhere else in the library, because every brand defines it.
+
+On `--deep` the scrim falls back to the brand's own text colour, a dark neutral
+on every brand measured, and its ink to the page background: 11.5:1 to 20.6:1
+across the six. On `--brand` the ink falls back to `--color-surface` rather than
+`--color-bg`, which is the difference between 4.32:1 and 5.38:1 on two of them —
+so do not "tidy" the two grounds to match.
 
 The hairline between claims is `--color-rule` on the two light grounds and the
 ground's own ink held back on the two dark ones. The contract calls

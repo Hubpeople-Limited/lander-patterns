@@ -1,28 +1,30 @@
-/* claim-stack v1 - tokens only, selectors prefixed */
-/* Each ground names its own ink pair, and every rule below reads the pair
-   rather than a token, so nothing here knows which ground it is on. */
+/* claim-stack v2 - tokens only, selectors prefixed */
+/* Each ground names its own ink pair, and every rule below reads the pair.
+   The base carries the plain ground's values, so a copy that loses its
+   modifier still has a ground, a hairline and its inks. */
+.claim-stack,
 .claim-stack--plain {
   --claim-stack-ground: var(--color-bg);
   --claim-stack-ink: var(--color-heading, var(--color-text));
   --claim-stack-quiet: var(--color-text-soft);
-  --claim-stack-edge: var(--color-rule, var(--color-surface-soft));
+  --claim-stack-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
 }
 .claim-stack--soft {
   --claim-stack-ground: var(--color-surface-soft);
   --claim-stack-ink: var(--color-text);
   --claim-stack-quiet: var(--color-text-soft);
-  --claim-stack-edge: var(--color-rule, var(--color-bg));
+  --claim-stack-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
 }
 .claim-stack--brand {
   --claim-stack-ground: var(--color-primary);
-  --claim-stack-ink: var(--color-on-primary, var(--color-bg));
-  --claim-stack-quiet: var(--color-on-primary, var(--color-bg));
-  --claim-stack-edge: color-mix(in srgb, var(--color-on-primary, var(--color-bg)) 35%, transparent);
+  --claim-stack-ink: var(--color-on-primary, var(--color-surface));
+  --claim-stack-quiet: color-mix(in srgb, var(--color-on-primary, var(--color-surface)) 78%, var(--color-primary));
+  --claim-stack-edge: color-mix(in srgb, var(--color-on-primary, var(--color-surface)) 35%, transparent);
 }
 .claim-stack--deep {
   --claim-stack-ground: var(--color-scrim, var(--color-text));
   --claim-stack-ink: var(--color-on-scrim, var(--color-bg));
-  --claim-stack-quiet: var(--color-on-scrim, var(--color-bg));
+  --claim-stack-quiet: color-mix(in srgb, var(--color-on-scrim, var(--color-bg)) 78%, var(--color-scrim, var(--color-text)));
   --claim-stack-edge: color-mix(in srgb, var(--color-on-scrim, var(--color-bg)) 30%, transparent);
 }
 .claim-stack {
@@ -35,9 +37,6 @@
   max-width: var(--container-max, 72rem);
   margin-inline: auto;
 }
-/* The section heading is deliberately small against the claims. The claims
-   are the display type here; a heading competing with them turns the device
-   into an ordinary section with big text in it. */
 .claim-stack-heading {
   max-width: var(--container-max, 72rem);
   margin: 0 auto var(--space-8);
@@ -49,15 +48,16 @@
   line-height: 1.2;
 }
 .claim-stack-item {
-  padding-block: clamp(var(--space-8), 10vh, var(--space-12));
+  /* The ceiling is in vh, not on the spacing ramp. Do not "restore" a token
+     here: the ramp's top step is below 10vh on most screens, which pins this
+     to one value and the claim never gets a screenful. */
+  padding-block: clamp(var(--space-8), 10vh, 20vh);
   border-block-start: 1px solid var(--claim-stack-edge);
 }
 .claim-stack-item:first-child {
   border-block-start: 0;
   padding-block-start: 0;
 }
-/* 18ch is the measure that makes the line breaks land somewhere deliberate.
-   Past about that, a claim stops reading as one thing said once. */
 .claim-stack-claim {
   font-family: var(--font-heading);
   color: var(--claim-stack-ink);
@@ -68,6 +68,7 @@
   max-width: 18ch;
   margin: 0;
   text-wrap: balance;
+  overflow-wrap: break-word;
 }
 .claim-stack-note {
   color: var(--claim-stack-quiet);

@@ -1,12 +1,14 @@
-/* listing-rows v1 - tokens only, selectors prefixed */
-/* Each ground names its own ink set, and every rule below reads that set
-   rather than a token, so nothing here knows which ground it is on. */
+/* listing-rows v2 - tokens only, selectors prefixed */
+/* Each ground names its own ink set, and every rule below reads that set. The
+   base carries the plain ground's values, so a copy that loses its modifier
+   still has a ground, a hairline and a focus ring. */
+.listing-rows,
 .listing-rows--plain {
   --listing-rows-ground: var(--color-bg);
   --listing-rows-ink: var(--color-text);
   --listing-rows-quiet: var(--color-text-soft);
   --listing-rows-title-ink: var(--color-heading, var(--color-text));
-  --listing-rows-edge: var(--color-rule, var(--color-surface-soft));
+  --listing-rows-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
   --listing-rows-ring: var(--color-focus, var(--color-primary));
 }
 .listing-rows--soft {
@@ -14,19 +16,19 @@
   --listing-rows-ink: var(--color-text);
   --listing-rows-quiet: var(--color-text-soft);
   --listing-rows-title-ink: var(--color-text);
-  --listing-rows-edge: var(--color-rule, var(--color-bg));
+  --listing-rows-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
   --listing-rows-ring: var(--color-focus, var(--color-primary));
 }
-/* On the brand ground every ink is the one the contract measures against it,
-   and the rule is that same ink held back - --color-rule is a page hairline
-   and has no promise here. */
+/* The fallback ink here is --color-surface, not --color-bg. Do not "tidy" it
+   to match the other grounds: on some brands the page ground fails against
+   the primary and the surface does not. See the README. */
 .listing-rows--brand {
   --listing-rows-ground: var(--color-primary);
-  --listing-rows-ink: var(--color-on-primary, var(--color-bg));
-  --listing-rows-quiet: var(--color-on-primary, var(--color-bg));
-  --listing-rows-title-ink: var(--color-on-primary, var(--color-bg));
-  --listing-rows-edge: color-mix(in srgb, var(--color-on-primary, var(--color-bg)) 35%, transparent);
-  --listing-rows-ring: var(--color-on-primary, var(--color-bg));
+  --listing-rows-ink: var(--color-on-primary, var(--color-surface));
+  --listing-rows-quiet: var(--color-on-primary, var(--color-surface));
+  --listing-rows-title-ink: var(--color-on-primary, var(--color-surface));
+  --listing-rows-edge: color-mix(in srgb, var(--color-on-primary, var(--color-surface)) 35%, transparent);
+  --listing-rows-ring: var(--color-on-primary, var(--color-surface));
 }
 .listing-rows {
   padding-block: var(--space-8);
@@ -61,8 +63,6 @@
   display: grid;
   border-block-start: 1px solid var(--listing-rows-edge);
 }
-/* One column on a phone, where the attributes read as their own lines. The
-   two-column-attribute layout only earns its alignment above that. */
 .listing-rows-item {
   display: grid;
   grid-column: 1 / -1;
@@ -77,6 +77,9 @@
   font-weight: 700;
   line-height: 1.3;
   text-decoration: none;
+  /* 24px, held independently of the type scale: at --type-scale 0.9 the line
+     box alone is 22.2px and this is the only tap target in the row. */
+  min-block-size: 1.5rem;
 }
 .listing-rows-link:hover {
   text-decoration: underline;
@@ -103,9 +106,7 @@
   .listing-rows {
     padding-inline: var(--space-8);
   }
-  /* subgrid is what makes this look maintained rather than listed: every
-     row's attribute columns line up across the whole list, whatever the
-     titles do. Change the count here and in the markup together. */
+  /* Change the column count here and in the markup together. */
   .listing-rows-list {
     grid-template-columns: 1fr auto auto;
   }
@@ -116,10 +117,6 @@
     grid-column: 1;
     grid-row: 1;
   }
-  .listing-rows-summary {
-    grid-column: 1 / -1;
-    grid-row: 2;
-  }
   .listing-rows-meta {
     grid-column: 2;
     grid-row: 1;
@@ -129,5 +126,9 @@
     grid-column: 3;
     grid-row: 1;
     text-align: right;
+  }
+  .listing-rows-summary {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 }

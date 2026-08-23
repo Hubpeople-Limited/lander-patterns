@@ -1,18 +1,20 @@
-/* anchored-split v1 - tokens only, selectors prefixed */
-/* Both sides share one ground; every rule reads this set rather than a token. */
+/* anchored-split v2 - tokens only, selectors prefixed */
+/* Both sides share one ground; every rule reads this set. The base carries the
+   plain ground's values, so a copy that loses its modifier still renders. */
+.anchored-split,
 .anchored-split--plain {
   --anchored-split-ground: var(--color-bg);
   --anchored-split-ink: var(--color-text);
   --anchored-split-quiet: var(--color-text-soft);
   --anchored-split-title-ink: var(--color-heading, var(--color-text));
-  --anchored-split-edge: var(--color-rule, var(--color-surface-soft));
+  --anchored-split-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
 }
 .anchored-split--soft {
   --anchored-split-ground: var(--color-surface-soft);
   --anchored-split-ink: var(--color-text);
   --anchored-split-quiet: var(--color-text-soft);
   --anchored-split-title-ink: var(--color-text);
-  --anchored-split-edge: var(--color-rule, var(--color-bg));
+  --anchored-split-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));
 }
 .anchored-split {
   padding-block: var(--space-8);

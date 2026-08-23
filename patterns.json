@@ -30,7 +30,7 @@
     "soft"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "article-masthead": {
@@ -126,7 +126,6 @@
    "heading-block",
    "opener-split",
    "cta-assurance",
-   "cta-band",
    "safety-protections"
   ],
   "requires": "none",
@@ -139,7 +138,7 @@
     "deep"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "comparison-table": {
@@ -164,7 +163,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "cta-assurance": {
@@ -625,7 +624,7 @@
     "brand"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "media-card-grid": {
