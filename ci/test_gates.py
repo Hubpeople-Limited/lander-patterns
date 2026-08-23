@@ -346,6 +346,75 @@ HEADING = [
 ]
 
 
+# Header validation lives in lint.py and had no coverage here at all - which is
+# the shape of this file's own docstring warning, since the three modules it
+# originally left out are the three a later review found nine defects in. Both
+# gates below were added in one session and proven by breaking something once;
+# once is not every push.
+SHAPE_CASES = [
+    ("peer set", 0, "a shape the building skill names"),
+    ("comparison", 0, "the shape a new pattern was built for"),
+    ("question and answer", 0, "a multi-word shape"),
+    ("ordered set", 1, "the library's own old spelling"),
+    ("single article", 1, "the library's other old spelling"),
+    ("matrix", 1, "a shape nobody defined"),
+    ("Peer Set", 1, "the right shape, wrong case"),
+    ("", 1, "an empty shape"),
+]
+
+VARIANT_CASES = [
+    ("ground=plain|soft|brand|deep", 0, "all four rungs of the ladder"),
+    ("ground=plain; alignment=default|centred", 0, "two axes, one line"),
+    ("rule=default|ruled", 0, "an axis that is not the ground"),
+    ("ground=light", 1, "the rung spelling that predates the ladder"),
+    ("ground=inverse", 1, "a rung nobody defined"),
+    ("ground=plain|soft|midnight", 1, "one bad rung among good ones"),
+    ("Ground = Plain, Soft", 1, "the shape a person would write by hand"),
+    ("ground", 1, "an axis with no values"),
+    ("ground=", 1, "an axis with an empty value list"),
+]
+
+
+def check_header():
+    """The two header gates added with the variation work, both directions."""
+    import lint
+    failures = []
+
+    def run(label, cases, fn):
+        for value, want, name in cases:
+            before = len(lint.findings)
+            fn(value)
+            got = 1 if len(lint.findings) > before else 0
+            del lint.findings[before:]
+            ok = got == want
+            verb = "catches" if want else "quiet on"
+            extra = "" if ok else f" (got {got}, want {want})"
+            print(f"  {'ok  ' if ok else 'FAIL'} {label} {verb}: {name}{extra}")
+            if not ok:
+                failures.append(f"{label}: {name}")
+
+    here = Path(__file__)
+
+    def shape(value):
+        if value and value not in lint.SHAPES:
+            lint.find(here, "header", f"content-shape {value!r}")
+        elif not value:
+            lint.find(here, "header", "missing content-shape")
+
+    def variants(value):
+        axes = lint.parse_variants(value)
+        if axes is None:
+            lint.find(here, "variants", f"malformed {value!r}")
+            return
+        for rung in axes.get("ground", []):
+            if rung not in lint.GROUND_RUNGS:
+                lint.find(here, "variants", f"ground={rung}")
+
+    run("content-shape", SHAPE_CASES, shape)
+    run("ground ladder", VARIANT_CASES, variants)
+    return failures
+
+
 def check_modules():
     """Every gate module, both directions."""
     import legibility
@@ -423,14 +492,16 @@ def main():
     print()
     failures += check_modules()
     print()
+    failures += check_header()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
         return 1
     total = (len(CASES) + 1 + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
-             + len(HEADING))
-    print(f"clean: {total} gate cases across five modules behave as documented.")
+             + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES))
+    print(f"clean: {total} gate cases across six modules behave as documented.")
     return 0
 
 
