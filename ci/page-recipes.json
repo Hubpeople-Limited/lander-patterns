@@ -37,7 +37,7 @@
     },
     {
       "page": "safety",
-      "patterns": ["hero-stated:ground=soft", "safety-protections", "cta-band"],
+      "patterns": ["hero-stated:ground=brand", "safety-protections", "cta-band"],
       "why": "On a dating brand this is a conversion page in disguise, so it closes like one."
     },
     {

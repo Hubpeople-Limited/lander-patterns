@@ -473,6 +473,10 @@ PAGE_FIRES = [
      ["homepage", "hero-stated:ground=deep", "benefit-tiles"], "headings"),
     ("two neighbours on the same ground",
      ["homepage", "hero-stated:ground=deep", "claim-stack:ground=deep"], "ground"),
+    ("a rung the pattern does not offer",
+     ["homepage", "hero-stated:ground=soft", "cta-band"], "variant"),
+    ("a misspelled axis, which used to pass silently",
+     ["homepage", "hero-stated:groudn=deep", "cta-band"], "variant"),
     ("no h1 anywhere on the page",
      ["homepage", "stats-band", "cta-band"], "headings"),
 ]
@@ -512,22 +516,53 @@ def check_pages():
     folder = HERE.parent / "patterns" / "hero-overlay"
     css = folder / "pattern.css"
     kept = css.read_bytes()
-    try:
-        css.write_bytes(
-            kept.replace(b"min-height: calc(100svh - var(--hero-overlay-above, 4.5rem));",
-                         b"min-height: 100svh;"))
-        code, out = run_page(["homepage", "hero-overlay", "stats-band", "cta-band"])
-        ok = code == 1 and "[the fold]" in out
-        label = "a full-viewport opener that subtracts nothing"
-        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} exit={code} want=1 [the fold]")
-        if not ok:
-            failures.append(label)
-    finally:
-        css.write_bytes(kept)
+    mutated = kept.replace(
+        b"min-height: calc(100svh - var(--hero-overlay-above, 4.5rem));",
+        b"min-height: 100svh;")
 
-    if css.read_bytes() != kept:
-        failures.append("the fold case did not restore hero-overlay byte for byte")
-        print("  FAIL  the fold case left patterns/hero-overlay/pattern.css changed")
+    # If the search string has gone stale, the "mutation" is a no-op and the
+    # case reports ok for a file it never changed - or, worse, reports ok
+    # because a previous interrupted run left the file already broken. Assert
+    # the edit did something before trusting what the check says about it.
+    label = "a full-viewport opener that subtracts nothing"
+    if mutated == kept:
+        failures.append(label)
+        print(f"  FAIL  {label:<46} the search string no longer matches "
+              f"hero-overlay/pattern.css - this test needs updating, the check "
+              f"is not necessarily broken")
+    else:
+        try:
+            css.write_bytes(mutated)
+            code, out = run_page(["homepage", "hero-overlay", "stats-band", "cta-band"])
+            ok = code == 1 and "[the fold]" in out
+            print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} exit={code} want=1 [the fold]")
+            if not ok:
+                failures.append(label)
+        finally:
+            css.write_bytes(kept)
+
+    # Against git, not against this process's own snapshot. Comparing with
+    # `kept` cannot see the case that matters: two overlapping runs, where the
+    # second snapshots the first's mutation and faithfully restores it, then
+    # reports the file untouched because it matches what it read.
+    dirty = subprocess.run(
+        ["git", "diff", "--quiet", "--", "patterns/hero-overlay/pattern.css"],
+        cwd=str(HERE.parent))
+    if dirty.returncode != 0:
+        failures.append("the fold case left hero-overlay changed against git")
+        print("  FAIL  patterns/hero-overlay/pattern.css differs from git after "
+              "the fold case")
+
+    # The library sweep. The recipes only ever cover the patterns somebody
+    # thought to write down; this covers all of them.
+    code, out = run_page(["--sweep"])
+    ok = code == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} {'every pattern swept as an opener':<46} exit={code} want=0")
+    if not ok:
+        failures.append("library sweep")
+        for line in out.splitlines():
+            if "FAIL" in line:
+                print(f"        {line.strip()}")
 
     recipes = json.loads((HERE / "page-recipes.json").read_text(encoding="utf-8"))
     for recipe in recipes["recipes"]:
@@ -595,7 +630,7 @@ def main():
     total = (len(CASES) + 1 + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
-             + len(PAGE_FIRES) + 1 + len(recipes["recipes"]))
+             + len(PAGE_FIRES) + 2 + len(recipes["recipes"]))
     print(f"clean: {total} gate cases across seven modules behave as documented.")
     return 0
 

@@ -153,38 +153,82 @@ def check_avoid_with(page):
     ]
 
 
-VIEWPORT_MIN_HEIGHT = re.compile(
-    r"min-height\s*:\s*([^;}]*\b100(?:svh|vh|dvh)\b[^;}]*)", re.I)
+# Height properties that can make a section claim a whole screen. The first
+# version of this checked only `min-height`, so `height: 100svh` and
+# `min-block-size: 100svh` - the same defect, differently spelled - went
+# straight through.
+HEIGHT_PROPS = r"(?:min-height|height|min-block-size|block-size)"
+VIEWPORT_HEIGHT = re.compile(
+    rf"(?<![-\w])({HEIGHT_PROPS})\s*:\s*([^;{{}}]*\b100(?:svh|vh|dvh|lvh)\b[^;{{}}]*)",
+    re.I)
+
+# A correct opener subtracts something that is not zero. Matching the dial's
+# NAME is not enough: `calc(100svh + var(--x-above))` names it and is worse
+# than the bug, and `var(--x-above, 0px)` names it and subtracts nothing.
+SUBTRACTS = re.compile(
+    r"calc\(\s*100(?:svh|vh|dvh|lvh)\s*-\s*var\(\s*(--[\w-]+)\s*(?:,\s*([^)]*?)\s*)?\)",
+    re.I)
+ZERO = re.compile(r"^0[a-z%]*$", re.I)
+
+
+def strip_css_comments(css):
+    return re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+
+
+def opener_fault(name, css):
+    """Judge one pattern's CSS as if it opened a page. Returns a list.
+
+    A pattern that claims a whole viewport is right to do so, and wrong to
+    measure it from the top of the document: a real page has a site header
+    above the opener and the pattern cannot see it. What falls off the bottom
+    is whatever the pattern put last, which on every opener here is the join
+    control.
+    """
+    bad = []
+    for prop, value in VIEWPORT_HEIGHT.findall(strip_css_comments(css)):
+        m = SUBTRACTS.search(value)
+        if m and not ZERO.match((m.group(2) or "").strip() or "none"):
+            continue
+        if m:
+            bad.append(
+                f"{name} claims a whole viewport and subtracts "
+                f"var({m.group(1)}, {m.group(2)}) - a zero default subtracts "
+                f"nothing, so the dial exists and the fold is still wrong"
+            )
+            continue
+        bad.append(
+            f"{name} opens the page with {prop}: {value.strip()} and subtracts "
+            f"nothing for what sits above it. On a page with a site header the "
+            f"foot of this section - the join control - lands one header-height "
+            f"below the fold. It needs "
+            f"calc(100svh - var(--{name}-above, 4.5rem))"
+        )
+    return bad
+
+
+# Patterns that legitimately claim a whole viewport without subtracting: they
+# sit mid-page or at the end, where nothing is above them in the viewport by
+# the time a reader arrives. Named here rather than reasoned about in prose,
+# so that adding a third one is a decision somebody makes on purpose.
+FULL_VIEWPORT_EXEMPT = {"cta-curtain", "pinned-cards"}
 
 
 def check_opener_reserves_room(page):
-    """The fold bug, as a rule a machine can hold you to.
+    """Judge the pattern that opens the page - whichever one that is.
 
-    A pattern that claims a whole viewport is right to do so - and wrong to
-    measure it from the top of the document, because a real page has a site
-    header above the opener and the pattern cannot see it. What falls off the
-    bottom is whatever the pattern put last, which on every opener here is the
-    join control.
-
-    Only the first pattern is judged. `cta-curtain` and `pinned-cards` claim a
-    full viewport too and are correct with a plain 100svh: they sit mid-page
-    and at the end, where nothing is above them by the time a reader arrives.
+    The first version judged `page[0]` and stopped, which meant putting a
+    heading-block or a trust-row above the hero switched the check off - and
+    adding something above the opener makes the defect worse, not better. The
+    opener is the first *section*; components before it do not change the fact
+    that the hero is measuring from below them.
     """
-    if not page:
-        return []
-    first = page[0]
-    bad = []
-    for value in VIEWPORT_MIN_HEIGHT.findall(first["css"]):
-        if f"--{first['name']}-above" in value:
+    for item in page:
+        if item["meta"].get("type", "").split("#")[0].strip() != "section":
             continue
-        bad.append(
-            f"{first['name']} opens the page with min-height: {value.strip()} "
-            f"and subtracts nothing for what sits above it. On a page with a "
-            f"site header the foot of this section - the join control - lands "
-            f"one header-height below the fold. It needs "
-            f"calc(100svh - var(--{first['name']}-above, 4.5rem))"
-        )
-    return bad
+        if item["name"] in FULL_VIEWPORT_EXEMPT:
+            return []
+        return opener_fault(item["name"], item["css"])
+    return []
 
 
 HEADING = re.compile(r"<h([1-6])\b", re.I)
@@ -218,6 +262,49 @@ def check_headings(page):
                 f"a reader using headings to move loses the level in between"
             )
         previous = lvl
+    return bad
+
+
+def axes_of(meta):
+    """`ground=plain|brand|deep; alignment=default|centred` -> {axis: {values}}.
+
+    Semicolons between axes, pipes between values - not the comma every other
+    metadata field uses. Splitting on commas produced an axis literally called
+    "deep; alignment=default", which still rejected the one bad fixture, for
+    entirely the wrong reason.
+    """
+    axes = {}
+    for clause in (c.strip() for c in meta.get("variants", "").split(";")):
+        if not clause:
+            continue
+        key, _, values = clause.partition("=")
+        axes[key.strip()] = {v.strip() for v in values.split("|") if v.strip()}
+    return axes
+
+
+def check_variant_choice(page, chosen):
+    """A modifier the pattern does not offer is a page that cannot be built.
+
+    A fixture in this very file asked for `hero-stated:ground=soft`. The
+    pattern declares `ground=plain|brand|deep` and ships no `--soft` rule, so
+    the "real page that must stay valid" was one nobody could build. Nothing
+    noticed, because an unknown key or value simply switched the ground check
+    off and the run still printed a pass.
+    """
+    bad = []
+    for item, mods in zip(page, chosen):
+        axes = axes_of(item["meta"])
+        for key, value in mods.items():
+            if key not in axes:
+                offered = ", ".join(sorted(axes)) or "none"
+                bad.append(
+                    f"{item['name']} has no {key!r} axis to vary - it offers: {offered}"
+                )
+            elif value not in axes[key]:
+                bad.append(
+                    f"{item['name']} has no {key}={value} - it offers "
+                    f"{key}={'|'.join(sorted(axes[key]))}"
+                )
     return bad
 
 
@@ -308,22 +395,84 @@ PAGE = """<!doctype html>
 """
 
 
-def assemble(page):
+def assemble(page, chosen):
+    """Build the page the recipe actually asked for.
+
+    The first version ignored the modifiers, so a recipe naming
+    `hero-stated:ground=deep` was checked as deep and rendered as the default -
+    the artifact you were told to open contradicted the thing you were told
+    about it.
+    """
     css = []
     markup = []
-    for item in page:
+    for item, mods in zip(page, chosen):
         css.append(f"/* ---- {item['name']} ---- */\n{item['css']}")
         body = strip_comments(item["html"])
         repeat = item["sample"].get("_repeat")
         if repeat:
             body = repeat_block(body, repeat["class"], repeat["count"])
+        # Swap the modifier, do not append one. The markup already ships a
+        # default - `class="hero-stated hero-stated--plain"` - so appending
+        # leaves both on the element and lets source order decide, which is not
+        # a choice anybody made. The first version appended, and every rung
+        # rendered as the default while the checks reasoned about the rung you
+        # asked for.
+        for key, value in mods.items():
+            swapped = False
+            for known in sorted(axes_of(item["meta"]).get(key, ())):
+                old = f'{item["name"]}--{known}'
+                if old in body:
+                    body = body.replace(old, f'{item["name"]}--{value}')
+                    swapped = True
+                    break
+            if not swapped:
+                body = re.sub(
+                    r'(class="[^"]*\b' + re.escape(item["name"]) + r')(")',
+                    r'\1 ' + f'{item["name"]}--{value}' + r'\2', body, count=1)
         markup.append(fill(body, item["sample"]))
     return "\n".join(css), "\n".join(markup)
 
 
 # ------------------------------------------------------------------- runner
 
+def sweep():
+    """Every pattern in the library, judged as if it opened a page.
+
+    The recipes cannot carry this. A fixture proves something about the
+    compositions somebody thought to write down, and the first version of this
+    file left thirty of forty-four patterns in no fixture at all - so the fold
+    rule, written for a defect that reached a live site, was enforced on five
+    openers and silent on the rest while the suite printed "clean".
+
+    The rule does not actually need a page: a pattern that claims a whole
+    viewport and subtracts nothing is wrong wherever it lands, unless it is one
+    of the few that never has anything above it. So sweep the library and hold
+    every pattern to it.
+    """
+    bad = []
+    for folder in sorted(PATTERNS.iterdir()):
+        if not folder.is_dir() or folder.name in FULL_VIEWPORT_EXEMPT:
+            continue
+        css_path = folder / "pattern.css"
+        if not css_path.exists():
+            continue
+        bad += opener_fault(folder.name, css_path.read_text(encoding="utf-8"))
+    return bad
+
+
 def main():
+    if "--sweep" in sys.argv:
+        bad = sweep()
+        exempt = ", ".join(sorted(FULL_VIEWPORT_EXEMPT))
+        print(f"sweep: every pattern judged as an opener (exempt: {exempt})")
+        print()
+        for line in bad:
+            print(f"  FAIL  [the fold] {line}")
+        if not bad:
+            print(f"  clean: {sum(1 for f in PATTERNS.iterdir() if f.is_dir())} "
+                  f"pattern(s), none claims a viewport it does not measure")
+        return 1 if bad else 0
+
     ap = argparse.ArgumentParser(
         description="Check patterns as neighbours on one page.")
     ap.add_argument("page_type", help="homepage, landing, pricing, safety, article, features")
@@ -355,6 +504,7 @@ def main():
         ("deprecated", check_deprecated(page)),
         ("one per page", check_one_per_page(page)),
         ("avoid-with", check_avoid_with(page)),
+        ("variant", check_variant_choice(page, chosen)),
         ("the fold", check_opener_reserves_room(page)),
         ("headings", check_headings(page)),
     ):
@@ -391,7 +541,7 @@ def main():
     if args.out:
         out = Path(args.out)
         out.mkdir(parents=True, exist_ok=True)
-        css, markup = assemble(page)
+        css, markup = assemble(page, chosen)
         brand_link = ""
         if args.brand:
             (out / "brand.css").write_text(

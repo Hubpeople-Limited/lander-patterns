@@ -254,8 +254,23 @@ A recipe is a page type and then the patterns in the order they appear. A
 pattern may carry the variant it was placed with — `hero-stated:ground=deep` —
 and some checks can say nothing without it, so they say so rather than guess.
 
-It fails a page where: a full-viewport **opener** subtracts nothing for what
-sits above it; a `one-per-page` section appears twice; two patterns whose
+There is also a sweep that needs no page at all:
+
+```
+python ci/check_page.py --sweep
+```
+
+**A pattern that claims a whole viewport and subtracts nothing is wrong wherever
+it lands**, so that half of the fold rule is held against all 44 patterns rather
+than against the handful a fixture happens to name. `cta-curtain` and
+`pinned-cards` are exempt in one named set in the code: they sit mid-page and at
+the end, where nothing is above them by the time a reader arrives. The first
+version of this file enforced the rule through the fixtures alone, which reached
+five openers out of six and thirty patterns not at all, while printing "clean".
+
+It fails a page where: a modifier is chosen that the pattern does not offer
+(`hero-stated:ground=soft` when it ships `plain|brand|deep`); a full-viewport
+**opener** subtracts nothing for what sits above it; a `one-per-page` section appears twice; two patterns whose
 `avoid-with` names each other are both present; a pattern is used on a page type
 it does not list; the page has no `h1` or more than one; a heading level is
 skipped at the join between two patterns; or two neighbours land on the same
