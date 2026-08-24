@@ -1,4 +1,4 @@
-/* hero-overlay v5 - tokens only, selectors prefixed. Nothing here moves. */
+/* hero-overlay v11 - tokens only, selectors prefixed. Nothing here moves. */
 .hero-overlay {
   /* Contrast floor: the scrim carries it, never the photo. */
   --hero-overlay-scrim-floor: clamp(0.92, var(--hero-overlay-scrim-strength, 0.92), 1);
@@ -9,9 +9,10 @@
   display: flex;
   align-items: flex-end;
   background: var(--color-bg);
-  /* svh, not vh: 100vh is the largest viewport, so the address bar would
-   cover the hero's foot. Do not change. */
-  min-height: 100svh;
+  /* A viewport MINUS what sits above. A plain 100svh puts the foot one
+   header below the fold, and the foot is where the control is. svh, not vh.
+   Do not change either; see the README. */
+  min-height: calc(100svh - var(--hero-overlay-above, 4.5rem));
 }
 .hero-overlay-img {
   position: absolute;

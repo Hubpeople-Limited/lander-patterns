@@ -41,21 +41,15 @@ toward it. There is no headroom to spend. Raise the scrim, never dim the
 image. A headline past three lines climbs out of the guaranteed
 band: shorten it, or raise the strength.
 
-**Choose between this and `hero-split`.** They are alternatives, not
-neighbours: every page gets exactly one opener, which is what
-`one-per-page: yes` says on both. Pick this one when the photograph is the
-argument — atmosphere, who this is for, what it feels like. Pick `hero-split`
-when the words are the argument and the image supports them, or when no
-photograph strong enough to fill a whole screen exists.
+**Every page gets one opener, so the rest are alternatives rather than
+neighbours.** Pick this one where the photograph *is* the argument. Pick
+`hero-split` where the words are and the image supports them; `hero-centred`
+where the photograph cannot be read through or you do not control it;
+`hero-squeeze` where the page does not continue; `hero-stated` where there is
+no usable photography at all.
 
-**Not on a page with `hero-centred`.** Three heroes now exist and a page takes one. Choose this where the photograph is strong enough to carry a whole screen and be read through; `hero-centred` where it is not, or where you do not control it.
-
-**Not on a page with `hero-squeeze`.** That one is not an opener at all: it is the whole page in one viewport with nothing after it. This is the opener for a page that continues, which is the other choice.
-
-**Not on a page with `hero-stated`.** That is the opener for a brand with no usable photography, which is the case this pattern cannot serve at all.
-
-**Pairing.** `stats-band` directly beneath it, which is what the dissolve is
-for — the hero resolves into the page background and the numbers begin with no
+**Pairing.** `stats-band` directly beneath it — the dissolve resolves the hero
+into the page background and the numbers begin with no
 seam. Avoid `gallery-scroll` for the same reason `hero-split` does: a second
 large image set anywhere on the page fights the one that is meant to
 own the screen.
@@ -73,3 +67,10 @@ not a squeeze of this one: the vignette is replaced by a top-down wash and the
 copy moves to the top, clear of the browser chrome that eats the bottom of a
 small viewport. Variant: drop the login control and centre the copy
 (`margin-inline: auto; text-align: center`) for a single-message campaign page.
+
+**A viewport minus what sits above it.** A site header is not part of this
+pattern, so a plain `100svh` puts the foot one header-height below the fold —
+and the foot is where the join control is. The height is
+`calc(100svh - var(--hero-overlay-above, 4.5rem))`; `4.5rem` covers the usual
+chassis header. Set it where the brand's header is taller, `0px` where nothing
+sits above. Found on a live page, every gate passing.

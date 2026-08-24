@@ -1,4 +1,4 @@
-/* hero-squeeze v1 - tokens only, selectors prefixed */
+/* hero-squeeze v8 - tokens only, selectors prefixed */
 .hero-squeeze {
   --hero-squeeze-scrim-floor: clamp(0.86, var(--hero-squeeze-scrim-strength, 0.86), 1);
   position: relative;
@@ -6,9 +6,13 @@
   display: grid;
   place-items: center;
   /* min-height, never height: the page aims to fit one viewport, and where it
-   cannot it scrolls rather than clipping. See the README. svh, not vh: 100vh
-   is the largest viewport, so the control would sit under the address bar. */
-  min-height: 100svh;
+   cannot it scrolls rather than clipping. See the README. A full viewport
+   MINUS whatever sits above it - a site header is not part of this section,
+   and a plain 100svh puts the foot one header below the fold. Set
+   --hero-squeeze-above to the real header height where it differs. svh, not
+   vh: 100vh is the largest viewport, so the control would sit under the
+   address bar. */
+  min-height: calc(100svh - var(--hero-squeeze-above, 4.5rem));
   padding: var(--space-6) var(--space-4);
   background: var(--color-scrim);
   text-align: center;
