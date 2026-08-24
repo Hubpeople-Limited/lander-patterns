@@ -1,0 +1,54 @@
+{
+  "_why": [
+    "Real pages, as compositions of patterns, that must stay valid.",
+    "",
+    "Every other fixture in this repo is a single pattern, which is why a whole",
+    "class of defect reached a live site: a pattern is correct on its own and",
+    "wrong beside its neighbours. These recipes are the smallest thing that can",
+    "hold the library to a page. Changing a pattern so one of them fails is not",
+    "forbidden - it is a decision, and this file is where it has to be made",
+    "deliberately rather than discovered by a partner.",
+    "",
+    "Each is a page somebody would plausibly build. Add one whenever a real",
+    "build finds a composition worth protecting; do not add every permutation,",
+    "because a fixture nobody understands is one that gets deleted the first",
+    "time it fails."
+  ],
+  "recipes": [
+    {
+      "page": "homepage",
+      "patterns": ["hero-overlay", "stats-band", "cta-band"],
+      "why": "The photo-led homepage built in round 23. A full-viewport opener is the case the fold check exists for."
+    },
+    {
+      "page": "homepage",
+      "patterns": ["hero-split", "steps-plain", "faq-details", "cta-band"],
+      "why": "Opener, how it works, the questions, the ask - the ordinary conversion homepage."
+    },
+    {
+      "page": "homepage",
+      "patterns": ["hero-stated:ground=deep", "heading-block", "benefit-tiles", "cta-band"],
+      "why": "The homepage for a brand with no photography. heading-block is not decoration here: benefit-tiles opens at h3 and says so in its own markup, so without an h2 above it the page skips a heading level."
+    },
+    {
+      "page": "pricing",
+      "patterns": ["hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band"],
+      "why": "State the offer, show the tiers, answer the objection, ask."
+    },
+    {
+      "page": "safety",
+      "patterns": ["hero-stated:ground=soft", "safety-protections", "cta-band"],
+      "why": "On a dating brand this is a conversion page in disguise, so it closes like one."
+    },
+    {
+      "page": "article",
+      "patterns": ["article-masthead", "prose-column"],
+      "why": "The whole of an article: its header and its body."
+    },
+    {
+      "page": "landing",
+      "patterns": ["hero-squeeze"],
+      "why": "A one-screen landing page. Nothing below the fold, so the fold is the entire page."
+    }
+  ]
+}

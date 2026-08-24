@@ -230,6 +230,49 @@ On every pull request, CI:
 A red check names the file and the rule. Fix and push again — nothing merges
 red.
 
+### Every check above measures one pattern alone
+
+That is the right shape for most defects, and it is blind to the ones that only
+exist between neighbours. A pattern has no page: it cannot see what sits above
+it, what follows it, or what the reader has already been shown.
+
+`hero-overlay` shipped `min-height: 100svh`, which is correct for a pattern and
+wrong for a page — measured from below a site header it put the join control
+exactly one header-height below the fold. It passed every gate on this list. It
+took a screenshot of a browser.
+
+So there is one more check, and it takes a **page** rather than a pattern:
+
+```
+python ci/check_page.py homepage hero-overlay stats-band cta-band
+python ci/check_page.py homepage hero-stated:ground=deep heading-block benefit-tiles
+python ci/check_page.py pricing hero-stated:ground=plain pricing-tiers cta-band \
+    --brand ../some-brand/site/global.css --out /tmp/page
+```
+
+A recipe is a page type and then the patterns in the order they appear. A
+pattern may carry the variant it was placed with — `hero-stated:ground=deep` —
+and some checks can say nothing without it, so they say so rather than guess.
+
+It fails a page where: a full-viewport **opener** subtracts nothing for what
+sits above it; a `one-per-page` section appears twice; two patterns whose
+`avoid-with` names each other are both present; a pattern is used on a page type
+it does not list; the page has no `h1` or more than one; a heading level is
+skipped at the join between two patterns; or two neighbours land on the same
+ground and read as one long section. It also reports, without failing, which
+behaviours would need `hub.js` on the page and what material the brand must
+supply.
+
+`--out` writes the assembled page with a stand-in site header above it, which is
+the only way to look at the thing the fold check is about.
+
+**`ci/page-recipes.json` holds real pages that must stay valid**, and
+`ci/test_gates.py` runs them. Breaking one is allowed — it is a decision, and
+that file is where it gets made deliberately rather than found by a partner. Add
+a recipe when a real build turns up a composition worth protecting; do not add
+permutations, because a fixture nobody understands is one that gets deleted the
+first time it fails.
+
 ## Behaviours — platform-delivered JavaScript (gated)
 
 Patterns never carry a `<script>`; that rule does not move. But the library

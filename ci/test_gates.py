@@ -13,6 +13,7 @@ found nine defects in - so the scope of this file is not a detail, it is the
 thing that decides which defects survive.
 """
 
+import json
 import os
 import shutil
 import subprocess
@@ -454,6 +455,96 @@ def run(base):
                           capture_output=True, text=True).returncode
 
 
+# --------------------------------------------------------------- page level
+#
+# Every other suite here proves a gate fires on one pattern. This one proves
+# the page-level checks fire on one PAGE, which is a different question and
+# the reason ci/check_page.py exists: the defect that made the case for it
+# passed every single-pattern gate in this repo.
+
+PAGE_FIRES = [
+    ("two openers that name each other",
+     ["homepage", "hero-overlay", "hero-split"], "avoid-with"),
+    ("the same one-per-page section twice",
+     ["homepage", "hero-overlay", "hero-overlay", "stats-band"], "one per page"),
+    ("a pricing section on a homepage",
+     ["homepage", "pricing-tiers", "cta-band"], "page type"),
+    ("a heading level skipped between neighbours",
+     ["homepage", "hero-stated:ground=deep", "benefit-tiles"], "headings"),
+    ("two neighbours on the same ground",
+     ["homepage", "hero-stated:ground=deep", "claim-stack:ground=deep"], "ground"),
+    ("no h1 anywhere on the page",
+     ["homepage", "stats-band", "cta-band"], "headings"),
+]
+
+
+def run_page(argv):
+    got = subprocess.run([sys.executable, str(HERE / "check_page.py")] + argv,
+                         capture_output=True, text=True, encoding="utf-8")
+    return got.returncode, (got.stdout or "") + (got.stderr or "")
+
+
+def check_pages():
+    """Both halves, as everywhere else: it fires, and it stays quiet.
+
+    The quiet half is the fixtures in page-recipes.json, and it is the half
+    that earns its keep day to day - those are real compositions, so a pattern
+    edit that breaks one is a page somebody would have shipped.
+    """
+    failures = []
+    print("ci/check_page.py, page-level checks")
+
+    for label, argv, want_label in PAGE_FIRES:
+        code, out = run_page(argv)
+        ok = code == 1 and ("[%s]" % want_label) in out
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} exit={code} want=1 [{want_label}]")
+        if not ok:
+            failures.append(label)
+
+    # The fold, proven against the build it actually shipped on. A rule tested
+    # only against the fixed pattern proves nothing: it would pass just as well
+    # if it were measuring the wrong thing, or nothing at all.
+    # Bytes, not text, for the whole round trip. The first version of this read
+    # and wrote through the text API and handed the file back with every line
+    # ending rewritten - content identical, working copy modified, git warning
+    # about CRLF on a file nobody had edited. A test that touches the repo has
+    # to put it back byte for byte, and this one now asserts that it did.
+    folder = HERE.parent / "patterns" / "hero-overlay"
+    css = folder / "pattern.css"
+    kept = css.read_bytes()
+    try:
+        css.write_bytes(
+            kept.replace(b"min-height: calc(100svh - var(--hero-overlay-above, 4.5rem));",
+                         b"min-height: 100svh;"))
+        code, out = run_page(["homepage", "hero-overlay", "stats-band", "cta-band"])
+        ok = code == 1 and "[the fold]" in out
+        label = "a full-viewport opener that subtracts nothing"
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} exit={code} want=1 [the fold]")
+        if not ok:
+            failures.append(label)
+    finally:
+        css.write_bytes(kept)
+
+    if css.read_bytes() != kept:
+        failures.append("the fold case did not restore hero-overlay byte for byte")
+        print("  FAIL  the fold case left patterns/hero-overlay/pattern.css changed")
+
+    recipes = json.loads((HERE / "page-recipes.json").read_text(encoding="utf-8"))
+    for recipe in recipes["recipes"]:
+        argv = [recipe["page"]] + recipe["patterns"]
+        code, out = run_page(argv)
+        ok = code == 0
+        label = "%s: %s" % (recipe["page"], " ".join(recipe["patterns"]))
+        print(f"  {'ok  ' if ok else 'FAIL'} {label[:46]:<46} exit={code} want=0")
+        if not ok:
+            failures.append(label)
+            for line in out.splitlines():
+                if "FAIL" in line:
+                    print(f"        {line.strip()}")
+
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -494,14 +585,18 @@ def main():
     print()
     failures += check_header()
     print()
+    failures += check_pages()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
         return 1
+    recipes = json.loads((HERE / "page-recipes.json").read_text(encoding="utf-8"))
     total = (len(CASES) + 1 + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
-             + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES))
-    print(f"clean: {total} gate cases across six modules behave as documented.")
+             + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
+             + len(PAGE_FIRES) + 1 + len(recipes["recipes"]))
+    print(f"clean: {total} gate cases across seven modules behave as documented.")
     return 0
 
 
