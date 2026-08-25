@@ -627,6 +627,44 @@
   "version": "2",
   "whole-page": false
  },
+ "masthead-nav": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements and two small-screen behaviours.",
+  "motion": "subtle",
+  "needs": "the brand's logo, the menu items configured on the platform, and one word for the small-screen menu button in the brand's own language. Every other value on it is platform furniture",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article",
+   "features",
+   "articles-landing"
+  ],
+  "pairs-with": [],
+  "requires": "none",
+  "type": "component",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand"
+   ],
+   "layout": [
+    "inline",
+    "centred"
+   ],
+   "menu": [
+    "drawer",
+    "row"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "media-card-grid": {
   "avoid-with": [
    "gallery-scroll",

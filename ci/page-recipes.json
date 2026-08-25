@@ -22,6 +22,11 @@
     },
     {
       "page": "homepage",
+      "patterns": ["masthead-nav:ground=soft", "hero-stated:ground=plain", "cta-band"],
+      "why": "A page with its site header on it, which no other recipe has. masthead-nav is a component rather than a section on purpose: the fold check judges the first SECTION, so typing the header as one would quietly take every hero beneath it out of that check. This recipe is what notices."
+    },
+    {
+      "page": "homepage",
       "patterns": ["hero-split", "steps-plain", "faq-details", "cta-band"],
       "why": "Opener, how it works, the questions, the ask - the ordinary conversion homepage."
     },
