@@ -39,8 +39,8 @@
   --shadow-sm: 0 1px 3px rgba(35,40,43,.10);
   --shadow-md: 0 4px 14px rgba(35,40,43,.10);
   --shadow-lg: 0 12px 32px rgba(35,40,43,.14);
-  --transition-fast: 150ms ease;
-  --transition-base: 300ms ease;
+  --transition-fast: 150ms;
+  --transition-base: 300ms;
 }
 
 /* --- the shim, as a brand would install it --- */
@@ -51,7 +51,7 @@
   --chip-radius: var(--radius-pill, 999px);
   --card-shadow: var(--shadow-md, none);
   --card-border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
-  --transition-slow: var(--transition-base, 400ms ease);
+  --transition-slow: var(--transition-base, 400ms);
 
   /* Inks the contract needs and no brand carries. */
   --color-heading: var(--color-text);

@@ -152,6 +152,19 @@ itself for more than five seconds — auto-advancing carousels and marquees are
 not accepted, because the pause control they legally require cannot be built
 without JavaScript.
 
+**A transition token is a duration and nothing else.** `--transition-fast: 150ms`,
+not `150ms ease`. The pattern supplies the timing function, because only the pattern
+knows whether a thing should ease out, ease in or move linearly.
+
+This is not a style preference, it is the difference between motion and no motion. CSS
+allows one timing function per transition item, so a token that already carries `ease`
+turns the house form `var(--transition-fast) ease-out` into `150ms ease ease-out` -
+**invalid, and the whole declaration is dropped**. The animation does not degrade, it
+disappears, and nothing on the page looks broken. One of the four sample token sets
+shipped the easing and sixteen transitions across five patterns were silently dead on
+it. `ci/lint.py` now holds the token sets to this.
+
+
 ## Platform furniture tokens
 
 The platform fills these per brand and per page. They are the **only** `{{ }}`
