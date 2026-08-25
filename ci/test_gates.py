@@ -580,6 +580,183 @@ def check_pages():
     return failures
 
 
+# --------------------------------------------------------------- phone width
+#
+# ci/check_phone.py. Every suite above this one reasons about source - CSS
+# text, a metadata header, a token census. This one lays a pattern out in a
+# browser at 320 and 360 and measures the result, which is the only way the
+# three defects that reached live sites were ever going to be seen.
+#
+# The fixtures are synthetic on purpose. Proving the gate against the real
+# library would prove nothing about the half that matters: a check that never
+# fires passes a clean library perfectly.
+
+PHONE_FIRES = [
+    ("a fixed width wider than the phone",
+     ".t-box { width: 400px; background: #eee; }",
+     "<div class='t-box'>Sample</div>", "scrolls sideways"),
+    ("a long unbreakable word",
+     ".t-head { font-size: 2rem; }",
+     "<h2 class='t-head'>Sample-unbreakablewordarealbrandwouldship</h2>",
+     "scrolls sideways"),
+    ("a padded link too short to hit",
+     ".t-cta { display: inline-block; padding: 4px 20px;"
+     " background: #ddd; text-decoration: none; }",
+     "<a class='t-cta' href='#'>Sample join</a>", "tap target"),
+    ("a small square button",
+     ".t-icon { width: 30px; height: 30px; }",
+     "<button class='t-icon'>x</button>", "tap target"),
+    ("a summary too short to hit",
+     ".t-q { font-size: 14px; line-height: 1.2; }",
+     "<details><summary class='t-q'>Sample question</summary>"
+     "<p>Sample answer.</p></details>", "tap target"),
+    ("text below the legibility floor",
+     ".t-fine { font-size: 9px; }",
+     "<p class='t-fine'>Sample small print for the preview.</p>",
+     "renders at"),
+    ("a form field iOS will zoom into",
+     ".t-field { font-size: 14px; padding: 14px; width: 100%; }",
+     "<label for='e'>Sample email</label>"
+     "<input class='t-field' id='e' type='email'>", "iOS zooms"),
+]
+
+# Valid work the gate must not complain about. Half of these are the exact
+# shapes that made the first version of the tap rule unusable: it fired on
+# every prose link and every row title in the library, which is the state a
+# gate never recovers from because people stop reading it.
+PHONE_QUIET = {
+    "a horizontal rail, which is meant to be wider than the screen":
+        (".t-rail { overflow-x: auto; display: flex; gap: 8px; }"
+         " .t-rail > .t-cell { flex: 0 0 200px; height: 60px; background: #ddd; }",
+         "<div class='t-rail'><div class='t-cell'></div>"
+         "<div class='t-cell'></div><div class='t-cell'></div></div>"),
+    "an image cover-cropped by its frame":
+        (".t-frame { overflow: hidden; height: 100px; }"
+         " .t-frame img { width: 600px; }",
+         "<div class='t-frame'><img src='sample-wide.svg' alt='Sample'></div>"),
+    "a link inside a sentence":
+        (".t-copy { padding: 16px; }",
+         "<p class='t-copy'>Sample copy with <a href='#'>a link</a> in it.</p>"),
+    "a row title blockified by its grid parent":
+        (".t-row { display: grid; padding: 16px; }"
+         " .t-title { font-size: 19px; text-decoration: none; }",
+         "<div class='t-row'><a class='t-title' href='#'>Sample entry</a></div>"),
+    "a button drawn at a proper size":
+        (".t-btn { min-height: 48px; padding: 0 24px; background: #ddd;"
+         " border: 0; }",
+         "<button class='t-btn'>Sample join</button>"),
+    "a small checkbox with a big label":
+        (".t-lab { display: block; min-height: 48px; padding: 14px; }",
+         "<label class='t-lab' for='c'>"
+         "<input id='c' type='checkbox'> Sample consent</label>"),
+    "ordinary body copy":
+        (".t-copy { padding: 16px; font-size: 16px; }",
+         "<p class='t-copy'>Sample body copy that wraps onto a second line.</p>"),
+    "a footnote marker, which is small by definition":
+        (".t-note { font-size: 16px; } .t-note sup { font-size: 10px; }",
+         "<p class='t-note'>Sample claim<sup>1</sup></p>"),
+    "a control that is not rendered at all":
+        (".t-hide { display: none; }",
+         "<button class='t-hide'>Sample hidden</button>"),
+    "a field at the size iOS leaves alone":
+        (".t-field { font-size: 16px; padding: 14px; width: 100%; }",
+         "<label for='e2'>Sample email</label>"
+         "<input class='t-field' id='e2' type='email'>"),
+}
+
+
+def check_phone():
+    """Both halves, then the library.
+
+    Skipping is a first-class outcome here and not a pass: with no browser
+    this prints SKIPPED and returns no failures, because a contributor
+    working in the GitHub web editor cannot install Chromium and must not be
+    blocked by that. The skip PATH itself is tested below, which is the only
+    thing that stops it becoming a way for the gate to go quiet everywhere.
+    """
+    print("ci/check_phone.py, rendered at phone widths")
+    sys.path.insert(0, str(HERE))
+    import check_phone
+
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIP  no browser here - {why}")
+        print("  Nothing was measured at a phone width. This is not a pass.")
+        return []
+
+    failures = []
+    tokens = check_phone.token_set("brand")
+
+    def page(css, markup):
+        return check_phone.SHELL.format(name="fixture", width=320,
+                                        tokens=tokens, css=css, markup=markup)
+
+    # One browser for every case. Launching Chromium costs sixty times what
+    # measuring a page costs, so a launch per fixture would turn a two second
+    # suite into a two minute one.
+    with check_phone.Phone((320,)) as phone:
+        for label, css, markup, needle in PHONE_FIRES:
+            found = phone.faults("fixture", page(css, markup))
+            ok = any(needle in line for line in found)
+            print(f"  {'ok  ' if ok else 'FAIL'} catches: {label}")
+            if not ok:
+                failures.append(label)
+                for line in found:
+                    print(f"        got: {line}")
+                if not found:
+                    print("        got: nothing")
+        for label, (css, markup) in PHONE_QUIET.items():
+            found = phone.faults("fixture", page(css, markup))
+            print(f"  {'ok  ' if not found else 'FAIL'} quiet on: {label}")
+            if found:
+                failures.append(label)
+                for line in found:
+                    print(f"        got: {line}")
+
+    # The skip path, exercised for real rather than asserted about. A shim
+    # package on the path makes `import playwright` raise, which is exactly
+    # what a machine without it does. Without this case the skip is the one
+    # branch in the file that nothing has ever run - and it is the branch
+    # that decides whether a red build is a real failure or an empty one.
+    shim = Path(tempfile.mkdtemp(prefix="lander-phone-noplaywright-"))
+    (shim / "playwright").mkdir()
+    (shim / "playwright" / "__init__.py").write_text(
+        "raise ImportError('no playwright here')", encoding="utf-8")
+    try:
+        env = dict(os.environ, PYTHONPATH=str(shim))
+        got = subprocess.run(
+            [sys.executable, str(HERE / "check_phone.py"), "cta-band"],
+            capture_output=True, text=True, encoding="utf-8", env=env)
+        out = (got.stdout or "") + (got.stderr or "")
+        ok = got.returncode == 0 and "SKIPPED" in out
+        print(f"  {'ok  ' if ok else 'FAIL'} skips cleanly with no browser "
+              f"installed        exit={got.returncode} want=0")
+        if not ok:
+            failures.append("clean skip with no browser")
+            print(f"        got: {out.strip()[:300]}")
+    finally:
+        shutil.rmtree(shim, ignore_errors=True)
+
+    # The library itself. `new` is anything not in check_phone.ACCEPTED, so
+    # this fails the day a pattern acquires a phone-width fault - while the
+    # four the library already has stay visible in the output instead of
+    # being excluded by a rule nobody can see.
+    new, known, stale = check_phone.sweep()
+    ok = not new and not stale
+    print(f"  {'ok  ' if ok else 'FAIL'} the library at 320 and 360"
+          f"                     {len(new)} new, {len(known)} known")
+    if new:
+        failures.append("new phone-width fault in the library")
+        for line in new:
+            print(f"        {line}")
+    if stale:
+        failures.append("stale phone-width baseline entry")
+        for line in stale:
+            print(f"        baseline entry matched nothing - {line}")
+
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -622,6 +799,8 @@ def main():
     print()
     failures += check_pages()
     print()
+    failures += check_phone()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -630,8 +809,9 @@ def main():
     total = (len(CASES) + 1 + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
-             + len(PAGE_FIRES) + 2 + len(recipes["recipes"]))
-    print(f"clean: {total} gate cases across seven modules behave as documented.")
+             + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
+             + len(PHONE_FIRES) + len(PHONE_QUIET) + 2)
+    print(f"clean: {total} gate cases across eight modules behave as documented.")
     return 0
 
 

@@ -104,7 +104,9 @@ Then the markup. Three rules:
   `color-mix()` of contract tokens.
 - Mobile-first: base styles for small screens, scaling up with
   `@media (min-width: …rem)` or range syntax (`@media (width < 60rem)`) —
-  both are fine.
+  both are fine. This one is measured rather than taken on trust: see
+  **[At a phone width](#at-a-phone-width)** for what your render has to
+  survive and how to run it yourself.
 - Every pattern styles itself through at least one token — a markup-only
   pattern with an empty stylesheet is not accepted.
 - If the pattern moves (`motion: subtle`/`expressive`), keep every animation
@@ -225,7 +227,10 @@ On every pull request, CI:
   than a style: it exists to fail patterns that ground text on tokens
   the contract does not guarantee. The pages attach to your pull request as
   the `pattern-previews` artifact, so you see all four before anyone merges;
-  on merge they publish to the repo's Pages site.
+  on merge they publish to the repo's Pages site;
+- lays every pattern out in a headless browser at 320 and 360 and measures
+  what came out — sideways scroll, tap-target size, text size. See
+  [At a phone width](#at-a-phone-width).
 
 A red check names the file and the rule. Fix and push again — nothing merges
 red.
@@ -287,6 +292,95 @@ that file is where it gets made deliberately rather than found by a partner. Add
 a recipe when a real build turns up a composition worth protecting; do not add
 permutations, because a fixture nobody understands is one that gets deleted the
 first time it fails.
+
+### At a phone width
+
+Every check named so far, the page-level one included, **reads source**. It
+knows your stylesheet says `min-height: 100svh`; it does not know what 100svh
+turned out to be, whether the wordmark landed on top of the first menu link, or
+whether the whole thing scrolls sideways. Three defects have reached live sites
+through that blind spot in as many weeks, and all three were found the same
+way — by opening a browser.
+
+Most of the traffic these pages carry is phones, so that is what gets rendered:
+
+```
+python ci/check_phone.py                        every pattern, 320 and 360
+python ci/check_phone.py hero-split faq-details  just these
+python ci/check_phone.py --out /tmp/phone        keep the pages to look at
+```
+
+It needs a browser — `pip install playwright && playwright install chromium`,
+once. **Without one it prints `SKIPPED` and exits 0**, so a contributor working
+in the GitHub web editor is never blocked by tooling they cannot install. A
+skip is not a pass and the output says so; CI installs the browser, so the
+measurement always happens before anything merges.
+
+**320 and 360.** 320 is the floor — the narrowest viewport still in real use,
+and where anything too wide breaks out first. 360 is the mode, the single
+commonest width in the traffic these pages serve, and it catches the grid whose
+breakpoint fell between the two. 390 and 414 were tried and found nothing 360
+had not, for a third more runtime.
+
+Your pattern must, at both widths:
+
+| Rule | The number |
+|---|---|
+| **Not scroll sideways.** The document's scroll width may not exceed the viewport | viewport + 1px |
+| **Give every control a thumb-sized target** — `button`, `summary`, `input`, `select`, and any `<a>` drawn *as a control* rather than set as text | 44px in the smaller dimension |
+| **Keep text readable** | 12px |
+| **Keep form fields at a size iOS will not zoom into** | 16px |
+
+Three of those carve out the cases that would otherwise make the gate
+unusable, and it is worth knowing which, because they are also the shapes you
+are allowed to ship:
+
+- **A horizontal rail does not count.** Anything inside an element with its
+  own `overflow-x` is contained by design — a carousel track is *meant* to be
+  wider than the screen, and so is a cover-cropped image inside a frame that
+  clips it. Only the document's own scroll width fails.
+- **A link that is text is not a control.** Holding prose links to 44px means
+  double-spacing prose, and WCAG carves the same exception for the same
+  reason. The test is whether you gave it a box — padding, a `min-height`, a
+  border, a fill. A row title in a grid parent computes as `display: block`
+  and is still just words; a padded, filled link is a button and is measured
+  like one. An `<a>` wrapping an image is a control either way: a logo is
+  tapped, not read.
+- **A small control inside a big label is a big control**, because the label
+  activates it. A 16px checkbox in a 48px label passes.
+
+**What it deliberately does not check.** A rule that cannot be made reliable is
+worse than none, because the first false positive teaches everyone to stop
+reading the output — and this repo has learnt that once already.
+
+- **Content clipped by `overflow: hidden`.** Indistinguishable from the
+  cover-crop that every image frame in the library does on purpose.
+- **Content bleeding off the *left* edge.** Genuinely unreachable when it
+  happens, but a deliberate left bleed is a real technique and nothing in the
+  render tells the two apart.
+- **Long unbreakable words.** Not a gate, and the reason is worth stating: 36
+  of the 45 patterns break out of 320px on one, because only two patterns in the
+  library set `overflow-wrap` at all. A rule failing four fifths of the
+  library on the day it lands is a rule that gets switched off. The defence
+  belongs once in the brand's base stylesheet, not forty-five times here.
+- **Overlap between elements.** The header-logo-over-the-menu-link defect is
+  exactly this and it is the obvious next check to build. Rect intersection
+  alone is far too noisy — every deliberate overlap in the library trips it —
+  so it needs a narrower rule than anyone has written yet.
+
+**`ci/check_phone.py` carries a baseline** in `ACCEPTED`: four faults the
+library has today, each with the reason it is not failing the build. A fault
+matching one is reported as `known`; anything else is `new` and fails. So the
+gate stops regressions from the day it lands without forcing four design
+decisions in the same hour, and the debt stays visible in the output rather
+than hidden by an exclusion nobody can see. **Fixing a pattern means deleting
+its entry** — a run whose baseline matches nothing reports `STALE` and fails,
+because a baseline that has outlived its defect is how a gate goes quiet.
+
+`ci/test_gates.py` proves both halves against synthetic fixtures — seven faults
+it must catch, ten valid shapes it must ignore — and then sweeps the library.
+Proving it against the real patterns alone would prove nothing about the half
+that matters: a check that never fires passes a clean library perfectly.
 
 ## Behaviours — platform-delivered JavaScript (gated)
 
