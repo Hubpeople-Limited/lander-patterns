@@ -1,0 +1,553 @@
+/* masthead-nav v1 - tokens only, selectors prefixed.
+   Most of what this styles is markup the page does not own: the platform
+   expands {{menu.navigation}} into .canvas-navigation-menu,
+   .canvas-navigation-submenu and .has-submenu, and ships no CSS for any of
+   them. Those three class names are the platform's spelling - changing one
+   here styles nothing. */
+
+/* Each ground names its own inks, and every rule below reads the pair rather
+   than a token, so nothing here knows which ground it is on. */
+.masthead-nav--plain {
+  --masthead-nav-ground: var(--color-bg);
+  --masthead-nav-ink: var(--color-text);
+  --masthead-nav-edge: var(--color-rule);
+  --masthead-nav-cta-face: var(--color-primary);
+  --masthead-nav-cta-ink: var(--color-on-primary);
+  --masthead-nav-panel-face: var(--color-surface);
+  --masthead-nav-panel-ink: var(--color-text);
+  --masthead-nav-ring: var(--color-focus);
+}
+.masthead-nav--soft {
+  --masthead-nav-ground: var(--color-surface-soft);
+  --masthead-nav-ink: var(--color-text);
+  --masthead-nav-edge: var(--color-rule);
+  --masthead-nav-cta-face: var(--color-primary);
+  --masthead-nav-cta-ink: var(--color-on-primary);
+  --masthead-nav-panel-face: var(--color-surface);
+  --masthead-nav-panel-ink: var(--color-text);
+  --masthead-nav-ring: var(--color-focus);
+}
+.masthead-nav--brand {
+  --masthead-nav-ground: var(--color-primary);
+  --masthead-nav-ink: var(--color-on-primary);
+  --masthead-nav-edge: color-mix(in srgb, var(--color-on-primary) 35%, transparent);
+  --masthead-nav-cta-face: var(--color-on-primary);
+  --masthead-nav-cta-ink: var(--color-primary);
+  --masthead-nav-panel-face: var(--color-primary);
+  --masthead-nav-panel-ink: var(--color-on-primary);
+  --masthead-nav-ring: var(--color-on-primary);
+}
+
+/* ---- the bar ---- */
+/* One number for every tap target here, and for the room the drawer keeps. */
+.masthead-nav {
+  --masthead-nav-tap: 2.75rem;
+  background: var(--masthead-nav-ground);
+  color: var(--masthead-nav-ink);
+  border-block-end: 1px solid var(--masthead-nav-edge);
+}
+/* The containing block for the small-screen menu and for the controls when
+   they are parked in the corner on --centred. */
+.masthead-nav-inner {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-3) var(--space-4);
+}
+.masthead-nav-mark {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-inline-end: auto;
+}
+/* A wide wordmark at --logo-height is several hundred pixels across, which is
+   most of a phone. Capping the WIDTH and letting the height fall out of it is
+   what keeps the menu button on the same row as the mark. */
+.masthead-nav-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: var(--logo-height, 2.75rem);
+}
+
+/* ---- the small-screen disclosure ---- */
+.masthead-nav-disclosure {
+  flex: 0 0 auto;
+}
+.masthead-nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--masthead-nav-tap);
+  padding-inline: var(--space-3);
+  border: 1px solid var(--masthead-nav-edge);
+  border-radius: var(--btn-radius);
+  color: var(--masthead-nav-ink);
+  font-family: var(--font-heading);
+  font-size: calc(0.9375rem * var(--type-scale, 1));
+  font-weight: 700;
+  cursor: pointer;
+  /* Both lines are needed to drop the default triangle. */
+  list-style: none;
+}
+.masthead-nav-toggle::-webkit-details-marker {
+  display: none;
+}
+/* Three bars: the element is the middle one, the two pseudo-elements the
+   others. They fold into a cross when the menu is open, which is a state
+   change rather than an animation and applies under reduced motion too. */
+.masthead-nav-toggle-icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 2px;
+  background: currentColor;
+}
+.masthead-nav-toggle-icon::before,
+.masthead-nav-toggle-icon::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 2px;
+  background: currentColor;
+}
+.masthead-nav-toggle-icon::before {
+  top: -5px;
+}
+.masthead-nav-toggle-icon::after {
+  top: 5px;
+}
+.masthead-nav-disclosure[open] .masthead-nav-toggle-icon {
+  background: transparent;
+}
+.masthead-nav-disclosure[open] .masthead-nav-toggle-icon::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+.masthead-nav-disclosure[open] .masthead-nav-toggle-icon::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+/* ---- the generated menu ---- */
+.masthead-nav .canvas-navigation-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.masthead-nav .canvas-navigation-menu li {
+  margin: 0;
+}
+.masthead-nav .canvas-navigation-menu a {
+  display: flex;
+  align-items: center;
+  min-height: var(--masthead-nav-tap);
+  padding-block: var(--space-2);
+  color: inherit;
+  font-family: var(--font-heading);
+  font-size: calc(1rem * var(--type-scale, 1));
+  font-weight: 600;
+  text-decoration: none;
+}
+.masthead-nav .canvas-navigation-menu a[href]:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+/* A parent item with children and no URL of its own comes through as an <a>
+   with no href. It is a label, not a link, so it must not offer a pointer. */
+.masthead-nav .canvas-navigation-menu .has-submenu > a:not([href]) {
+  cursor: default;
+  font-weight: 700;
+}
+.masthead-nav .canvas-navigation-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  padding-inline-start: var(--space-4);
+  border-inline-start: 1px solid var(--masthead-nav-edge);
+  list-style: none;
+}
+.masthead-nav .canvas-navigation-submenu a {
+  font-size: calc(0.9375rem * var(--type-scale, 1));
+  font-weight: 500;
+}
+
+/* ---- login and join ---- */
+.masthead-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1 0 100%;
+}
+.masthead-nav-login {
+  color: inherit;
+  font-family: var(--font-heading);
+  font-size: calc(0.9375rem * var(--type-scale, 1));
+  font-weight: 600;
+  text-decoration: none;
+  padding-block: var(--space-2);
+}
+.masthead-nav-login:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+.masthead-nav-join {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: var(--masthead-nav-tap);
+  padding-inline: var(--space-5);
+  border-radius: var(--btn-radius);
+  background: var(--masthead-nav-cta-face);
+  color: var(--masthead-nav-cta-ink);
+  font-family: var(--font-heading);
+  font-size: calc(0.9375rem * var(--type-scale, 1));
+  font-weight: 700;
+  text-decoration: none;
+}
+.masthead-nav-join:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* The ring is the ground's own, so one rule is right on all three. */
+.masthead-nav a:focus-visible,
+.masthead-nav summary:focus-visible {
+  outline: 3px solid var(--masthead-nav-ring);
+  outline-offset: 2px;
+}
+
+/* ---- small screens ---- */
+@media (width < 60rem) {
+  /* A wide wordmark at --logo-height is most of a phone across. Without this
+     cap it takes the whole row and pushes the menu button onto a second one. */
+  .masthead-nav-mark {
+    max-width: 45%;
+  }
+  /* A long label ellipsises rather than widening the button. */
+  .masthead-nav-toggle {
+    max-width: 100%;
+  }
+  .masthead-nav-toggle-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* One button, two words, and only ever one of them in the box. */
+  .masthead-nav-toggle-text--close {
+    display: none;
+  }
+  .masthead-nav-disclosure[open] .masthead-nav-toggle-text {
+    display: none;
+  }
+  .masthead-nav-disclosure[open] .masthead-nav-toggle-text--close {
+    display: inline;
+  }
+}
+
+/* menu=drawer: a panel fixed to the inline-end edge, over a dimmed page. */
+@media (width < 60rem) {
+  /* 45% for the mark and the rest for the button, gap included, so the two
+     always share one row: flexbox breaks lines before it shrinks anything, so
+     a shrink factor cannot do this, and the padding below wants one row. */
+  .masthead-nav--drawer .masthead-nav-disclosure {
+    max-width: calc(55% - var(--space-3));
+  }
+  /* The panel is laid out open or shut, which is what gives it somewhere to
+     slide FROM. Both declarations are needed: engines hide a closed <details>
+     in two different ways, and one of them cannot be reached from the child.
+     `visibility` below is then the only thing keeping a shut drawer out of the
+     tab order and out of find-in-page - never swap it for opacity. */
+  .masthead-nav--drawer .masthead-nav-links {
+    display: block;
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure::details-content {
+    content-visibility: visible;
+    block-size: auto;
+  }
+  .masthead-nav--drawer .masthead-nav-links {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    z-index: 41;
+    width: min(20rem, 82vw);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* Block-start padding is the header's first row, computed - the button
+       sits on the drawer, so anything less puts it over the first item. */
+    padding: calc(var(--space-3)
+                  + max(var(--masthead-nav-tap), var(--logo-height, 2.75rem))
+                  + var(--space-4))
+             var(--space-4) var(--space-6);
+    background: var(--masthead-nav-panel-face);
+    color: var(--masthead-nav-panel-ink);
+    border-inline-start: 1px solid var(--masthead-nav-edge);
+    box-shadow: var(--card-shadow);
+    visibility: hidden;
+    translate: 100% 0;
+  }
+  /* The one place a logical property cannot carry the meaning. */
+  .masthead-nav--drawer .masthead-nav-links:dir(rtl) {
+    translate: -100% 0;
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure[open] .masthead-nav-links {
+    visibility: visible;
+    translate: none;
+  }
+  /* The backdrop belongs to the disclosure: in the panel it would be inside
+     the box it has to sit behind. */
+  .masthead-nav--drawer .masthead-nav-disclosure::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--color-scrim) 62%, transparent);
+    visibility: hidden;
+    opacity: 0;
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure[open]::before {
+    visibility: visible;
+    opacity: 1;
+  }
+  /* The button stays where it was pressed, above both the backdrop and the
+     panel. The panel's block-start padding keeps the first item out of it. */
+  .masthead-nav--drawer .masthead-nav-disclosure[open] .masthead-nav-toggle {
+    position: relative;
+    z-index: 42;
+  }
+}
+
+/* menu=panel: the menu drops out of the button, over what is below. */
+@media (width < 60rem) {
+  .masthead-nav--panel .masthead-nav-links {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    z-index: 20;
+    max-height: 70svh;
+    overflow-y: auto;
+    padding: var(--space-4);
+    background: var(--masthead-nav-ground);
+    border-block-end: 1px solid var(--masthead-nav-edge);
+    box-shadow: var(--card-shadow);
+  }
+}
+
+/* ---- menu=row: no button, the menu is a scrolling row beside the mark ---- */
+@media (width < 60rem) {
+  .masthead-nav--row .masthead-nav-toggle {
+    display: none;
+  }
+  /* Both declarations open the panel: engines hide a closed <details> in two
+     different ways, and one of them cannot be reached from the child. */
+  .masthead-nav--row .masthead-nav-links {
+    display: block;
+  }
+  .masthead-nav--row .masthead-nav-disclosure::details-content {
+    content-visibility: visible;
+    block-size: auto;
+  }
+  .masthead-nav--row .masthead-nav-mark {
+    margin-inline-end: 0;
+  }
+  .masthead-nav--row .masthead-nav-disclosure {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .masthead-nav--row .canvas-navigation-menu {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--space-4);
+    overflow-x: auto;
+  }
+  .masthead-nav--row .canvas-navigation-menu > li {
+    flex: 0 0 auto;
+  }
+  /* One row, so a submenu cannot nest under its parent; its children run on
+     beside it instead. */
+  .masthead-nav--row .canvas-navigation-menu .has-submenu {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .masthead-nav--row .canvas-navigation-submenu {
+    flex-direction: row;
+    gap: var(--space-4);
+    padding-inline-start: var(--space-4);
+  }
+}
+
+/* ---- wide screens: the menu is always open and sits in the bar ---- */
+@media (min-width: 60rem) {
+  .masthead-nav-toggle {
+    display: none;
+  }
+  /* Both declarations open the panel: engines hide a closed <details> in two
+     different ways, and one of them cannot be reached from the child. */
+  .masthead-nav-links {
+    display: block;
+  }
+  .masthead-nav-disclosure::details-content {
+    content-visibility: visible;
+    block-size: auto;
+  }
+  .masthead-nav-inner {
+    flex-wrap: nowrap;
+    gap: var(--space-6);
+    padding-block: var(--space-4);
+  }
+  /* The mark must not shrink here: the logo is sized from its height at this
+     width, so a shrinking box would let the image spill over the first menu
+     item instead of taking room from it. */
+  .masthead-nav-mark {
+    flex: 0 0 auto;
+  }
+  .masthead-nav-logo {
+    width: auto;
+    height: var(--logo-height, 2.75rem);
+    max-width: none;
+    max-height: none;
+  }
+  .masthead-nav-disclosure {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .masthead-nav-controls {
+    flex: 0 0 auto;
+  }
+  .masthead-nav-join {
+    flex: 0 0 auto;
+  }
+  .masthead-nav .canvas-navigation-menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+  }
+  .masthead-nav .canvas-navigation-menu > li {
+    position: relative;
+  }
+  .masthead-nav .canvas-navigation-menu a {
+    min-height: 0;
+  }
+  /* Faded rather than removed: a submenu taken out of the layout cannot be
+     focused, so a keyboard could never open it. */
+  .masthead-nav .canvas-navigation-submenu {
+    position: absolute;
+    top: 100%;
+    inset-inline-start: 0;
+    z-index: 30;
+    min-width: 12rem;
+    padding: var(--space-2);
+    border: var(--card-border);
+    border-inline-start: var(--card-border);
+    border-radius: var(--card-radius);
+    background: var(--masthead-nav-panel-face);
+    color: var(--masthead-nav-panel-ink);
+    box-shadow: var(--card-shadow);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .masthead-nav .canvas-navigation-menu > li:hover > .canvas-navigation-submenu,
+  .masthead-nav .canvas-navigation-menu > li:focus-within > .canvas-navigation-submenu {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .masthead-nav .canvas-navigation-submenu a {
+    padding-inline: var(--space-2);
+  }
+  /* A chevron marks the items that carry children. */
+  .masthead-nav .canvas-navigation-menu > .has-submenu > a::after {
+    content: "";
+    display: inline-block;
+    width: 0.4em;
+    height: 0.4em;
+    margin-inline-start: var(--space-2);
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    transform: translateY(-0.15em) rotate(45deg);
+  }
+
+  /* layout=inline - mark, menu, controls, one row. */
+  .masthead-nav--inline .masthead-nav-inner {
+    justify-content: space-between;
+  }
+  .masthead-nav--inline .canvas-navigation-menu {
+    justify-content: flex-start;
+  }
+
+  /* layout=centred - mark on its own line, menu centred under it, controls
+     parked in the corner so the mark stays optically centred. */
+  .masthead-nav--centred .masthead-nav-inner {
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding-block: var(--space-5);
+  }
+  .masthead-nav--centred .masthead-nav-mark {
+    margin-inline: auto;
+  }
+  .masthead-nav--centred .masthead-nav-disclosure {
+    flex: 1 0 100%;
+  }
+  .masthead-nav--centred .canvas-navigation-menu {
+    justify-content: center;
+  }
+  .masthead-nav--centred .masthead-nav-controls {
+    position: absolute;
+    inset-block-start: var(--space-5);
+    inset-inline-end: var(--space-4);
+  }
+}
+
+/* Motion is opt-in and only ever eases a state the page already reached.
+   No easing keyword follows --transition-fast below: brands ship that token
+   with an easing already in it, and a second keyword is not a value - the
+   declaration goes, and the movement with it. */
+@media (prefers-reduced-motion: no-preference) {
+  .masthead-nav-toggle-icon,
+  .masthead-nav-toggle-icon::before,
+  .masthead-nav-toggle-icon::after {
+    transition: transform var(--transition-fast),
+                background var(--transition-fast),
+                top var(--transition-fast);
+  }
+  .masthead-nav .canvas-navigation-submenu {
+    transition: opacity var(--transition-fast);
+  }
+  /* `visibility` is in the list so the panel stays on screen while it leaves. */
+  .masthead-nav--drawer .masthead-nav-links {
+    transition: translate var(--transition-fast),
+                visibility var(--transition-fast);
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure::before {
+    transition: opacity var(--transition-fast),
+                visibility var(--transition-fast);
+  }
+}
+/* Belt and braces if a brand reintroduces a transition on these. */
+@media (prefers-reduced-motion: reduce) {
+  .masthead-nav-toggle-icon,
+  .masthead-nav-toggle-icon::before,
+  .masthead-nav-toggle-icon::after {
+    transition: none;
+  }
+  .masthead-nav .canvas-navigation-submenu {
+    transition: none;
+  }
+  .masthead-nav--drawer .masthead-nav-links,
+  .masthead-nav--drawer .masthead-nav-disclosure::before {
+    transition: none;
+  }
+}

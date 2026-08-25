@@ -1020,6 +1020,44 @@ def check_leaks(path, needles):
                  "(the string itself is not printed)")
 
 
+# A transition token is a duration and nothing else - TOKENS.md states it, and
+# this is what holds the sample sets to it.
+#
+# CSS allows one timing function per transition item, so a token that already
+# carries `ease` turns the house form `var(--transition-fast) ease-out` into
+# `150ms ease ease-out`, which is invalid: the whole declaration is dropped and
+# the motion does not happen. Nothing looks broken, which is why it survived.
+# tokens-brand.css shipped `150ms ease` and sixteen transitions across five
+# patterns were silently dead on the one sample set that models a real brand.
+TRANSITION_DECL = re.compile(r"(--transition-[a-z-]+)\s*:\s*([^;]+);")
+BARE_DURATION = re.compile(r"^\d+(?:\.\d+)?m?s$", re.I)
+
+
+def check_transition_tokens_are_durations():
+    """Every --transition-* in every sample token set is a bare duration."""
+    for path in sorted((ROOT / "preview").glob("tokens-*.css")):
+        text = path.read_text(encoding="utf-8")
+        for name, value in TRANSITION_DECL.findall(text):
+            value = value.strip()
+            # A var() indirection is fine as long as its fallback is a duration.
+            inner = re.fullmatch(r"var\(\s*--[\w-]+\s*(?:,\s*(.*?)\s*)?\)", value)
+            if inner:
+                fallback = (inner.group(1) or "").strip()
+                if fallback and not BARE_DURATION.match(fallback):
+                    find(path, "transition token",
+                         f"{name} falls back to {fallback!r}; a transition token "
+                         f"is a duration, and an easing here makes "
+                         f"`var({name}) ease-out` invalid wherever the token is "
+                         f"unset")
+                continue
+            if not BARE_DURATION.match(value):
+                find(path, "transition token",
+                     f"{name} is {value!r}; a transition token is a duration and "
+                     f"nothing else. The pattern supplies the timing function, and "
+                     f"`var({name}) ease-out` becomes invalid when the token "
+                     f"already carries one - the declaration is dropped and the "
+                     f"motion silently does not happen")
+
 def check_token_sets_are_complete():
     """Every sample token set must define every token the patterns rely on.
 
@@ -1229,6 +1267,7 @@ def main():
             check_control_bytes(path)
 
     check_token_sets_are_complete()
+    check_transition_tokens_are_durations()
 
     rows = []
     manifest = {}

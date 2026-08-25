@@ -58,11 +58,26 @@ jobs:
           LANDER_LEAK_NEEDLES: ${{ secrets.LANDER_LEAK_NEEDLES }}
           LANDER_LEAK_SKIP: ${{ github.event.pull_request.head.repo.fork }}
         run: python ci/lint.py
+      # ci/check_phone.py renders patterns in a real browser. Without one it
+      # skips and exits 0, which is right for a contributor in the web editor
+      # and wrong here - CI is the run that has to actually measure. Install
+      # the browser, and let the step fail loudly if the install does, rather
+      # than sliding into a green build that checked nothing.
+      - name: Install the browser the phone-width gate needs
+        run: |
+          python -m pip install --quiet playwright
+          python -m playwright install --with-deps chromium
       # The gate tests, both directions: every fault fires and every
       # valid form stays quiet. Added because the suite existed and
       # nothing ran it, which is a test file and no test.
       - name: Check the gates still catch what they claim
         run: python ci/test_gates.py
+      # Belt and braces on the step above: test_gates.py treats "no browser"
+      # as a skip, so if the install ever degrades, the suite goes green
+      # having measured nothing. --require-browser turns that skip into a
+      # failure, which is the correct reading HERE and only here.
+      - name: Confirm the phone-width gate actually ran
+        run: python ci/check_phone.py --require-browser
       - name: Legibility
         run: python ci/legibility.py
       - name: Build previews

@@ -407,7 +407,14 @@ def assemble(page, chosen):
     markup = []
     for item, mods in zip(page, chosen):
         css.append(f"/* ---- {item['name']} ---- */\n{item['css']}")
-        body = strip_comments(item["html"])
+        # The pattern's own markup, comments and all. They are stripped at the
+        # END of this loop, not here: a content slot IS an HTML comment
+        # (`<!-- slot: title -->`), so stripping first deletes the very thing
+        # fill() looks for, and every assembled page renders with empty
+        # headings. The library's own rule 4 says to strip in the same pass
+        # that fills; this function had it backwards from the day it was
+        # written, and nothing caught it because no gate reads the artifact.
+        body = item["html"]
         repeat = item["sample"].get("_repeat")
         if repeat:
             body = repeat_block(body, repeat["class"], repeat["count"])
@@ -429,7 +436,10 @@ def assemble(page, chosen):
                 body = re.sub(
                     r'(class="[^"]*\b' + re.escape(item["name"]) + r')(")',
                     r'\1 ' + f'{item["name"]}--{value}' + r'\2', body, count=1)
-        markup.append(fill(body, item["sample"]))
+        # Fill first, then strip whatever comments remain - the metadata
+        # header and the notes to whoever places the pattern, none of which
+        # belongs to the reader.
+        markup.append(strip_comments(fill(body, item["sample"])))
     return "\n".join(css), "\n".join(markup)
 
 

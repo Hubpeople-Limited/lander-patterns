@@ -16,11 +16,37 @@ TOKEN_SETS = {"soft": "tokens-soft.css", "sharp": "tokens-sharp.css",
 
 # Display stand-ins so furniture tokens render readably in previews. These
 # substitutions exist only here; pattern files always keep the real tokens.
+#
+# The menu one is markup rather than a word, because for a header pattern the
+# generated list IS the thing being styled and a preview that cannot show it
+# cannot show a fault in it. It carries what the platform actually emits: plain
+# items, a parent with children and no URL of its own, and the PAIR of <li>
+# entries a parent with both children and a URL comes through as.
+SAMPLE_MENU = (
+    '<ul class="canvas-navigation-menu">'
+    '<li><a href="#sample" title="Sample" target="_self">Sample one</a></li>'
+    '<li><a href="#sample" title="Sample" target="_self">Sample two</a></li>'
+    '<li class="has-submenu"><a>Sample group</a>'
+    '<ul class="canvas-navigation-submenu">'
+    '<li><a href="#sample" title="Sample" target="_self">Sample child</a></li>'
+    '<li><a href="#sample" title="Sample" target="_self">Sample child two</a></li>'
+    '</ul></li>'
+    '<li><a href="#sample" title="Sample" target="_self">Sample paired</a></li>'
+    '<li class="has-submenu"><a>Sample paired</a>'
+    '<ul class="canvas-navigation-submenu">'
+    '<li><a href="#sample" title="Sample" target="_self">Sample child three</a></li>'
+    '</ul></li>'
+    '</ul>'
+)
+
 FURNITURE_DISPLAY = {
     "{{join.url}}": "#",
     "{{login.url}}": "#",
     "{{join.text}}": "Join sample",
     "{{login.text}}": "Log in sample",
+    "{{logo.src}}": "sample-wordmark.svg",
+    "{{logo.alt}}": "Sample brand wordmark",
+    "{{menu.navigation}}": SAMPLE_MENU,
 }
 
 SHELL = """<!DOCTYPE html>
