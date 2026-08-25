@@ -46,9 +46,9 @@
   margin: 0 0 var(--space-4);
   font-family: var(--font-heading);
   font-size: calc(clamp(2rem, 4vw, 3.5rem) * var(--type-scale, 1));
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.08;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.08 * var(--heading-leading, 1));
   color: var(--color-heading);
   text-wrap: balance;
 }
@@ -99,6 +99,6 @@
 }
 @media (min-width: 48rem) {
   .article-masthead-title {
-    letter-spacing: -0.025em;
+    letter-spacing: calc(-0.025em + var(--heading-tracking, 0) * 1em);
   }
 }

@@ -1158,13 +1158,21 @@ def check_dial_range_is_stated_once():
     # Normalised: the document is wrapped prose, and a check that demanded an
     # unwrapped phrase would be a check fighting the format it reads.
     doc = " ".join((ROOT / "TOKENS.md").read_text(encoding="utf-8").split())
-    for label, lo, hi in (("--type-scale", dials.TYPE_MIN, dials.TYPE_MAX),
-                          ("--space-scale", dials.SPACE_MIN, dials.SPACE_MAX)):
+    # Driven off the dial table rather than a hand-written list, so a dial
+    # added there without a documented range fails here instead of shipping
+    # undocumented. The two originals were listed by hand, and the three added
+    # in v58 would simply not have been checked.
+    for name, (_kind, lo, hi) in sorted(dials.DIALS.items()):
         stated = f"Supported range `{lo}` to `{hi}`"
         if stated not in doc:
             find(ROOT / "TOKENS.md", "contract",
-                 f"{label} is enforced over {lo}-{hi} but TOKENS.md does not "
+                 f"--{name} is enforced over {lo}-{hi} but TOKENS.md does not "
                  f"say so - it must contain the exact words {stated!r}")
+    # Stays pointed at --type-scale specifically, and must NOT be generalised
+    # over the table above. It is the type dial that shrinks display sizes
+    # toward the 24px large-text bar, so it is the type dial's floor the
+    # heading-size guarantee has to agree with. Leading, tracking and weight
+    # do not move font-size, and holding them to this would be meaningless.
     if heading_size.TYPE_MIN != dials.TYPE_MIN:
         find(ROOT / "ci", "contract",
              f"the heading-size check holds floors above the bar at "

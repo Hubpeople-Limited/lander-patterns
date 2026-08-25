@@ -53,9 +53,9 @@
   /* --color-heading is barred over a photograph however heavy the scrim. */
   color: var(--color-on-scrim);
   font-size: calc(clamp(2rem, 5vw, 3.5rem) * var(--type-scale, 1));
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }

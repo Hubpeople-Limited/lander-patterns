@@ -69,9 +69,9 @@
    heading token is contracted for, and the tile is a surface. */
   color: var(--color-text);
   font-size: calc(clamp(1.25rem, 1.6vw, 1.625rem) * var(--type-scale, 1));
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.25;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.015em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.25 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }

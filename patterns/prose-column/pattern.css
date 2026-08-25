@@ -20,8 +20,8 @@
 .prose-column h2,
 .prose-column h3 {
   font-family: var(--font-heading);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
   text-wrap: balance;
 }
 /* --color-heading on an h2 only: the clamp floor is 28px, above the size the
@@ -29,14 +29,14 @@
 .prose-column h2 {
   color: var(--color-heading);
   font-size: calc(clamp(1.75rem, 3vw, 2.25rem) * var(--type-scale, 1));
-  font-weight: 600;
+  font-weight: var(--weight-display, 700);
   margin: var(--space-8) 0 var(--space-4);
 }
 /* h3 is under the size the heading token covers, so it takes the body ink. */
 .prose-column h3 {
   color: var(--color-text);
   font-size: calc(1.25rem * var(--type-scale, 1));
-  font-weight: 600;
+  font-weight: var(--weight-display, 700);
   margin: var(--space-6) 0 var(--space-3);
 }
 .prose-column ul,

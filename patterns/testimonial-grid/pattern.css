@@ -11,7 +11,7 @@
   font-family: var(--font-heading);
   color: var(--color-heading);
   font-size: calc(clamp(1.75rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
-  letter-spacing: -0.02em;
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
 }
 .testimonial-grid-list {
   display: grid;
@@ -82,9 +82,9 @@
   margin: 0;
   font-family: var(--font-heading);
   font-size: calc(clamp(1.0625rem, 0.95rem + 0.6vw, 1.3125rem) * var(--type-scale, 1));
-  line-height: 1.28;
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  line-height: calc(1.28 * var(--heading-leading, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.035em + var(--heading-tracking, 0) * 1em);
   color: inherit;
 }
 /* margin-top:auto bottom-aligns the attribution across a row. */

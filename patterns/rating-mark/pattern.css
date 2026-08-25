@@ -22,5 +22,5 @@
   font-size: 0.8125rem;
 }
 .rating-mark-value {
-  font-weight: 700;
+  font-weight: var(--weight-display, 700);
 }

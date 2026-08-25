@@ -24,9 +24,9 @@
    token's contract. Keep both if you edit it. */
   color: var(--color-heading);
   font-size: calc(clamp(1.75rem, 3.4vw, 2.75rem) * var(--type-scale, 1));
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.15 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
@@ -72,15 +72,15 @@
   color: var(--color-text);
   font-family: var(--font-heading);
   font-size: calc(0.9375rem * var(--type-scale, 1));
-  font-weight: 700;
+  font-weight: var(--weight-display, 700);
   font-variant-numeric: tabular-nums;
 }
 .steps-plain-heading {
   font-family: var(--font-heading);
   color: var(--color-text);
   font-size: calc(1.125rem * var(--type-scale, 1));
-  font-weight: 600;
-  line-height: 1.3;
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.3 * var(--heading-leading, 1));
   margin: 0 0 var(--space-2);
   text-wrap: balance;
 }

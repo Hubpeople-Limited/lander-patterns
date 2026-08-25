@@ -54,6 +54,32 @@ CASES = [
      ":root{%s--space-1:calc(0.25rem * var(--space-scale));}", 1),
     ("ramp on a dial with a fallback",
      ":root{%s--space-1:calc(0.25rem * var(--space-scale, 1));}", 0),
+
+    # The v58 dials. Leading is a multiplier and takes the rules above
+    # unchanged; the other two do not, and that is the whole reason
+    # _dials.DIALS carries a kind rather than a list of names.
+    ("leading with a unit",   ":root{%s--heading-leading:1.1rem;}", 1),
+    ("leading at zero",       ":root{%s--heading-leading:0;}", 1),
+    ("leading negative",      ":root{%s--heading-leading:-1;}", 1),
+    ("leading, valid",        ":root{%s--heading-leading:1.05;}", 0),
+
+    # Tracking is an OFFSET. Zero is its documented default and negative is
+    # the ordinary case - 40 of the 41 tracking values in the library are
+    # negative, because display type is drawn tight. Reading these two as a
+    # multiplier would fail the build on the most obviously correct values a
+    # brand can set, which is what these two cases exist to prevent.
+    ("tracking at zero, the default", ":root{%s--heading-tracking:0;}", 0),
+    ("tracking negative, the ordinary case",
+     ":root{%s--heading-tracking:-0.02;}", 0),
+    # ...but the unit trap still applies, and here it is at its worst: the
+    # declaration drops to `normal`, so the brand loses the tracking the
+    # pattern designed rather than merely failing to change it.
+    ("tracking with a unit",  ":root{%s--heading-tracking:0.02em;}", 1),
+    ("tracking out of range", ":root{%s--heading-tracking:0.9;}", 0),
+
+    ("display weight, valid",   ":root{%s--weight-display:600;}", 0),
+    ("display weight at zero",  ":root{%s--weight-display:0;}", 1),
+    ("display weight with a unit", ":root{%s--weight-display:700px;}", 1),
 ]
 
 
@@ -541,16 +567,26 @@ def check_pages():
         finally:
             css.write_bytes(kept)
 
-    # Against git, not against this process's own snapshot. Comparing with
-    # `kept` cannot see the case that matters: two overlapping runs, where the
-    # second snapshots the first's mutation and faithfully restores it, then
-    # reports the file untouched because it matches what it read.
-    dirty = subprocess.run(
-        ["git", "diff", "--quiet", "--", "patterns/hero-overlay/pattern.css"],
-        cwd=str(HERE.parent))
-    if dirty.returncode != 0:
-        failures.append("the fold case left hero-overlay changed against git")
-        print("  FAIL  patterns/hero-overlay/pattern.css differs from git after "
+    # Assert the mutation is gone, not that the file matches git.
+    #
+    # This compared against `git diff --quiet`, to catch two overlapping runs
+    # where the second snapshots the first's mutation and faithfully restores
+    # it - a case `kept` cannot see. That case is real, but it is already
+    # caught, and caught earlier: a leaked mutation means the search string is
+    # absent, so `mutated == kept` and the run fails above with "the search
+    # string no longer matches" before ever reaching here.
+    #
+    # What the git comparison did add was a false failure on any uncommitted
+    # change to hero-overlay, so editing the pattern legitimately turned a
+    # green suite red for a mutation that had never been left behind. Assert
+    # the property directly instead. It holds whatever the working tree is
+    # doing, and does not care whether the edit has been committed yet.
+    now = css.read_bytes()
+    leaked = (b"min-height: 100svh;" in now
+              and b"min-height: calc(100svh - var(--hero-overlay-above" not in now)
+    if leaked or now != kept:
+        failures.append("the fold case left hero-overlay mutated")
+        print("  FAIL  patterns/hero-overlay/pattern.css was not restored after "
               "the fold case")
 
     # The library sweep. The recipes only ever cover the patterns somebody

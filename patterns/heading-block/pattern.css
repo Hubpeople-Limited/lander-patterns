@@ -34,9 +34,9 @@
   margin: 0;
   font-family: var(--font-heading);
   font-size: calc(clamp(2rem, 1.4rem + 2.6vw, 3.6rem) * var(--type-scale, 1));
-  line-height: 1.02;
-  letter-spacing: -0.035em;
-  font-weight: 800;
+  line-height: calc(1.02 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.035em + var(--heading-tracking, 0) * 1em);
+  font-weight: var(--weight-display, 700);
   color: var(--color-heading);
   text-wrap: balance;
 }

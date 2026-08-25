@@ -30,7 +30,7 @@
     "soft"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "article-masthead": {
@@ -56,7 +56,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "benefit-tiles": {
@@ -79,7 +79,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "capability-tabs": {
@@ -104,7 +104,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "claim-stack": {
@@ -138,7 +138,7 @@
     "deep"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "comparison-table": {
@@ -163,7 +163,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "cta-assurance": {
@@ -220,7 +220,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "cta-curtain": {
@@ -248,7 +248,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "cta-image": {
@@ -274,7 +274,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "cta-sticky": {
@@ -344,7 +344,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "gallery-scroll": {
@@ -398,7 +398,7 @@
   "requires": "none",
   "type": "component",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "hero-centred": {
@@ -427,7 +427,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "hero-overlay": {
@@ -455,7 +455,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "hero-split": {
@@ -484,7 +484,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -513,7 +513,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": true
  },
  "hero-stated": {
@@ -556,7 +556,7 @@
     "deep"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "link-cluster": {
@@ -589,7 +589,7 @@
     "brand"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "listing-rows": {
@@ -624,7 +624,7 @@
     "brand"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "masthead-nav": {
@@ -665,7 +665,7 @@
     "row"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "media-card-grid": {
@@ -693,7 +693,7 @@
   "requires": "consented-people",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "member-strip": {
@@ -745,7 +745,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "opener-split": {
@@ -777,7 +777,7 @@
     "ruled"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "photo-cards": {
@@ -807,7 +807,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "picker-chips": {
@@ -828,7 +828,7 @@
   "requires": "none",
   "type": "component",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "pinned-cards": {
@@ -853,7 +853,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "portrait-wall": {
@@ -904,7 +904,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "prose-column": {
@@ -930,7 +930,7 @@
   "requires": "none",
   "type": "component",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "quote-feature": {
@@ -952,7 +952,7 @@
   "requires": "consented-people",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "rating-mark": {
@@ -978,7 +978,7 @@
   "requires": "none",
   "type": "component",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "safety-protections": {
@@ -1002,7 +1002,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "source-note": {
@@ -1055,7 +1055,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "stats-band": {
@@ -1083,7 +1083,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "steps-numbered": {
@@ -1112,7 +1112,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "steps-plain": {
@@ -1141,7 +1141,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "testimonial-carousel": {
@@ -1165,7 +1165,7 @@
   "requires": "consented-people",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "testimonial-grid": {
@@ -1191,7 +1191,7 @@
   "requires": "consented-people",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "trust-row": {
@@ -1242,7 +1242,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  }
 }

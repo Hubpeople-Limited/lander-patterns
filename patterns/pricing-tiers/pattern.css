@@ -49,7 +49,7 @@
   /* --color-text: --color-heading is not guaranteed on a surface. */
   color: var(--color-text);
   font-size: calc(clamp(1.75rem, 1.2rem + 2vw, 2.5rem) * var(--type-scale, 1));
-  font-weight: 700;
+  font-weight: var(--weight-display, 700);
   margin: 0 0 var(--space-4);
 }
 .pricing-tiers-features {

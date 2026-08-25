@@ -47,15 +47,18 @@
   color: var(--color-text);
 }
 /* The measure is what keeps a display-size quote a quote instead of a
-   paragraph. Widen 20ch and it stops being this pattern. */
+   paragraph. Widen 12.5em and it stops being this pattern. It is em and not
+   ch because ch is the digit advance of the face in use: Georgia Bold and
+   Arial differ by 26%, so one 20ch rule was four lines on some brands and
+   five on others. em removes the typeface and keeps the type scale. */
 .quote-feature-quote {
   margin: 0;
-  max-width: 20ch;
+  max-width: 12.5em;
   font-family: var(--font-heading);
   font-size: calc(clamp(1.5rem, 3.4vw, 2.875rem) * var(--type-scale, 1));
-  line-height: 1.24;
-  font-weight: 650;
-  letter-spacing: -0.02em;
+  line-height: calc(1.24 * var(--heading-leading, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   /* --color-text: the stage is a surface, and --color-heading is only
      guaranteed against --color-bg. */
   color: var(--color-text);

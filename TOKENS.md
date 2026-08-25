@@ -68,9 +68,38 @@ literals.
 
 | Token | Meaning |
 |---|---|
-| `--font-heading`, `--font-body` | The two typefaces (with real fallback stacks) |
+| `--font-heading`, `--font-body` | The two typefaces (with real fallback stacks). **Each must supply 400 and 700** — see *What a face has to supply* below |
 | `--space-1` `-2` `-3` `-4` `-5` `-6` `-8` `-12` | The spacing scale. Eight steps, not twelve — the gaps are deliberate, and a step that is not on this list is not defined on any brand |
 | `--container-max` | Content max width (commonly `72rem`) |
+
+### What a face has to supply
+
+**Two weights, 400 and 700, and the body face needs a real italic.** That is
+the whole requirement, and it is deliberately small: every weight the library
+insists on is a family it cannot use.
+
+The library used to spread heading emphasis across 600, 650, 700 and 800. It
+never worked. `650` cannot exist on a static face at all — CSS font matching
+snaps it to 700 — and the one place 600 and 700 sat side by side at the same
+size was `masthead-nav`, on brands whose heading face is Georgia or Helvetica.
+**Neither has a 600**, so that distinction had never once reached a screen.
+Nine of the ten patterns that render more than one heading element already
+separate them by size rather than weight, which is what the whole library now
+does.
+
+**A weight the face does not have is not an error.** The browser synthesises
+it by smearing the outline, which at display sizes fills in the counters — the
+holes in *a*, *e*, *o* — and a headline turns into a black bar. Nothing warns
+you. It simply looks cheap, and it looks cheap only on the brands whose face
+is missing the weight, so it survives review on the machine it was built on.
+
+**Measures on display type are `em`, never `ch`.** `ch` is the advance width
+of *zero in the face actually used*, at the weight actually used. Georgia Bold
+is `0.7012em`, Arial Bold `0.5562em` — a 26% divergence between two of this
+library's own sample brands, which is why one `max-width: 16ch` headline
+rendered on two lines for some brands and three for others. `em` removes the
+typeface and keeps the type scale. **Body measures stay in `ch`**, because
+there `ch` is doing the job it is for: holding a line to a character count.
 
 ## The aesthetic dials
 
@@ -88,8 +117,8 @@ vs shadowed:
 
 ## Dials
 
-Two optional tokens. **Every other token in this document is one a brand must
-define; these two are ones it may.** Both carry a fallback in every use, so a
+Five optional tokens. **Every other token in this document is one a brand must
+define; these five are ones it may.** All carry a fallback in every use, so a
 brand that never mentions them renders exactly as it does today, and a brand
 that sets one changes its whole register in one line.
 
@@ -97,6 +126,40 @@ that sets one changes its whole register in one line.
 |---|---|---|
 | `--type-scale` | `1` | Multiplies display type only - every size in a rule that also sets `--font-heading`. Body copy does not move. |
 | `--space-scale` | `1` | Multiplies the spacing ramp, once, where the ramp is defined. Patterns never reference it. |
+| `--heading-leading` | `1` | Multiplies the line-height of display type only. Body copy does not move. |
+| `--heading-tracking` | `0` | **Adds** to the letter-spacing of display type, in em. Not a multiplier. |
+| `--weight-display` | `700` | The weight display type is set in. A face with no 700 wants this lower, not faux-bold. |
+
+**They are not all the same kind of number, and the difference matters.**
+`--type-scale`, `--space-scale` and `--heading-leading` are **multipliers**:
+`1` is the identity, `0` would blank the page, and a negative is invalid.
+`--heading-tracking` is an **offset**: `0` is the identity, and negative is
+the ordinary case — 40 of the 41 tracking values in this library are already
+negative, because display type is drawn tight. `--weight-display` is neither;
+it is a weight, and the only one of the five that is not `0` or `1` at rest.
+
+Tracking is additive precisely *because* the values are negative. A multiplier
+on a negative number runs backwards — turning the dial up would tighten — and
+it can never cross zero, so a geometric face that wants a little air would
+have no reachable value at all. Additive keeps the designed differences too:
+`-0.035em` stays `0.015em` tighter than `-0.02em` at every setting.
+
+**`--heading-leading` in practice.** Supported range `0.95` to `1.15`. Not
+`0.9` like the other multipliers: the tightest leading shipped is `1.02`, and
+`1.02 × 0.9` is `0.918`, where ascenders and descenders overlap outright. Past
+`1.15` the `1.3` card headings reach `1.5`, and the dial has started changing
+card heights rather than type.
+
+**`--heading-tracking` in practice.** Supported range `-0.02` to `0.04`, in em,
+**added** not multiplied. At `-0.02` the `-0.035em` quotes reach `-0.055em`,
+where a tight face touches; at `+0.04` a headline held to `10.75em` gains
+enough advance to lose a word a line, so `text-wrap: balance` balances a
+different shape. A face drawn loose wants a negative value here, a geometric
+face drawn tight a positive one.
+
+**`--weight-display` in practice.** Supported range `400` to `800`, and only to
+a weight the face actually has. This is the dial for a face that has no 700:
+set it to what the family ships rather than letting the browser synthesise one.
 
 **Why they exist.** Across the four sample token sets, seven of the eight
 spacing steps are byte-identical and the display sizes are hard-coded in the
@@ -137,7 +200,9 @@ Supported range `0.85` to `1.2`: `0.85` is dense and utilitarian, `1.2` airy
 and premium. Below `0.85` the 44px target sizes stop having room around them,
 which is an accessibility floor rather than a taste one.
 
-**Both are bare numbers, never lengths.** `--type-scale: 1.1rem` multiplies a length by a length, which makes the whole `calc()` invalid; the declaration drops and the heading falls back to inherited size. Nothing errors, the page just goes flat on every display size at once. `ci/brand_fit.py` checks for this, and it is the only place it can be caught, because a brand's stylesheet is outside this library's CI.
+**All five are bare numbers, never lengths.** `--type-scale: 1.1rem` multiplies a length by a length, which makes the whole `calc()` invalid; the declaration drops and the heading falls back to inherited size. Nothing errors, the page just goes flat on every display size at once. `ci/brand_fit.py` checks for this, and it is the only place it can be caught, because a brand's stylesheet is outside this library's CI.
+
+**`--heading-tracking` is the one that reads like a length and must not be one.** The patterns supply the unit, as `calc(-0.02em + var(--heading-tracking, 0) * 1em)`, so the dial is a number like the rest. Written as `--heading-tracking: 0.02em` it becomes an area inside that `calc()`, the declaration drops, and letter-spacing falls back to **`normal`** — not to the `-0.02em` the pattern designed. So the failure is not "my dial did nothing", it is every display heading in the brand losing the tracking it had before the brand touched anything. Verified in a browser, and it is silent.
 
 **Set at most one of them away from `1` at a time, to begin with.** Both at
 once compounds, and a brand at `1.15` type on `1.2` space is not a bolder

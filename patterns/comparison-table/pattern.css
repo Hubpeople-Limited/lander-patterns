@@ -13,8 +13,8 @@
   font-family: var(--font-heading);
   color: var(--color-heading, var(--color-text));
   font-size: calc(clamp(1.75rem, 3vw, 2.5rem) * var(--type-scale, 1));
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  line-height: calc(1.15 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   margin: 0 0 var(--space-3);
   text-wrap: balance;
 }
@@ -81,8 +81,8 @@
   font-family: var(--font-heading);
   color: var(--color-text);
   font-size: calc(1.125rem * var(--type-scale, 1));
-  font-weight: 700;
-  line-height: 1.25;
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.25 * var(--heading-leading, 1));
 }
 /* The word says which column is recommended; the tint only repeats it.
    Never ship one without the other. */

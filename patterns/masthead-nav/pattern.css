@@ -91,7 +91,7 @@
   color: var(--masthead-nav-ink);
   font-family: var(--font-heading);
   font-size: calc(0.9375rem * var(--type-scale, 1));
-  font-weight: 700;
+  font-weight: var(--weight-display, 700);
   cursor: pointer;
   /* Both lines are needed to drop the default triangle. */
   list-style: none;
@@ -155,7 +155,7 @@
   color: inherit;
   font-family: var(--font-heading);
   font-size: calc(1rem * var(--type-scale, 1));
-  font-weight: 600;
+  font-weight: var(--weight-display, 700);
   text-decoration: none;
 }
 .masthead-nav .canvas-navigation-menu a[href]:hover {
@@ -194,7 +194,7 @@
   color: inherit;
   font-family: var(--font-heading);
   font-size: calc(0.9375rem * var(--type-scale, 1));
-  font-weight: 600;
+  font-weight: var(--weight-display, 700);
   text-decoration: none;
   padding-block: var(--space-2);
 }
@@ -214,7 +214,7 @@
   color: var(--masthead-nav-cta-ink);
   font-family: var(--font-heading);
   font-size: calc(0.9375rem * var(--type-scale, 1));
-  font-weight: 700;
+  font-weight: var(--weight-display, 700);
   text-decoration: none;
 }
 .masthead-nav-join:hover {

@@ -29,9 +29,9 @@
   margin: 0;
   font-family: var(--font-heading);
   font-size: calc(clamp(1.625rem, 1.1rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
-  font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.08 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.025em + var(--heading-tracking, 0) * 1em);
   text-wrap: balance;
 }
 
@@ -55,9 +55,9 @@
 .stats-band-figure {
   font-family: var(--font-heading);
   font-size: calc(clamp(2.125rem, 1.4rem + 3vw, 3.5rem) * var(--type-scale, 1));
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.02 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.03em + var(--heading-tracking, 0) * 1em);
 }
 /* The label is a <dd>, so its default indent has to go. It separates from the
    figure by size and weight, never by fading the text - a translucent label

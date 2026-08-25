@@ -23,9 +23,9 @@
    token's contract. Keep both if you edit it. */
   color: var(--color-heading);
   font-size: calc(clamp(1.75rem, 3.4vw, 2.75rem) * var(--type-scale, 1));
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.15 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
@@ -101,9 +101,9 @@
    and that token is promised against --color-bg alone. */
   color: var(--feature-panels-ink);
   font-size: calc(clamp(1.5rem, 2.6vw, 2.125rem) * var(--type-scale, 1));
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.15 * var(--heading-leading, 1));
   margin: 0;
   text-wrap: balance;
 }

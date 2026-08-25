@@ -1,6 +1,6 @@
 /* hero-centred v1 - tokens only, selectors prefixed */
 .hero-centred {
-  --hero-centred-title-measure: 15ch;
+  --hero-centred-title-measure: 9.4em;
   --hero-centred-sub-measure: 50ch;
   /* Portrait on phones, letterbox from the tablet band: a landscape crop
    shown at a fixed height on a narrow screen is a sliver. */
@@ -19,9 +19,9 @@
    token's contract. Keep both if you edit it. */
   color: var(--color-heading);
   font-size: calc(clamp(2.125rem, 6vw, 4rem) * var(--type-scale, 1));
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.03em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.05 * var(--heading-leading, 1));
   max-width: var(--hero-centred-title-measure);
   margin: 0 auto var(--space-5);
   text-wrap: balance;

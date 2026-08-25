@@ -49,10 +49,10 @@
    other two grounds it is that ground's own ink. */
   color: var(--hero-stated-title-ink);
   font-size: calc(clamp(2.5rem, 7vw, 4.5rem) * var(--type-scale, 1));
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-  max-width: 16ch;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.03em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.02 * var(--heading-leading, 1));
+  max-width: 10.75em;
   margin: 0 0 var(--space-5);
   text-wrap: balance;
 }

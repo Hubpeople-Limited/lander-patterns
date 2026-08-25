@@ -43,9 +43,9 @@
   font-family: var(--font-heading);
   color: var(--claim-stack-quiet);
   font-size: calc(1.75rem * var(--type-scale, 1));
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
 }
 .claim-stack-item {
   /* The ceiling is in vh, not on the spacing ramp. Do not "restore" a token
@@ -62,10 +62,10 @@
   font-family: var(--font-heading);
   color: var(--claim-stack-ink);
   font-size: calc(clamp(2rem, 1rem + 4.5vw, 4rem) * var(--type-scale, 1));
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
-  max-width: 18ch;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.03em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.05 * var(--heading-leading, 1));
+  max-width: 11.25em;
   margin: 0;
   text-wrap: balance;
   overflow-wrap: break-word;

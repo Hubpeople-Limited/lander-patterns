@@ -40,10 +40,10 @@
   font-family: var(--font-heading);
   color: var(--anchored-split-title-ink);
   font-size: calc(clamp(1.75rem, 3vw, 2.75rem) * var(--type-scale, 1));
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  line-height: calc(1.12 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   margin: 0 0 var(--space-4);
-  max-width: 18ch;
+  max-width: 11.25em;
   text-wrap: balance;
 }
 .anchored-split-lede {
@@ -65,8 +65,8 @@
   font-family: var(--font-heading);
   color: var(--anchored-split-ink);
   font-size: calc(1.25rem * var(--type-scale, 1));
-  font-weight: 700;
-  line-height: 1.25;
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.25 * var(--heading-leading, 1));
   margin: 0 0 var(--space-3);
 }
 .anchored-split-entry-body {

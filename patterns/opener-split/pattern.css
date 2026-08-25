@@ -1,6 +1,6 @@
 /* opener-split v1 - tokens only, selectors prefixed */
 .opener-split {
-  --opener-split-title-measure: 14ch;
+  --opener-split-title-measure: 8.75em;
   --opener-split-intro-measure: 42ch;
   display: grid;
   gap: var(--space-5);
@@ -23,9 +23,9 @@
    token's contract. Keep both if you edit it. */
   color: var(--color-heading);
   font-size: calc(clamp(1.875rem, 4.6vw, 3.5rem) * var(--type-scale, 1));
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.05;
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.025em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.05 * var(--heading-leading, 1));
   margin: 0;
   text-wrap: balance;
 }

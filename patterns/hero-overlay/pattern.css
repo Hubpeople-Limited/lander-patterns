@@ -60,8 +60,8 @@
   /* --color-text: the ground here is a scrim over a photograph. */
   color: var(--color-text);
   font-size: calc(clamp(2.25rem, 1.4rem + 3.4vw, 4rem) * var(--type-scale, 1));
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: calc(1.05 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   text-wrap: balance;
 }
 .hero-overlay-sub {
@@ -134,7 +134,7 @@
     padding-block: max(var(--space-12), 26svh) var(--space-8);
   }
   .hero-overlay-title {
-    line-height: 1.12;
+    line-height: calc(1.12 * var(--heading-leading, 1));
   }
 }
 

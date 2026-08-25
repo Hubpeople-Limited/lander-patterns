@@ -16,7 +16,7 @@
   font-family: var(--font-heading);
   color: var(--color-heading);
   font-size: calc(clamp(1.75rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
-  line-height: 1.1;
+  line-height: calc(1.1 * var(--heading-leading, 1));
 }
 .capability-tabs-sub {
   margin: var(--space-3) 0 0;
@@ -50,7 +50,7 @@
      against --color-bg only. */
   color: var(--color-text);
   font-size: calc(clamp(1.25rem, 1rem + 1.2vw, 1.875rem) * var(--type-scale, 1));
-  line-height: 1.15;
+  line-height: calc(1.15 * var(--heading-leading, 1));
 }
 .capability-tabs-lede {
   margin: var(--space-3) 0 0;
@@ -118,8 +118,8 @@
 .capability-tabs .hub-tabs-tab {
   font: inherit;
   font-family: var(--font-heading);
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.2 * var(--heading-leading, 1));
   min-height: 44px;
   padding: var(--space-3) var(--space-5);
   border: 0;
