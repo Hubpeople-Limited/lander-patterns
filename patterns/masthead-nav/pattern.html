@@ -5,13 +5,14 @@ type: component
 page-types: homepage, landing, pricing, safety, article, features, articles-landing
 requires: none
 content-shape: reference
-description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements and two small-screen behaviours.
-keywords: header, masthead, navigation, menu, logo, mobile menu
-needs: the brand's logo, the menu items configured on the platform, and one word for the small-screen menu button in the brand's own language. Every other value on it is platform furniture
+description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements and three small-screen behaviours.
+keywords: header, masthead, navigation, menu, logo, mobile menu, drawer
+needs: the brand's logo, the menu items configured on the platform, and two words in the brand's own language - one for the small-screen menu button and one for that same button while the menu is showing. Every other value on it is platform furniture
 pairs-with: none
 avoid-with: none
-tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-rule, --color-surface, --color-surface-soft, --color-text, --container-max, --font-heading, --logo-height, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --transition-fast, --type-scale
-variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|row
+tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-rule, --color-scrim, --color-surface, --color-surface-soft, --color-text, --container-max, --font-heading, --logo-height, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --transition-fast, --type-scale
+variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row
+behaviours: drawer
 motion: subtle
 one-per-page: yes
 status: active
@@ -20,7 +21,12 @@ added: 2026-08-25
 <!-- Take one modifier from each of the three axes. See the README.
        ground:  --plain page ground | --soft tinted fill | --brand brand colour
        layout:  --inline mark and menu on one row | --centred mark over the menu
-       menu:    --drawer menu behind a button on a phone | --row always visible
+       menu:    --drawer a side panel over the page on a phone
+                --panel  a full-width panel under the header on a phone
+                --row    no button, the menu runs on beside the mark
+     data-hub-module belongs to --drawer. It is inert on --panel and --row -
+     the behaviour acts only while the panel is fixed to the viewport - so it
+     can be left in place or deleted.
      {{menu.navigation}} expands to a <ul class="canvas-navigation-menu"> the
      page cannot change. Leave it exactly as it is; pattern.css styles the
      classes it generates. Set the img width and height to the logo file's own
@@ -31,9 +37,10 @@ added: 2026-08-25
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">
     </a>
-    <details class="masthead-nav-disclosure">
+    <details class="masthead-nav-disclosure" data-hub-module="drawer">
       <summary class="masthead-nav-toggle">
         <span class="masthead-nav-toggle-text"><!-- slot: menu-label --></span>
+        <span class="masthead-nav-toggle-text masthead-nav-toggle-text--close"><!-- slot: close-label --></span>
         <span class="masthead-nav-toggle-icon" aria-hidden="true"></span>
       </summary>
       <nav class="masthead-nav-links" aria-label="Primary">

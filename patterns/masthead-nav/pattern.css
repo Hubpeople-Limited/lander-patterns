@@ -39,7 +39,9 @@
 }
 
 /* ---- the bar ---- */
+/* One number for every tap target here, and for the room the drawer keeps. */
 .masthead-nav {
+  --masthead-nav-tap: 2.75rem;
   background: var(--masthead-nav-ground);
   color: var(--masthead-nav-ink);
   border-block-end: 1px solid var(--masthead-nav-edge);
@@ -82,7 +84,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 2.75rem;
+  min-height: var(--masthead-nav-tap);
   padding-inline: var(--space-3);
   border: 1px solid var(--masthead-nav-edge);
   border-radius: var(--btn-radius);
@@ -148,7 +150,7 @@
 .masthead-nav .canvas-navigation-menu a {
   display: flex;
   align-items: center;
-  min-height: 2.75rem;
+  min-height: var(--masthead-nav-tap);
   padding-block: var(--space-2);
   color: inherit;
   font-family: var(--font-heading);
@@ -205,7 +207,7 @@
   align-items: center;
   justify-content: center;
   flex: 1 1 auto;
-  min-height: 2.75rem;
+  min-height: var(--masthead-nav-tap);
   padding-inline: var(--space-5);
   border-radius: var(--btn-radius);
   background: var(--masthead-nav-cta-face);
@@ -233,11 +235,102 @@
   .masthead-nav-mark {
     max-width: 45%;
   }
+  /* A long label ellipsises rather than widening the button. */
+  .masthead-nav-toggle {
+    max-width: 100%;
+  }
+  .masthead-nav-toggle-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* One button, two words, and only ever one of them in the box. */
+  .masthead-nav-toggle-text--close {
+    display: none;
+  }
+  .masthead-nav-disclosure[open] .masthead-nav-toggle-text {
+    display: none;
+  }
+  .masthead-nav-disclosure[open] .masthead-nav-toggle-text--close {
+    display: inline;
+  }
 }
 
-/* menu=drawer: the menu drops out of the button, over what is below. */
+/* menu=drawer: a panel fixed to the inline-end edge, over a dimmed page. */
 @media (width < 60rem) {
+  /* 45% for the mark and the rest for the button, gap included, so the two
+     always share one row: flexbox breaks lines before it shrinks anything, so
+     a shrink factor cannot do this, and the padding below wants one row. */
+  .masthead-nav--drawer .masthead-nav-disclosure {
+    max-width: calc(55% - var(--space-3));
+  }
+  /* The panel is laid out open or shut, which is what gives it somewhere to
+     slide FROM. Both declarations are needed: engines hide a closed <details>
+     in two different ways, and one of them cannot be reached from the child.
+     `visibility` below is then the only thing keeping a shut drawer out of the
+     tab order and out of find-in-page - never swap it for opacity. */
   .masthead-nav--drawer .masthead-nav-links {
+    display: block;
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure::details-content {
+    content-visibility: visible;
+    block-size: auto;
+  }
+  .masthead-nav--drawer .masthead-nav-links {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    z-index: 41;
+    width: min(20rem, 82vw);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* Block-start padding is the header's first row, computed - the button
+       sits on the drawer, so anything less puts it over the first item. */
+    padding: calc(var(--space-3)
+                  + max(var(--masthead-nav-tap), var(--logo-height, 2.75rem))
+                  + var(--space-4))
+             var(--space-4) var(--space-6);
+    background: var(--masthead-nav-panel-face);
+    color: var(--masthead-nav-panel-ink);
+    border-inline-start: 1px solid var(--masthead-nav-edge);
+    box-shadow: var(--card-shadow);
+    visibility: hidden;
+    translate: 100% 0;
+  }
+  /* The one place a logical property cannot carry the meaning. */
+  .masthead-nav--drawer .masthead-nav-links:dir(rtl) {
+    translate: -100% 0;
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure[open] .masthead-nav-links {
+    visibility: visible;
+    translate: none;
+  }
+  /* The backdrop belongs to the disclosure: in the panel it would be inside
+     the box it has to sit behind. */
+  .masthead-nav--drawer .masthead-nav-disclosure::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: color-mix(in srgb, var(--color-scrim) 62%, transparent);
+    visibility: hidden;
+    opacity: 0;
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure[open]::before {
+    visibility: visible;
+    opacity: 1;
+  }
+  /* The button stays where it was pressed, above both the backdrop and the
+     panel. The panel's block-start padding keeps the first item out of it. */
+  .masthead-nav--drawer .masthead-nav-disclosure[open] .masthead-nav-toggle {
+    position: relative;
+    z-index: 42;
+  }
+}
+
+/* menu=panel: the menu drops out of the button, over what is below. */
+@media (width < 60rem) {
+  .masthead-nav--panel .masthead-nav-links {
     position: absolute;
     inset-inline: 0;
     top: 100%;
@@ -418,17 +511,29 @@
   }
 }
 
-/* Motion is opt-in and only ever eases a state the page already reached. */
+/* Motion is opt-in and only ever eases a state the page already reached.
+   No easing keyword follows --transition-fast below: brands ship that token
+   with an easing already in it, and a second keyword is not a value - the
+   declaration goes, and the movement with it. */
 @media (prefers-reduced-motion: no-preference) {
   .masthead-nav-toggle-icon,
   .masthead-nav-toggle-icon::before,
   .masthead-nav-toggle-icon::after {
-    transition: transform var(--transition-fast) ease-out,
-                background var(--transition-fast) ease-out,
-                top var(--transition-fast) ease-out;
+    transition: transform var(--transition-fast),
+                background var(--transition-fast),
+                top var(--transition-fast);
   }
   .masthead-nav .canvas-navigation-submenu {
-    transition: opacity var(--transition-fast) ease-out;
+    transition: opacity var(--transition-fast);
+  }
+  /* `visibility` is in the list so the panel stays on screen while it leaves. */
+  .masthead-nav--drawer .masthead-nav-links {
+    transition: translate var(--transition-fast),
+                visibility var(--transition-fast);
+  }
+  .masthead-nav--drawer .masthead-nav-disclosure::before {
+    transition: opacity var(--transition-fast),
+                visibility var(--transition-fast);
   }
 }
 /* Belt and braces if a brand reintroduces a transition on these. */
@@ -439,6 +544,10 @@
     transition: none;
   }
   .masthead-nav .canvas-navigation-submenu {
+    transition: none;
+  }
+  .masthead-nav--drawer .masthead-nav-links,
+  .masthead-nav--drawer .masthead-nav-disclosure::before {
     transition: none;
   }
 }

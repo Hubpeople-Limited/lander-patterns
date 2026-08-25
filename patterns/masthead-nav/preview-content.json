@@ -1,4 +1,5 @@
 {
   "home-url": "#sample-home",
-  "menu-label": "Menu (sample)"
+  "menu-label": "Menu (sample)",
+  "close-label": "Close (sample)"
 }
