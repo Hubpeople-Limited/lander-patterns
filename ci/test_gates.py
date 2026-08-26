@@ -80,7 +80,66 @@ CASES = [
     ("display weight, valid",   ":root{%s--weight-display:600;}", 0),
     ("display weight at zero",  ":root{%s--weight-display:0;}", 1),
     ("display weight with a unit", ":root{%s--weight-display:700px;}", 1),
+
+    # The brand's own indirection is left alone, and its FALLBACK is not. The
+    # fallback is in the same declaration and is the value that ships whenever
+    # the brand's property is not set, so exempting the whole var() reopened
+    # the unit trap on the dial TOKENS.md calls the worst in the library:
+    # var(--brand-track, 0.02em) computes letter-spacing to `normal`.
+    ("a unit in the var() fallback, tracking",
+     ":root{%s--heading-tracking:var(--brand-track, 0.02em);}", 1),
+    ("a unit in the var() fallback, type",
+     ":root{%s--type-scale:var(--brand-density, 1.1rem);}", 1),
+    ("a unit in the var() fallback, weight",
+     ":root{%s--weight-display:var(--brand-weight, 700px);}", 1),
+    ("a unit in a NESTED var() fallback",
+     ":root{%s--heading-tracking:var(--a, var(--b, 0.5px));}", 1),
+    ("an empty var() fallback",
+     ":root{%s--heading-tracking:var(--brand-track,);}", 1),
+    # ...and the two shapes that must stay quiet, or the exemption's whole
+    # reason for existing is gone.
+    ("a valid var() fallback",
+     ":root{%s--type-scale:var(--brand-density, 1.05);}", 0),
+    ("a var() with no fallback at all",
+     ":root{%s--heading-tracking:var(--brand-track);}", 0),
+
+    # An empty declaration is a declaration. `--heading-tracking:;` is legal
+    # CSS whose value is the empty token sequence: var() substitutes nothing,
+    # the calc() is invalid, and letter-spacing computes to `normal`. It is
+    # not equivalent to leaving the dial alone, and a value pattern requiring
+    # one character could not see it.
+    ("an empty declaration", ":root{%s--heading-tracking:;}", 1),
+    ("an empty declaration with whitespace",
+     ":root{%s--heading-tracking: ;}", 1),
+
+    # Scientific notation is a bare number in CSS. `1e-2` is 0.01 and computes
+    # exactly like it, so calling it fatal fails a build on a valid value.
+    ("scientific notation", ":root{%s--heading-tracking:1e-2;}", 0),
+    ("scientific notation, capital E", ":root{%s--type-scale:1.05E0;}", 0),
+    ("scientific notation carrying a unit",
+     ":root{%s--type-scale:1e-2rem;}", 1),
 ]
+
+# Two of the five `lost` sentences named a fallback the browser does not use,
+# and a message that sends the reader to the wrong place is worse than one
+# that says nothing. Each dial's message must name where the value ACTUALLY
+# lands, probed in Chromium:
+#
+#   --weight-display  font-weight is inherited, so an invalid substitution
+#                     hands the element its ANCESTOR's weight, not the
+#                     pattern's 700. Ancestor 300 + dial 700px computes 300.
+#   --heading-leading calc(1.02 * 1.1rem) is number x length, which is VALID
+#                     CSS: 17.952px, fixed and inherited, not a drop.
+LOST_PHRASES = {
+    ("heading-tracking", "0.02em"): "`normal`",
+    ("weight-display", "700px"): "ANCESTOR",
+    ("heading-leading", "1.1rem"): "17.952px",
+    ("type-scale", "1.1rem"): "inherited",
+    ("space-scale", "1.2px"): "fall to 0",
+}
+# The same dial, wrong on a different axis: an empty --heading-leading really
+# does drop, so its message must NOT claim the value stays valid.
+LOST_ABSENT = {("heading-leading", ""): "drops"}
 
 
 # Every technique that got a hard-coded display size past the first version of
@@ -793,6 +852,35 @@ def check_phone():
     return failures
 
 
+def check_lost_messages():
+    """An exit code is not the whole gate. The message is the gate.
+
+    A brand author reads one sentence and goes looking. Two of these sentences
+    named a fallback the browser does not use, so the reader went looking in
+    the pattern's own defaults for a value the ancestor was supplying. Both
+    halves have to hold: the right phrase present, and the wrong one absent.
+    """
+    from _dials import check_dials
+    failures = []
+    print("ci/_dials.py, what a message says the value falls back to")
+    for (dial, value), want in LOST_PHRASES.items():
+        out = check_dials("acme", ":root{--%s:%s;}" % (dial, value))
+        said = " ".join(m for _fatal, m in out)
+        ok = bool(out) and want in said
+        print(f"  {'ok  ' if ok else 'FAIL'} --{dial}: {value:<8} names {want!r}")
+        if not ok:
+            failures.append(f"--{dial} message")
+    for (dial, value), want in LOST_ABSENT.items():
+        out = check_dials("acme", ":root{--%s:%s;}" % (dial, value))
+        said = " ".join(m for _fatal, m in out)
+        ok = bool(out) and want in said and "17.952px" not in said
+        print(f"  {'ok  ' if ok else 'FAIL'} --{dial}: empty    names {want!r}, "
+              f"not the unit case")
+        if not ok:
+            failures.append(f"--{dial} empty message")
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -827,6 +915,8 @@ def main():
 
     shutil.rmtree(base, ignore_errors=True)
     print()
+    failures += check_lost_messages()
+    print()
     failures += check_display_type()
     print()
     failures += check_modules()
@@ -842,7 +932,8 @@ def main():
               + ", ".join(failures))
         return 1
     recipes = json.loads((HERE / "page-recipes.json").read_text(encoding="utf-8"))
-    total = (len(CASES) + 1 + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
+    total = (len(CASES) + 1 + len(LOST_PHRASES) + len(LOST_ABSENT)
+             + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])

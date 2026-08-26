@@ -28,3 +28,11 @@ carry nearly all the character; the eyebrow's rules are drawn from
 colour. The block is left-aligned on phones and centres from 48rem up —
 brands that want it left-aligned throughout can drop the media query when
 they append the CSS.
+
+The eyebrow is 700, the same weight as the title, and the two are
+separated by size rather than by weight. Anything above 700 selects a
+different family member on the faces that ship one — `font-weight: 800`
+under an Arial stack is Arial Black, 14.3% wider than Bold — so a 13px
+eyebrow set heavier than the title outdraws the headline beneath it on
+those brands and matches it exactly on Georgia, where nothing exists
+above Bold.

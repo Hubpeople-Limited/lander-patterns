@@ -26,7 +26,7 @@
   right: 0;
   margin: 0;
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.4;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -86,7 +86,7 @@
 .quote-feature-name {
   display: block;
   font-size: 1rem;
-  font-weight: 650;
+  font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.01em;
   color: var(--color-text);

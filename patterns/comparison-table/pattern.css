@@ -100,7 +100,7 @@
   background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
 }
 .comparison-table-criterion {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text);
   padding: var(--space-4) var(--space-5);
   border-block-end: 1px solid var(--color-rule, color-mix(in srgb, var(--color-text) 18%, transparent));

@@ -32,7 +32,7 @@ Three grounds and two alignments is the cheapest multiplication available.
 sentence that says something the headline does not. That is the whole gate, and
 it is why this pattern is available to every brand on the platform.
 
-The headline is held to `16ch`, so it wraps early and reads as display type
+The headline is held to `10.75em`, so it wraps early and reads as display type
 rather than as a sentence running the width of the page. Write it to be broken:
 three to seven words is the range this shape carries.
 

@@ -78,14 +78,68 @@ literals.
 the whole requirement, and it is deliberately small: every weight the library
 insists on is a family it cannot use.
 
-The library used to spread heading emphasis across 600, 650, 700 and 800. It
-never worked. `650` cannot exist on a static face at all — CSS font matching
-snaps it to 700 — and the one place 600 and 700 sat side by side at the same
-size was `masthead-nav`, on brands whose heading face is Georgia or Helvetica.
-**Neither has a 600**, so that distinction had never once reached a screen.
-Nine of the ten patterns that render more than one heading element already
-separate them by size rather than weight, which is what the whole library now
-does.
+The library used to spread heading emphasis across 600, 650, 700 and 800. Two
+of those four were never a distinction a reader could see, and the third was a
+face nobody chose. `650` cannot exist on a static family at all — CSS font
+matching snaps it to 700 — and the one place 600 and 700 sat side by side at
+the same size was `masthead-nav`, on brands whose heading face is Georgia or
+Helvetica. **Neither has a 600**, so that distinction had never once reached a
+screen. Nine of the ten patterns that render more than one heading element
+already separate them by size rather than weight, which is what the whole
+library now does.
+
+### The collapse is not invisible, and 800 is not the same case as 600
+
+**Do not repeat the claim that collapsing to 400/700 changes no pixels. It
+does.** Whether it changes any depends entirely on the face in front of you,
+which is what makes it easy to get wrong: on Georgia the collapse really is
+byte-identical, and Georgia is the house face. Chromium, "Handgloves 0000" at
+100px, on the stacks the four sample token sets actually use:
+
+| Stack | 400 | 500 | 600 / 650 | 700 | 800 / 900 |
+|---|---|---|---|---|---|
+| `Georgia, "Times New Roman", serif` | 792.688 | 792.688 | 912.844 | 912.844 | 912.844 |
+| `"Helvetica Neue", Helvetica, Arial` | 778.375 | 778.375 | 817.047 | 817.047 | **934.094** |
+| `system-ui` / `-apple-system` (Segoe UI here) | 764.703 | **786.188** | **786.188** | **813.281** | 852.062 |
+
+Two things fall out of that table, and both are visible changes on a real
+brand:
+
+**`800 → 700` on display type changes the family member.** Arial ships a real
+weight above Bold, and `font-weight: 800` selects **Arial Black** — 934.094
+against 817.047, **14.3% wider**. Three display rules make that change and it
+is deliberate:
+
+| Rule | What a brand with a real 800 sees |
+|---|---|
+| `.heading-block-title` | Bold rather than Black; the headline goes 3 lines to 2 at 360px |
+| `.testimonial-grid-quote p` | the quote goes 3 lines to 2 at 360, 768 and 1280 |
+| `.testimonial-carousel-quote p` | the quote goes 4 lines to 3 at 1280 |
+
+The alternative is worse than the reflow. 800 is not a weight the contract can
+ask for: present on Arial, absent on Georgia, and absent from most of what a
+partner will hand over — so one rule draws three different things and the
+pattern has no way to know which.
+
+**`600 → 700` is a no-op on both heading stacks and is not one on Segoe UI**,
+which has a genuine Semibold: 786.188 to 813.281, **3.4% wider**. So the rules
+that carry 600 are supporting text on the *body* face, and collapsing them
+widens a label by a few pixels on a Segoe-UI brand. Nothing reflows and no
+page grows taller; the labels are simply drawn in the weight they were asking
+for.
+
+**No pattern declares a weight above 400 other than 700.** That is the whole
+rule, and it is checkable by reading `font-weight` in any `pattern.css`. Two
+supporting rules — `.heading-block-eyebrow` and `.testimonial-grid-flag` —
+held 800 while the display type beside them went to 700, which on an Arial
+stack drew a 13px eyebrow heavier than the 57px headline above it. Both are
+700.
+
+Below 400 the argument does not apply and the values stay: eight rules of
+body-face supporting text sit at 500, and `stat-rows` exposes its own
+`--stat-rows-weight` at 300 for its numerals. A face with neither falls to 400,
+which is the reading those rules want, and nothing in the library asks a reader
+to tell 500 from 600 — the pairs that sit side by side are 500 against 700.
 
 **A weight the face does not have is not an error.** The browser synthesises
 it by smearing the outline, which at display sizes fills in the counters — the
@@ -100,6 +154,31 @@ library's own sample brands, which is why one `max-width: 16ch` headline
 rendered on two lines for some brands and three for others. `em` removes the
 typeface and keeps the type scale. **Body measures stay in `ch`**, because
 there `ch` is doing the job it is for: holding a line to a character count.
+
+**The conversion is `0.625em` per `ch`, and it is not a translation.** No em
+value can equal a character count on every face at once — that is the whole
+point of moving — so each of these measures is a new number that agrees across
+faces rather than matching any one of them:
+
+| Pattern | Measure | Ratio |
+|---|---|---|
+| `anchored-split`, `claim-stack` | `18ch` → `11.25em` | 0.625 |
+| `opener-split` | `14ch` → `8.75em` | 0.625 |
+| `quote-feature` | `20ch` → `12.5em` | 0.625 |
+| `hero-centred` | `15ch` → `9.4em` | 0.6267 (9.375 rounded) |
+| `hero-stated` | `16ch` → `10.75em` | **0.6719** |
+
+**`hero-stated` is deliberately 7.5% wider than the ratio**, and nothing else
+records that, so it is recorded here: at `10em` its headline broke to three
+lines across the sample brands and the shape of the pattern is a two-line
+statement. `10.75em` is the value that holds two lines on every sample face
+above phone width. Do not "correct" it back to `10em`.
+
+Two patterns reflow on a Georgia-stack brand as a result. `hero-stated` is the
+one the ratio was chosen for. The other is `quote-feature`, whose measure goes
+from 610.3px to 544px at 1280 — 10.9% narrower, the quote 3 lines to 4, and
+the section about 54px taller. That is the cost of a measure that means the
+same thing on every face, and it is noted in that pattern's README.
 
 ## The aesthetic dials
 
@@ -171,7 +250,7 @@ size and rhythm were the two they could not.
 **`--type-scale` in practice.** `0.92` is a quieter, more editorial register;
 `1.08` to `1.15` reads as a consumer brand shouting. Supported range `0.9` to
 `1.2`. Past that the `clamp()` floors stop being sensible at 320px and
-headlines held to `16ch` start breaking in the wrong places, so a brand wanting
+headlines held to `10.75em` start breaking in the wrong places, so a brand wanting
 something outside it wants a different pattern rather than a bigger number.
 
 It multiplies the whole `clamp()`, floor and ceiling together, so the
@@ -200,9 +279,19 @@ Supported range `0.85` to `1.2`: `0.85` is dense and utilitarian, `1.2` airy
 and premium. Below `0.85` the 44px target sizes stop having room around them,
 which is an accessibility floor rather than a taste one.
 
-**All five are bare numbers, never lengths.** `--type-scale: 1.1rem` multiplies a length by a length, which makes the whole `calc()` invalid; the declaration drops and the heading falls back to inherited size. Nothing errors, the page just goes flat on every display size at once. `ci/brand_fit.py` checks for this, and it is the only place it can be caught, because a brand's stylesheet is outside this library's CI.
+**All five are bare numbers, never lengths.** `ci/brand_fit.py` checks for this, and it is the only place it can be caught, because a brand's stylesheet is outside this library's CI.
 
-**`--heading-tracking` is the one that reads like a length and must not be one.** The patterns supply the unit, as `calc(-0.02em + var(--heading-tracking, 0) * 1em)`, so the dial is a number like the rest. Written as `--heading-tracking: 0.02em` it becomes an area inside that `calc()`, the declaration drops, and letter-spacing falls back to **`normal`** — not to the `-0.02em` the pattern designed. So the failure is not "my dial did nothing", it is every display heading in the brand losing the tracking it had before the brand touched anything. Verified in a browser, and it is silent.
+**What a unit costs is different on each dial, and none of them says so out loud.** Measured in Chromium:
+
+| Written as | What happens |
+|---|---|
+| `--type-scale: 1.1rem` | length × length is an area, every `calc()` reading it is invalid and drops. `font-size` is inherited, so every display size collapses to whatever it sits inside, on every viewport at once |
+| `--space-scale: 1.2px` | the same, in the ramp. `padding`, `margin` and `gap` are **not** inherited, so they fall to `0` and the page loses every gap it had |
+| `--heading-leading: 1.1rem` | **valid CSS.** Number × length is a length, so nothing drops and nothing warns — `calc(1.02 * 1.1rem)` computes to `17.952px`, a fixed leading that no longer tracks font-size and is inherited downward. A 40px heading and the 20px line under it are both set on a 17.952px body, and the text overlaps itself |
+| `--heading-tracking: 0.02em` | an area inside `calc(-0.02em + var(--heading-tracking, 0) * 1em)`, so the declaration drops and letter-spacing falls back to **`normal`** — not to the `-0.02em` the pattern designed. The brand loses tracking it never set |
+| `--weight-display: 700px` | `font-weight` is inherited, so the declaration is invalid at computed-value time and the element takes its **ancestor's** weight, not the pattern's `700`. Probed with an ancestor at 300, the heading computes 300 — on a real brand that is body weight, so every display heading goes bold to regular |
+
+**The brand's own indirection is fine; its fallback is not exempt.** `--type-scale: var(--brand-density, 1)` is a reasonable thing to write and CI leaves it alone. `--type-scale: var(--brand-density, 1.1rem)` is the same trap one level down, because the fallback is what ships whenever the brand's property is not set — and an **empty** value (`--heading-tracking: ;`) substitutes nothing at all, which is not the same as leaving the dial alone. CI reads the fallback for both.
 
 **Set at most one of them away from `1` at a time, to begin with.** Both at
 once compounds, and a brand at `1.15` type on `1.2` space is not a bolder

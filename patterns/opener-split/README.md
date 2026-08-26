@@ -56,7 +56,7 @@ which promises nothing at that size.
 `--color-rule` draws the optional hairline and is decorative: the modifier is
 separation, never meaning.
 
-Two dials worth knowing. `--opener-split-title-measure` (default `14ch`) is what
+Two dials worth knowing. `--opener-split-title-measure` (default `8.75em`) is what
 makes the title wrap early and read as display type rather than as a headline
 running the width of the page; a brand with a very wide or very condensed
 heading face may want it a little different. `--opener-split-intro-measure`

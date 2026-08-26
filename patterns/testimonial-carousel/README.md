@@ -69,10 +69,10 @@ above and below.
 `--color-on-primary` ink — a real change from a near-black card. The quote is
 small text on a coloured ground and only three token pairs carry a stated
 ratio, so this is the one that works. The action colour leads the section,
-which suits a warm brand and makes a loud one very loud. `--card-radius`, `--card-border` and `--card-shadow` set the
-character of all three cards; `--chip-radius` decides whether the dots are
-round or squared; `--font-heading` at weight 800 with tight tracking does the
-work in the quote. The stage geometry is two of the pattern's own properties,
+which suits a warm brand and makes a loud one very loud. `--card-radius`,
+`--card-border` and `--card-shadow` set the character of all three cards;
+`--chip-radius` decides whether the dots are round or squared; `--font-heading`
+at `--weight-display` (700) with tight tracking does the work in the quote. The stage geometry is two of the pattern's own properties,
 `--testimonial-carousel-card-w` and `--testimonial-carousel-side-offset`. Both
 carry responsive values on `.testimonial-carousel`, so overriding one means a
 `.testimonial-carousel { … }` rule after the appended CSS — a `:root`

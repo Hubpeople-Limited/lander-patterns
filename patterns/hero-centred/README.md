@@ -64,7 +64,7 @@ band portrait on phones keeps the photograph doing work on the screen most of
 this traffic arrives on. A brand with square or portrait source imagery should
 set the wide value rather than crop every file.
 
-Two more dials: `--hero-centred-title-measure` (default `15ch`) is what makes
+Two more dials: `--hero-centred-title-measure` (default `9.4em`) is what makes
 the headline wrap early and read as display type instead of running the width of
 the page, and `--hero-centred-sub-measure` (default `50ch`) holds the supporting
 sentence to a readable width.

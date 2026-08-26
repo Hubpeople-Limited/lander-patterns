@@ -56,7 +56,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "benefit-tiles": {
@@ -104,7 +104,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "claim-stack": {
@@ -163,7 +163,7 @@
   "requires": "none",
   "type": "section",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "cta-assurance": {
@@ -398,7 +398,7 @@
   "requires": "none",
   "type": "component",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "hero-centred": {
@@ -589,7 +589,7 @@
     "brand"
    ]
   },
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "listing-rows": {
@@ -952,7 +952,7 @@
   "requires": "consented-people",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "rating-mark": {
@@ -1191,7 +1191,7 @@
   "requires": "consented-people",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "trust-row": {
@@ -1215,7 +1215,7 @@
   "requires": "none",
   "type": "component",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "zigzag-rows": {
@@ -1242,7 +1242,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  }
 }

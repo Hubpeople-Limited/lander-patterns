@@ -1,4 +1,4 @@
-"""The two brand dials, and every way a brand can get them wrong.
+"""The five brand dials, and every way a brand can get them wrong.
 
 Kept apart from brand_fit.py so the rules are testable on their own, and so
 the range they enforce sits in one place rather than being restated wherever
@@ -46,10 +46,8 @@ WEIGHT_MIN, WEIGHT_MAX = 400, 800
 #               brand could reasonably choose.
 #   weight      neither: a CSS weight, nowhere near 0 or 1 at rest.
 #
-# What all three DO share is the unit trap, which is why they are all here. A
-# unit makes the calc() invalid and the declaration drops. For tracking that
-# is worse than it sounds: the fallback is not the pattern's designed
-# -0.02em, it is `normal`, so the brand loses tracking it never set.
+# What all three share is that a unit is a fault. What the unit COSTS is not
+# shared, and is not even shared within a kind - see LOST below.
 MULTIPLIER, OFFSET, WEIGHT = "multiplier", "offset", "weight"
 DIALS = {
     "type-scale":       (MULTIPLIER, TYPE_MIN, TYPE_MAX),
@@ -59,13 +57,75 @@ DIALS = {
     "weight-display":   (WEIGHT, WEIGHT_MIN, WEIGHT_MAX),
 }
 
+# Where each dial ACTUALLY lands when the substitution is invalid, per dial
+# and not per kind. Keyed by kind, two of these five named the wrong fallback,
+# and a wrong fallback sends the reader looking somewhere the fault is not:
+#
+#   --weight-display does not fall back to the pattern's own 700, because
+#   font-weight is inherited: an invalid substitution is invalid at
+#   computed-value time, and the element takes its ANCESTOR's weight. Probed
+#   with an ancestor at 300 and the dial at 700px, the heading computes 300 -
+#   body weight, so a real brand's headings go bold to regular.
+#
+#   --heading-leading is not "the type collapses to inherited size" either.
+#   Nothing about font-size moves; the leading does, and it lands on the
+#   inherited line-height rather than on the 1.02 the pattern designed.
+#
+# The two length-times-length dials both drop, and they drop to different
+# places, because font-size is inherited and padding is not.
+LOST = {
+    "type-scale":
+        "every calc() reading it is invalid and drops, and font-size is "
+        "inherited, so every display size collapses to whatever it sits "
+        "inside - on every viewport at once",
+    "space-scale":
+        "every step of the ramp is invalid where it is used, and padding, "
+        "margin and gap are not inherited, so they fall to 0 and the page "
+        "loses every gap it had",
+    "heading-leading":
+        "every line-height reading it drops, so display type takes the "
+        "inherited leading rather than the tight one the pattern designed",
+    "heading-tracking":
+        "letter-spacing falls back to `normal` - not to the value the pattern "
+        "designed, so the brand loses tracking it never set",
+    "weight-display":
+        "font-weight is inherited, so the declaration is invalid at "
+        "computed-value time and the element takes its ANCESTOR's weight "
+        "rather than the pattern's 700. On a brand whose body is 400 that is "
+        "every display heading going from bold to regular",
+}
+
+# --heading-leading is the one dial a unit does not break by dropping. The
+# pattern writes `calc(1.02 * var(--heading-leading, 1))`, and number times
+# length is VALID CSS: nothing drops and nothing warns. Chromium computes
+# `calc(1.02 * 1.1rem)` to 17.952px, line-height is inherited, so a 40px
+# heading and the 20px line under it are both set on a 17.952px body and the
+# text overlaps itself. Saying "it drops" here would be the same class of
+# mistake this table exists to correct.
+LOST_UNIT = dict(LOST, **{
+    "heading-leading":
+        "a number times a length is valid CSS, so nothing drops and nothing "
+        "warns - line-height becomes a fixed length that no longer tracks "
+        "font-size and is inherited by everything under the heading. "
+        "calc(1.02 * 1.1rem) is 17.952px on a 40px heading and 17.952px on "
+        "the 20px line below it, which overlap",
+})
+
 # Unanchored, and tolerant of what really appears in a declaration: several
 # declarations share a line, and `!important` and trailing comments are both
 # valid and both were flagged as faults by the first version of this.
 # Longest-first so `type-scale` cannot shadow a longer name sharing a prefix.
-DIAL = re.compile(r"--(%s)\s*:\s*([^;}]+)"
+#
+# `[^;}]*`, not `[^;}]+`: `--heading-tracking:;` is a legal declaration whose
+# value is the empty token sequence, and it is not equivalent to not setting
+# the dial. var() substitutes nothing into the calc(), the calc() is invalid,
+# and letter-spacing computes to `normal`. Requiring one character made that
+# declaration invisible to this whole module.
+DIAL = re.compile(r"--(%s)\s*:\s*([^;}]*)"
                   % "|".join(sorted(DIALS, key=len, reverse=True)))
-NUMBER = re.compile(r"^[+-]?(?:\d+\.?\d*|\.\d+)$")
+# Scientific notation is a bare number in CSS: `1e-2` is 0.01 and computes
+# exactly like `0.01`. Rejecting it made a valid value a fatal fault.
+NUMBER = re.compile(r"^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$")
 
 
 def read_dial(raw):
@@ -98,16 +158,42 @@ UNIT = re.compile(
     r"|cm|mm|in|pt|pc|q|%)", re.I)
 
 
-def check_dials(brand, text):
-    """Every way --type-scale or --space-scale can be set wrong.
+def var_fallback(v):
+    """The fallback inside a leading `var(...)`, or None when there is none.
 
-    A dial is a bare multiplier. The failure modes, in descending order of how
+    Splits on the first comma at depth one, so a nested `var(--a, var(--b, 1))`
+    hands back `var(--b, 1)` whole rather than `var(--b` - which would then be
+    read for units and found clean.
+    """
+    m = re.match(r"^var\s*\(", v, re.I)
+    if not m:
+        return None
+    depth, i, comma = 1, m.end(), None
+    while i < len(v) and depth:
+        if v[i] == "(":
+            depth += 1
+        elif v[i] == ")":
+            depth -= 1
+            if not depth:
+                break
+        elif v[i] == "," and depth == 1 and comma is None:
+            comma = i
+        i += 1
+    if comma is None:
+        return None
+    return v[comma + 1:i]
+
+
+def check_dials(brand, text):
+    """Every way a brand can set one of the five dials wrong.
+
+    A dial is a bare number. The failure modes, in descending order of how
     quietly they break a live page:
 
-    - A length (`1.1rem`). Length times length is an area, the whole calc() is
-      invalid, the declaration drops, and the heading falls back to inherited
-      size. Nothing errors; the page just goes flat on every display size at
-      once.
+    - A length (`1.1rem`). What it costs differs per dial and is spelled out
+      in LOST above: three of the five drop the declaration, --heading-leading
+      stays valid and silently stops scaling, and --weight-display hands the
+      element its ancestor's weight.
     - Zero. Every display size computes to 0px and the headings are simply
       gone. legibility.py already treats font-size 0 as hidden content inside
       the library; a brand can do the same thing from outside it.
@@ -123,8 +209,18 @@ def check_dials(brand, text):
         kind, lo, hi = DIALS[which]
 
         # A dial reached through the brand's own indirection is a reasonable
-        # thing to write, cannot be resolved from one file, and is therefore
-        # left alone rather than called a fault.
+        # thing to write and the referenced property cannot be resolved from
+        # one file - but the FALLBACK can, because it is right there in the
+        # same declaration, and it is the value the brand ships whenever the
+        # indirection is not set. Exempting the whole var() reopened the unit
+        # trap on the dial TOKENS.md calls the worst in the library:
+        # `--heading-tracking: var(--brand-track, 0.02em)` passed clean and
+        # computed letter-spacing to `normal`.
+        #
+        # A var() with NO fallback is genuinely left alone, and correctly so:
+        # an unresolvable var() makes the custom property guaranteed-invalid,
+        # which means the pattern's own `var(--heading-tracking, 0)` falls
+        # back to the designed value. Probed: letter-spacing -0.02em, intact.
         #
         # calc() and its relatives are NOT exempt, however convenient that
         # was. calc(1.1px) computes to a length, not a number, so the unit
@@ -132,30 +228,43 @@ def check_dials(brand, text):
         # and exempting them reopened it. A math function is read for units
         # like anything else.
         if v and re.match(r"^var\s*\(", v, re.I):
+            inner = var_fallback(v)
+            if inner is None:
+                continue
+            if not inner.strip():
+                out.append((True, f"{brand}: {token} is {raw.strip()!r}, whose "
+                                  f"fallback is empty. An empty fallback "
+                                  f"substitutes nothing rather than the "
+                                  f"default, so {LOST[which]}."))
+            elif UNIT.search(inner):
+                out.append((True, f"{brand}: {token} is {raw.strip()!r}. The "
+                                  f"fallback carries a unit, and it is the "
+                                  f"value that ships whenever the brand's own "
+                                  f"property is not set - "
+                                  f"{LOST_UNIT[which]}."))
             continue
         if v and re.match(r"^(calc|clamp|min|max)\s*\(", v, re.I):
             if UNIT.search(v):
                 out.append((True, f"{brand}: {token} is {raw.strip()!r}, which "
                                   f"computes to a length rather than a number. "
                                   f"A math function is not an escape from the "
-                                  f"unit rule - every declaration using the "
-                                  f"dial would still be invalid."))
+                                  f"unit rule - {LOST_UNIT[which]}."))
             continue
 
         if v is None or not NUMBER.match(v):
-            # The unit trap, and it is the one rule every kind shares. What
-            # the value falls back TO differs, though, and saying the wrong
-            # one sends the reader looking in the wrong place.
-            lost = {
-                MULTIPLIER: "the type silently collapses to inherited size",
-                OFFSET: "letter-spacing falls back to `normal` - not to the "
-                        "value the pattern designed, so the brand loses "
-                        "tracking it never set",
-                WEIGHT: "the weight falls back to the pattern's own default",
-            }[kind]
-            out.append((True, f"{brand}: {token} is {raw.strip()!r}. It must be "
-                              f"a bare number - a unit makes every declaration "
-                              f"using it invalid, and {lost}."))
+            # Every dial has to be a bare number. What that COSTS is per dial,
+            # not per kind - naming the wrong fallback sends the reader
+            # looking somewhere the fault is not, which is worse than saying
+            # nothing. And a unit is not the same fault as an empty or
+            # unreadable value: on --heading-leading a unit stays valid.
+            if v is None:
+                out.append((True, f"{brand}: {token} is empty. An empty value "
+                                  f"is a declaration, not the absence of one, "
+                                  f"and it substitutes nothing: {LOST[which]}."))
+            else:
+                out.append((True, f"{brand}: {token} is {raw.strip()!r}. It "
+                                  f"must be a bare number: "
+                                  f"{LOST_UNIT[which] if UNIT.search(v) else LOST[which]}."))
             continue
 
         n = float(v)

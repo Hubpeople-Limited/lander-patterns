@@ -39,8 +39,9 @@ real material the brand has — one strong quote, a handful, or a body of it.
 
 **Brand adaptability.** `--card-border`, `--card-radius` and `--card-shadow`
 set the feel, as everywhere: hairline-and-flat reads editorial, shadowed-and-
-round reads warm. The quote carries `--font-heading` at weight 800 with tight
-negative tracking, so the brand's display face does most of the work. The
+round reads warm. The quote carries `--font-heading` at `--weight-display`
+(700) with tight negative tracking, so the brand's display face does most of
+the work. The
 portrait's roundness is the pattern's own `--testimonial-grid-avatar-radius`
 rather than `--card-radius`, so a sharp-cornered brand keeps round faces by
 default and can square them by overriding that one property. Muted text uses

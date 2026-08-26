@@ -70,7 +70,7 @@
   /* --color-text: --color-primary-dark is for light grounds only. */
   color: var(--color-text);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.4;
   text-decoration: underline;
   text-decoration-thickness: from-font;

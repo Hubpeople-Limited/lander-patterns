@@ -15,7 +15,7 @@ the size of the type is the claim, and it makes an invented quote look like the
 most trustworthy thing on the page. If there is no quote, there is no section.
 
 **What it needs.** One real testimonial, word for word as the person wrote it,
-short enough to read at display size — the quote is held to a 20-character
+short enough to read at display size — the quote is held to a `12.5em`
 measure, so roughly fifteen to twenty-five words is the working range. A real
 name, and an attribution line that is true (role, location, how long they have
 been a member). One real portrait of that person, square, at least 104px, with
@@ -45,9 +45,21 @@ page and wants a section either side that is not also tinted.
 **Brand adaptability.** The stage is `--color-surface-soft`, so how far the
 section separates from the page is entirely the brand's business — a near-white
 soft tint gives a whisper of separation, a saturated one gives a hard band. The
-quote takes `--font-heading` at weight 650 with tight negative tracking, so the
-brand's display face does nearly all of the work here; a serif reads as an
-editorial pull quote and a grotesque as a product claim, from the same markup.
+quote takes `--font-heading` at `--weight-display` (700) with tight negative
+tracking, so the brand's display face does nearly all of the work here; a serif
+reads as an editorial pull quote and a grotesque as a product claim, from the
+same markup.
+
+The measure is `12.5em` and not a character count, because `ch` is the advance
+of zero in whichever face the brand chose: Georgia Bold and Arial differ by 26%,
+so one character count holds two brands to two different widths. `em` keeps the
+type scale and drops the typeface. It also means the measure now agrees across
+faces rather than matching any one of them: a Georgia-stack brand holds this
+quote about 11% narrower than a 20-character measure did, which is one extra
+line of display type on a quote at the top of the working range, and a section
+about 54px taller at desktop width. A brand that wants the old shape shortens
+the quote by a few words; widening the measure turns the pattern back into a
+paragraph, which is the one thing it exists not to be.
 
 Every ink on the stage is `--color-text` or `--color-text-soft`, and that is
 deliberate rather than dull. The quote is display-size but it is not sitting on
