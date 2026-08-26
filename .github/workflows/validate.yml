@@ -184,9 +184,10 @@ jobs:
           python ci/lint.py
           python ci/test_gates.py
           echo "$TAG" > LATEST
-          # compositions/ carries the library tag in every manifest, so it is
-          # regenerated after LATEST moves and released in the same commit -
-          # the same treatment INDEX.md gets, for the same reason.
+          # compositions/ stamps the library tag into each manifest.json and
+          # nowhere else, so regenerating after LATEST moves rewrites one
+          # file per composition; they ship in the release commit, the same
+          # treatment INDEX.md gets, for the same reason.
           python ci/compose.py
           git config user.name "pattern-ci"
           git config user.email "pattern-ci@users.noreply.github.com"
@@ -200,12 +201,17 @@ jobs:
           git push --atomic origin main "refs/tags/$TAG"
       # One download instead of thirty fetches: everything a consumer reads,
       # zipped and attached to a GitHub Release for the tag. Idempotent on
-      # re-runs - an existing release just gets the asset replaced.
+      # re-runs: the checkout on a re-run is the SHA from before the release
+      # commit existed, so the tagged tree - the asset's content by
+      # definition - is checked out explicitly before zipping, and an
+      # existing release just gets the same asset replaced.
       - name: Attach the library bundle to a release for the tag
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="v${{ github.run_number }}"
+          git fetch --tags origin
+          git checkout "refs/tags/$TAG"
           zip -qr "library-$TAG.zip" patterns compositions lib INDEX.md TOKENS.md patterns.json
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "library-$TAG.zip" --clobber

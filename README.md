@@ -66,9 +66,10 @@ Rules that hold for every consumer:
 standard pages — a conversion homepage, a no-photography homepage, pricing,
 safety. Each folder carries `page.html` (a complete page document, the
 recipe's patterns in order with every copy slot still open and described),
-`page.css` (those patterns' CSS concatenated in page order), `manifest.json`
-(the exact pattern versions inside and the library tag), and a generated
-`README.md` listing the slots.
+`page.css` (those patterns' CSS concatenated in page order, plus the CSS of
+any pattern a slot's sample markup uses), `manifest.json` (the exact pattern
+versions inside and the library tag), and a generated `README.md` listing
+the slots and the wiring.
 
 **Building one of these pages? Fetch the composition instead of assembling
 patterns by hand.** One folder replaces reading nine pattern folders and

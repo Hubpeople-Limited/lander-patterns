@@ -20,5 +20,13 @@
       "name": "cta-band",
       "version": "4"
     }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
   ]
 }
