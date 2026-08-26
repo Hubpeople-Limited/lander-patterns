@@ -12,7 +12,18 @@
     "Each is a page somebody would plausibly build. Add one whenever a real",
     "build finds a composition worth protecting; do not add every permutation,",
     "because a fixture nobody understands is one that gets deleted the first",
-    "time it fails."
+    "time it fails.",
+    "",
+    "A recipe carrying a `composition` block additionally ships as a",
+    "pre-assembled page shell under compositions/<name>@<version>/, generated",
+    "by ci/compose.py. The block lives HERE, on the recipe, rather than in a",
+    "sibling file, so there is exactly one statement of which patterns make a",
+    "page: the fixture that must stay valid and the shell agents fetch are the",
+    "same list, and neither can drift from the other. Bump `version` when the",
+    "pattern list or its order changes - the folder name is the contract a",
+    "consumer pinned. Everything else about a shell (slot names, guidance,",
+    "pattern versions) is derived from the patterns at generation time and",
+    "belongs to no file but theirs."
   ],
   "recipes": [
     {
@@ -28,22 +39,26 @@
     {
       "page": "homepage",
       "patterns": ["hero-split", "steps-plain", "faq-details", "cta-band"],
-      "why": "Opener, how it works, the questions, the ask - the ordinary conversion homepage."
+      "why": "Opener, how it works, the questions, the ask - the ordinary conversion homepage.",
+      "composition": { "name": "homepage-conversion", "version": 1 }
     },
     {
       "page": "homepage",
       "patterns": ["hero-stated:ground=deep", "heading-block", "benefit-tiles", "cta-band"],
-      "why": "The homepage for a brand with no photography. heading-block is not decoration here: benefit-tiles opens at h3 and says so in its own markup, so without an h2 above it the page skips a heading level."
+      "why": "The homepage for a brand with no photography. heading-block is not decoration here: benefit-tiles opens at h3 and says so in its own markup, so without an h2 above it the page skips a heading level.",
+      "composition": { "name": "homepage-no-photography", "version": 1 }
     },
     {
       "page": "pricing",
       "patterns": ["hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band"],
-      "why": "State the offer, show the tiers, answer the objection, ask."
+      "why": "State the offer, show the tiers, answer the objection, ask.",
+      "composition": { "name": "pricing", "version": 1 }
     },
     {
       "page": "safety",
       "patterns": ["hero-stated:ground=brand", "safety-protections", "cta-band"],
-      "why": "On a dating brand this is a conversion page in disguise, so it closes like one."
+      "why": "On a dating brand this is a conversion page in disguise, so it closes like one.",
+      "composition": { "name": "safety", "version": 1 }
     },
     {
       "page": "article",
