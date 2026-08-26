@@ -94,13 +94,22 @@ library now does.
 does.** Whether it changes any depends entirely on the face in front of you,
 which is what makes it easy to get wrong: on Georgia the collapse really is
 byte-identical, and Georgia is the house face. Chromium, "Handgloves 0000" at
-100px, on the stacks the four sample token sets actually use:
+100px, on the stacks the five sample token sets actually use:
 
 | Stack | 400 | 500 | 600 / 650 | 700 | 800 / 900 |
 |---|---|---|---|---|---|
 | `Georgia, "Times New Roman", serif` | 792.688 | 792.688 | 912.844 | 912.844 | 912.844 |
 | `"Helvetica Neue", Helvetica, Arial` | 778.375 | 778.375 | 817.047 | 817.047 | **934.094** |
 | `system-ui` / `-apple-system` (Segoe UI here) | 764.703 | **786.188** | **786.188** | **813.281** | 852.062 |
+| `"Lander Display Fixture"` (`preview/tokens-display.css`) | 1125.609 | 1125.609 | 1296.250 | 1296.250 | 1296.250 |
+
+The fourth row is why the first three were not enough. It is a simulated face —
+`@font-face` with `size-adjust: 142%` over a `local()` chain, so nothing is
+fetched and nothing can silently fail to arrive — and until it existed, every
+row in this table was a face this library had been designed on. Its regular is
+**42% wider than Georgia's** at the same size, and its line box 57% taller,
+which is the spread a real brand's display face can put between itself and the
+house one.
 
 Two things fall out of that table, and both are visible changes on a real
 brand:
@@ -171,14 +180,34 @@ faces rather than matching any one of them:
 **`hero-stated` is deliberately 7.5% wider than the ratio**, and nothing else
 records that, so it is recorded here: at `10em` its headline broke to three
 lines across the sample brands and the shape of the pattern is a two-line
-statement. `10.75em` is the value that holds two lines on every sample face
-above phone width. Do not "correct" it back to `10em`.
+statement. `10.75em` is the value that holds two lines above phone width on
+every sample face this library was designed against. Do not "correct" it back
+to `10em`.
+
+**That is a narrower claim than the one this paragraph used to make**, and the
+correction is worth keeping rather than quietly rewriting. It said `10.75em`
+holds two lines "on every sample face", which was true of the four faces that
+existed when it was written and is not a property of the measure. Added as a
+fifth sample brand, `preview/tokens-display.css` renders the same headline on
+**four** lines at 1280 — the measure resolves to the same 774.0px it does
+everywhere, and the face simply puts fewer words in it. A measure in `em`
+guarantees an identical width, never an identical line count, and no measure
+of any kind can guarantee the second. Sizing a pattern's shape to a line count
+is the thing to stop doing.
 
 Two patterns reflow on a Georgia-stack brand as a result. `hero-stated` is the
 one the ratio was chosen for. The other is `quote-feature`, whose measure goes
 from 610.3px to 544px at 1280 — 10.9% narrower, the quote 3 lines to 4, and
 the section about 54px taller. That is the cost of a measure that means the
 same thing on every face, and it is noted in that pattern's README.
+
+**`ci/check_measures.py` is what holds all of that true.** It renders every
+display measure on all five sample brands and requires the resolved widths to
+be the same number, which they now are: **0.00% spread**. Re-rendered in the
+`ch` form the same six measures spread **79.0%** across the five, and **26.1%**
+across the four that ship a system stack — the figure quoted above, reproduced
+from the code rather than from this document. A display measure written in
+`ch` fails that gate outright.
 
 ## The aesthetic dials
 
@@ -240,7 +269,7 @@ face drawn tight a positive one.
 a weight the face actually has. This is the dial for a face that has no 700:
 set it to what the family ships rather than letting the browser synthesise one.
 
-**Why they exist.** Across the four sample token sets, seven of the eight
+**Why they exist.** Across the five sample token sets, seven of the eight
 spacing steps are byte-identical and the display sizes are hard-coded in the
 patterns. Two brands could pick different colours, different faces and different
 corners, and still lay out identically - which is what makes pages on a

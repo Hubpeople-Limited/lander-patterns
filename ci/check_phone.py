@@ -453,7 +453,17 @@ class Phone:
 
 # ---------------------------------------------------------------- the sweep
 
-def token_set(which="brand"):
+# The token set every measurement in ACCEPTED was taken on. It matters
+# because those entries carry PIXEL SIZES, and a pixel size is a size in a
+# particular typeface: masthead-nav's login link is 40px tall on a brand
+# whose heading face is Georgia and clears 44px on preview/tokens-display.css,
+# whose line box is 57% taller. So a run on any other set cannot say an entry
+# matched nothing - the fault is not gone, it is a different size - and
+# reporting it as stale sends somebody to delete a live baseline entry.
+BASELINE_TOKENS = "brand"
+
+
+def token_set(which=BASELINE_TOKENS):
     return (PREVIEW / f"tokens-{which}.css").read_text(encoding="utf-8")
 
 
@@ -465,7 +475,7 @@ def accepted_for(name, line):
     return None
 
 
-def sweep(widths=WIDTHS, tokens_name="brand", names=None):
+def sweep(widths=WIDTHS, tokens_name=BASELINE_TOKENS, names=None):
     """Every pattern, measured. Returns (new, known, stale).
 
     `new` fails a build, `known` is the baseline above, and `stale` names
@@ -487,9 +497,14 @@ def sweep(widths=WIDTHS, tokens_name="brand", names=None):
                     matched.add((name, why))
                 else:
                     new.append(line)
-    # Only a run over the whole library can say an entry matched nothing. A
-    # run over three named patterns would call every other entry stale.
-    full = names == sorted(f.name for f in PATTERNS.iterdir() if f.is_dir())
+    # Only a run over the whole library ON THE BASELINE TOKEN SET can say an
+    # entry matched nothing. A run over three named patterns would call every
+    # other entry stale, and a run on another sample brand would call stale
+    # every entry whose fault the other brand's type metrics happen to lift
+    # over the threshold - which is a live baseline entry being deleted for
+    # the wrong reason. See BASELINE_TOKENS.
+    full = (names == sorted(f.name for f in PATTERNS.iterdir() if f.is_dir())
+            and tokens_name == BASELINE_TOKENS)
     stale = ([f"{p}: {w}" for p, n, w in ACCEPTED if (p, w) not in matched]
              if full else [])
     return new, known, stale
@@ -560,6 +575,10 @@ def main():
         print(f"        accepted: {why}")
     for line in stale:
         print(f"  STALE baseline entry matched nothing - {line}")
+    if args.tokens != BASELINE_TOKENS:
+        print(f"  note: the accepted baseline was measured on the "
+              f"{BASELINE_TOKENS} tokens, so stale detection is off on this "
+              f"run. A pixel size is a size in a particular typeface")
 
     if not new and not known:
         print(f"  clean: {len(names)} pattern(s), nothing overflows, no target "

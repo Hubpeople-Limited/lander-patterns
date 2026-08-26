@@ -852,6 +852,173 @@ def check_phone():
     return failures
 
 
+# ------------------------------------------------------------ display measures
+#
+# ci/check_measures.py. Three separable things, and they fail for different
+# reasons, so they are tested separately:
+#
+#   the discovery   which declarations are display measures at all. A body
+#                   measure in ch is correct and must stay quiet; a display
+#                   measure in ch is the defect.
+#   the calibration whether the hostile sample brand is actually hostile. This
+#                   is the only part of the gate whose answer depends on what
+#                   is installed on the machine, so it is exercised on numbers
+#                   here rather than only ever on this one laptop's fonts.
+#   the measurement the library itself, and the positive control.
+
+MEASURE_FIRES = {
+    "a display measure in ch, the defect the gate exists for":
+        (".x-title { font-family: var(--font-heading); max-width: 16ch; }",
+         [(".x-title", "max-width", 16.0, "ch")]),
+    "a display measure reached through the pattern's own custom property":
+        (".x { --x-title-measure: 8.75em; }\n"
+         ".x-title { font-family: var(--font-heading);"
+         " max-width: var(--x-title-measure); }",
+         [(".x-title", "max-width", 8.75, "em")]),
+    "a heading with no face set on it, named as display type":
+        (".x-heading { max-width: 11.25em; }",
+         [(".x-heading", "max-width", 11.25, "em")]),
+    "a measure declared in a media query":
+        (".x-title { font-family: var(--font-heading); }\n"
+         "@media (min-width: 60rem) { .x-title { max-width: 10.75em; } }",
+         [(".x-title", "max-width", 10.75, "em")]),
+}
+
+MEASURE_QUIET = {
+    "a body measure in ch, which is the job ch is for":
+        ".x-copy { max-width: 68ch; }",
+    "a container held to a rem width":
+        ".x-wrap { max-width: 72rem; }",
+    "body text under a heading, sharing neither the face nor the name":
+        ".x-title { font-family: var(--font-heading); }\n"
+        ".x-lede { max-width: 42ch; }",
+}
+
+# {full, bare, fallback} in em, as the browser probe returns them. `bare` is
+# the same stack with the fixture family removed, which is what the page would
+# have rendered in had the @font-face resolved nothing.
+MEASURE_CALIBRATION = [
+    ("the fixture's @font-face resolved nothing and it fell back silently",
+     {"display": {"full": 0.7012, "bare": 0.7012, "fallback": "Georgia"},
+      "brand": {"full": 0.7012, "bare": 0.7012, "fallback": "serif"}},
+     True),
+    ("the fixture is not the widest sample brand",
+     {"display": {"full": 0.62, "bare": 0.44, "fallback": "Georgia"},
+      "brand": {"full": 0.7012, "bare": 0.7012, "fallback": "serif"}},
+     True),
+    ("there is no hostile sample brand at all",
+     {"brand": {"full": 0.7012, "bare": 0.7012, "fallback": "serif"}},
+     True),
+    ("the fixture as this repository ships it",
+     {"display": {"full": 0.9957, "bare": 0.7012, "fallback": "Georgia"},
+      "brand": {"full": 0.7012, "bare": 0.7012, "fallback": "serif"},
+      "sharp": {"full": 0.5562, "bare": 0.5562, "fallback": "sans-serif"}},
+     False),
+    ("the chain landed on a narrow serif: adjusted, but barely the widest",
+     {"display": {"full": 0.7100, "bare": 0.5000, "fallback": "Georgia"},
+      "brand": {"full": 0.7012, "bare": 0.7012, "fallback": "serif"}},
+     False),
+]
+
+
+def check_measures():
+    """The discovery and the calibration on numbers; the library in a browser.
+
+    The browser half skips with no browser installed, for the same reason
+    ci/check_phone.py's does. The two halves above it do not, so a contributor
+    with no Chromium still has the parts of this gate that can be tested
+    without one - which is most of it.
+    """
+    print("ci/check_measures.py, display measures across the sample brands")
+    sys.path.insert(0, str(HERE))
+    import check_measures
+
+    failures = []
+    base = Path(tempfile.mkdtemp(prefix="lander-measure-gate-"))
+    try:
+        folder = base / "patterns" / "fixture"
+        folder.mkdir(parents=True)
+        real = check_measures.PATTERNS
+        check_measures.PATTERNS = base / "patterns"
+        try:
+            for label, (css, want) in MEASURE_FIRES.items():
+                (folder / "pattern.css").write_text(css, encoding="utf-8")
+                got = [(s, p, n, u) for s, p, _d, n, u
+                       in check_measures.measures("fixture")]
+                ok = got == want
+                print(f"  {'ok  ' if ok else 'FAIL'} finds: {label}")
+                if not ok:
+                    failures.append(label)
+                    print(f"        got: {got}")
+            for label, css in MEASURE_QUIET.items():
+                (folder / "pattern.css").write_text(css, encoding="utf-8")
+                got = check_measures.measures("fixture")
+                ok = not got
+                print(f"  {'ok  ' if ok else 'FAIL'} quiet on: {label}")
+                if not ok:
+                    failures.append(label)
+                    print(f"        got: {got}")
+        finally:
+            check_measures.PATTERNS = real
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
+
+    for label, seen, want_fatal in MEASURE_CALIBRATION:
+        fatal, _lines = check_measures.calibration_faults(seen)
+        ok = bool(fatal) == want_fatal
+        print(f"  {'ok  ' if ok else 'FAIL'} calibration "
+              f"{'stops' if want_fatal else 'passes'}: {label}")
+        if not ok:
+            failures.append(label)
+            print(f"        got: {fatal or 'no fault'}")
+
+    why = check_measures.browser_unavailable()
+    if why:
+        print(f"  SKIP  no browser here - {why}")
+        print("  No measure was rendered on any brand. This is not a pass.")
+        return failures
+
+    sets = check_measures.sample_sets()
+    names = sorted(f.name for f in check_measures.PATTERNS.iterdir()
+                   if f.is_dir())
+    with check_measures.Ruler() as ruler:
+        cal, _lines = check_measures.calibrate(ruler, sets,
+                                               check_measures.WIDTHS[0])
+        ok = not cal
+        print(f"  {'ok  ' if ok else 'FAIL'} the display fixture is hostile "
+              f"on this machine")
+        if not ok:
+            failures.append("display fixture calibration")
+            for line in cal:
+                print(f"        {line}")
+        rows, faults, _notes = check_measures.sweep(
+            ruler, names, sets, check_measures.WIDTHS)
+        bad = faults + [line for row in rows
+                        for good, line in [check_measures.verdict(row)]
+                        if not good]
+        # The control. Same rendering, every display measure back in ch, and
+        # the gate has to fire - otherwise a clean run above proves nothing
+        # except that nothing was compared.
+        ch_rows, _f, _n = check_measures.sweep(
+            ruler, names, sets, check_measures.WIDTHS, ch=True)
+    ok = not bad
+    print(f"  {'ok  ' if ok else 'FAIL'} every display measure identical "
+          f"across {len(sets)} brands  "
+          f"{check_measures.spread_of(rows):.2f}% spread, {len(rows)} measured")
+    if not ok:
+        failures.append("display measure differs across sample brands")
+        for line in bad:
+            print(f"        {line}")
+    ch_spread = check_measures.spread_of(ch_rows)
+    four = check_measures.spread_of(ch_rows, without={check_measures.HOSTILE})
+    ok = ch_spread > 5
+    print(f"  {'ok  ' if ok else 'FAIL'} the same measures in ch diverge     "
+          f"     {ch_spread:.1f}% spread, {four:.1f}% without the fixture")
+    if not ok:
+        failures.append("positive control did not fire")
+    return failures
+
+
 def check_lost_messages():
     """An exit code is not the whole gate. The message is the gate.
 
@@ -927,6 +1094,8 @@ def main():
     print()
     failures += check_phone()
     print()
+    failures += check_measures()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -937,8 +1106,10 @@ def main():
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
-             + len(PHONE_FIRES) + len(PHONE_QUIET) + 2)
-    print(f"clean: {total} gate cases across eight modules behave as documented.")
+             + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
+             + len(MEASURE_FIRES) + len(MEASURE_QUIET)
+             + len(MEASURE_CALIBRATION) + 3)
+    print(f"clean: {total} gate cases across nine modules behave as documented.")
     return 0
 
 

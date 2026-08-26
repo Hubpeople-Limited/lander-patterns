@@ -47,22 +47,44 @@ def _is_named_display(sel):
     return bool(NAMED.search(base) or ELEMENT.search(base))
 
 
-def display_faults(css):
-    """(selector, value, why) for every display size not carrying the dial."""
+def rules(css):
+    """(selectors, body) for every rule in the file, comments removed."""
     text = re.sub(r"/\*.*?\*/", " ", css, flags=re.S)
-    rules = [(_selectors(m.group(1)), m.group(2)) for m in RULE.finditer(text)]
+    return [(_selectors(m.group(1)), m.group(2)) for m in RULE.finditer(text)]
 
-    # Pass one: every selector the file gives the heading face to, including
-    # each member of a selector list that shares one declaration.
+
+def display_selectors(css):
+    """Every selector in this stylesheet that display type is set on.
+
+    The face is resolved across the WHOLE FILE before any selector is judged,
+    for the reason in this module's header: stylesheets declare the face once
+    for a group and everything else separately underneath, so a rule-at-a-time
+    reading misses most of the display type there is.
+
+    Split out from display_faults because more than one gate wants the answer.
+    ci/check_measures.py asks which selectors carry a display MEASURE, which is
+    the same question about the same set of selectors, and a second copy of
+    this reasoning is a second copy to get wrong.
+    """
+    got = rules(css)
     faced = set()
-    for sels, body in rules:
+    for sels, body in got:
         if FACE.search(body):
             faced.update(sels)
+    out = set(faced)
+    for sels, _body in got:
+        out.update(s for s in sels if _is_named_display(s))
+    return out
 
-    # Pass two: the sizes.
+
+def display_faults(css):
+    """(selector, value, why) for every display size not carrying the dial."""
+    got = rules(css)
+    display_set = display_selectors(css)
+
     out = []
-    for sels, body in rules:
-        display = [s for s in sels if s in faced or _is_named_display(s)]
+    for sels, body in got:
+        display = [s for s in sels if s in display_set]
         if not display:
             continue
         where = ", ".join(display)

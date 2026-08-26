@@ -11,8 +11,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "preview" / "site"
+# Named rather than globbed, so the preview index can say what each one is
+# for and the order is the order a reviewer should read them in. `display` is
+# last because it is the one to look at when something looks wrong on the
+# other four and you cannot see why.
 TOKEN_SETS = {"soft": "tokens-soft.css", "sharp": "tokens-sharp.css",
-              "dark": "tokens-dark.css", "brand": "tokens-brand.css"}
+              "dark": "tokens-dark.css", "brand": "tokens-brand.css",
+              "display": "tokens-display.css"}
 
 # Display stand-ins so furniture tokens render readably in previews. These
 # substitutions exist only here; pattern files always keep the real tokens.
@@ -163,10 +168,14 @@ def main():
              "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
              "<title>Pattern previews</title></head><body>"
              "<h1>Pattern previews</h1><p>Each pattern rendered on every "
-             "sample token set. <strong>dark</strong> is not a style option: "
-             "it is a deliberately hostile brand whose --color-heading sits "
-             "at the 3:1 large-text bar, which is all the contract promises "
-             "of that token. Anything that looks wrong there is a defect in "
+             "sample token set. Two of the five are not style options. "
+             "<strong>dark</strong> is a deliberately hostile brand whose "
+             "--color-heading sits at the 3:1 large-text bar, which is all "
+             "the contract promises of that token. <strong>display</strong> "
+             "is a deliberately hostile brand whose heading face carries a "
+             "digit 42% wider than Georgia's and a line box 57% taller, "
+             "Georgia being the face most of this library was designed "
+             "against. Anything that looks wrong on either is a defect in "
              "the pattern, not in the preview.</p><ul>" + "".join(cards) + "</ul></body></html>\n")
     (OUT / "index.html").write_text(index, encoding="utf-8", newline="\n")
     # Every script element on a generated page must be empty and carry a src.

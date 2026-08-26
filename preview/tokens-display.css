@@ -1,0 +1,187 @@
+/* Sample token set: display face, hostile metrics. Preview only - a real
+   brand supplies its own :root in global.css.
+
+   The other four sample sets name a system stack: Georgia twice, a
+   Helvetica/Arial stack twice. Every one of them is a face this library was
+   written on. So no webfont and no unusual metrics have ever been laid out by
+   any gate here, and the whole family of defects that only appears when the
+   heading face is not the one the CSS was designed against was invisible: a
+   measure that means a different width per face, a leading chosen against
+   Georgia's line box, a weight the face does not carry. v58 shipped a
+   "renders identically" claim, a half-done weight collapse and a hierarchy
+   inversion with every gate green, because the thing that would have shown
+   them was not in the repository.
+
+   This set is that thing. It is a brand in every other respect - it defines
+   the whole contract, and its inks are measured below - but its heading face
+   is deliberately the worst-shaped one the library could be asked to carry.
+
+   WHY IT IS SIMULATED RATHER THAN FETCHED. Three reasons, and the first is
+   the one that decides it:
+
+   - A failed network fetch is SILENT. @font-face falls through to the next
+     family in the stack and the page renders in the fallback, so a gate that
+     could not reach the font reports a clean pass on a face it never used.
+     That is the exact failure tokens-dark.css was calibrated to prevent, and
+     a fixture that can quietly stop testing the thing it exists to test is
+     worse than no fixture.
+   - Google serves a different file per user-agent, so any reference number
+     recorded here would move under a browser update and the fixture would rot
+     without anyone touching it.
+   - Simulation can be AIMED. A real face has whatever metrics it has; these
+     are chosen to be past anything the library has met.
+
+   THE NUMBERS, and what each is aimed at. Measured in this repo's Chromium at
+   font-size: 100px, on a Georgia base.
+
+   size-adjust: 142%
+     The advance width of a digit is what a `ch` measure is made of, and it is
+     the metric that diverges most between faces. The real spread inside this
+     library was Georgia Bold 0.7012em against Arial Bold 0.5562em - 26%,
+     enough on its own to render one `max-width: 16ch` headline on two lines
+     for some brands and three for others. At 142% a bold digit here is
+     0.9957em: near enough exactly one em per digit, 79% wider than Arial Bold
+     and 42% wider than Georgia Bold. That is three times the real spread, in
+     the same direction, so a measure that still means "a count of characters"
+     cannot hide.
+
+     142 is also the floor at which this set is the widest sample brand on any
+     machine, not just this one. The src below is a local() chain, so which
+     face it lands on depends on what is installed: Georgia here, most likely
+     Liberation Serif or Nimbus Roman on a CI runner, and those are the
+     narrowest plausible base at 0.5em per bold digit. 0.5 x 1.42 = 0.71em,
+     still past Georgia Bold's 0.7012em. Below 140% that stops being true and
+     the fixture would be tame on the machine nobody watches.
+
+     It carries the cap height with it: 1.2967em bold against Georgia Bold's
+     0.9131em, so this is a taller-capped face as well as a wider one, and
+     anything that reserved room for a heading by eye reserved it for Georgia.
+
+   ascent-override: 106%  descent-override: 20%  line-gap-override: 0%
+     The overrides compose AFTER size-adjust, so the line box is
+     (1.06 + 0.20) x 1.42 = 1.79em, against Georgia's 1.14em and Helvetica's
+     1.15em. The split is weighted to the ascent on purpose - 84:16, against
+     Georgia's roughly 81:19 - because the ascent is the half that collides
+     with whatever sits above it. The tightest display leading in this library
+     is 1.02, which here asks for a line box 43% shorter than the glyphs
+     occupy. If a pattern's leading was chosen by looking at Georgia, this is
+     where that shows.
+
+   HOW TO READ WHAT IT FINDS, because this matters and the fixture cannot say
+   it in its own output. Measured with canvas TextMetrics, the ink extent of
+   this face - cap height plus descender depth - is 1.2900em, against Georgia's
+   0.9100em and Helvetica's 0.9300em. **No real static face reaches 1.29em**:
+   cap height rarely passes 0.75em and a descender rarely passes 0.30em, so
+   about 1.05em is the realistic ceiling. So a finding's EXISTENCE is real and
+   its MAGNITUDE is not. The library's three 1.02 display leadings collide here
+   by 0.27em per line, which no brand would ever see; what is real is that 1.02
+   has 0.11em of headroom on Georgia and none at all above 1.02em of ink, and a
+   real display face can be over that. Report the threshold, never the number
+   of pixels this fixture produced.
+
+   IF THE local() CHAIN RESOLVES NOTHING, this file goes quiet in exactly the
+   way a failed fetch would: the family is unavailable, --font-heading falls
+   through to Georgia, and the set becomes a fifth ordinary brand. That is not
+   allowed to pass unnoticed, so ci/check_measures.py measures the digit
+   advance before it reports anything and refuses to call a run clean unless
+   this face is actually the widest of the five.
+
+   NO DIAL IS SET HERE. --type-scale, --heading-leading, --heading-tracking
+   and --weight-display are all left at their defaults, so anything this set
+   finds is attributable to the metrics and not to a dial. The same reasoning
+   holds the shape flat and unremarkable: radius, shadow and border are the
+   plainest values in the library, because a second new variable would make
+   every finding an argument about which one caused it.
+
+   The inks are this brand's own, and they are measured rather than assumed
+   (canvas-resolved sRGB, implementation calibrated against white-on-black
+   21.00 and white-on-#767676 4.54):
+
+     --color-text on --color-bg           15.09
+     --color-text-soft on --color-bg       7.13
+     --color-heading on --color-bg        17.31
+     --color-text-soft on --color-surface-soft  6.33
+     --color-on-primary on --color-primary      7.93
+     --color-on-primary on --color-primary-dark 12.12
+     --color-on-scrim on --color-scrim          18.34
+     --color-focus on --color-bg                5.56
+
+   --color-heading is a comfortable near-black here on purpose. Sitting it at
+   the 3:1 bar is tokens-dark.css's job, and two fixtures testing one thing is
+   one fixture and one duplicate. */
+
+/* The face. Two declarations, because a bold display heading and a regular
+   one must both come from the overridden family - a single 400 face would let
+   font matching synthesise the bold from an unadjusted fallback, and the
+   700 metrics are the ones the measures are aimed at.
+
+   The chain is ordered widest-first among what this repo's machines have.
+   Order changes which base is used and therefore the exact advance, never
+   whether the face is hostile: every entry is a serif, and 142% puts the
+   narrowest of them past the widest real sample brand. */
+@font-face {
+  font-family: "Lander Display Fixture";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Georgia"), local("DejaVu Serif"), local("Noto Serif"),
+       local("Liberation Serif"), local("Nimbus Roman"),
+       local("Times New Roman"), local("Times");
+  size-adjust: 142%;
+  ascent-override: 106%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Lander Display Fixture";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Georgia Bold"), local("Georgia"),
+       local("DejaVu Serif Bold"), local("DejaVu Serif"),
+       local("Noto Serif Bold"), local("Liberation Serif Bold"),
+       local("Nimbus Roman Bold"), local("Times New Roman Bold"),
+       local("Times New Roman"), local("Times");
+  size-adjust: 142%;
+  ascent-override: 106%;
+  descent-override: 20%;
+  line-gap-override: 0%;
+}
+
+:root {
+  --color-bg: oklch(0.97 0.005 95);
+  --color-surface: oklch(1 0 0);
+  --color-surface-soft: oklch(0.93 0.012 95);
+  --color-text: oklch(0.24 0.012 60);
+  --color-text-soft: oklch(0.44 0.015 60);
+  --color-heading: oklch(0.18 0.02 30);
+  --color-primary: oklch(0.45 0.16 20);
+  --color-primary-dark: oklch(0.34 0.14 20);
+  --color-on-primary: oklch(0.99 0.005 95);
+  --color-scrim: oklch(0.16 0.012 30);
+  --color-on-scrim: oklch(0.98 0.005 95);
+  --color-rule: oklch(0.78 0.012 95);
+  --color-focus: oklch(0.5 0.19 255);
+
+  /* The fallback after the fixture family is Georgia, matching tokens-soft.
+     A face that fails to load lands on a brand this library already renders,
+     which keeps the preview readable; ci/check_measures.py is what stops that
+     landing being mistaken for a pass. */
+  --font-heading: "Lander Display Fixture", Georgia, "Times New Roman", serif;
+  --font-body: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --space-scale: 1;
+
+  --space-1: calc(0.25rem * var(--space-scale, 1));  --space-2: calc(0.5rem * var(--space-scale, 1));  --space-3: calc(0.75rem * var(--space-scale, 1));
+  --space-4: calc(1rem * var(--space-scale, 1));     --space-5: calc(1.5rem * var(--space-scale, 1));  --space-6: calc(2rem * var(--space-scale, 1));
+  --space-8: calc(3rem * var(--space-scale, 1));     --space-12: calc(8rem * var(--space-scale, 1));
+  --container-max: 72rem;
+
+  --btn-radius: 0.25rem;
+  --card-radius: 0.25rem;
+  --card-shadow: none;
+  --card-border: 1px solid oklch(0.24 0.012 60 / 0.22);
+  --chip-radius: 0.25rem;
+  --logo-height: 2.5rem;
+
+  --transition-fast: 150ms;
+  --transition-slow: 400ms;
+}

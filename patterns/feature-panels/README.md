@@ -53,8 +53,8 @@ against its own ground on every brand, with no per-brand measurement.
 `--feature-panels-ink` — by definition the one colour the contract promises
 against that panel's ground — so a single rule is safe on all three.
 `--color-focus` would not be: on a `--color-primary` ground it measures **1.00,
-1.14, 1.58 and 1.75** across the four sample token sets against a 3:1 bar, which
-is invisible. Re-derive from `preview/tokens-*.css` before changing it.
+1.14, 1.34, 1.58 and 1.75** across the five sample token sets against a 3:1
+bar, which is invisible. Re-derive from `preview/tokens-*.css` before changing it.
 
 **The claim never takes `--color-heading`.** Every panel paints its own ground
 and that token is promised against `--color-bg` alone. Only the section title

@@ -96,11 +96,13 @@ the page.
 
 ## Previews
 
-Every pattern is rendered against four sample token sets — soft-rounded,
+Every pattern is rendered against five sample token sets — soft-rounded,
 sharp-flat, a deliberately hostile dark brand whose `--color-heading` sits at
-the 3:1 large-text bar the contract permits, and `brand`, which carries the
-token vocabulary real brands actually ship. The dark set is a test, not a
-taste: anything that looks wrong on it is a defect in the pattern. Previews at
+the 3:1 large-text bar the contract permits, `brand`, which carries the token
+vocabulary real brands actually ship, and `display`, a deliberately hostile
+brand whose heading face carries a digit 42% wider than Georgia's and a line
+box 57% taller. `dark` and `display` are tests, not tastes: anything that
+looks wrong on either is a defect in the pattern. Previews at
 **https://hubpeople-limited.github.io/lander-patterns/** — rebuilt on every
 merge. Pull requests get the same pages attached as the `pattern-previews`
 artifact.

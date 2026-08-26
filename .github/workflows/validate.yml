@@ -78,6 +78,27 @@ jobs:
       # failure, which is the correct reading HERE and only here.
       - name: Confirm the phone-width gate actually ran
         run: python ci/check_phone.py --require-browser
+      # The same patterns again, on the sample brand whose heading face this
+      # library was NOT designed against. The four other sample sets name a
+      # system stack - Georgia twice, Helvetica/Arial twice - so until
+      # preview/tokens-display.css existed, every render in this workflow was
+      # a render on a face the CSS had been tuned to.
+      - name: Phone widths on the hostile type fixture
+        run: python ci/check_phone.py --require-browser --tokens display
+      # Every display measure, on all five sample brands, required to resolve
+      # to the same number of pixels. This is what holds the v57 ch-to-em move
+      # true: `ch` is the advance of zero in whichever face the brand chose,
+      # so a measure written in it is a headline that breaks to a different
+      # number of lines per brand. --require-browser for the same reason as
+      # the step above.
+      - name: Display measures agree across every sample brand
+        run: python ci/check_measures.py --require-browser
+      # The positive control, and it is not optional. The step above passes on
+      # a library where nothing is measured at all, so this one re-renders
+      # every display measure in the pre-v57 `ch` form and requires the check
+      # to fire. Exit 0 here means the defect was detected.
+      - name: Confirm the measure gate can still catch a ch measure
+        run: python ci/check_measures.py --require-browser --as-ch
       - name: Legibility
         run: python ci/legibility.py
       - name: Build previews

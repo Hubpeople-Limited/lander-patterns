@@ -220,17 +220,24 @@ On every pull request, CI:
   `pattern.css` references — your own `--<pattern-name>-*` properties are
   yours to use freely and are ignored by this check;
 - refuses certain internal strings (the check reports position only);
-- renders every pattern against four sample token sets — soft-rounded,
+- renders every pattern against five sample token sets — soft-rounded,
   sharp-flat, `dark`, a hostile brand whose `--color-heading` sits at the
-  3:1 large-text bar and whose surfaces are dark, and `brand`, which carries
-  the token vocabulary real brands actually ship. Read `dark` as a test rather
-  than a style: it exists to fail patterns that ground text on tokens
-  the contract does not guarantee. The pages attach to your pull request as
-  the `pattern-previews` artifact, so you see all four before anyone merges;
+  3:1 large-text bar and whose surfaces are dark, `brand`, which carries
+  the token vocabulary real brands actually ship, and `display`, a hostile
+  brand whose heading face is not one this library was designed against.
+  Read `dark` and `display` as tests rather than styles: `dark` exists to
+  fail patterns that ground text on tokens the contract does not guarantee,
+  and `display` to fail anything whose size, leading or measure was decided
+  by looking at Georgia. The pages attach to your pull request as the
+  `pattern-previews` artifact, so you see all five before anyone merges;
   on merge they publish to the repo's Pages site;
 - lays every pattern out in a headless browser at 320 and 360 and measures
-  what came out — sideways scroll, tap-target size, text size. See
-  [At a phone width](#at-a-phone-width).
+  what came out — sideways scroll, tap-target size, text size, on `brand` and
+  again on `display`. See [At a phone width](#at-a-phone-width);
+- renders every display measure on all five sample brands and requires the
+  resolved widths to be the same number, then re-renders them in the pre-v57
+  `ch` form and requires that check to fire. See
+  [Display measures](#display-measures).
 
 A red check names the file and the rule. Fix and push again — nothing merges
 red.
@@ -381,6 +388,57 @@ because a baseline that has outlived its defect is how a gate goes quiet.
 it must catch, ten valid shapes it must ignore — and then sweeps the library.
 Proving it against the real patterns alone would prove nothing about the half
 that matters: a check that never fires passes a clean library perfectly.
+
+**CI runs it twice**, once on `brand` and once on `display`, whose heading face
+is not one this library was designed against. `--tokens` picks the set. The
+baseline is measured on `brand` and stays there, because **every entry in it is
+a pixel size and a pixel size is a size in a particular typeface**: the
+`masthead-nav` login link is 40px tall on Georgia and clears 44px on `display`,
+whose line box is 57% taller. So `STALE` detection is reported only on the
+baseline set — on any other the run says so in its output rather than sending
+you to delete a live entry.
+
+### Display measures
+
+A measure is a `max-width` on display type: the number that decides whether a
+headline lands on two lines or three. Until v57 those were written in `ch`, and
+`ch` is not a length — it is the advance width of *zero in the face actually
+used, at the weight actually used*. Georgia Bold is `0.7012em` and Arial Bold
+`0.5562em`, so `max-width: 16ch` was **26% wider on one sample brand than
+another** and one headline had been rendering on two lines for some brands and
+three for others since it was written. v57 moved every display measure to `em`.
+
+That was a claim. `ci/check_measures.py` is the measurement:
+
+```
+python ci/check_measures.py                every measure, every sample brand
+python ci/check_measures.py hero-stated    just this one
+python ci/check_measures.py --as-ch        the positive control, below
+```
+
+It renders each measure on all five sample brands at 1280 and 1024 and
+requires the resolved widths to be **the same number** — the only tolerance is
+0.05px, which is float formatting rather than layout. It also fails a display
+measure written in `ch` at all, which is the defect rather than its symptom.
+**Body measures stay in `ch`** and are not judged: there `ch` is doing the job
+it exists for, holding a line to a character count. Which selectors count as
+display type is `ci/_display_type.py`'s answer, the same one the type-dial
+check uses.
+
+Two things about it are worth knowing before you touch either:
+
+- **`--as-ch` is a positive control, and CI runs it.** It re-renders every
+  measure in the pre-v57 form and requires the check to *fire*; exit 0 means
+  the defect was detected. A gate that has only ever run against code that
+  passes has not been shown to catch anything.
+- **The hostile brand is calibrated before anything is reported.**
+  `preview/tokens-display.css` builds its face from `@font-face` +
+  `size-adjust` over a `local()` chain, and if that chain resolves nothing the
+  family is simply unavailable, `--font-heading` falls through to Georgia, and
+  the fifth brand becomes a fifth ordinary one — silently, and looking exactly
+  like a pass. So the face is measured against its own fallback stack first,
+  and a run that cannot show the adjustment took effect exits 3 having
+  reported nothing.
 
 ## Behaviours — platform-delivered JavaScript (gated)
 
