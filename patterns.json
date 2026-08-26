@@ -455,7 +455,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "hero-split": {
@@ -513,7 +513,7 @@
   "requires": "photography",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": true
  },
  "hero-stated": {

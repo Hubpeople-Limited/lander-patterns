@@ -58,6 +58,14 @@ The effect is lost, the CTA is still readable and reachable. Heights use
 `100svh` so a mobile address bar showing or hiding cannot break the pin, with a
 `100vh` line before each as the fallback for engines without `svh`.
 
+**No furniture allowance, and that is deliberate.** The openers subtract
+`--page-header-height`; this sits at the end of a page that has already
+scrolled, so nothing is above it by the time a reader arrives. The site footer
+after it has one effect worth knowing: at the very bottom of the document the
+panel unpins and the footer lifts its top edge off the screen. The reveal
+completes a footer-height before that, and the panel centres its content, so
+the CTA stays readable throughout.
+
 **Brand adaptability.** The panel sits on `--color-surface-soft` against the
 cover's `--color-bg`, so the two grounds read as different surfaces the moment
 the seam moves. The lifting edge carries a large soft shadow at the scale of

@@ -69,8 +69,12 @@ small viewport. Variant: drop the login control and centre the copy
 (`margin-inline: auto; text-align: center`) for a single-message campaign page.
 
 **A viewport minus what sits above it.** A site header is not part of this
-pattern, so a plain `100svh` puts the foot one header-height below the fold —
-and the foot is where the join control is. The height is
-`calc(100svh - var(--hero-overlay-above, 4.5rem))`; `4.5rem` covers the usual
-chassis header. Set it where the brand's header is taller, `0px` where nothing
-sits above. Found on a live page, every gate passing.
+pattern, so a plain `100svh` puts the foot — where the join control is — one
+header-height below the fold. The height is `calc(100svh -
+var(--page-header-height, 9.5rem))`; take that number off the brand's rendered
+header rather than off `--logo-height`, which came up 11px short on a live
+page, and `0px` where nothing sits above. `9.5rem` is the default: this
+library's own `masthead-nav` renders up to 145px on the sample brands. No footer
+allowance: this opener is not the whole page, so the footer is at the bottom of
+what follows rather than in the first viewport, and `hero-squeeze` is the
+pattern that subtracts one. `--hero-overlay-above` no longer does anything.

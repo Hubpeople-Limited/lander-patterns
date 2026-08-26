@@ -1,4 +1,4 @@
-/* hero-overlay v11 - tokens only, selectors prefixed. Nothing here moves. */
+/* hero-overlay v13 - tokens only, selectors prefixed. Nothing here moves. */
 .hero-overlay {
   /* Contrast floor: the scrim carries it, never the photo. */
   --hero-overlay-scrim-floor: clamp(0.92, var(--hero-overlay-scrim-strength, 0.92), 1);
@@ -11,8 +11,10 @@
   background: var(--color-bg);
   /* A viewport MINUS what sits above. A plain 100svh puts the foot one
    header below the fold, and the foot is where the control is. svh, not vh.
-   Do not change either; see the README. */
-  min-height: calc(100svh - var(--hero-overlay-above, 4.5rem));
+   The header only: this opener is not the page, so the site footer is not in
+   the first viewport - hero-squeeze is the one that subtracts a footer too.
+   Set --page-header-height off the rendered page; see TOKENS.md. */
+  min-height: calc(100svh - var(--page-header-height, 9.5rem));
 }
 .hero-overlay-img {
   position: absolute;

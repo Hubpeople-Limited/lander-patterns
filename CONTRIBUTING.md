@@ -58,7 +58,7 @@ agent parses and the README is what a person reads. What each field means:
 | `type` | `component`, `section` or `page` |
 | `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `narrative`, `peer set`, `comparison`, `progression`, `single claim`, `question and answer`, `reference`. It is what an agent matches a pattern against before it opens one, so it is **that** list rather than a second one that reads like it — CI holds you to it. Two spellings for one idea is a lookup that quietly returns nothing, and adding a value here means adding it to the skill's own table in the same change |
 | `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip eighteen patterns without reading eighteen `needs` lines. It is on the index row for that reason |
-| `whole-page` | `yes` if this pattern IS the page and nothing follows it. One pattern carries it today. Omit it otherwise |
+| `whole-page` | `yes` if this pattern IS the page and nothing follows it. One pattern carries it today. Omit it otherwise. It is not only a label: a full-viewport section carrying it must subtract `--page-footer-height` as well as `--page-header-height`, because the site footer is inside a promise about the page |
 | `behaviours` | Names from `lib/REGISTRY.md`, where the pattern carries `data-hub-module` hooks. Omit it if there are none. The header, the markup and the registry must all agree, and CI checks all three |
 | `needs` | The real content this consumes. It gates use: no material, wrong pattern. Say "real" and mean it |
 | `pairs-with` | Patterns that read well after this one. Not page furniture — `cta-sticky` belongs to the page, decided once |
@@ -238,6 +238,12 @@ On every pull request, CI:
   resolved widths to be the same number, then re-renders them in the pre-v57
   `ch` form and requires that check to fire. See
   [Display measures](#display-measures).
+- assembles a page around every full-viewport pattern — this library's own
+  header above it, a stand-in site footer below — at five real device
+  viewports, and requires the thing the pattern promised to fit to actually
+  fit; then re-renders it with the furniture allowance the live defect had and
+  requires that check to fire. See
+  [The fold, measured on an assembled page](#the-fold-measured-on-an-assembled-page).
 
 A red check names the file and the rule. Fix and push again — nothing merges
 red.
@@ -282,7 +288,9 @@ five openers out of six and thirty patterns not at all, while printing "clean".
 
 It fails a page where: a modifier is chosen that the pattern does not offer
 (`hero-stated:ground=soft` when it ships `plain|brand|deep`); a full-viewport
-**opener** subtracts nothing for what sits above it; a `one-per-page` section appears twice; two patterns whose
+**opener** subtracts nothing for what sits above it; a `whole-page` opener
+allows for the header and not for the site footer under it; a `one-per-page`
+section appears twice; two patterns whose
 `avoid-with` names each other are both present; a pattern is used on a page type
 it does not list; the page has no `h1` or more than one; a heading level is
 skipped at the join between two patterns; or two neighbours land on the same
@@ -291,7 +299,8 @@ behaviours would need `hub.js` on the page and what material the brand must
 supply.
 
 `--out` writes the assembled page with a stand-in site header above it, which is
-the only way to look at the thing the fold check is about.
+the only way to look at the thing the fold check is about. What that page
+actually measures out at is `ci/check_fold.py`'s job, below.
 
 **`ci/page-recipes.json` holds real pages that must stay valid**, and
 `ci/test_gates.py` runs them. Breaking one is allowed — it is a decision, and
@@ -299,6 +308,58 @@ that file is where it gets made deliberately rather than found by a partner. Add
 a recipe when a real build turns up a composition worth protecting; do not add
 permutations, because a fixture nobody understands is one that gets deleted the
 first time it fails.
+
+### The fold, measured on an assembled page
+
+Every check above — the page-level one included — measures **one pattern with
+nothing around it**. `ci/check_page.py` reads source, so it knows an opener
+subtracts *something* for what sits above it. `ci/check_phone.py` renders, but
+it renders the pattern alone in a bare document: no header over it, no site
+footer under it, and a viewport height of 760 that is no device's.
+
+So nothing here had ever asked the one question a full-viewport pattern makes a
+promise about. A page built from `hero-squeeze` — the pattern whose whole
+premise is one viewport and nothing below the fold — overflowed a 1280×800
+laptop by 177px, and 166 of the 177 were a site footer the platform injects at
+serve time. Every gate in this repository passed it.
+
+```
+python ci/check_fold.py                  every full-viewport pattern
+python ci/check_fold.py hero-squeeze
+python ci/check_fold.py --broken         the positive control
+python ci/check_fold.py --out /tmp/fold  keep the assembled pages
+```
+
+It puts each one in a page the way the platform serves one — this library's own
+`masthead-nav` above it, a stand-in site footer below — at five real device
+viewports, **width and height**, and holds the pattern to the promise its own
+metadata makes:
+
+| The pattern says | What must be true |
+|---|---|
+| `whole-page: yes` | the **document** does not scroll. It claims to be the page, so the footer is inside what it promised |
+| anything else | the **section's foot** is at or above the fold. The page continues under it, so the footer is not |
+
+**Which patterns are discovered, not listed** — anything whose CSS claims a
+viewport height, minus `check_page.py`'s `FULL_VIEWPORT_EXEMPT`. Naming them
+here would leave the next full-viewport opener outside the gate on the day it
+lands, which is how the fold rule came to cover five openers out of six once
+already.
+
+**A page can overflow for two reasons and only one of them is a fault here.**
+If the section is sitting on the height its `calc()` gave it, the sum is wrong
+and it is wrong wherever the pattern lands: that fails. If the content has
+grown past that height, the section is doing what `hero-squeeze`'s README says
+it does — a short scroll rather than a hidden join button — and what it depends
+on is the copy somebody placed. That is reported with the numbers and does not
+fail, because a gate that has an opinion about sample content is a gate with a
+false positive in it.
+
+**The positive control is not optional.** `--broken` re-renders every page with
+the furniture tokens set the way the live defect had them — a header allowance
+derived from a 70px logo, no footer allowance at all — and requires the check to
+fire. Exit 0 on that run means the defect was detected. It reproduces the live
+figures: 230px over at 390×844, against the 230px measured on the served page.
 
 ### At a phone width
 

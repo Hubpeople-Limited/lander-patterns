@@ -99,6 +99,28 @@ jobs:
       # to fire. Exit 0 here means the defect was detected.
       - name: Confirm the measure gate can still catch a ch measure
         run: python ci/check_measures.py --require-browser --as-ch
+      # A full-viewport pattern in a page assembled the way the platform
+      # serves one: this library's own masthead-nav above it and a stand-in
+      # site footer below. Every other gate here measures a pattern alone, and
+      # a pattern alone has no footer under it - which is how a squeeze page
+      # whose whole premise is one viewport shipped 177px of scroll.
+      - name: Full-viewport patterns fit a page with real furniture
+        run: python ci/check_fold.py --require-browser
+      # The positive control, and it is not optional for the same reason the
+      # measure one is not: the step above passes on a gate that assembles
+      # nothing. This one puts the furniture tokens back the way the live
+      # defect had them - a header allowance derived from a logo, no footer
+      # allowance at all - and requires the check to fire. Exit 0 here means
+      # the defect was detected.
+      - name: Confirm the fold gate can still catch a missing footer
+        run: python ci/check_fold.py --require-browser --broken
+      # And again on the sample brand whose heading face this library was not
+      # designed against. A header height is a size in a particular typeface:
+      # masthead-nav renders 124px on Georgia and 145px on the display fixture
+      # at the same width, and the allowance the openers ship has to cover the
+      # taller one.
+      - name: The fold on the hostile type fixture
+        run: python ci/check_fold.py --require-browser --tokens display
       - name: Legibility
         run: python ci/legibility.py
       - name: Build previews

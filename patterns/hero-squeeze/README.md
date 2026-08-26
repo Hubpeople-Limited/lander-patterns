@@ -66,15 +66,15 @@ landscape — **it scrolls rather than clipping.** A squeeze that hides its own
 call to action to keep a promise about scrolling has broken the only thing it
 was for; a fixed height with `overflow: hidden` is how a page in this library's
 own source material became unscrollable at 200% zoom, failing WCAG 1.4.4.
+`svh` not `vh` for the same family of reason: `100vh` is the largest viewport,
+so the control would sit behind the address bar.
 
-So: no scroll on any viewport that fits the content, and a short scroll rather
-than a hidden button on any that does not. `svh` rather than `vh` for the same
-family of reason — `100vh` is the largest viewport, so the control would sit
-behind the address bar on first load.
-
-**And a viewport minus what sits above it**, for the same reason again: a site
-header is not part of this pattern, so a plain `100svh` puts the foot one
-header-height below the fold — which is where the control is. The height is
-`calc(100svh - var(--hero-squeeze-above, 4.5rem))`; `4.5rem` covers the usual
-chassis header. Set `--hero-squeeze-above` where the brand's header is taller,
-or `0px` where nothing sits above. Found on a live page, every gate passing.
+**A viewport minus the furniture at BOTH ends.** A header sits above this
+section and a footer below it, and the platform injects the footer at serve
+time, so no markup here can enclose it: the height is `calc(100svh -
+var(--page-header-height, 9.5rem) - var(--page-footer-height, 12.5rem))`.
+Subtracting only the header leaves the page scrolling by the footer — 177px on
+a 1280×800 laptop, 166 of them the footer. Take both numbers off the rendered
+page, never off `--logo-height`, which came up 11px short of the header that
+rendered; TOKENS.md's *The page's furniture* says how. `--hero-squeeze-above`
+no longer does anything, and `0px` is the value for an end with nothing at it.

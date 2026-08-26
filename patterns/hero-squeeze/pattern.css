@@ -1,18 +1,19 @@
-/* hero-squeeze v8 - tokens only, selectors prefixed */
+/* hero-squeeze v10 - tokens only, selectors prefixed */
 .hero-squeeze {
   --hero-squeeze-scrim-floor: clamp(0.86, var(--hero-squeeze-scrim-strength, 0.86), 1);
   position: relative;
   isolation: isolate;
   display: grid;
   place-items: center;
-  /* min-height, never height: the page aims to fit one viewport, and where it
-   cannot it scrolls rather than clipping. See the README. A full viewport
-   MINUS whatever sits above it - a site header is not part of this section,
-   and a plain 100svh puts the foot one header below the fold. Set
-   --hero-squeeze-above to the real header height where it differs. svh, not
-   vh: 100vh is the largest viewport, so the control would sit under the
-   address bar. */
-  min-height: calc(100svh - var(--hero-squeeze-above, 4.5rem));
+  /* min-height, never height: where the content does not fit, the page
+   scrolls rather than clipping. svh, not vh. BOTH ENDS: this pattern is the
+   whole page, so a header sits above it and a footer below it, and no markup
+   here can enclose either. Set both tokens off the rendered page - TOKENS.md,
+   The page's furniture. The defaults are generous on purpose: too large
+   leaves a band of background under the footer, too small scrolls. */
+  min-height: calc(100svh
+    - var(--page-header-height, 9.5rem)
+    - var(--page-footer-height, 12.5rem));
   padding: var(--space-6) var(--space-4);
   background: var(--color-scrim);
   text-align: center;

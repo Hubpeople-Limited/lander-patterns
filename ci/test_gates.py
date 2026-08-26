@@ -602,7 +602,7 @@ def check_pages():
     css = folder / "pattern.css"
     kept = css.read_bytes()
     mutated = kept.replace(
-        b"min-height: calc(100svh - var(--hero-overlay-above, 4.5rem));",
+        b"min-height: calc(100svh - var(--page-header-height, 9.5rem));",
         b"min-height: 100svh;")
 
     # If the search string has gone stale, the "mutation" is a no-op and the
@@ -642,11 +642,47 @@ def check_pages():
     # doing, and does not care whether the edit has been committed yet.
     now = css.read_bytes()
     leaked = (b"min-height: 100svh;" in now
-              and b"min-height: calc(100svh - var(--hero-overlay-above" not in now)
+              and b"min-height: calc(100svh - var(--page-header-height" not in now)
     if leaked or now != kept:
         failures.append("the fold case left hero-overlay mutated")
         print("  FAIL  patterns/hero-overlay/pattern.css was not restored after "
               "the fold case")
+
+    # The other end of the same rule, and it needs its own case: a page whose
+    # opener allows for the header perfectly and forgets the footer under it
+    # passed the check above, and shipped 177px of scroll on a pattern whose
+    # whole premise is that there is none. Only `whole-page` patterns owe this
+    # second term, so the mutation is made on the one that carries the field.
+    folder = HERE.parent / "patterns" / "hero-squeeze"
+    css = folder / "pattern.css"
+    kept = css.read_bytes()
+    mutated = kept.replace(
+        b"min-height: calc(100svh\n"
+        b"    - var(--page-header-height, 9.5rem)\n"
+        b"    - var(--page-footer-height, 12.5rem));",
+        b"min-height: calc(100svh - var(--page-header-height, 9.5rem));")
+
+    label = "a whole-page opener with no footer allowance"
+    if mutated == kept:
+        failures.append(label)
+        print(f"  FAIL  {label:<46} the search string no longer matches "
+              f"hero-squeeze/pattern.css - this test needs updating, the check "
+              f"is not necessarily broken")
+    else:
+        try:
+            css.write_bytes(mutated)
+            code, out = run_page(["landing", "hero-squeeze"])
+            ok = code == 1 and "[the fold]" in out
+            print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} exit={code} want=1 [the fold]")
+            if not ok:
+                failures.append(label)
+        finally:
+            css.write_bytes(kept)
+    now = css.read_bytes()
+    if now != kept:
+        failures.append("the footer case left hero-squeeze mutated")
+        print("  FAIL  patterns/hero-squeeze/pattern.css was not restored after "
+              "the footer case")
 
     # The library sweep. The recipes only ever cover the patterns somebody
     # thought to write down; this covers all of them.
@@ -1019,6 +1055,119 @@ def check_measures():
     return failures
 
 
+# ------------------------------------------------------------------- the fold
+#
+# ci/check_fold.py. It answers a question no other gate here asks: given a page
+# assembled the way the platform serves one - a real header above, a site
+# footer below - does a full-viewport pattern actually fit the viewport it
+# promised?
+#
+# The part worth testing on numbers is the one judgement in it. A page can
+# overflow for two reasons, and only one of them is this library's arithmetic:
+# the section is sitting on the height calc() gave it, or the content grew past
+# that height. The first is a sum that is wrong wherever it lands; the second
+# is the failure mode hero-squeeze's README documents on purpose, and depends
+# on the copy somebody placed. Confusing them either way is fatal - fail the
+# second and the gate is an opinion about sample content, miss the first and it
+# is the gate that let 177px of scroll onto a live site.
+
+FOLD_BOUND = [
+    ("a section sitting exactly on its floor",
+     {"section": 472.0, "floor": "472px"}, True),
+    ("half a pixel under, which is a rounding artefact",
+     {"section": 472.6, "floor": "472px"}, True),
+    ("content that has grown past the floor",
+     {"section": 496.9, "floor": "472px"}, False),
+    ("min-height: auto, so there is no floor to sit on",
+     {"section": 500.0, "floor": "auto"}, False),
+    ("a floor the browser could not resolve",
+     {"section": 500.0, "floor": ""}, False),
+]
+
+# (label, whole_page, observation, a fault is expected)
+FOLD_VERDICT = [
+    ("whole-page, at its floor, and the footer pushes it over", True,
+     {"viewport": 800, "scroll": 998, "header": 124.2, "section": 708,
+      "foot": 832.2, "footer": 166, "floor": "708px"}, True),
+    ("whole-page, over, but the content grew past the floor", True,
+     {"viewport": 568, "scroll": 804, "header": 125, "section": 482,
+      "foot": 607, "footer": 197, "floor": "240px"}, False),
+    ("whole-page and it fits", True,
+     {"viewport": 844, "scroll": 844, "header": 125, "section": 516,
+      "foot": 641, "footer": 197, "floor": "516px"}, False),
+    ("an opener whose foot is below the fold at its own floor", False,
+     {"viewport": 800, "scroll": 998, "header": 124.2, "section": 708,
+      "foot": 832.2, "footer": 166, "floor": "708px"}, True),
+    ("an opener whose foot is below the fold on grown content", False,
+     {"viewport": 568, "scroll": 800, "header": 125, "section": 527.2,
+      "foot": 652.2, "footer": 197, "floor": "440px"}, False),
+    ("an opener whose foot lands on the fold", False,
+     {"viewport": 800, "scroll": 800, "header": 124.2, "section": 672,
+      "foot": 796.2, "footer": 166, "floor": "672px"}, False),
+]
+
+
+def check_fold():
+    """The judgement on numbers; the library and its control in a browser."""
+    print("ci/check_fold.py, a full-viewport pattern in a page with furniture")
+    sys.path.insert(0, str(HERE))
+    import check_fold
+
+    failures = []
+    for label, got, want in FOLD_BOUND:
+        ok = check_fold.box_bound(got) == want
+        print(f"  {'ok  ' if ok else 'FAIL'} "
+              f"{'box-bound' if want else 'content-bound'}: {label}")
+        if not ok:
+            failures.append(label)
+
+    for label, whole, got, want in FOLD_VERDICT:
+        line = check_fold.verdict("fixture", whole, got, 0, 0)
+        ok = bool(line) == want
+        print(f"  {'ok  ' if ok else 'FAIL'} "
+              f"{'fails on' if want else 'quiet on'}: {label}")
+        if not ok:
+            failures.append(label)
+            print(f"        got: {line or 'no fault'}")
+
+    why = check_fold.browser_unavailable()
+    if why:
+        print(f"  SKIP  no browser here - {why}")
+        print("  No page was assembled. This is not a pass.")
+        return failures
+
+    names = check_fold.candidates()
+    ok = bool(names)
+    print(f"  {'ok  ' if ok else 'FAIL'} the library has full-viewport "
+          f"pattern(s) to measure  {', '.join(names) or 'none found'}")
+    if not ok:
+        return failures + ["nothing full-viewport to measure"]
+
+    tokens = check_fold.token_set("brand")
+    with check_fold.Shell() as shell:
+        faults, _rows = check_fold.sweep(shell, names, tokens,
+                                         check_fold.VIEWPORTS)
+        # The control, and it is not optional: the run above passes just as
+        # cleanly on a gate that measures nothing at all. Same pages, the
+        # furniture tokens back the way the live defect had them.
+        broken, _rows = check_fold.sweep(shell, names, tokens,
+                                         check_fold.VIEWPORTS,
+                                         check_fold.BROKEN)
+    ok = not faults
+    print(f"  {'ok  ' if ok else 'FAIL'} every full-viewport pattern fits a "
+          f"page with furniture")
+    if not ok:
+        failures.append("a full-viewport pattern does not fit")
+        for line in faults:
+            print(f"        {line}")
+    ok = bool(broken)
+    print(f"  {'ok  ' if ok else 'FAIL'} the same pages with a header-only "
+          f"allowance do not      {len(broken)} fault(s)")
+    if not ok:
+        failures.append("fold control did not fire")
+    return failures
+
+
 def check_lost_messages():
     """An exit code is not the whole gate. The message is the gate.
 
@@ -1096,6 +1245,8 @@ def main():
     print()
     failures += check_measures()
     print()
+    failures += check_fold()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -1108,8 +1259,9 @@ def main():
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
-             + len(MEASURE_CALIBRATION) + 3)
-    print(f"clean: {total} gate cases across nine modules behave as documented.")
+             + len(MEASURE_CALIBRATION) + 3
+             + len(FOLD_BOUND) + len(FOLD_VERDICT) + 3)
+    print(f"clean: {total} gate cases across ten modules behave as documented.")
     return 0
 
 

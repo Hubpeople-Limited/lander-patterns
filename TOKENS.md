@@ -223,6 +223,113 @@ vs shadowed:
 | `--chip-radius` | Chips and small labels |
 | `--logo-height` | Header logo size |
 
+## The page's furniture
+
+Two lengths, measured rather than derived. **A pattern cannot see the page it
+lands in**, and a full-viewport section has to know how much of the viewport is
+already spoken for before it can claim the rest.
+
+| Token | Default | What it is |
+|---|---|---|
+| `--page-header-height` | `9.5rem` | The rendered height of the site header sitting above the opener, in normal flow |
+| `--page-footer-height` | `12.5rem` | The rendered height of the site footer the platform puts under the page |
+
+**The defaults are this library's own furniture, rounded up.** `masthead-nav`
+renders between 77px and 145px across the five sample token sets at the widths
+CI measures — a header height is a size in a particular typeface, the same way
+every entry in `check_phone.py`'s baseline is — so `9.5rem` is the tallest of
+those with a little over. `12.5rem` covers a platform footer measured at
+165.8px on a desktop and 196.8px on a phone. Both are a starting point for a
+brand nobody has measured, not a substitute for measuring.
+
+They are **two tokens rather than one total on purpose**, because the two
+patterns that read them need different subsets of it. `hero-overlay` opens a
+page that continues, so only the header is inside its first viewport and it
+subtracts only that. `hero-squeeze` is `whole-page: yes` — its promise is that
+the *page* fits one viewport — so it subtracts both. A single
+`--page-furniture` total could not serve both, and a per-pattern
+`--hero-squeeze-below` beside `--hero-squeeze-above` would be four properties
+naming two facts, with the names still not saying what to measure.
+
+### Measure them, never derive them
+
+The old guidance said to work the header out from `--logo-height`. Derivation
+is what put this wrong on a live page: a brand with a 70px logo set the
+allowance to 5.75rem and the header rendered at 103px — an 11px error, on top
+of a whole footer nobody had subtracted at all. **Open the page and read the
+two numbers off it.** In the browser's console, on a real page of the brand:
+
+```js
+(() => {
+  const px = el => el ? Math.round(el.getBoundingClientRect().height * 10) / 10 : 0;
+  const head = px(document.querySelector('header'));
+  const foot = px(document.querySelector('footer'));
+  const over = document.documentElement.scrollHeight
+             - document.documentElement.clientHeight;
+  console.log(innerWidth + 'x' + innerHeight + '  header ' + head
+            + '  footer ' + foot + '  total ' + (head + foot)
+            + '  page overflows by ' + over + 'px');
+})()
+```
+
+**Do it at more than one width, and take the largest total you see.** The
+furniture is not a step between "phone" and "desktop": it has a hump in the
+middle, where a menu row has wrapped but the desktop layout has not yet
+arrived. On the live page this was measured on, in Chromium:
+
+| Viewport width | Header | Footer | Total |
+|---|---|---|---|
+| 320 – 480 | 125 | 196.8 | **321.8** |
+| 640 | 132.3 | 165.8 | 298.1 |
+| 768 | 143.1 | 165.8 | 308.9 |
+| 900 | 151 | 165.8 | **316.8** |
+| 1024 and up | 103 | 165.8 | 268.8 |
+
+The tallest header on that brand is at 900px and the tallest total is on a
+phone. Reading either number off a laptop alone gives the smallest of the
+three, which is the one direction that scrolls.
+
+### The two directions are not equally bad
+
+**Too large costs a band of page background under the footer. Too small
+scrolls**, and on `hero-squeeze` scrolling is the single thing the pattern
+exists to prevent. So round up, and where the spread is worth reclaiming,
+write it as two states rather than splitting the difference:
+
+```css
+:root {
+  --page-header-height: 151px;   /* the hump at 900px */
+  --page-footer-height: 197px;   /* the phone footer */
+}
+@media (min-width: 64em) {
+  :root {
+    --page-header-height: 103px;
+    --page-footer-height: 166px;
+  }
+}
+```
+
+Those four numbers came off the table above. On that brand they give an exact
+fit at 1280×800 and 26px to spare at 390×844, and the page does not scroll at
+any width between.
+
+### Where nothing sits above
+
+`0px` is a legitimate value for either — a page served with no header, or an
+opener that is genuinely the first thing in the document. It is the one case
+where a zero is meant, and it has to be written rather than left to the
+default.
+
+### The names that used to do this
+
+`--hero-squeeze-above` and `--hero-overlay-above` are **retired**. They were in
+each pattern's private `--<pattern-name>-*` namespace, which is this document's
+word for internal plumbing, and they carried a header height only. Setting
+either one now does nothing. Replace it with `--page-header-height`, and on a
+`hero-squeeze` page add `--page-footer-height` as well — a brand that carries
+the old property forward and stops there still scrolls, by whatever its footer
+measures.
+
 ## Dials
 
 Five optional tokens. **Every other token in this document is one a brand must

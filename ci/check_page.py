@@ -168,6 +168,11 @@ VIEWPORT_HEIGHT = re.compile(
 SUBTRACTS = re.compile(
     r"calc\(\s*100(?:svh|vh|dvh|lvh)\s*-\s*var\(\s*(--[\w-]+)\s*(?:,\s*([^)]*?)\s*)?\)",
     re.I)
+# The second term, and only `whole-page` patterns are held to it. Matched on
+# the token's name rather than its position, because the two subtractions can
+# be written in either order and neither is wrong.
+SUBTRACTS_FOOTER = re.compile(
+    r"-\s*var\(\s*(--[\w-]*footer[\w-]*)\s*(?:,\s*([^)]*?)\s*)?\)", re.I)
 ZERO = re.compile(r"^0[a-z%]*$", re.I)
 
 
@@ -175,7 +180,7 @@ def strip_css_comments(css):
     return re.sub(r"/\*.*?\*/", "", css, flags=re.S)
 
 
-def opener_fault(name, css):
+def opener_fault(name, css, whole_page=False):
     """Judge one pattern's CSS as if it opened a page. Returns a list.
 
     A pattern that claims a whole viewport is right to do so, and wrong to
@@ -183,11 +188,20 @@ def opener_fault(name, css):
     above the opener and the pattern cannot see it. What falls off the bottom
     is whatever the pattern put last, which on every opener here is the join
     control.
+
+    A `whole-page` pattern owes a second subtraction. Its promise is that the
+    PAGE is one viewport, and a page has a footer under it - injected at serve
+    time on this platform, so no markup here can enclose it and no amount of
+    care about the header can make the sum come out. Subtracting only the
+    header put a live squeeze page 177px past an 800px viewport, 166 of them
+    the footer.
     """
     bad = []
     for prop, value in VIEWPORT_HEIGHT.findall(strip_css_comments(css)):
         m = SUBTRACTS.search(value)
         if m and not ZERO.match((m.group(2) or "").strip() or "none"):
+            if whole_page:
+                bad += footer_fault(name, prop, value)
             continue
         if m:
             bad.append(
@@ -201,9 +215,24 @@ def opener_fault(name, css):
             f"nothing for what sits above it. On a page with a site header the "
             f"foot of this section - the join control - lands one header-height "
             f"below the fold. It needs "
-            f"calc(100svh - var(--{name}-above, 4.5rem))"
+            f"calc(100svh - var(--page-header-height, 9.5rem))"
         )
     return bad
+
+
+def footer_fault(name, prop, value):
+    """The second subtraction a `whole-page` pattern owes. Returns a list."""
+    m = SUBTRACTS_FOOTER.search(value)
+    if m and not ZERO.match((m.group(2) or "").strip() or "none"):
+        return []
+    if m:
+        return [f"{name} is whole-page and subtracts var({m.group(1)}, "
+                f"{m.group(2)}) for the footer - a zero default subtracts "
+                f"nothing, so the page still scrolls by the height of it"]
+    return [f"{name} is whole-page: yes and its {prop} allows for what sits "
+            f"above it but not for the site footer under it. A page is not "
+            f"one viewport while a footer follows it. It needs a second term "
+            f"- var(--page-footer-height, 12.5rem)"]
 
 
 # Patterns that legitimately claim a whole viewport without subtracting: they
@@ -227,7 +256,8 @@ def check_opener_reserves_room(page):
             continue
         if item["name"] in FULL_VIEWPORT_EXEMPT:
             return []
-        return opener_fault(item["name"], item["css"])
+        return opener_fault(item["name"], item["css"],
+                            item["meta"].get("whole-page") == "yes")
     return []
 
 
@@ -466,7 +496,11 @@ def sweep():
         css_path = folder / "pattern.css"
         if not css_path.exists():
             continue
-        bad += opener_fault(folder.name, css_path.read_text(encoding="utf-8"))
+        html_path = folder / "pattern.html"
+        meta = parse_meta(html_path.read_text(encoding="utf-8")) \
+            if html_path.exists() else {}
+        bad += opener_fault(folder.name, css_path.read_text(encoding="utf-8"),
+                            meta.get("whole-page") == "yes")
     return bad
 
 
