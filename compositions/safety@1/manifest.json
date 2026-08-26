@@ -1,0 +1,24 @@
+{
+  "composition": "safety",
+  "version": 1,
+  "page": "safety",
+  "library": "v62",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "brand"
+      }
+    },
+    {
+      "name": "safety-protections",
+      "version": "4"
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    }
+  ]
+}

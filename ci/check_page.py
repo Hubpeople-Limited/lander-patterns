@@ -401,6 +401,33 @@ def strip_comments(text):
     return re.sub(r"<!--.*?-->", "", text, flags=re.S)
 
 
+def apply_variants(name, meta, body, mods):
+    """Swap the chosen modifier class in for the one the markup ships.
+
+    Swap, do not append. The markup already ships a default -
+    `class="hero-stated hero-stated--plain"` - so appending leaves both on
+    the element and lets source order decide, which is not a choice anybody
+    made. The first version of assemble() appended, and every rung rendered
+    as the default while the checks reasoned about the rung you asked for.
+
+    Shared with ci/compose.py, which builds the same markup into shells and
+    must make the same swap or its pages would contradict their manifests.
+    """
+    for key, value in mods.items():
+        swapped = False
+        for known in sorted(axes_of(meta).get(key, ())):
+            old = f'{name}--{known}'
+            if old in body:
+                body = body.replace(old, f'{name}--{value}')
+                swapped = True
+                break
+        if not swapped:
+            body = re.sub(
+                r'(class="[^"]*\b' + re.escape(name) + r')(")',
+                r'\1 ' + f'{name}--{value}' + r'\2', body, count=1)
+    return body
+
+
 PAGE = """<!doctype html>
 <html lang="en">
 <meta charset="utf-8">
@@ -448,24 +475,7 @@ def assemble(page, chosen):
         repeat = item["sample"].get("_repeat")
         if repeat:
             body = repeat_block(body, repeat["class"], repeat["count"])
-        # Swap the modifier, do not append one. The markup already ships a
-        # default - `class="hero-stated hero-stated--plain"` - so appending
-        # leaves both on the element and lets source order decide, which is not
-        # a choice anybody made. The first version appended, and every rung
-        # rendered as the default while the checks reasoned about the rung you
-        # asked for.
-        for key, value in mods.items():
-            swapped = False
-            for known in sorted(axes_of(item["meta"]).get(key, ())):
-                old = f'{item["name"]}--{known}'
-                if old in body:
-                    body = body.replace(old, f'{item["name"]}--{value}')
-                    swapped = True
-                    break
-            if not swapped:
-                body = re.sub(
-                    r'(class="[^"]*\b' + re.escape(item["name"]) + r')(")',
-                    r'\1 ' + f'{item["name"]}--{value}' + r'\2', body, count=1)
+        body = apply_variants(item["name"], item["meta"], body, mods)
         # Fill first, then strip whatever comments remain - the metadata
         # header and the notes to whoever places the pattern, none of which
         # belongs to the reader.

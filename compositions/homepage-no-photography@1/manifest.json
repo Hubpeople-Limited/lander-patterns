@@ -1,0 +1,28 @@
+{
+  "composition": "homepage-no-photography",
+  "version": 1,
+  "page": "homepage",
+  "library": "v62",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "deep"
+      }
+    },
+    {
+      "name": "heading-block",
+      "version": "8"
+    },
+    {
+      "name": "benefit-tiles",
+      "version": "5"
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    }
+  ]
+}
