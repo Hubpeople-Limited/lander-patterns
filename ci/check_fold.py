@@ -23,6 +23,32 @@ promise its own metadata makes:
     everything else     the SECTION's foot must be at or above the fold. The
                         page continues under it, so the footer is not.
 
+WHAT IT COMPARES, and this is the whole of it: the furniture the section's own
+`calc()` SET ASIDE, against the furniture that actually RENDERED. Both numbers
+come off the page. The allowance is read as the viewport minus the RESOLVED
+`min-height`, never re-derived from the token text, because a token is a claim
+about the page and this gate exists to check claims about the page against the
+page. The measurement is the rendered height of the header the platform serves
+and of the footer it injects.
+
+That framing is not decoration. On 2026-08-26 this gate went red on a CI runner
+and green on the machine it was written on, for the same commit. The display
+fixture's heading face is a `local()` chain, the runner has no Georgia, it
+landed on a wider serif, `masthead-nav`'s wide menu wrapped onto a third line,
+and the header rendered 173.8px where `--page-header-height` had set aside 152.
+What the gate said was that the section's foot was 22px below the fold - true,
+and no help at all in finding a font. It now names which number is wrong and
+what the page measured instead, because the fault was never the overflow: the
+overflow is only what an understated allowance looks like from the far end.
+
+The two are the same arithmetic while the section sits on its floor, and that
+is the point of the change rather than an argument against it. A section whose
+CONTENT has grown past the floor overflows for a reason no token can fix, so
+the old test had to stay silent there - and stayed silent about a wrong
+allowance underneath it too. `hero-squeeze` is content-bound at most viewports
+in this library, which means its furniture arithmetic could not be failed by
+this gate at all. Now it can.
+
     python ci/check_fold.py                 every full-viewport pattern
     python ci/check_fold.py hero-squeeze
     python ci/check_fold.py --broken        the positive control, below
@@ -229,6 +255,10 @@ class Shell:
 def box_bound(got):
     """Is the section sitting on its own min-height, or on its content?
 
+    Kept because the two cases read differently in the report and one of them
+    is nobody's arithmetic to fix. It is no longer what decides a fault - see
+    verdict() for why that had to change.
+
     This is the whole difference between the two things that make a page
     overflow, and only one of them is this library's arithmetic:
 
@@ -254,34 +284,80 @@ def box_bound(got):
         return False
 
 
+def furniture(got, whole_page):
+    """(allowed, rendered) px of page furniture, or None if there is no floor.
+
+    ALLOWED is what the section's own arithmetic set aside, taken from the page
+    rather than from the stylesheet: every full-viewport rule in this library
+    is `100svh` minus its furniture tokens, `100svh` is the viewport in a page
+    served like this one, so the viewport minus the RESOLVED min-height is the
+    allowance with every `var()`, fallback and media query already applied. Read
+    it this way and a brand that sets the token in a media query, or leaves it
+    to the default, or writes it in `em`, all measure the same. Re-derive it
+    from the token text instead and the gate is reading a claim, which is the
+    habit that put the claim wrong in the first place.
+
+    RENDERED is what the furniture measured. The header always. The site footer
+    only for a `whole-page` pattern, whose promise is about the page and so
+    covers everything on it; an opener promises about its own foot, and the
+    page continues under that foot with the footer at the bottom of all of it.
+
+    None when there is no px floor to read - `auto`, or a keyword. A section
+    that claims no height has made no arithmetic claim to check.
+    """
+    floor = got.get("floor") or "auto"
+    if not floor.endswith("px"):
+        return None
+    try:
+        allowed = got["viewport"] - float(floor[:-2])
+    except ValueError:
+        return None
+    return allowed, got["header"] + (got["footer"] if whole_page else 0)
+
+
 def verdict(name, whole_page, got, width, height):
     """The fault this page has, as a sentence, or None.
 
-    Two promises, and which one applies is the pattern's own metadata rather
-    than this file's opinion. A `whole-page` pattern says the PAGE is one
-    viewport, so the platform footer is inside what it promised. An opener says
-    only that its own foot - the join control - is above the fold, because the
-    page continues underneath it and the footer is at the bottom of all of it.
+    ONE test: did the furniture render taller than the section set aside for
+    it? That is this library's arithmetic and nothing else's, it is wrong
+    wherever it lands, and it is wrong whether or not anything visibly
+    overflowed - a section whose content has grown past its floor can be
+    sitting on a badly understated allowance and never show it, which is
+    exactly the state `hero-squeeze` is in at most viewports here.
 
-    Either way the fault is only a fault while the section is box-bound. 1px of
-    tolerance, for the same reason check_phone allows one: a rect resolving to
-    799.6 against an 800 viewport is a rounding artefact, not a scroll.
+    It replaces a test on the overflow itself, which was the same arithmetic
+    seen from the far end and could only be trusted while the section was
+    box-bound. While it IS box-bound the two are algebraically identical -
+    section == floor, so `header + section - viewport` and `rendered - allowed`
+    are the same subtraction - which is why every case this file has ever been
+    tested on keeps the verdict it had. What changes is the half that was
+    unreachable, and the sentence, which now names the token that is wrong
+    instead of the pixel count that is downstream of it.
+
+    1px of tolerance, for the same reason check_phone allows one: a rect
+    resolving to 799.6 against an 800 viewport is a rounding artefact.
     """
-    over = (got["header"] + got["section"] + got["footer"] - got["viewport"]
-            if whole_page else got["foot"] - got["viewport"])
-    if over <= 1 or not box_bound(got):
+    both = furniture(got, whole_page)
+    if both is None:
+        return None
+    allowed, rendered = both
+    short = rendered - allowed
+    if short <= 1:
         return None
     if whole_page:
-        return (f"{name}: the page is {round(over)}px taller than a "
-                f"{width}x{height} viewport with the section at its own floor "
-                f"of {got['floor']} - header {got['header']}, section "
-                f"{got['section']}, footer {got['footer']}. This pattern is "
-                f"whole-page: yes, so the footer under it is part of what it "
-                f"promised and belongs in the sum")
-    return (f"{name}: the foot of the section is {round(over)}px below the fold "
-            f"at {width}x{height} with the section at its own floor of "
-            f"{got['floor']} - header {got['header']}, section "
-            f"{got['section']}. The join control is at that foot")
+        return (f"{name}: the section set aside {round(allowed)}px for this "
+                f"page's furniture at {width}x{height} and the furniture "
+                f"rendered {round(rendered, 1)} - header {got['header']} plus "
+                f"footer {got['footer']}, {round(short)}px more than "
+                f"--page-header-height and --page-footer-height allow between "
+                f"them. This pattern is whole-page: yes, so the footer under it "
+                f"is part of what it promised and belongs in the sum")
+    return (f"{name}: the section set aside {round(allowed)}px for what sits "
+            f"above it at {width}x{height} and {HEADER} rendered "
+            f"{got['header']} - {round(short)}px more than "
+            f"--page-header-height allows. The section claims that {round(short)}"
+            f"px of viewport anyway, so the join control at its foot is below "
+            f"the fold")
 
 
 def sweep(shell, names, tokens, viewports, overrides=""):
@@ -380,9 +456,19 @@ def main():
         how = "at its floor" if box_bound(got) else "grown past its floor"
         if not box_bound(got):
             grown += 1
-        print(f"  {name} {width}x{height}: header {got['header']}, section "
+        # The two numbers the verdict turns on, on every row and not only the
+        # failing ones. A row that passes with 2px of allowance left is worth
+        # seeing before the day it does not.
+        both = furniture(got, whole)
+        if both is None:
+            says = "no px floor to read"
+        else:
+            allowed, rendered = both
+            says = (f"furniture {rendered:g} of {allowed:g} allowed"
+                    + (f" (header {got['header']:g} + footer {got['footer']:g})"
+                       if whole else ""))
+        print(f"  {name} {width}x{height}: {says}, section "
               f"{got['section']} {how}"
-              + (f", footer {got['footer']}" if whole else "")
               + f" - {'spare' if room >= 0 else 'OVER'} {abs(round(room))}px")
     if grown:
         print()

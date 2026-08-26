@@ -235,12 +235,36 @@ already spoken for before it can claim the rest.
 | `--page-footer-height` | `12.5rem` | The rendered height of the site footer the platform puts under the page |
 
 **The defaults are this library's own furniture, rounded up.** `masthead-nav`
-renders between 77px and 145px across the five sample token sets at the widths
-CI measures — a header height is a size in a particular typeface, the same way
-every entry in `check_phone.py`'s baseline is — so `9.5rem` is the tallest of
-those with a little over. `12.5rem` covers a platform footer measured at
-165.8px on a desktop and 196.8px on a phone. Both are a starting point for a
-brand nobody has measured, not a substitute for measuring.
+renders between 77px and 145px across the **four sample token sets that name a
+system stack**, at the widths CI measures — a header height is a size in a
+particular typeface, the same way every entry in `check_phone.py`'s baseline is
+— so `9.5rem` is the tallest of those with a little over. `12.5rem` covers a
+platform footer measured at 165.8px on a desktop and 196.8px on a phone. Both
+are a starting point for a brand nobody has measured, not a substitute for
+measuring.
+
+**That range used to say "the five sample token sets", and it was wrong about
+the fifth.** `preview/tokens-display.css` builds its face from a `local()`
+chain, so the base it lands on is whatever the machine has installed, and its
+own `masthead-nav` measures 124.2px where that is Georgia and 173.8px where it
+is DejaVu Serif — the same commit, two machines, 49.6px apart, because at
+laptop widths the menu is a flex row and a wider face breaks it onto one more
+line. The number quoted here had only ever been measured on a machine with
+Georgia on it. It stopped being a claim about the library and became a claim
+about one laptop, and on 2026-08-26 a CI runner with no Georgia failed
+`ci/check_fold.py` on it.
+
+**Two things came out of that, and neither is a bigger default.** The fixture
+now measures its own header across every face its chain can reach and declares
+`--page-header-height: 12rem`, which is what this section tells every brand to
+do. And `ci/check_fold.py` no longer compares a rendered page against a token's
+text: it reads the allowance off the resolved `min-height` and holds it against
+the header and footer it measured, so a token that understates the page is now
+a named fault with both numbers in it rather than an overflow somewhere
+downstream. The default stays at `9.5rem` deliberately — the fixture's 173.8px
+comes of a simulated advance no real static face has, and sizing a token every
+brand inherits off a face that cannot exist is the mistake that fixture exists
+to warn about.
 
 They are **two tokens rather than one total on purpose**, because the two
 patterns that read them need different subsets of it. `hero-overlay` opens a

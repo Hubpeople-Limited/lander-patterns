@@ -1104,6 +1104,57 @@ FOLD_VERDICT = [
     ("an opener whose foot lands on the fold", False,
      {"viewport": 800, "scroll": 800, "header": 124.2, "section": 672,
       "foot": 796.2, "footer": 166, "floor": "672px"}, False),
+
+    # The six above are the table this gate shipped with, and every one of them
+    # keeps the verdict it had when the test moved from the overflow to the
+    # allowance. That is the point of leaving them alone: a rule that changed
+    # its answer on the cases it was built from would be a different rule
+    # wearing the same name. The four below are the half that was unreachable.
+    #
+    # A section whose CONTENT has grown past its floor was silent whatever its
+    # arithmetic said, because the overflow could no longer be attributed. The
+    # allowance still can: the header rendered 173.8 where the token set aside
+    # 152, and that is wrong whether or not the content also overflowed. This
+    # is the shape of the 2026-08-26 CI failure, and hero-squeeze is in this
+    # state at most viewports in this library.
+    ("an opener whose header outgrew the token, on content-bound section", False,
+     {"viewport": 800, "scroll": 900, "header": 173.8, "section": 700,
+      "foot": 873.8, "footer": 166, "floor": "648px"}, True),
+    ("whole-page whose furniture outgrew both tokens, content-bound", True,
+     {"viewport": 844, "scroll": 1100, "header": 173.8, "section": 600,
+      "foot": 773.8, "footer": 197, "floor": "492px"}, True),
+    # No floor is no claim. A section that never said how tall it would be has
+    # made no arithmetic this file can be wrong about, however far it overflows.
+    ("a page in ruins, but the section claimed no height at all", False,
+     {"viewport": 800, "scroll": 1200, "header": 173.8, "section": 900,
+      "foot": 1073.8, "footer": 166, "floor": "auto"}, False),
+    ("a header one pixel over, which is the rounding tolerance", False,
+     {"viewport": 800, "scroll": 800, "header": 153, "section": 648,
+      "foot": 801, "footer": 166, "floor": "648px"}, False),
+]
+
+# (label, whole_page, observation, expected (allowed, rendered) or None)
+#
+# The reading itself, kept apart from the verdict because it is the half that
+# has to be right about the PAGE. The allowance is the viewport minus the
+# resolved min-height, never the token re-derived from CSS text: a brand that
+# sets --page-header-height in a media query, in em, or not at all must all
+# measure the same, and reading the stylesheet instead is how a gate ends up
+# checking a claim against itself.
+FOLD_FURNITURE = [
+    ("an opener counts the header and nothing under it", False,
+     {"viewport": 800, "header": 124.2, "footer": 166, "floor": "648px"},
+     (152.0, 124.2)),
+    ("a whole-page pattern counts the footer too", True,
+     {"viewport": 800, "header": 124.2, "footer": 166, "floor": "448px"},
+     (352.0, 290.2)),
+    ("a token that is not the default reads back as itself", False,
+     {"viewport": 844, "header": 145, "footer": 197, "floor": "668px"},
+     (176.0, 145.0)),
+    ("min-height: auto is no claim to check", False,
+     {"viewport": 800, "header": 124.2, "footer": 166, "floor": "auto"}, None),
+    ("a floor the browser could not resolve", False,
+     {"viewport": 800, "header": 124.2, "footer": 166, "floor": ""}, None),
 ]
 
 
@@ -1120,6 +1171,15 @@ def check_fold():
               f"{'box-bound' if want else 'content-bound'}: {label}")
         if not ok:
             failures.append(label)
+
+    for label, whole, got, want in FOLD_FURNITURE:
+        seen = check_fold.furniture(got, whole)
+        rounded = None if seen is None else (round(seen[0], 3), round(seen[1], 3))
+        ok = rounded == want
+        print(f"  {'ok  ' if ok else 'FAIL'} reads {want or 'nothing'}: {label}")
+        if not ok:
+            failures.append(label)
+            print(f"        got: {rounded}")
 
     for label, whole, got, want in FOLD_VERDICT:
         line = check_fold.verdict("fixture", whole, got, 0, 0)
@@ -1260,7 +1320,7 @@ def main():
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
-             + len(FOLD_BOUND) + len(FOLD_VERDICT) + 3)
+             + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3)
     print(f"clean: {total} gate cases across ten modules behave as documented.")
     return 0
 

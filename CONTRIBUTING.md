@@ -346,14 +346,37 @@ here would leave the next full-viewport opener outside the gate on the day it
 lands, which is how the fold rule came to cover five openers out of six once
 already.
 
-**A page can overflow for two reasons and only one of them is a fault here.**
-If the section is sitting on the height its `calc()` gave it, the sum is wrong
-and it is wrong wherever the pattern lands: that fails. If the content has
-grown past that height, the section is doing what `hero-squeeze`'s README says
+**What fails is the allowance, not the overflow.** The check reads two numbers
+off the rendered page: what the section's own `calc()` **set aside** for the
+page's furniture — the viewport minus the resolved `min-height`, so every
+`var()`, fallback and media query is already applied — and what the furniture
+**measured**. Furniture taller than the allowance is this library's arithmetic
+being wrong, it is wrong wherever the pattern lands, and it fails.
+
+It used to test the overflow instead. While the section sits on its floor the
+two are the same subtraction, so nothing that ever failed stops failing; what
+changes is a case the overflow could not speak about at all. If the **content**
+has grown past the floor, the section is doing what `hero-squeeze`'s README says
 it does — a short scroll rather than a hidden join button — and what it depends
-on is the copy somebody placed. That is reported with the numbers and does not
-fail, because a gate that has an opinion about sample content is a gate with a
-false positive in it.
+on is the copy somebody placed. That is reported with the numbers and never
+failed, because a gate with an opinion about sample content is a gate with a
+false positive in it. But the furniture arithmetic underneath a grown section
+can be just as wrong, and it was unreachable: `hero-squeeze` is content-bound at
+most viewports here, so its `--page-footer-height` sum could not be failed by
+this gate at all. Reading the allowance separates the two properly — the copy is
+still nobody's fault, and the sum is still checked.
+
+**A rendered height is a height in a particular typeface, and CI does not have
+your fonts.** On 2026-08-26 this gate went red on the runner and green on the
+machine the commit was written on. `preview/tokens-display.css` builds its face
+from a `local()` chain; the runner has no Georgia, landed further down the chain
+on a wider serif, `masthead-nav`'s wide menu broke onto a third line, and the
+header rendered 173.8px where `--page-header-height` had set aside 152. Nothing
+was wrong with the runner and nothing was wrong with the laptop. What was wrong
+was a token measured on one machine and believed everywhere. If you change a
+sample token set's face, or add one, **measure its header against every face its
+own stack can reach**, not against the one your machine happened to pick — and
+if a gate here is red only in CI, look at the fonts before anything else.
 
 **The positive control is not optional.** `--broken` re-renders every page with
 the furniture tokens set the way the live defect had them — a header allowance

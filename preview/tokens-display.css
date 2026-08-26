@@ -57,6 +57,20 @@
      0.9131em, so this is a taller-capped face as well as a wider one, and
      anything that reserved room for a heading by eye reserved it for Georgia.
 
+     CORRECTION, 2026-08-26, to the paragraph two above. It is right about the
+     floor and wrong about the runner, and the way it was wrong is worth
+     keeping rather than deleting. "Most likely Liberation Serif or Nimbus
+     Roman" was a guess at what a Linux CI image has, made where it could not
+     be looked at. What ubuntu-latest actually reaches first in this chain is
+     DejaVu Serif, which is in the base image, and DejaVu Serif is not the
+     narrow end of this list. Its bold digit is 0.6958em against Georgia Bold's
+     0.7012em - a hair NARROWER by the one metric that paragraph reasons about
+     - while its lowercase is 7% WIDER: "How it works" sets 109.82px against
+     Georgia's 102.52 at 15px bold. The floor still holds, because the floor
+     was set on the digit. Nothing else in the paragraph did, and the cost came
+     due in ci/check_fold.py rather than here: see the block above
+     --page-header-height at the foot of this file.
+
    ascent-override: 106%  descent-override: 20%  line-gap-override: 0%
      The overrides compose AFTER size-adjust, so the line box is
      (1.06 + 0.20) x 1.42 = 1.79em, against Georgia's 1.14em and Helvetica's
@@ -118,7 +132,31 @@
    The chain is ordered widest-first among what this repo's machines have.
    Order changes which base is used and therefore the exact advance, never
    whether the face is hostile: every entry is a serif, and 142% puts the
-   narrowest of them past the widest real sample brand. */
+   narrowest of them past the widest real sample brand.
+
+   The last sentence is true and it is not the whole truth, which cost a red
+   build on 2026-08-26. "Never whether the face is hostile" was read as "so the
+   base face does not matter", and the base face decides every LENGTH this
+   fixture renders, not only whether it clears a bar. Measured in this repo's
+   Chromium, masthead-nav on this token set:
+
+     base face          1280x800  1440x900  390x844  360x740  320x568
+     Georgia              124.2     124.2     125      145      145
+     DejaVu Serif         173.8     173.8     145      145      145
+     Noto Serif           124.2     124.2     125      145      145
+     Times New Roman      124.2     124.2     125      125      145
+     Nimbus Roman         124.2     124.2     125      125      125
+     nothing resolves     124.2     124.2     125      125      125
+
+   49.6px between two entries in one chain, at the two widest viewports. It is
+   a wrap step, not a drift: at these widths the menu is a flex row, the join
+   control widens with the face and squeezes it, and the row breaks onto a
+   third line all at once. Georgia at 142% sits one step short of that break
+   and DejaVu Serif sits one step past it, so the fixture had been rendering a
+   header of one height on every machine anyone looked at and another on the
+   machine that gates the release. Anything downstream of the header's height
+   was therefore a different number in CI, silently, until something subtracted
+   it and came up short. */
 @font-face {
   font-family: "Lander Display Fixture";
   font-style: normal;
@@ -181,6 +219,56 @@
   --card-border: 1px solid oklch(0.24 0.012 60 / 0.22);
   --chip-radius: 0.25rem;
   --logo-height: 2.5rem;
+
+  /* THE FURNITURE, and this set is the reason TOKENS.md tells a brand to
+     measure it rather than take the default.
+
+     9.5rem is the default, and TOKENS.md derives it as the tallest masthead-nav
+     across the sample token sets with a little over. That derivation is sound
+     for the four sets that name a system stack, whose faces are either the
+     same everywhere or metric-compatible clones of each other. It is not sound
+     for this one: the table above the @font-face rules has this set's own
+     header between 124.2px and 173.8px depending on which serif the local()
+     chain finds, and 173.8 is past 9.5rem. On 2026-08-26 a CI runner rendered
+     exactly that and ci/check_fold.py failed the build, correctly.
+
+     12rem is 192px: the tallest of those with a little over. Measured, at
+     every viewport ci/check_fold.py uses, against every face this file's own
+     chain can land on - not against the one face this machine happens to have,
+     which is the mistake being corrected.
+
+     WHY NOT 11rem, WHICH IS THE TIGHT ROUND-UP. 176px would clear 173.8 by
+     2.2, and 2.2px is not a margin on the one machine nobody develops on. Two
+     different things move this header. A wider face moves it in WRAP STEPS of
+     about 50px, and no headroom short of a whole step helps there - that is a
+     change of kind, and it should be re-measured rather than absorbed. But the
+     bar's own furniture moves it CONTINUOUSLY: --space-4 is its block padding
+     at these widths, --space-2 the gap between menu rows, and both ride
+     --space-scale. A few pixels from any of those would put 176 under, and it
+     would go under on the runner while staying green everywhere else, which is
+     the exact failure this whole change exists to stop happening twice.
+
+     18px absorbs that and stops well short of the next wrap step at 223.4, so
+     a face wide enough to break the menu again still fails - loudly, and by
+     name, because the gate now reports the token and the measurement in one
+     sentence instead of a section 22px below a fold.
+
+     Over-allowing is the cheap direction here and TOKENS.md says so: too large
+     costs a band of page background, too small scrolls. On a preview token set
+     it costs nothing at all.
+
+     WHY THE FOOTER IS LEFT AT THE DEFAULT. --page-footer-height is the
+     platform's furniture, not this brand's face: the same injected footer at
+     the same two heights whatever the heading face is. 12.5rem already covers
+     the 197px phone footer, and restating a default that is right is noise.
+
+     WHY NOT RAISE THE LIBRARY DEFAULT INSTEAD. Because 173.8px is a fixture
+     number. It comes of a simulated ~1em-per-bold-digit advance that no real
+     static face has, and this file's own instruction is to report the
+     threshold and never the pixel count it produced. Sizing a token every real
+     brand inherits off a face that cannot exist would be doing the thing this
+     fixture exists to warn about. */
+  --page-header-height: 12rem;
 
   --transition-fast: 150ms;
   --transition-slow: 400ms;
