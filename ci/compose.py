@@ -111,10 +111,25 @@ def strip_tags(text):
     return re.sub(r"<[^>]+>", " ", text)
 
 
+# A pattern-README reference, tolerant of the line wrap README prose often
+# lands on: "the\nREADME" is the same reference as "the README".
+README_REF = re.compile(r"the\s+README\b")
+
+# Phrases true of a pattern alone and unanswerable in a shell. cta-band's
+# placement note names the footer, and a shell has nothing to say about
+# footers: the platform injects one at serve time or does not, and either
+# way the page carries no footer markup.
+PHRASE_REWRITES = [
+    (re.compile(r",\s*before\s+the\s+footer\."), "."),
+]
+
+
 def comment_safe(text):
-    """Text destined for the inside of an HTML comment. A double hyphen would
-    end the comment early in some parsers, so it is spaced apart."""
-    return text.replace("--", "- -")
+    """Text destined for the inside of an HTML comment. Only the exact
+    closing sequence can end the comment early, so only it is spaced apart -
+    a bare double hyphen stays, or spacing it would corrupt any sample class
+    carrying one."""
+    return text.replace("-->", "-- >")
 
 
 def check_banner_policy(where, texts):
@@ -223,22 +238,83 @@ def section_banner(item, mods, position, total):
     return f"<!-- {RULE}\n{inner}\n     {RULE} -->"
 
 
+class AmbiguousDrop(Exception):
+    """Dropping these lines would truncate a sentence."""
+
+
+def drop_variant_lines(inner, rungs):
+    """Remove the comment lines that instruct a variant choice.
+
+    A line is doomed when it names a variant rung or the word modifier. The
+    doomed lines are removed in contiguous blocks, and a block may only go
+    where the removal cannot truncate a sentence: the kept text before it
+    must end a sentence (or be empty), and the kept text after it must open
+    one (or be empty). Anything else raises rather than shipping half a
+    sentence - the fix is rewording the pattern's comment, not a cleverer
+    truncation here.
+    """
+    lines = inner.split("\n")
+    doomed = {i for i, ln in enumerate(lines)
+              if "modifier" in ln or any(r in ln for r in rungs)}
+    if not doomed:
+        return inner
+    for i in sorted(doomed):
+        if i - 1 in doomed:
+            continue                                # not the block's start
+        end = i
+        while end + 1 in doomed:
+            end += 1
+        before = "\n".join(lines[j] for j in range(i) if j not in doomed).strip()
+        after = "\n".join(lines[j] for j in range(end + 1, len(lines))
+                          if j not in doomed).strip()
+        if before and before[-1] not in ".!?:":
+            raise AmbiguousDrop(f"the text before {lines[i].strip()!r} does "
+                                f"not end a sentence")
+        opener = re.search(r"[A-Za-z]", after)
+        if after and not (opener and opener.group(0).isupper()):
+            raise AmbiguousDrop(f"the text after {lines[end].strip()!r} does "
+                                f"not open a sentence")
+    return "\n".join(ln for j, ln in enumerate(lines) if j not in doomed)
+
+
+def _prove_drop_safety():
+    """The two halves of drop_variant_lines, exercised on every run: a clean
+    drop lands, and a drop that would truncate a sentence is refused."""
+    clean = drop_variant_lines(" Take one ground modifier.\n Keep this. ",
+                               {"--deep"})
+    assert "Keep this." in clean and "modifier" not in clean
+    try:
+        drop_variant_lines(" This sentence names the --deep rung\n"
+                           " and carries on past it. ", {"--deep"})
+    except AmbiguousDrop:
+        pass
+    else:
+        raise AssertionError("a mid-sentence drop was not refused")
+
+
 def rewrite_comments(name, meta, body):
-    """Builder comments travel with the markup, and two kinds go stale in a
-    shell. 'the README' means the pattern's own README, which is not in this
-    folder - point at it by path. A variant-choice instruction offers a
-    choice the recipe has already made and the banner already states, so any
-    comment line naming a variant rung, or the word modifier, is dropped;
-    a comment with nothing else in it goes entirely."""
+    """Builder comments travel with the markup, and some go stale in a
+    shell. 'the README' - however the line wraps - means the pattern's own
+    README, which is not in this folder: point at it by path. A variant
+    instruction offers a choice the recipe has already made and the banner
+    already states: drop it, whole sentences only. A phrase about page
+    furniture the shell cannot vouch for is reworded from the table above.
+    A comment with nothing left in it goes entirely."""
     rungs = {f"--{v}" for values in axes_of(meta).values() for v in values}
 
     def fix(m):
         inner = m.group(1)
         if SLOT_INNER.match(inner):
             return m.group(0)
-        inner = inner.replace("the README", f"patterns/{name}/README.md")
-        lines = [ln for ln in inner.split("\n")
-                 if "modifier" not in ln and not any(r in ln for r in rungs)]
+        inner = README_REF.sub(f"patterns/{name}/README.md", inner)
+        for phrase, said in PHRASE_REWRITES:
+            inner = phrase.sub(said, inner)
+        try:
+            inner = drop_variant_lines(inner, rungs)
+        except AmbiguousDrop as why:
+            die(f"{name}: variant instruction cannot be dropped cleanly "
+                f"({why}) - reword the pattern's comment")
+        lines = inner.split("\n")
         if not any(ln.strip() for ln in lines):
             return ""
         lines[0] = " " + lines[0].lstrip() if lines[0].strip() else lines[0]
@@ -261,10 +337,11 @@ def compose_body(item, mods):
 
 def pattern_css(item):
     """The pattern's CSS, with the one reference that goes stale in a shell
-    pointed at its real target: 'the README' in a pattern.css comment means
-    the pattern's own README, which is not the README in this folder."""
-    return item["css"].strip().replace(
-        "the README", f"patterns/{item['name']}/README.md")
+    pointed at its real target: 'the README' in a pattern.css comment -
+    however the line wraps - means the pattern's own README, which is not
+    the README in this folder."""
+    return README_REF.sub(f"patterns/{item['name']}/README.md",
+                          item["css"].strip())
 
 
 def page_checks(page, chosen, page_type):
@@ -487,6 +564,7 @@ def compose_index(built):
 
 def generate():
     """Everything under compositions/, as {relative path: text}."""
+    _prove_drop_safety()
     recipes = json.loads(RECIPES.read_text(encoding="utf-8"))
     library = (ROOT / "LATEST").read_text(encoding="utf-8").strip()
     shipped = [r for r in recipes["recipes"] if "composition" in r]
