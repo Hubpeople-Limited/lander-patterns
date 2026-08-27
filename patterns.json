@@ -141,6 +141,35 @@
   "version": "3",
   "whole-page": false
  },
+ "colophon": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground; the platform fills every link, the page owns the markup.",
+  "motion": "none",
+  "needs": "the brand's name for the copyright line. Every link on it is platform furniture",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article",
+   "features",
+   "articles-landing"
+  ],
+  "pairs-with": [],
+  "requires": "none",
+  "type": "component",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "comparison-table": {
   "avoid-with": [],
   "behaviours": [],
