@@ -115,13 +115,13 @@ def strip_tags(text):
 # lands on: "the\nREADME" is the same reference as "the README".
 README_REF = re.compile(r"the\s+README\b")
 
-# Phrases true of a pattern alone and unanswerable in a shell. cta-band's
-# placement note names the footer, and a shell has nothing to say about
-# footers: the platform injects one at serve time or does not, and either
-# way the page carries no footer markup.
-PHRASE_REWRITES = [
-    (re.compile(r",\s*before\s+the\s+footer\."), "."),
-]
+# Phrases true of a pattern alone and unanswerable in a shell. Currently
+# empty: cta-band's "before the footer" placement note used to be dropped
+# here on the theory that a page carries no footer markup, and that theory
+# did not survive measurement - served canvas pages are the stored document
+# with tokens hydrated, nothing injected - so every shell now ends with
+# the colophon pattern and the note is simply true.
+PHRASE_REWRITES = []
 
 
 def comment_safe(text):
@@ -501,12 +501,12 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "`page.css` carries only the patterns' rules and reads every colour, "
         "radius and font from the brand's tokens.",
         "",
-        "The site footer is the platform's: it is injected at serve time "
-        "when the page record's footer-menu switch is on. A page created "
-        "through upload arrives with that switch off, and turning it on is "
-        "a portal setting - the page itself never carries footer markup. "
-        "A site header is a pattern a page carries (`masthead-nav` in this "
-        "library); this composition ships without one.",
+        "The page carries its own site footer: this shell closes with the "
+        "`colophon` pattern, and the platform fills its legal links and "
+        "footer menu at serve time - keep every `{{ }}` token in it exactly "
+        "as found. A site header is likewise a pattern a page carries "
+        "(`masthead-nav` in this library); this composition ships without "
+        "one.",
         "",
         "## Sections, in order",
         "",

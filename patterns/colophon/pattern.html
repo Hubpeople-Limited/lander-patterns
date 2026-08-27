@@ -1,0 +1,41 @@
+<!--
+name: colophon
+version: 1
+type: component
+page-types: homepage, landing, pricing, safety, article, features, articles-landing
+requires: none
+content-shape: reference
+description: The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground; the platform fills every link, the page owns the markup.
+keywords: footer, site-footer, legal, copyright, privacy, terms
+needs: the brand's name for the copyright line. Every link on it is platform furniture
+pairs-with: none
+avoid-with: none
+tokens-used: --color-bg, --color-focus, --color-rule, --color-surface, --color-text, --color-text-soft, --container-max, --space-2, --space-4, --space-6, --space-8
+variants: ground=plain|soft
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-27
+-->
+<!-- Take one ground modifier. See the README.
+       --plain page ground | --soft tinted fill
+     Place as the last element of the page body: nothing sits below it.
+     The legal links and the footer menu are platform furniture; keep each
+     placeholder exactly as found, never a literal URL in its place.
+     {{menu.footer}} expands to the brand's managed footer menu, and on a
+     brand that manages none it expands to nothing - delete the whole nav
+     element then, rather than shipping an empty landmark. -->
+<footer class="colophon colophon--plain">
+  <div class="colophon-inner">
+    <nav class="colophon-menu" aria-label="Footer">
+      {{menu.footer}}
+    </nav>
+    <ul class="colophon-legal" role="list">
+      <li><a href="{{footerLinks.privacyPolicyUrl}}">Privacy Policy</a></li>
+      <li><a href="{{footerLinks.termsAndConditionsUrl}}">Terms &amp; Conditions</a></li>
+      <li><a href="{{footerLinks.cookiesUrl}}">Cookie Policy</a></li>
+      <li><a href="{{footerLinks.antiSlaveryPolicyUrl}}">Anti-Slavery Policy</a></li>
+    </ul>
+    <p class="colophon-copyright"><!-- slot: copyright --></p>
+  </div>
+</footer>

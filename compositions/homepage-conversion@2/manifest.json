@@ -1,6 +1,6 @@
 {
   "composition": "homepage-conversion",
-  "version": 1,
+  "version": 2,
   "page": "homepage",
   "library": "v64",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
@@ -20,6 +20,10 @@
     {
       "name": "cta-band",
       "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
     }
   ]
 }

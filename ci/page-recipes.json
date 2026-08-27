@@ -38,27 +38,27 @@
     },
     {
       "page": "homepage",
-      "patterns": ["hero-split", "steps-plain", "faq-details", "cta-band"],
+      "patterns": ["hero-split", "steps-plain", "faq-details", "cta-band", "colophon"],
       "why": "Opener, how it works, the questions, the ask - the ordinary conversion homepage.",
-      "composition": { "name": "homepage-conversion", "version": 1 }
+      "composition": { "name": "homepage-conversion", "version": 2 }
     },
     {
       "page": "homepage",
-      "patterns": ["hero-stated:ground=deep", "heading-block", "benefit-tiles", "cta-band"],
+      "patterns": ["hero-stated:ground=deep", "heading-block", "benefit-tiles", "cta-band", "colophon"],
       "why": "The homepage for a brand with no photography. heading-block is not decoration here: benefit-tiles opens at h3 and says so in its own markup, so without an h2 above it the page skips a heading level.",
-      "composition": { "name": "homepage-no-photography", "version": 1 }
+      "composition": { "name": "homepage-no-photography", "version": 2 }
     },
     {
       "page": "pricing",
-      "patterns": ["hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band"],
+      "patterns": ["hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band", "colophon"],
       "why": "State the offer, show the tiers, answer the objection, ask.",
-      "composition": { "name": "pricing", "version": 1 }
+      "composition": { "name": "pricing", "version": 2 }
     },
     {
       "page": "safety",
-      "patterns": ["hero-stated:ground=brand", "safety-protections", "cta-band"],
+      "patterns": ["hero-stated:ground=brand", "safety-protections", "cta-band", "colophon"],
       "why": "On a dating brand this is a conversion page in disguise, so it closes like one.",
-      "composition": { "name": "safety", "version": 1 }
+      "composition": { "name": "safety", "version": 2 }
     },
     {
       "page": "article",

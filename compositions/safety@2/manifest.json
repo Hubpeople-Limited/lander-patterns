@@ -1,6 +1,6 @@
 {
   "composition": "safety",
-  "version": 1,
+  "version": 2,
   "page": "safety",
   "library": "v64",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
@@ -19,6 +19,10 @@
     {
       "name": "cta-band",
       "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
     }
   ],
   "slot-support": [
