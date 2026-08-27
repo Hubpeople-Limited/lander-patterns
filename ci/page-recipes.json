@@ -49,6 +49,18 @@
       "composition": { "name": "homepage-no-photography", "version": 2 }
     },
     {
+      "page": "homepage",
+      "patterns": ["hero-overlay", "steps-numbered", "faq-details", "cta-band", "colophon"],
+      "why": "The photography-led homepage: a cinematic full-screen opener, the sign-up flow as image cards, the questions, the ask. Nearly every live lander leads with imagery; this is the shell for them. Image slots take real material or the library's lib/placeholders/ stand-ins while the brand's photography is still coming.",
+      "composition": { "name": "homepage-photo-led", "version": 1 }
+    },
+    {
+      "page": "homepage",
+      "patterns": ["hero-centred", "zigzag-rows", "faq-details", "cta-image", "colophon"],
+      "why": "The editorial photography homepage: the claim held above a wide image band rather than over it, alternating image-and-copy rows carrying the argument, and a photographic close. The image-led variant for a brand whose register is considered rather than cinematic.",
+      "composition": { "name": "homepage-photo-editorial", "version": 1 }
+    },
+    {
       "page": "pricing",
       "patterns": ["hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band", "colophon"],
       "why": "State the offer, show the tiers, answer the objection, ask.",
