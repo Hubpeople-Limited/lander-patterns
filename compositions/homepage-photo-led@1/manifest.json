@@ -1,0 +1,29 @@
+{
+  "composition": "homepage-photo-led",
+  "version": 1,
+  "page": "homepage",
+  "library": "v66",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "hero-overlay",
+      "version": "13"
+    },
+    {
+      "name": "steps-numbered",
+      "version": "9"
+    },
+    {
+      "name": "faq-details",
+      "version": "6"
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ]
+}

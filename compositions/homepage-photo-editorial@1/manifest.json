@@ -1,0 +1,29 @@
+{
+  "composition": "homepage-photo-editorial",
+  "version": 1,
+  "page": "homepage",
+  "library": "v66",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "hero-centred",
+      "version": "6"
+    },
+    {
+      "name": "zigzag-rows",
+      "version": "9"
+    },
+    {
+      "name": "faq-details",
+      "version": "6"
+    },
+    {
+      "name": "cta-image",
+      "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ]
+}

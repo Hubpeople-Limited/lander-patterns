@@ -194,7 +194,9 @@ def slot_guidance(slot, sample):
     if attrs:
         where = "/".join(sorted(set(attrs)))
         if "src" in attrs:
-            hint = "a path to real material"
+            hint = ("a path to real material, or a lib/placeholders/ stand-in "
+                    "while the brand's photography is still coming - said out "
+                    "loud, never silently")
         elif "alt" in attrs:
             hint = "what the image shows, in words"
         elif "id" in attrs or "aria-labelledby" in attrs:
@@ -508,6 +510,20 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "(`masthead-nav` in this library); this composition ships without "
         "one.",
         "",
+    ]
+    if any("src" in slot["attrs"]
+           for item in page for slot in find_slots(item["body"])):
+        lines += [
+            "This shell needs photography. An image slot takes real material "
+            "- or, while the brand's photography is still coming, one of the "
+            "library's stand-ins from `lib/placeholders/` (its README has "
+            "the shapes and the rules): copied into the brand's own "
+            "`site/images/`, named to the partner as a placeholder out loud, "
+            "and recorded in the brand log as an image still owed. Never a "
+            "placeholder for a person.",
+            "",
+        ]
+    lines += [
         "## Sections, in order",
         "",
     ]
