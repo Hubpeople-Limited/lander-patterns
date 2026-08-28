@@ -2,7 +2,7 @@
   "composition": "homepage-photo-editorial",
   "version": 1,
   "page": "homepage",
-  "library": "v70",
+  "library": "v72",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
