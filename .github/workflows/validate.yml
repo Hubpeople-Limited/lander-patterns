@@ -133,6 +133,16 @@ jobs:
         run: python ci/legibility.py
       - name: Build previews
         run: python ci/build_preview.py
+      # The machine-readable bundle, written into the same directory the
+      # previews go to, so Pages serves it from a stable URL with the
+      # `Access-Control-Allow-Origin: *` header it already sends. A consumer in
+      # a browser then makes one fetch instead of thirty, and gets whatever the
+      # current release is without anybody maintaining a copy of this library
+      # somewhere else. Deliberately NOT added to the release zip: everything
+      # in it is derived from files already in that zip, and two copies of one
+      # library are two things free to disagree.
+      - name: Build the configurator bundle
+        run: python ci/build_configurator.py
       # On a PR the previews are attached as a downloadable artifact so the
       # contributor can review both feels without local tooling; on main they
       # go to Pages.

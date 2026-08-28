@@ -1487,6 +1487,13 @@ def main():
             "variants": parse_variants(meta.get("variants", "")) or {},
             "motion": meta.get("motion"),
             "description": meta.get("description", ""),
+            # A consumer choosing from this file alone could not see that a
+            # pattern had been retired, so it could pick one the library has
+            # already replaced and never know it had. The pattern header
+            # carries both fields and the linter already validates `status`;
+            # the manifest was the only place they went missing.
+            "status": meta.get("status", "active"),
+            "replaced-by": meta.get("replaced-by", "").strip(),
         }
         rows.append(
             f"- **{name}** v{meta.get('version', '?')} · {meta.get('type', '?')} · "

@@ -22,7 +22,9 @@
    "faq-details",
    "safety-protections"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {
    "ground": [
@@ -53,7 +55,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "9",
@@ -76,7 +80,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "5",
@@ -101,7 +107,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "7",
@@ -128,7 +136,9 @@
    "cta-assurance",
    "safety-protections"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {
    "ground": [
@@ -159,7 +169,9 @@
    "articles-landing"
   ],
   "pairs-with": [],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {
    "ground": [
@@ -189,7 +201,9 @@
    "opener-split",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "4",
@@ -217,7 +231,9 @@
    "cta-image",
    "pricing-tiers"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "2",
@@ -246,7 +262,9 @@
    "faq-details",
    "safety-protections"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "4",
@@ -274,7 +292,9 @@
    "hero-split",
    "pricing-tiers"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "11",
@@ -300,7 +320,9 @@
    "pricing-tiers",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "4",
@@ -323,7 +345,9 @@
    "article"
   ],
   "pairs-with": [],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "7",
@@ -345,7 +369,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "6",
@@ -370,7 +396,9 @@
    "pricing-tiers",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "5",
@@ -399,7 +427,9 @@
   "pairs-with": [
    "pricing-tiers"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "4",
@@ -424,7 +454,9 @@
    "testimonial-grid",
    "pricing-tiers"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "8",
@@ -453,7 +485,9 @@
    "stats-band",
    "steps-plain"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "6",
@@ -481,7 +515,9 @@
   "pairs-with": [
    "stats-band"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "13",
@@ -510,7 +546,9 @@
   "pairs-with": [
    "pricing-tiers"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "9",
@@ -539,7 +577,9 @@
    "member-strip",
    "rating-mark"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "10",
@@ -572,7 +612,9 @@
    "steps-plain",
    "rating-mark"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {
    "alignment": [
@@ -609,7 +651,9 @@
    "cta-band",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {
    "ground": [
@@ -644,7 +688,9 @@
    "cta-band",
    "link-cluster"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {
    "ground": [
@@ -676,7 +722,9 @@
    "articles-landing"
   ],
   "pairs-with": [],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {
    "ground": [
@@ -719,7 +767,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "consented-people",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "10",
@@ -747,7 +797,9 @@
    "rating-mark",
    "cta-band"
   ],
+  "replaced-by": "",
   "requires": "consented-people",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "3",
@@ -771,7 +823,9 @@
    "steps-plain",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "4",
@@ -798,7 +852,9 @@
    "zigzag-rows",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {
    "rule": [
@@ -833,7 +889,9 @@
    "heading-block",
    "cta-band"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "5",
@@ -854,7 +912,9 @@
   "pairs-with": [
    "hero-split"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "8",
@@ -879,7 +939,9 @@
    "heading-block",
    "cta-band"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "5",
@@ -908,7 +970,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "consented-people",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "6",
@@ -930,7 +994,9 @@
   "pairs-with": [
    "stats-band"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "10",
@@ -956,7 +1022,9 @@
    "heading-block",
    "gallery-scroll"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "5",
@@ -978,7 +1046,9 @@
    "pricing"
   ],
   "pairs-with": [],
+  "replaced-by": "",
   "requires": "consented-people",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "6",
@@ -1004,7 +1074,9 @@
    "member-strip",
    "hero-split"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "5",
@@ -1028,7 +1100,9 @@
    "trust-row",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "4",
@@ -1056,7 +1130,9 @@
    "faq-details",
    "quote-feature"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "1",
@@ -1081,7 +1157,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "9",
@@ -1109,7 +1187,9 @@
    "hero-split",
    "hero-overlay"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "8",
@@ -1138,7 +1218,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "9",
@@ -1167,7 +1249,9 @@
    "opener-split",
    "cta-band"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "4",
@@ -1191,7 +1275,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "consented-people",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "7",
@@ -1217,7 +1303,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "consented-people",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "10",
@@ -1241,7 +1329,9 @@
    "pricing-tiers",
    "faq-details"
   ],
+  "replaced-by": "",
   "requires": "none",
+  "status": "active",
   "type": "component",
   "variants": {},
   "version": "4",
@@ -1268,7 +1358,9 @@
   "pairs-with": [
    "heading-block"
   ],
+  "replaced-by": "",
   "requires": "photography",
+  "status": "active",
   "type": "section",
   "variants": {},
   "version": "9",
