@@ -1326,6 +1326,72 @@ def check_shells():
     return failures
 
 
+# ci/build_configurator.py. The first case is the one that matters: a content
+# slot IS an HTML comment, so stripping a pattern's placement comments takes
+# every slot with it unless the strip knows better. That happened, and it was
+# invisible to everything structural - a shell composed from the bundle had the
+# right sections, in the right order, with the right variant class on each, and
+# no words in any of them. It was caught by rendering one and diffing the text
+# against the shipped shell.
+def check_configurator():
+    import re as _re
+    sys.path.insert(0, str(HERE))
+    import build_configurator as bc
+    failures = []
+
+    bundle = bc.build()
+
+    slots = sum(p["html"].count("<!-- slot:") for p in bundle["patterns"].values())
+    ok = slots > 0
+    print(f"  {'ok  ' if ok else 'FAIL'} keeps the slot markers when it strips "
+          f"comments   {slots} slot(s)")
+    if not ok:
+        failures.append("build_configurator stripped every slot marker")
+
+    leftover = sum(1 for p in bundle["patterns"].values()
+                   if _re.search(r"<!--(?!\s*slot\s*:)", p["html"]))
+    ok = leftover == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} strips every comment that is not a slot")
+    if not ok:
+        failures.append(f"{leftover} pattern(s) kept a non-slot comment")
+
+    # Every pattern a shell names must be in the same bundle, or a consumer
+    # composes a page with a hole where a section should be.
+    missing = sorted({p["name"] for s in bundle["shells"].values()
+                      for p in s["patterns"]} - set(bundle["patterns"]))
+    ok = not missing
+    print(f"  {'ok  ' if ok else 'FAIL'} every pattern a shell names is in the bundle")
+    if not ok:
+        failures.append(f"shells name absent pattern(s): {missing}")
+
+    # A dial the token contract does not document would let a chooser produce a
+    # design the toolkit cannot rebuild from the recipe it hands over.
+    held = dict(bc.DIALS)
+    try:
+        bc.DIALS["letter-spacing"] = {"default": 0}
+        try:
+            bc.check_dials_documented()
+            caught = False
+        except SystemExit:
+            caught = True
+    finally:
+        bc.DIALS.clear()
+        bc.DIALS.update(held)
+    print(f"  {'ok  ' if caught else 'FAIL'} refuses a dial TOKENS.md does not document")
+    if not caught:
+        failures.append("check_dials_documented accepted an invented dial")
+
+    # Data URIs, so the bundle answers from an origin holding none of these
+    # files. A relative filename would render as a broken image off Pages.
+    bad = [k for k, v in bundle["placeholders"].items() if not v.startswith("data:")]
+    ok = not bad and bundle["furniture"]["{{logo.src}}"].startswith("data:")
+    print(f"  {'ok  ' if ok else 'FAIL'} carries its images as data URIs")
+    if not ok:
+        failures.append(f"image(s) not inlined: {bad}")
+
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -1378,6 +1444,8 @@ def main():
     print()
     failures += check_shells()
     print()
+    failures += check_configurator()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -1392,8 +1460,8 @@ def main():
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
-             + 5)
-    print(f"clean: {total} gate cases across eleven modules behave as documented.")
+             + 5 + 5)
+    print(f"clean: {total} gate cases across twelve modules behave as documented.")
     return 0
 
 
