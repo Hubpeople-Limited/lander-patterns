@@ -292,6 +292,41 @@ def build_shell(folder):
 # quarter is exactly the frame's width, at any frame width, with no script -
 # which matters, because the script gate at the end of main() refuses any
 # script element on a generated page that is not an empty src reference.
+# The chrome the preview site is written in - its own, nothing to do with the
+# library. Shared by the index and the phone pages, and written with single
+# braces because it is substituted into those templates rather than being one.
+CHROME_CSS = """
+:root {
+  --ink: #1b1f23; --soft-ink: #5b646c; --bg: #ffffff; --panel: #f5f4f1;
+  --line: #dcdad4; --link: #1f5f6b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e9e7e2; --soft-ink: #a3a9ae; --bg: #14171a; --panel: #1e2226;
+    --line: #333a40; --link: #7fc4d1;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0 auto; padding: 3rem 1.5rem 6rem; max-width: 76rem;
+  background: var(--bg); color: var(--ink); line-height: 1.6;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+h1 { font-size: clamp(1.8rem, 1.3rem + 2vw, 2.6rem); line-height: 1.15;
+  letter-spacing: -0.02em; margin: 0 0 .5rem; }
+h2 { font-size: 1.35rem; letter-spacing: -0.01em; margin: 3.5rem 0 .35rem;
+  padding-top: 2rem; border-top: 1px solid var(--line); }
+h2:first-of-type { border-top: 0; padding-top: 0; }
+p { max-width: 46rem; color: var(--soft-ink); margin: 0 0 1rem; }
+p.lede { color: var(--ink); font-size: 1.05rem; }
+a { color: var(--link); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .9em; background: var(--panel); padding: .1em .35em;
+  border-radius: .25rem; }
+.tag { display: inline-block; font-size: .78rem; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--soft-ink); border: 1px solid var(--line);
+  border-radius: 999px; padding: .1rem .6rem; vertical-align: .12em; }
+.back { font-size: .9rem; margin-bottom: 1.5rem; }
+"""
+
 INDEX_PAGE = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -299,34 +334,7 @@ INDEX_PAGE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lander patterns - previews</title>
 <style>
-:root {{
-  --ink: #1b1f23; --soft-ink: #5b646c; --bg: #ffffff; --panel: #f5f4f1;
-  --line: #dcdad4; --link: #1f5f6b;
-}}
-@media (prefers-color-scheme: dark) {{
-  :root {{
-    --ink: #e9e7e2; --soft-ink: #a3a9ae; --bg: #14171a; --panel: #1e2226;
-    --line: #333a40; --link: #7fc4d1;
-  }}
-}}
-* {{ box-sizing: border-box; }}
-body {{ margin: 0 auto; padding: 3rem 1.5rem 6rem; max-width: 76rem;
-  background: var(--bg); color: var(--ink); line-height: 1.6;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }}
-h1 {{ font-size: clamp(1.8rem, 1.3rem + 2vw, 2.6rem); line-height: 1.15;
-  letter-spacing: -0.02em; margin: 0 0 .5rem; }}
-h2 {{ font-size: 1.35rem; letter-spacing: -0.01em; margin: 3.5rem 0 .35rem;
-  padding-top: 2rem; border-top: 1px solid var(--line); }}
-h2:first-of-type {{ border-top: 0; padding-top: 0; }}
-p {{ max-width: 46rem; color: var(--soft-ink); margin: 0 0 1rem; }}
-p.lede {{ color: var(--ink); font-size: 1.05rem; }}
-a {{ color: var(--link); }}
-code {{ font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: .9em; background: var(--panel); padding: .1em .35em;
-  border-radius: .25rem; }}
-.tag {{ display: inline-block; font-size: .78rem; letter-spacing: .04em;
-  text-transform: uppercase; color: var(--soft-ink); border: 1px solid var(--line);
-  border-radius: 999px; padding: .1rem .6rem; vertical-align: .12em; }}
+{chrome}
 .wall {{ display: grid; gap: 1.75rem; margin: 2rem 0 0; padding: 0; list-style: none;
   grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); }}
 .tile {{ display: block; text-decoration: none; color: inherit; }}
@@ -381,6 +389,82 @@ preview.</p>
 """
 
 
+# The two widths ci/check_phone.py measures, and for its reasons: 320 is the
+# floor, where an overflow shows first; 360 is the mode of the traffic these
+# pages actually serve. A preview that disagreed with the gate about what a
+# phone is would be worse than no preview, so the numbers are not chosen here
+# - they are taken from there, and 800 is a phone's height beside them.
+PHONE_WIDTHS = (360, 320)
+PHONE_HEIGHT = 800
+
+# Every frame on these pages is a real viewport of that width: an iframe has
+# its own, so the media queries inside it answer to the frame rather than to
+# the page around it. Nothing is scaled and nothing is simulated. This is what
+# makes the page worth having - cta-sticky is `hidden on desktop`, so on every
+# other page of this site it renders as literally nothing.
+PHONE_PAGE = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{name} on a phone</title>
+<style>
+{chrome}
+body {{ max-width: none; }}
+.rail {{ display: flex; gap: 1.25rem; overflow-x: auto; padding: 0 0 1rem;
+  margin: 1.5rem 0 2.5rem; }}
+.rail figure {{ margin: 0; flex: 0 0 auto; }}
+/* content-box, and it is load-bearing rather than tidiness. The chrome above
+   sets border-box on everything, which makes the 1px edge eat into the
+   declared width - the frames measured 358 and 318 inside, so a breakpoint
+   sitting exactly on 360 would have answered the wrong way and the page would
+   have quietly disagreed with the gate it quotes. */
+.rail iframe {{ display: block; box-sizing: content-box;
+  border: 1px solid var(--line); border-radius: .5rem;
+  background: var(--panel); }}
+.rail figcaption {{ font-size: .85rem; color: var(--soft-ink);
+  margin-top: .5rem; }}
+</style>
+</head>
+<body>
+<p class="back"><a href="index.html">&larr; All previews</a></p>
+<h1>{name} <span class="tag">on a phone</span></h1>
+<p class="lede">{lede}</p>
+{rails}
+</body>
+</html>
+"""
+
+
+def phone_page(name, targets, lede):
+    """One page showing `targets` rendered at each phone width.
+
+    `targets` is (label, href) pairs - the token sets this thing has pages for.
+    """
+    rails = []
+    for width in PHONE_WIDTHS:
+        frames = "".join(
+            f'<figure><iframe src="{href}" width="{width}" '
+            f'height="{PHONE_HEIGHT}" loading="lazy" '
+            f'title="{name} on {label}, {width} pixels wide"></iframe>'
+            f'<figcaption>{label}</figcaption></figure>'
+            for label, href in targets)
+        rails.append(f'<h2>{width} pixels wide</h2>\n'
+                     f'<div class="rail">{frames}</div>')
+    return PHONE_PAGE.format(name=name, chrome=CHROME_CSS, lede=lede,
+                             rails="\n".join(rails))
+
+
+PHONE_LEDE = (
+    "Every frame below is a real viewport of that width, not a scaled-down "
+    "desktop render: an iframe has its own viewport, so the media queries "
+    "inside it answer to the frame. The two widths are the ones "
+    "<code>ci/check_phone.py</code> measures - 320 is the floor, where an "
+    "overflow shows first, and 360 is the mode of the traffic these pages "
+    "serve. Touch, hover and the device pixel ratio are the host browser's, "
+    "so this is the wrong surface for judging those; layout it shows exactly.")
+
+
 def release_tag():
     """The tag these pages will be published as, not the one already released.
 
@@ -411,6 +495,7 @@ def build_index(shells, cards, tag):
         name = shell["name"]
         sets = " / ".join(
             f'<a href="shell-{name}--{s}.html">{s}</a>' for s in SHELL_TOKEN_SETS)
+        sets += f' &middot; <a href="shell-{name}--phone.html">phone</a>'
         tiles.append(
             f'<li><a class="tile" href="shell-{name}--{default_set}.html">'
             f'<span class="frame"><iframe src="shell-{name}--{default_set}.html" '
@@ -420,7 +505,7 @@ def build_index(shells, cards, tag):
             f'{" &rarr; ".join(shell["patterns"])}</span></a>'
             f'<p class="sets">{sets}</p></li>')
     return INDEX_PAGE.format(
-        tag=tag, shell_count=len(shells), pattern_count=len(cards),
+        chrome=CHROME_CSS, tag=tag, shell_count=len(shells), pattern_count=len(cards),
         wall="\n".join(tiles), patterns="\n".join(cards))
 
 
@@ -454,10 +539,16 @@ def main():
                                 set_name=set_name, markup=filled)
             (OUT / f"{folder.name}--{set_name}.html").write_text(
                 page, encoding="utf-8", newline="\n")
+        (OUT / f"{folder.name}--phone.html").write_text(
+            phone_page(folder.name,
+                       [(s, f"{folder.name}--{s}.html") for s in tokens],
+                       PHONE_LEDE),
+            encoding="utf-8", newline="\n")
         cards.append(
             f'<li><b>{folder.name}</b><span class="sets">'
             + ' / '.join(f'<a href="{folder.name}--{s}.html">{s}</a>'
                          for s in tokens)
+            + f' &middot; <a href="{folder.name}--phone.html">phone</a>'
             + '</span></li>'
         )
 
@@ -480,6 +571,12 @@ def main():
                 tokens=tokens[set_name], css=css, markup=body)
             (OUT / f"shell-{folder.name}--{set_name}.html").write_text(
                 page, encoding="utf-8", newline="\n")
+        (OUT / f"shell-{folder.name}--phone.html").write_text(
+            phone_page(folder.name,
+                       [(s, f"shell-{folder.name}--{s}.html")
+                        for s in SHELL_TOKEN_SETS],
+                       PHONE_LEDE),
+            encoding="utf-8", newline="\n")
         shells.append({"name": folder.name, "page": manifest["page"],
                        "patterns": patterns})
     (OUT / "index.html").write_text(
