@@ -19,6 +19,7 @@ it uses the placeholder set the library already gives partners
 the brand's photography arrives.
 """
 import json
+import os
 import re
 import shutil
 from pathlib import Path
@@ -380,6 +381,29 @@ preview.</p>
 """
 
 
+def release_tag():
+    """The tag these pages will be published as, not the one already released.
+
+    `LATEST` is the wrong answer here and said so on the live site: this build
+    runs in the validate job, and the release job writes the new LATEST and cuts
+    the tag afterwards - so on a push to main the file still holds the previous
+    release, and the index published from that run claimed a version one behind
+    the library it was rendering. The tag is `v` plus the run number, in the
+    release job and here, from the same variable.
+
+    Off CI there is no run number and no release, so the local build says what
+    is on disk. That is honest: a local preview IS the working tree.
+    """
+    run = os.environ.get("GITHUB_RUN_NUMBER")
+    if run and os.environ.get("GITHUB_REF") == "refs/heads/main":
+        return f"v{run}"
+    if run:
+        # A pull-request run publishes nothing and cuts no tag, so naming the
+        # run number would invent a release that will never exist.
+        return (ROOT / "LATEST").read_text(encoding="utf-8").strip() + " plus this branch"
+    return (ROOT / "LATEST").read_text(encoding="utf-8").strip() + " (working tree)"
+
+
 def build_index(shells, cards, tag):
     default_set = SHELL_TOKEN_SETS[0]
     tiles = []
@@ -459,7 +483,7 @@ def main():
         shells.append({"name": folder.name, "page": manifest["page"],
                        "patterns": patterns})
     (OUT / "index.html").write_text(
-        build_index(shells, cards, (ROOT / "LATEST").read_text(encoding="utf-8").strip()),
+        build_index(shells, cards, release_tag()),
         encoding="utf-8", newline="\n")
     # Every script element on a generated page must be empty and carry a src.
     # Inlining a script body once put a literal closing-script string from
