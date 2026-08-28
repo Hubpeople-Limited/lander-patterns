@@ -2,7 +2,7 @@
   "composition": "safety",
   "version": 2,
   "page": "safety",
-  "library": "v75",
+  "library": "v77",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
