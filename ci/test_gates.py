@@ -1257,6 +1257,75 @@ def check_lost_messages():
     return failures
 
 
+# ci/build_preview.py, the shell half. Most of these guard a silent
+# corruption rather than a crash: a shell concatenates several patterns whose
+# slot names collide, so filling the whole document from one pattern's sample
+# would put the opener's copy into the steps section and render a page that
+# looks entirely fine. Nothing downstream could tell.
+SHELL_BANNER = """<!-- ================================================================
+     section {n} of 2 : {name} v1
+     ================================================================ -->
+"""
+
+
+def _bannered(first, second):
+    return (SHELL_BANNER.format(n=1, name=first) + '<section class="a"></section>'
+            + SHELL_BANNER.format(n=2, name=second) + '<section class="b"></section>')
+
+
+def check_shells():
+    sys.path.insert(0, str(HERE))
+    import build_preview as bp
+    failures = []
+
+    got = [name for name, _ in bp.shell_sections(_bannered("hero-split", "cta-band"))]
+    ok = got == ["hero-split", "cta-band"]
+    print(f"  {'ok  ' if ok else 'FAIL'} reads the pattern name off every section banner")
+    if not ok:
+        failures.append(f"shell_sections named {got}")
+
+    # A banner format change in compose.py has to stop the build, not quietly
+    # produce a shell filled from nothing.
+    try:
+        bp.shell_sections('<section class="a"></section>')
+        caught = False
+    except SystemExit:
+        caught = True
+    print(f"  {'ok  ' if caught else 'FAIL'} refuses a shell body carrying no section banner")
+    if not caught:
+        failures.append("shell_sections accepted a bannerless body")
+
+    # The real assertion, on a real shell: steps-plain and faq-details both
+    # carry a `section-title` slot and their sample values differ. Both have to
+    # be on the page, in that order. A whole-document fill puts one of them in
+    # both places, and the page still renders.
+    conversion = HERE.parent / "compositions" / "homepage-conversion@2"
+    if not conversion.exists():
+        print("  ok   skipped: homepage-conversion@2 is not in this tree")
+        return failures
+
+    rendered, patterns = bp.build_shell(conversion)
+    steps, questions = "Sample steps heading", "Sample questions heading"
+    ok = (steps in rendered and questions in rendered
+          and rendered.index(steps) < rendered.index(questions))
+    print(f"  {'ok  ' if ok else 'FAIL'} fills each section from its own pattern's sample")
+    if not ok:
+        failures.append("build_shell crossed sample content between sections")
+
+    ok = "slot:" not in rendered and "<!--" not in rendered
+    print(f"  {'ok  ' if ok else 'FAIL'} leaves no slot marker and no comment in a shell")
+    if not ok:
+        failures.append("build_shell left a slot or a comment in the output")
+
+    ok = patterns == ["hero-split", "steps-plain", "faq-details", "cta-band",
+                      "colophon"]
+    print(f"  {'ok  ' if ok else 'FAIL'} reports the patterns it placed, in page order")
+    if not ok:
+        failures.append(f"build_shell reported {patterns}")
+
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -1307,6 +1376,8 @@ def main():
     print()
     failures += check_fold()
     print()
+    failures += check_shells()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -1320,8 +1391,9 @@ def main():
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
-             + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3)
-    print(f"clean: {total} gate cases across ten modules behave as documented.")
+             + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
+             + 5)
+    print(f"clean: {total} gate cases across eleven modules behave as documented.")
     return 0
 
 
