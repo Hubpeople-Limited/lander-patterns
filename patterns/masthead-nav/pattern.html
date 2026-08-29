@@ -1,29 +1,34 @@
 <!--
 name: masthead-nav
-version: 3
+version: 4
 type: component
 page-types: homepage, landing, pricing, safety, article, features, articles-landing
 requires: none
 content-shape: reference
-description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements and three small-screen behaviours.
+description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar and two small-screen alignments.
 keywords: header, masthead, navigation, menu, logo, mobile menu, drawer
 needs: the brand's logo, the menu items configured on the platform, and two words in the brand's own language - one for the small-screen menu button and one for that same button while the menu is showing. Every other value on it is platform furniture
 pairs-with: none
 avoid-with: none
 tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-rule, --color-scrim, --color-surface, --color-surface-soft, --color-text, --container-max, --font-heading, --logo-height, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --transition-fast, --type-scale, --weight-display
-variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row
+variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row; sticky=no|yes; menu-align=start|end
 behaviours: drawer
 motion: subtle
 one-per-page: yes
 status: active
 added: 2026-08-25
 -->
-<!-- Take one modifier from each of the three axes. See the README.
-       ground:  --plain page ground | --soft tinted fill | --brand brand colour
-       layout:  --inline mark and menu on one row | --centred mark over the menu
-       menu:    --drawer a side panel over the page on a phone
-                --panel  a full-width panel under the header on a phone
-                --row    no button, the menu runs on beside the mark
+<!-- Take one modifier from each of the five axes. See the README.
+       ground:      --plain page ground | --soft tinted fill | --brand brand colour
+       layout:      --inline mark and menu on one row | --centred mark over the menu
+       menu:        --drawer a side panel over the page on a phone
+                    --panel  a full-width panel under the header on a phone
+                    --row    no button, the menu runs on beside the mark
+       sticky:      -sticky--no in the flow | -sticky--yes pinned to the top
+       menu-align:  -align--start | -align--end, below 60rem only
+     Login and join are INSIDE the disclosure and must stay there: an open
+     drawer covers the bar, so a control left outside it cannot be reached for
+     as long as the menu is showing. ci/lint.py fails the build if one moves.
      The data-hub-module attribute belongs to the drawer and is inert on the
      other two, because the behaviour acts only while the panel is fixed to
      the viewport, so it can be left in place or deleted either way.
@@ -32,7 +37,7 @@ added: 2026-08-25
      classes it generates. Set the img width and height to the logo file's own
      pixel size - they set its aspect ratio, and --logo-height sets how tall it
      renders. -->
-<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer">
+<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav-sticky--no masthead-nav-align--start">
   <div class="masthead-nav-inner">
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">
@@ -43,13 +48,15 @@ added: 2026-08-25
         <span class="masthead-nav-toggle-text masthead-nav-toggle-text--close"><!-- slot: close-label --></span>
         <span class="masthead-nav-toggle-icon" aria-hidden="true"></span>
       </summary>
-      <nav class="masthead-nav-links" aria-label="Primary">
-        {{menu.navigation}}
-      </nav>
+      <div class="masthead-nav-tray">
+        <nav class="masthead-nav-links" aria-label="Primary">
+          {{menu.navigation}}
+        </nav>
+        <div class="masthead-nav-controls">
+          <a class="masthead-nav-login" href="{{login.url}}">{{login.text}}</a>
+          <a class="masthead-nav-join" href="{{join.url}}">{{join.text}}</a>
+        </div>
+      </div>
     </details>
-    <div class="masthead-nav-controls">
-      <a class="masthead-nav-login" href="{{login.url}}">{{login.text}}</a>
-      <a class="masthead-nav-join" href="{{join.url}}">{{join.text}}</a>
-    </div>
   </div>
 </header>
