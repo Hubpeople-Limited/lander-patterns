@@ -1,24 +1,28 @@
 {
-  "composition": "homepage-no-photography",
-  "version": 2,
-  "page": "homepage",
+  "composition": "pricing",
+  "version": 3,
+  "page": "pricing",
   "library": "v77",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
+      "name": "masthead-nav",
+      "version": "3"
+    },
+    {
       "name": "hero-stated",
       "version": "4",
       "variant": {
-        "ground": "deep"
+        "ground": "plain"
       }
     },
     {
-      "name": "heading-block",
-      "version": "8"
+      "name": "pricing-tiers",
+      "version": "10"
     },
     {
-      "name": "benefit-tiles",
-      "version": "5"
+      "name": "faq-details",
+      "version": "6"
     },
     {
       "name": "cta-band",

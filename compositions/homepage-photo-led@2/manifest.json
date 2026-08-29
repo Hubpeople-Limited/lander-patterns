@@ -1,10 +1,14 @@
 {
   "composition": "homepage-photo-led",
-  "version": 1,
+  "version": 2,
   "page": "homepage",
   "library": "v77",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "3"
+    },
     {
       "name": "hero-overlay",
       "version": "13"
