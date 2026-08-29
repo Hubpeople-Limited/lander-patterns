@@ -1,20 +1,28 @@
 {
-  "composition": "safety",
-  "version": 2,
-  "page": "safety",
+  "composition": "homepage-no-photography",
+  "version": 3,
+  "page": "homepage",
   "library": "v77",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
+      "name": "masthead-nav",
+      "version": "3"
+    },
+    {
       "name": "hero-stated",
       "version": "4",
       "variant": {
-        "ground": "brand"
+        "ground": "deep"
       }
     },
     {
-      "name": "safety-protections",
-      "version": "4"
+      "name": "heading-block",
+      "version": "8"
+    },
+    {
+      "name": "benefit-tiles",
+      "version": "5"
     },
     {
       "name": "cta-band",

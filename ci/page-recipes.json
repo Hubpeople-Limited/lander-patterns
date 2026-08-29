@@ -38,39 +38,39 @@
     },
     {
       "page": "homepage",
-      "patterns": ["hero-split", "steps-plain", "faq-details", "cta-band", "colophon"],
+      "patterns": ["masthead-nav", "hero-split", "steps-plain", "faq-details", "cta-band", "colophon"],
       "why": "Opener, how it works, the questions, the ask - the ordinary conversion homepage.",
-      "composition": { "name": "homepage-conversion", "version": 2 }
+      "composition": { "name": "homepage-conversion", "version": 3 }
     },
     {
       "page": "homepage",
-      "patterns": ["hero-stated:ground=deep", "heading-block", "benefit-tiles", "cta-band", "colophon"],
+      "patterns": ["masthead-nav", "hero-stated:ground=deep", "heading-block", "benefit-tiles", "cta-band", "colophon"],
       "why": "The homepage for a brand with no photography. heading-block is not decoration here: benefit-tiles opens at h3 and says so in its own markup, so without an h2 above it the page skips a heading level.",
-      "composition": { "name": "homepage-no-photography", "version": 2 }
+      "composition": { "name": "homepage-no-photography", "version": 3 }
     },
     {
       "page": "homepage",
-      "patterns": ["hero-overlay", "steps-numbered", "faq-details", "cta-band", "colophon"],
+      "patterns": ["masthead-nav", "hero-overlay", "steps-numbered", "faq-details", "cta-band", "colophon"],
       "why": "The photography-led homepage: a cinematic full-screen opener, the sign-up flow as image cards, the questions, the ask. Nearly every live lander leads with imagery; this is the shell for them. Image slots take real material or the library's lib/placeholders/ stand-ins while the brand's photography is still coming.",
-      "composition": { "name": "homepage-photo-led", "version": 1 }
+      "composition": { "name": "homepage-photo-led", "version": 2 }
     },
     {
       "page": "homepage",
-      "patterns": ["hero-centred", "zigzag-rows", "faq-details", "cta-image", "colophon"],
+      "patterns": ["masthead-nav", "hero-centred", "zigzag-rows", "faq-details", "cta-image", "colophon"],
       "why": "The editorial photography homepage: the claim held above a wide image band rather than over it, alternating image-and-copy rows carrying the argument, and a photographic close. The image-led variant for a brand whose register is considered rather than cinematic.",
-      "composition": { "name": "homepage-photo-editorial", "version": 1 }
+      "composition": { "name": "homepage-photo-editorial", "version": 2 }
     },
     {
       "page": "pricing",
-      "patterns": ["hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band", "colophon"],
+      "patterns": ["masthead-nav", "hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band", "colophon"],
       "why": "State the offer, show the tiers, answer the objection, ask.",
-      "composition": { "name": "pricing", "version": 2 }
+      "composition": { "name": "pricing", "version": 3 }
     },
     {
       "page": "safety",
-      "patterns": ["hero-stated:ground=brand", "safety-protections", "cta-band", "colophon"],
+      "patterns": ["masthead-nav", "hero-stated:ground=brand", "safety-protections", "cta-band", "colophon"],
       "why": "On a dating brand this is a conversion page in disguise, so it closes like one.",
-      "composition": { "name": "safety", "version": 2 }
+      "composition": { "name": "safety", "version": 3 }
     },
     {
       "page": "article",

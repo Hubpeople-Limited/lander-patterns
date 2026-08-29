@@ -1,24 +1,24 @@
 {
-  "composition": "pricing",
-  "version": 2,
-  "page": "pricing",
+  "composition": "safety",
+  "version": 3,
+  "page": "safety",
   "library": "v77",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
+      "name": "masthead-nav",
+      "version": "3"
+    },
+    {
       "name": "hero-stated",
       "version": "4",
       "variant": {
-        "ground": "plain"
+        "ground": "brand"
       }
     },
     {
-      "name": "pricing-tiers",
-      "version": "10"
-    },
-    {
-      "name": "faq-details",
-      "version": "6"
+      "name": "safety-protections",
+      "version": "4"
     },
     {
       "name": "cta-band",
