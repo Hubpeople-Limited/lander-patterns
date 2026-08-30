@@ -15,6 +15,7 @@ thing that decides which defects survive.
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -660,6 +661,128 @@ def check_modifier_spelling():
           + ("" if ok else f" - unreachable in {', '.join(unreachable)}"))
     if not ok:
         failures.append("unreachable rung in the library")
+    return failures
+
+
+# The spelling check above reads the stylesheet and reasons about a selector.
+# This one asks the question the reader actually cares about - "if I pick this
+# rung, do I get it?" - by putting the markup through the applier every
+# consumer uses and looking at what came out. That is a different question, and
+# it is the one that was answered wrongly: a rung can have a perfectly good
+# selector and still not arrive, because arriving is a property of the swap
+# rather than of the CSS.
+#
+# It is also the check that generalises past this library. `apply_variants` is
+# reimplemented in the two browser tools that compose from the published
+# bundle, and nothing here can see those. What it CAN do is guarantee the thing
+# they all depend on: that every rung this library ships is one the shared
+# algorithm can reach.
+def previous_applier(name, meta, markup, mods):
+    """`apply_variants` as it stood before it worked on class tokens.
+
+    Kept verbatim so the sweep below can be shown to catch something. A check
+    proven only against code that passes it is a check that would pass just as
+    well if it measured nothing, which is what this file says about every
+    other gate in it.
+    """
+    from check_page import axes_of
+    body = markup
+    for key, value in mods.items():
+        swapped = False
+        for known in sorted(axes_of(meta).get(key, ())):
+            old = f'{name}--{known}'
+            if old in body:
+                body = body.replace(old, f'{name}--{value}')
+                swapped = True
+                break
+        if not swapped:
+            body = re.sub(r'(class="[^"]*\b' + re.escape(name) + r')(")',
+                          r'\1 ' + f'{name}--{value}' + r'\2', body, count=1)
+    return body
+
+
+def rung_faults(name, meta, markup, axes, applier=None):
+    """Every declared rung that does not arrive, applied one at a time."""
+    from check_page import apply_variants as current
+    apply_variants = applier or current
+    out = []
+    for axis, values in axes.items():
+        siblings = [v for v in values if v != "default"]
+        for value in siblings:
+            body = apply_variants(name, meta, markup, {axis: value})
+            classes = set()
+            for attr in re.findall(r'class="([^"]*)"', body):
+                classes.update(attr.split())
+            want = f"{name}--{value}"
+            if want not in classes:
+                out.append(f"{axis}={value} did not arrive")
+                continue
+            # And the rung it replaced has to be gone. An applier that appends
+            # without swapping leaves two rungs of one axis on the element and
+            # lets source order pick the winner, which is nobody's choice.
+            stuck = sorted(f"{name}--{o}" for o in siblings
+                           if o != value and f"{name}--{o}" in classes)
+            if stuck:
+                out.append(f"{axis}={value} arrived beside {', '.join(stuck)}")
+    return out
+
+
+def check_every_rung_applies():
+    """Ask the applier for every rung in the library, and look at the answer."""
+    import lint
+    failures = []
+    print("ci/check_page.py, every declared rung actually arrives")
+
+    # The controls first, so the sweep below is known to be able to fail. Both
+    # are the real patterns and the previous applier - the two defects this
+    # sweep was written to find, run against the code that had them.
+    for name, axis, value in (("opener-split", "rule", "ruled"),
+                              ("hero-stated", "alignment", "centred")):
+        folder = HERE.parent / "patterns" / name
+        text = (folder / "pattern.html").read_text(encoding="utf-8")
+        meta = lint.parse_header(text, folder / "pattern.html")
+        markup = re.sub(r"\s*<!--\n.*?\n-->", "", text, count=1, flags=re.S)
+        axes = {axis: lint.parse_variants(meta["variants"])[axis]}
+        caught = bool(rung_faults(name, meta, markup, axes, previous_applier))
+        quiet = not rung_faults(name, meta, markup, axes)
+        print(f"  {'ok  ' if caught else 'FAIL'} catches: {name} {axis}={value} "
+              f"under the applier that shipped it")
+        print(f"  {'ok  ' if quiet else 'FAIL'} quiet on: {name} {axis}={value} "
+              f"under the applier that replaced it")
+        if not caught:
+            failures.append(f"{name} {axis}={value} control")
+        if not quiet:
+            failures.append(f"{name} {axis}={value} still not arriving")
+
+    # A pattern with no element carrying its own bare name has nowhere for a
+    # rung to land, and the sweep has to say so rather than pass it.
+    demo_meta = {"variants": "sticky=static|pinned"}
+    got = rung_faults("demo", demo_meta, '<div class="demo-wrapper"></div>',
+                      lint.parse_variants(demo_meta["variants"]))
+    ok = len(got) == 2
+    print(f"  {'ok  ' if ok else 'FAIL'} catches: markup with no element to "
+          f"put the rung on" + ("" if ok else f" (got {len(got)}, want 2)"))
+    if not ok:
+        failures.append("no-root-element control")
+
+    swept = 0
+    for folder in sorted(p for p in (HERE.parent / "patterns").iterdir()
+                         if p.is_dir()):
+        text = (folder / "pattern.html").read_text(encoding="utf-8")
+        meta = lint.parse_header(text, folder / "pattern.html")
+        axes = lint.parse_variants(meta.get("variants", "")) or {}
+        if not axes:
+            continue
+        markup = re.sub(r"\s*<!--\n.*?\n-->", "", text, count=1, flags=re.S)
+        faults = rung_faults(folder.name, meta, markup, axes)
+        swept += sum(len([v for v in vs if v != "default"]) for vs in axes.values())
+        if faults:
+            failures.append(folder.name)
+            for f in faults:
+                print(f"  FAIL {folder.name}: {f}")
+    ok = not failures
+    print(f"  {'ok  ' if ok else 'FAIL'} quiet on: {swept} rung(s) across the "
+          f"library, each applied and found on the element")
     return failures
 
 
@@ -1600,6 +1723,8 @@ def main():
     print()
     failures += check_modifier_spelling()
     print()
+    failures += check_every_rung_applies()
+    print()
     failures += check_pages()
     print()
     failures += check_phone()
@@ -1622,7 +1747,7 @@ def main():
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
              + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
-             + len(MODIFIER_CASES) + 1
+             + len(MODIFIER_CASES) + 1 + 6
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
