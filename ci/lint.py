@@ -274,6 +274,65 @@ def check_variants(html_path, css_path, meta, folder_name):
                         "a variant can reach" if loose else ""))
 
 
+def check_variant_notes(folder, html_path, meta):
+    """A pattern that offers a choice says, in words, what choosing does.
+
+    `variants:` gives a chooser the rungs and nothing else. `menu-centre` is a
+    class name - exact, versioned, and no use to somebody deciding what a page
+    should look like. variants.json carries the label a person expects to see
+    and a line on what picking it does, so the tool reads from the library
+    rather than from a second copy of the library kept somewhere else.
+
+    Required only where `variants:` is declared, and held to exactly the axes
+    and rungs the pattern declares: a note for a rung that no longer exists is
+    a note nobody will notice has gone stale.
+    """
+    axes = parse_variants(meta.get("variants", "")) or {}
+    path = folder / "variants.json"
+    if not axes:
+        if path.is_file():
+            find(path, "variant-notes",
+                 "this pattern declares no variants, so it has nothing to "
+                 "describe - delete variants.json")
+        return
+    if not path.is_file():
+        find(html_path, "variant-notes",
+             "declares variants but has no variants.json - a chooser would "
+             "show %s with no words for any of them"
+             % ", ".join(sorted(axes)))
+        return
+    try:
+        notes = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        find(path, "variant-notes", "not valid JSON: %s" % exc)
+        return
+    for axis in sorted(set(axes) | set(notes)):
+        if axis not in notes:
+            find(path, "variant-notes", "no entry for axis %r" % axis)
+            continue
+        if axis not in axes:
+            find(path, "variant-notes",
+                 "describes axis %r, which the pattern does not declare" % axis)
+            continue
+        entry = notes[axis] if isinstance(notes[axis], dict) else {}
+        for field in ("label", "note"):
+            if not str(entry.get(field, "")).strip():
+                find(path, "variant-notes", "%s: no %s" % (axis, field))
+        rungs = entry.get("rungs") if isinstance(entry.get("rungs"), dict) else {}
+        for rung in sorted(set(axes[axis]) | set(rungs)):
+            if rung not in rungs:
+                find(path, "variant-notes", "%s: no entry for %r" % (axis, rung))
+            elif rung not in axes[axis]:
+                find(path, "variant-notes",
+                     "%s: describes %r, which the pattern does not offer"
+                     % (axis, rung))
+            else:
+                for field in ("label", "note"):
+                    if not str(rungs[rung].get(field, "")).strip():
+                        find(path, "variant-notes",
+                             "%s=%s: no %s" % (axis, rung, field))
+
+
 def furniture_ok(token):
     if token in FURNITURE:
         return True
@@ -1381,6 +1440,7 @@ def main():
         meta = parse_header(html.read_text(encoding="utf-8"), html)
         slots = check_html(html, meta, folder.name)
         check_variants(html, folder / "pattern.css", meta, folder.name)
+        check_variant_notes(folder, html, meta)
         check_list_semantics(html, css, folder.name)
         check_disclosure_holds_the_controls(html, html.read_text(encoding="utf-8"))
         check_motion_claim(html, css, meta)

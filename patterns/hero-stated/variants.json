@@ -1,0 +1,34 @@
+{
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind this section. Change it between one section and the next so the page reads as bands instead of one flat colour.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background colour. Quiet, and the right choice for most sections."
+      },
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your brand colour, with text chosen to stay readable on it. Best used once or twice a page, not on everything."
+      },
+      "deep": {
+        "label": "Dark",
+        "note": "A dark band. The boldest option, and the one that loses its impact if you use it more than once."
+      }
+    }
+  },
+  "alignment": {
+    "label": "Text alignment",
+    "note": "Where the opening words sit.",
+    "rungs": {
+      "default": {
+        "label": "Left",
+        "note": "Aligned to the left. Easier to read, especially for longer text."
+      },
+      "centred": {
+        "label": "Centred",
+        "note": "Good for a short headline with one line under it. Long paragraphs are harder to read centred."
+      }
+    }
+  }
+}

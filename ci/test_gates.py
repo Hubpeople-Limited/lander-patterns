@@ -786,6 +786,79 @@ def check_every_rung_applies():
     return failures
 
 
+# A chooser reads these words straight out of the library. Every way they can
+# go quietly wrong is a rung somebody picks without knowing what it does, or a
+# note describing something the pattern stopped offering.
+NOTE_CASES = [
+    ("a rung with no words",
+     lambda d: d["rule"]["rungs"]["ruled"].update({"note": ""})),
+    ("a rung the pattern does not offer",
+     lambda d: d["rule"]["rungs"].update({"invented": {"label": "X", "note": "Y"}})),
+    ("a rung with no note at all",
+     lambda d: d["rule"]["rungs"].pop("ruled")),
+    ("an axis the pattern does not declare",
+     lambda d: d.update({"nonsense": {"label": "X", "note": "Y", "rungs": {}}})),
+    ("an axis with no label",
+     lambda d: d["rule"].update({"label": "  "})),
+]
+
+
+def check_variant_notes():
+    """The words beside a rung, held to the rungs the pattern actually offers."""
+    import lint
+    failures = []
+    print("ci/lint.py, the words a chooser shows for a rung")
+    folder = HERE.parent / "patterns" / "opener-split"
+    html = folder / "pattern.html"
+    meta = lint.parse_header(html.read_text(encoding="utf-8"), html)
+    good = json.loads((folder / "variants.json").read_text(encoding="utf-8"))
+
+    def findings_for(doc):
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "variants.json").write_text(json.dumps(doc), encoding="utf-8")
+        held = lint.ROOT
+        lint.ROOT = tmp
+        before = len(lint.findings)
+        try:
+            lint.check_variant_notes(tmp, tmp / "pattern.html", meta)
+            return len(lint.findings) - before
+        finally:
+            del lint.findings[before:]
+            lint.ROOT = held
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    for label, mutate in NOTE_CASES:
+        doc = json.loads(json.dumps(good))
+        mutate(doc)
+        got = findings_for(doc)
+        ok = got > 0
+        print(f"  {'ok  ' if ok else 'FAIL'} catches: {label}")
+        if not ok:
+            failures.append(label)
+
+    ok = findings_for(good) == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} quiet on: the pattern's own notes")
+    if not ok:
+        failures.append("quiet on real notes")
+
+    # And the library, which is the half that catches a regression.
+    bad = []
+    for pattern in sorted(p for p in (HERE.parent / "patterns").iterdir() if p.is_dir()):
+        m = lint.parse_header((pattern / "pattern.html").read_text(encoding="utf-8"),
+                              pattern / "pattern.html")
+        before = len(lint.findings)
+        lint.check_variant_notes(pattern, pattern / "pattern.html", m)
+        if len(lint.findings) > before:
+            bad.append(pattern.name)
+        del lint.findings[before:]
+    ok = not bad
+    print(f"  {'ok  ' if ok else 'FAIL'} quiet on: every pattern in the library"
+          + ("" if ok else " - %s" % ", ".join(bad)))
+    if not ok:
+        failures.append("library notes")
+    return failures
+
+
 def check_modules():
     """Every gate module, both directions."""
     import legibility
@@ -1725,6 +1798,8 @@ def main():
     print()
     failures += check_every_rung_applies()
     print()
+    failures += check_variant_notes()
+    print()
     failures += check_pages()
     print()
     failures += check_phone()
@@ -1747,7 +1822,7 @@ def main():
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
              + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
-             + len(MODIFIER_CASES) + 1 + 6
+             + len(MODIFIER_CASES) + 1 + 6 + len(NOTE_CASES) + 2
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)

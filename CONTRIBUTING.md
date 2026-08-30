@@ -13,6 +13,7 @@ patterns/<pattern-name>/
   pattern.css             the styling, tokens only
   README.md               the guidance a builder reads before using it
   preview-content.json    sample values so the preview can render it
+  variants.json           the words a chooser shows - only if you declare any
 ```
 
 Name the folder for what the pattern is: `hero-split`, `pricing-tiers`,
@@ -182,6 +183,42 @@ nothing because it never reaches the page.
 4. **Brand adaptability** — which tokens change its feel most, and any variants.
 
 Aim for about 50 lines and treat 80 as the ceiling, which CI enforces. Agents fetch these at build time, so length is a running cost - put the decision first and the reasoning behind it, never the reverse. A builder reads this before the markup.
+
+## variants.json — only if you declare `variants`
+
+`variants: ground=plain|soft` tells a tool the rungs exist. It does not tell
+anybody what picking one *does*, and `menu-centre` is a class name: exact,
+versioned, pinned by brands, and no use at all to a partner deciding what a
+page should look like. So a pattern that offers a choice also ships the words:
+
+```json
+{
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind this section. Change it between one section and the next.",
+    "rungs": {
+      "plain": { "label": "Default", "note": "The page's own background colour." },
+      "soft":  { "label": "Light",   "note": "A soft tint, to separate this section from the one above." }
+    }
+  }
+}
+```
+
+**The label is what a partner sees; the key is what ships.** A chooser renders
+"Background → Light" and still writes `ground=soft` into the recipe, because
+that is what this library, `ci/check_page.py` and every brand stylesheet
+already agree on. Name the axis and the rungs the way another CMS would —
+"Background", "Sticky header", "Left" — not the way the stylesheet does.
+
+CI holds the file to **exactly** the axes and rungs the header declares, in
+both directions: a rung with no words is a rung somebody picks blind, and a
+note for a rung that no longer exists is one nobody will notice has gone
+stale. `ci/build_configurator.py` publishes it as `variantNotes`, so the
+chooser reads the library rather than a second copy of it kept elsewhere.
+
+**Order comes from `variants:`, not from this file.** The published bundle
+sorts its keys for a stable diff, so a tool takes rung order from the
+`meta.variants` array and looks the words up by key.
 
 ## preview-content.json
 
