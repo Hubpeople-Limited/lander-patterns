@@ -1,0 +1,562 @@
+{
+  "version": 1,
+  "note": "Twelve verified Google Fonts pairings for landing pages; the agent picks one by matching the brand brief to a suits line and passes its id to brand_tokens.py --pairing, which writes the stacks, the dials and the metric-matched fallbacks into the token block and the url into an @import at the top of global.css - everything here except bodyLineHeight, which has no token and is set by hand on body. Each role carries its OWN fallback, and each fallback states size-adjust per font-weight: every brand renders headings at 700, a real face gets wider at 700, and a local Arial thickened synthetically does not - so one figure solved at 400 makes the fallback narrower than the webfont at every heading and the block meant to stop the reflow causes one. The size-adjust figures are solved empirically in Chromium against Arial; ascent, descent and line-gap are the real face's own metrics and do not vary with weight.",
+  "pairings": [
+    {
+      "id": "retro-warmth",
+      "name": "Retro Warmth",
+      "suits": "A brand that wants to feel handmade and a little nostalgic, for people meeting properly rather than swiping fast.",
+      "register": "dating",
+      "heading": {
+        "family": "Fraunces",
+        "stack": "'Fraunces', Georgia, 'Times New Roman', serif",
+        "opsz": [
+          9,
+          144
+        ],
+        "fallback": {
+          "family": "FrauncesFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 98.5,
+            "700": 105.6
+          },
+          "ascentOverride": 97.8,
+          "descentOverride": 25.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Hanken Grotesk",
+        "stack": "'Hanken Grotesk', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "HankenGroteskFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 100.8,
+            "700": 102.5
+          },
+          "ascentOverride": 100.0,
+          "descentOverride": 30.3,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Hanken+Grotesk:ital,wght@0,400..700;1,400..700&display=swap",
+      "dials": {
+        "type-scale": 1.05,
+        "heading-leading": 1.08,
+        "heading-tracking": -0.01
+      },
+      "bodyLineHeight": 1.6
+    },
+    {
+      "id": "classy-luxury",
+      "name": "Classy Luxury",
+      "suits": "Elite and selective, for an invite-only or members-only brand whose whole pitch is exclusivity.",
+      "register": "dating",
+      "heading": {
+        "family": "Bodoni Moda",
+        "stack": "'Bodoni Moda', 'Didot', Georgia, serif",
+        "opsz": [
+          6,
+          96
+        ],
+        "fallback": {
+          "family": "BodoniModaFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 103.9,
+            "700": 110.6
+          },
+          "ascentOverride": 112.5,
+          "descentOverride": 40.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Public Sans",
+        "stack": "'Public Sans', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "PublicSansFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 104.4,
+            "700": 107.0
+          },
+          "ascentOverride": 95.0,
+          "descentOverride": 22.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..700&family=Public+Sans:ital,wght@0,400..700;1,400..700&display=swap",
+      "dials": {
+        "type-scale": 1.15,
+        "heading-leading": 1.03,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.6
+    },
+    {
+      "id": "after-dark",
+      "name": "After Dark",
+      "suits": "Nightlife and city energy, loud and confident, for the brand about tonight rather than someday.",
+      "register": "dating",
+      "heading": {
+        "family": "Big Shoulders",
+        "stack": "'Big Shoulders', 'Arial Narrow', 'Helvetica Neue Condensed', sans-serif",
+        "opsz": [
+          10,
+          72
+        ],
+        "fallback": {
+          "family": "BigShouldersFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 69.2,
+            "700": 83.1
+          },
+          "ascentOverride": 98.6,
+          "descentOverride": 21.4,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Archivo",
+        "stack": "'Archivo', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "ArchivoFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 98.3,
+            "700": 105.7
+          },
+          "ascentOverride": 87.8,
+          "descentOverride": 21.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..700;1,400..700&family=Big+Shoulders:opsz,wght@10..72,400..700&display=swap",
+      "dials": {
+        "type-scale": 1.15,
+        "heading-leading": 0.95,
+        "heading-tracking": -0.02
+      },
+      "bodyLineHeight": 1.6
+    },
+    {
+      "id": "stadium-energy",
+      "name": "Stadium Energy",
+      "suits": "Sport, competition and events, for anything with a scoreboard, a league table or a countdown.",
+      "register": "both",
+      "heading": {
+        "family": "Sofia Sans Extra Condensed",
+        "stack": "'Sofia Sans Extra Condensed', 'Arial Narrow', sans-serif",
+        "fallback": {
+          "family": "SofiaSansExtraCondensedFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 60.9,
+            "700": 66.3
+          },
+          "ascentOverride": 90.0,
+          "descentOverride": 30.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Sofia Sans",
+        "stack": "'Sofia Sans', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "SofiaSansFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 96.4,
+            "700": 97.7
+          },
+          "ascentOverride": 90.0,
+          "descentOverride": 30.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,400..700;1,400..700&family=Sofia+Sans+Extra+Condensed:wght@400..700&display=swap",
+      "dials": {
+        "type-scale": 1.2,
+        "heading-leading": 0.95,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.6
+    },
+    {
+      "id": "old-money",
+      "name": "Old Money",
+      "suits": "Heritage and discretion, for a brand that wants to read as long established rather than brand new.",
+      "register": "both",
+      "heading": {
+        "family": "Playfair",
+        "stack": "'Playfair', Georgia, 'Times New Roman', serif",
+        "opsz": [
+          5,
+          1200
+        ],
+        "fallback": {
+          "family": "PlayfairFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 92.6,
+            "700": 93.4
+          },
+          "ascentOverride": 88.5,
+          "descentOverride": 31.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Playfair",
+        "stack": "'Playfair', Georgia, 'Times New Roman', serif",
+        "opsz": [
+          5,
+          1200
+        ],
+        "fallback": {
+          "family": "PlayfairBodyFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 92.6,
+            "700": 93.4
+          },
+          "ascentOverride": 88.5,
+          "descentOverride": 31.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wdth,wght@0,5..1200,87.5..112.5,400..700;1,5..1200,87.5..112.5,400..700&display=swap",
+      "dials": {
+        "type-scale": 1.1,
+        "heading-leading": 0.98,
+        "heading-tracking": -0.015
+      },
+      "bodyLineHeight": 1.55
+    },
+    {
+      "id": "quiet-authority",
+      "name": "Quiet Authority",
+      "suits": "The serious end: trust and safety pages, press and investor material, calm and grown up with no theatre.",
+      "register": "corporate",
+      "heading": {
+        "family": "Source Serif 4",
+        "stack": "'Source Serif 4', Georgia, 'Times New Roman', serif",
+        "opsz": [
+          8,
+          60
+        ],
+        "fallback": {
+          "family": "SourceSerif4Fallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 92.1,
+            "700": 95.8
+          },
+          "ascentOverride": 103.6,
+          "descentOverride": 33.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Source Sans 3",
+        "stack": "'Source Sans 3', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "SourceSans3Fallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 94.7,
+            "700": 100.2
+          },
+          "ascentOverride": 102.4,
+          "descentOverride": 40.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..700;1,400..700&family=Source+Serif+4:opsz,wght@8..60,400..700&display=swap",
+      "dials": {
+        "type-scale": 0.95,
+        "heading-leading": 1.13,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.6
+    },
+    {
+      "id": "bauhaus-modern",
+      "name": "Bauhaus Modern",
+      "suits": "Design conscious, minimal and urban, for a page that is mostly one big statement and a photograph.",
+      "register": "both",
+      "heading": {
+        "family": "Jost",
+        "stack": "'Jost', 'Century Gothic', 'Futura', system-ui, sans-serif",
+        "fallback": {
+          "family": "JostFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 95.9,
+            "700": 105.9
+          },
+          "ascentOverride": 107.0,
+          "descentOverride": 37.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Literata",
+        "stack": "'Literata', Georgia, 'Times New Roman', serif",
+        "opsz": [
+          7,
+          72
+        ],
+        "fallback": {
+          "family": "LiterataFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 105.9,
+            "700": 113.7
+          },
+          "ascentOverride": 117.7,
+          "descentOverride": 30.8,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,400..700;1,400..700&family=Literata:ital,opsz,wght@0,7..72,400..700;1,7..72,400..700&display=swap",
+      "dials": {
+        "type-scale": 1.1,
+        "heading-leading": 1.03,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.61
+    },
+    {
+      "id": "sunny-side",
+      "name": "Sunny Side",
+      "suits": "Friendly, warm and low pressure, for community and friendship brands that should feel safe rather than sexy.",
+      "register": "dating",
+      "heading": {
+        "family": "Gabarito",
+        "stack": "'Gabarito', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif",
+        "fallback": {
+          "family": "GabaritoFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 98.6,
+            "700": 101.2
+          },
+          "ascentOverride": 94.0,
+          "descentOverride": 26.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Figtree",
+        "stack": "'Figtree', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "FigtreeFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 101.0,
+            "700": 104.3
+          },
+          "ascentOverride": 95.0,
+          "descentOverride": 25.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400..700;1,400..700&family=Gabarito:wght@400..700&display=swap",
+      "dials": {
+        "type-scale": 1.05,
+        "heading-leading": 1.13,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.61
+    },
+    {
+      "id": "zine",
+      "name": "Zine",
+      "suits": "Indie, alternative and counter culture, for a brand positioning itself against the mainstream apps.",
+      "register": "dating",
+      "heading": {
+        "family": "Bricolage Grotesque",
+        "stack": "'Bricolage Grotesque', 'Arial', 'Helvetica Neue', sans-serif",
+        "opsz": [
+          12,
+          96
+        ],
+        "fallback": {
+          "family": "BricolageGrotesqueFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 98.8,
+            "700": 103.3
+          },
+          "ascentOverride": 93.0,
+          "descentOverride": 27.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Instrument Sans",
+        "stack": "'Instrument Sans', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "InstrumentSansFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 102.7,
+            "700": 106.7
+          },
+          "ascentOverride": 97.0,
+          "descentOverride": 25.0,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..700&family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&display=swap",
+      "dials": {
+        "type-scale": 1.1,
+        "heading-leading": 0.98,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.62
+    },
+    {
+      "id": "slow-sunday",
+      "name": "Slow Sunday",
+      "suits": "Long form and thoughtful, for a brand built on writing, with profiles as essays and a human in the loop.",
+      "register": "dating",
+      "heading": {
+        "family": "Newsreader",
+        "stack": "'Newsreader', Georgia, 'Times New Roman', serif",
+        "opsz": [
+          6,
+          72
+        ],
+        "fallback": {
+          "family": "NewsreaderFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 100.1,
+            "700": 108.8
+          },
+          "ascentOverride": 73.5,
+          "descentOverride": 26.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Karla",
+        "stack": "'Karla', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "KarlaFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 103.7,
+            "700": 108.7
+          },
+          "ascentOverride": 91.7,
+          "descentOverride": 25.2,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400..700;1,400..700&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&display=swap",
+      "dials": {
+        "type-scale": 1.0,
+        "heading-leading": 1.15,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.6
+    },
+    {
+      "id": "art-house",
+      "name": "Art House",
+      "suits": "Creative, experimental and fashion adjacent, for a brand that wants to look like a gallery invitation.",
+      "register": "dating",
+      "heading": {
+        "family": "Syne",
+        "stack": "'Syne', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif",
+        "fallback": {
+          "family": "SyneFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 99.0,
+            "700": 123.4
+          },
+          "ascentOverride": 92.5,
+          "descentOverride": 27.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Epilogue",
+        "stack": "'Epilogue', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "EpilogueFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 110.2,
+            "700": 115.5
+          },
+          "ascentOverride": 79.0,
+          "descentOverride": 23.5,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400..700;1,400..700&family=Syne:wght@400..700&display=swap",
+      "dials": {
+        "type-scale": 1.1,
+        "heading-leading": 1.03,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.63
+    },
+    {
+      "id": "safe-hands",
+      "name": "Safe Hands",
+      "suits": "Trust, safety and longevity, for the corporate site and anywhere the message is that we have been doing this for years.",
+      "register": "corporate",
+      "heading": {
+        "family": "Merriweather",
+        "stack": "'Merriweather', Georgia, 'Times New Roman', serif",
+        "opsz": [
+          18,
+          144
+        ],
+        "fallback": {
+          "family": "MerriweatherFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 102.5,
+            "700": 106.5
+          },
+          "ascentOverride": 98.4,
+          "descentOverride": 27.3,
+          "lineGapOverride": 0.0
+        }
+      },
+      "body": {
+        "family": "Merriweather Sans",
+        "stack": "'Merriweather Sans', 'Segoe UI', system-ui, -apple-system, sans-serif",
+        "fallback": {
+          "family": "MerriweatherSansFallback",
+          "local": "Arial",
+          "sizeAdjust": {
+            "400": 106.9,
+            "700": 111.2
+          },
+          "ascentOverride": 98.4,
+          "descentOverride": 27.3,
+          "lineGapOverride": 0.0
+        }
+      },
+      "url": "https://fonts.googleapis.com/css2?family=Merriweather:opsz,wdth,wght@18..144,87..112,400..700&family=Merriweather+Sans:ital,wght@0,400..700;1,400..700&display=swap",
+      "dials": {
+        "type-scale": 0.9,
+        "heading-leading": 1.15,
+        "heading-tracking": 0.0
+      },
+      "bodyLineHeight": 1.65
+    }
+  ]
+}

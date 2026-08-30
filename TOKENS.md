@@ -457,6 +457,30 @@ which is an accessibility floor rather than a taste one.
 once compounds, and a brand at `1.15` type on `1.2` space is not a bolder
 brand, it is a broken one.
 
+## The named type pairings
+
+`--font-heading` and `--font-body` are two tokens a brand fills, and nothing in
+this document says which faces to fill them with. `type-pairings.json` is that
+answer: twelve verified Google Fonts pairings, each with the family, the full
+stack, a metric-matched fallback, the stylesheet URL that loads it, and the
+`dials` that face wants.
+
+It lives here rather than in whatever is choosing, because the same twelve have
+to reach two consumers that cannot see each other - a builder in somebody's
+browser and the toolkit that writes a brand's stylesheet - and two copies of a
+list are two lists.
+
+**The sample token sets are not this.** `preview/tokens-*.css` are the brands
+this library TESTS against: `display` is a deliberately hostile face chosen to
+fail patterns whose leading was decided by looking at Georgia. A chooser built
+on those offers a partner the test rig. `ci/build_configurator.py` publishes
+the pairings as `typePairings` for exactly that reason.
+
+CI holds each pairing to the ranges above: a `dials` entry outside them is a
+page the contract makes no promise about, since the contrast guarantees are
+stated across those ranges and not beyond. It also refuses a stack that does
+not name its own family, and a pairing with nothing to load the font with.
+
 ## Motion
 
 Patterns whose metadata declares `motion: subtle` or `motion: expressive` may

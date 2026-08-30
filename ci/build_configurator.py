@@ -229,6 +229,11 @@ def build():
         "imageSwap": image_swap,
         "placeholders": images,
         "shells": shells,
+        # The named type pairings. tokenSets are the library's TEST brands -
+        # `display` is a deliberately hostile face - so a chooser built on
+        # those offers a partner the test rig instead of the design system.
+        "typePairings": json.loads(
+            (ROOT / "type-pairings.json").read_text(encoding="utf-8"))["pairings"],
         "patterns": patterns,
     }
 
