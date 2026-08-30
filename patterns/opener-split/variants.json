@@ -1,0 +1,16 @@
+{
+  "rule": {
+    "label": "Divider",
+    "note": "Whether a thin line separates this block from what comes next.",
+    "rungs": {
+      "default": {
+        "label": "None",
+        "note": "No line."
+      },
+      "ruled": {
+        "label": "Hairline",
+        "note": "A thin line underneath. Useful when the next section has the same background and would otherwise blend into this one."
+      }
+    }
+  }
+}

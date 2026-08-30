@@ -1,0 +1,20 @@
+{
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind this section. Change it between one section and the next so the page reads as bands instead of one flat colour.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background colour. Quiet, and the right choice for most sections."
+      },
+      "soft": {
+        "label": "Light",
+        "note": "A soft tint. The easiest way to separate one section from the one above it."
+      },
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your brand colour, with text chosen to stay readable on it. Best used once or twice a page, not on everything."
+      }
+    }
+  }
+}

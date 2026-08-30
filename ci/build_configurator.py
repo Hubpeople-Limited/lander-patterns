@@ -129,12 +129,20 @@ def pattern_entry(folder, meta):
     markup = re.sub(r"<!--(?!\s*slot\s*:).*?-->", "", markup, flags=re.S)
     markup = re.sub(r"\n{3,}", "\n\n", markup)
     sample_file = folder / "preview-content.json"
-    return {
+    entry = {
         "meta": meta,
         "html": markup.strip(),
         "css": (folder / "pattern.css").read_text(encoding="utf-8").strip(),
         "sample": json.loads(sample_file.read_text(encoding="utf-8")),
     }
+    # The words a chooser puts beside a rung. `meta.variants` gives it
+    # `menu-centre`, which is a class name; this gives it "Centre" and a line
+    # on what picking it does. Only patterns that offer a choice carry one, and
+    # ci/lint.py holds it to exactly the axes and rungs the pattern declares.
+    notes = folder / "variants.json"
+    if notes.is_file():
+        entry["variantNotes"] = json.loads(notes.read_text(encoding="utf-8"))
+    return entry
 
 
 def shell_entry(folder):

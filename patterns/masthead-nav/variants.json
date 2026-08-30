@@ -1,0 +1,98 @@
+{
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind this section. Change it between one section and the next so the page reads as bands instead of one flat colour.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background colour. Quiet, and the right choice for most sections."
+      },
+      "soft": {
+        "label": "Light",
+        "note": "A soft tint. The easiest way to separate one section from the one above it."
+      },
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your brand colour, with text chosen to stay readable on it. Best used once or twice a page, not on everything."
+      }
+    }
+  },
+  "layout": {
+    "label": "Desktop layout",
+    "note": "How the header is arranged on a computer screen.",
+    "rungs": {
+      "inline": {
+        "label": "Single row",
+        "note": "Logo, menu and buttons all on one row. The usual choice, and the shortest."
+      },
+      "centred": {
+        "label": "Stacked",
+        "note": "Logo on its own line with the menu centred underneath. A more formal look, but the header is twice as tall."
+      }
+    }
+  },
+  "menu": {
+    "label": "Mobile menu",
+    "note": "What the menu does on a phone, where the links will not fit in a row.",
+    "rungs": {
+      "drawer": {
+        "label": "Slide-out drawer",
+        "note": "A panel slides in over the page. Full height, and it scrolls on its own if you have a lot of links. What most people expect on a phone."
+      },
+      "panel": {
+        "label": "Drop-down panel",
+        "note": "A panel drops down from the header, full width. Lighter, and best when you only have two or three links."
+      },
+      "row": {
+        "label": "Scrolling row",
+        "note": "No button at all - the links stay in a row you swipe sideways. Only works with a few short links."
+      }
+    }
+  },
+  "sticky": {
+    "label": "Sticky header",
+    "note": "Whether the header stays on screen as people scroll.",
+    "rungs": {
+      "static": {
+        "label": "Off",
+        "note": "The header scrolls away with the page, leaving the whole screen for your content."
+      },
+      "pinned": {
+        "label": "On",
+        "note": "The header stays at the top. People find their way around about 22% faster and your sign-up button is always there, but it takes up room on every screen."
+      }
+    }
+  },
+  "menu-align": {
+    "label": "Menu alignment",
+    "note": "Which side the links line up on inside the mobile menu. It does not move the menu itself.",
+    "rungs": {
+      "menu-start": {
+        "label": "Left",
+        "note": "Lined up on the left. Easiest to scan, and the default."
+      },
+      "menu-centre": {
+        "label": "Centre",
+        "note": "Calmer, though sub-links lose the indent line that marks them out."
+      },
+      "menu-end": {
+        "label": "Right",
+        "note": "Lined up on the right, so they follow on from the button that opened them."
+      }
+    }
+  },
+  "menu-side": {
+    "label": "Menu position",
+    "note": "Which side the menu button sits on. The menu opens from the same side, so the button is always beside what it opens.",
+    "rungs": {
+      "side-start": {
+        "label": "Left",
+        "note": "Button on the left, menu opens from the left."
+      },
+      "side-end": {
+        "label": "Right",
+        "note": "Button on the right, menu opens from the right. The default."
+      }
+    }
+  }
+}
