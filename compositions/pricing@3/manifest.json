@@ -2,7 +2,7 @@
   "composition": "pricing",
   "version": 3,
   "page": "pricing",
-  "library": "v87",
+  "library": "v89",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
