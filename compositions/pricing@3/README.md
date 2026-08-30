@@ -14,7 +14,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
 
 ## Sections, in order
 
-1. **masthead-nav** v3 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements and three small-screen behaviours.
+1. **masthead-nav** v4 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar and two small-screen alignments.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)

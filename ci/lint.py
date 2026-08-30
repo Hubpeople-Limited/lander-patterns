@@ -735,6 +735,60 @@ def check_list_semantics(html_path, css_path, folder_name):
                  "list-style: none, which drops list semantics in Safari")
 
 
+JOIN_OR_LOGIN = re.compile(r"\{\{\s*(?:join|login)(?:\.\d+)?\.url\s*\}\}")
+
+
+def disclosure_spans(html):
+    """The character range of every <details> element, outermost first.
+
+    A balanced scan rather than a regex: a disclosure holding a second one is
+    a shape a pattern is allowed to ship, and a lazy match would end the outer
+    element at the inner element's closing tag.
+    """
+    spans, depth, start = [], 0, None
+    for m in re.finditer(r"<(/?)details\b", html, re.I):
+        if m.group(1):
+            depth -= 1
+            if depth == 0 and start is not None:
+                end = html.find(">", m.end())
+                spans.append((start, len(html) if end == -1 else end + 1))
+                start = None
+        elif not depth:
+            start, depth = m.start(), 1
+        else:
+            depth += 1
+    return spans
+
+
+def check_disclosure_holds_the_controls(html_path, markup):
+    """A pattern that hides its menu behind a disclosure keeps the join and
+    login controls INSIDE it.
+
+    An open disclosure is a panel over the page, and on a phone it is a panel
+    over the whole page. A control left outside it is behind the scrim for as
+    long as the menu is showing, so the primary call to action is unreachable
+    at exactly the moment a visitor has gone looking for it.
+
+    Nothing else in this repository could see that. The markup is valid, the
+    contrast is fine, the target is 44px and the page does not scroll
+    sideways - the control is simply underneath something, which is a fact
+    about a render and not about a file.
+
+    Only fires where there is a disclosure to be inside. A pattern with no
+    <details> has no panel and no scrim, and this says nothing about it.
+    """
+    html = re.sub(r"<!--.*?-->", "", markup, flags=re.S)
+    spans = disclosure_spans(html)
+    if not spans:
+        return
+    for m in JOIN_OR_LOGIN.finditer(html):
+        if not any(a <= m.start() and m.end() <= b for a, b in spans):
+            find(html_path, "disclosure",
+                 f"{m.group(0)} sits outside the <details> disclosure - while "
+                 "the menu is open it is behind the scrim and cannot be "
+                 "reached. Move it inside the disclosure")
+
+
 def contract_tokens():
     """Every token TOKENS.md defines, read from the first column of its
     tables. The contract is the document; this parses it rather than
@@ -1315,6 +1369,7 @@ def main():
         slots = check_html(html, meta, folder.name)
         check_variants(html, folder / "pattern.css", meta, folder.name)
         check_list_semantics(html, css, folder.name)
+        check_disclosure_holds_the_controls(html, html.read_text(encoding="utf-8"))
         check_motion_claim(html, css, meta)
         check_edges_documented(readme, meta)
         check_description_vocabulary(html, meta)

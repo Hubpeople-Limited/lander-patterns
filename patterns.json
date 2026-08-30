@@ -708,7 +708,7 @@
    "drawer"
   ],
   "content-shape": "reference",
-  "description": "The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements and three small-screen behaviours.",
+  "description": "The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar and two small-screen alignments.",
   "motion": "subtle",
   "needs": "the brand's logo, the menu items configured on the platform, and two words in the brand's own language - one for the small-screen menu button and one for that same button while the menu is showing. Every other value on it is platform furniture",
   "one-per-page": true,
@@ -740,9 +740,17 @@
     "drawer",
     "panel",
     "row"
+   ],
+   "menu-align": [
+    "start",
+    "end"
+   ],
+   "sticky": [
+    "no",
+    "yes"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "media-card-grid": {

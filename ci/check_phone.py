@@ -98,10 +98,6 @@ OVERFLOW_EXEMPT = set()
 # Delete an entry when the pattern is fixed. If the fault has gone and the
 # entry has not, the run says so: a stale baseline is how a gate goes quiet.
 ACCEPTED = [
-    ("masthead-nav", "masthead-nav-login",
-     "40px beside a join button the same pattern gives min-height: 2.75rem. "
-     "Almost certainly an oversight, but changing a shipped control's size "
-     "is a design decision and belongs in its own change"),
     ("masthead-nav", "masthead-nav-mark",
      "the wordmark home link. Its height falls out of a width cap that exists "
      "to keep the menu button on one row, so raising it is a real trade"),

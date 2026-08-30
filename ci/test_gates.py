@@ -461,6 +461,93 @@ VARIANT_CASES = [
 ]
 
 
+# A header whose menu is a <details> and whose join control is outside it puts
+# the primary call to action behind the scrim for as long as the menu is
+# showing. Every other gate here passed that markup: it is valid, its contrast
+# is fine, its targets are 44px and it does not scroll sideways. What is wrong
+# is which box the control is in.
+#
+# The quiet half carries the two shapes that would make the check unusable if
+# it got them wrong - a pattern with no disclosure at all, which is most of the
+# library, and a disclosure nested in a disclosure, where a lazy match ends the
+# outer element early and reports a control that is plainly inside it.
+DISCLOSURE_FIRES = {
+    "the join control outside the disclosure":
+        '<details><summary>Menu</summary><nav>x</nav></details>'
+        '<a href="{{join.url}}">Join</a>',
+    "the login control outside the disclosure":
+        '<details><summary>Menu</summary><nav>x</nav></details>'
+        '<a href="{{login.url}}">Log in</a>',
+    "a numbered join token outside the disclosure":
+        '<details><summary>Menu</summary><nav>x</nav></details>'
+        '<a href="{{join.0.url}}">Join</a>',
+    "a control after the disclosure closes, not before it":
+        '<a href="{{login.url}}">Log in</a>'
+        '<details><summary>Menu</summary><nav>x</nav></details>',
+    "one control inside and one outside":
+        '<details><summary>Menu</summary><a href="{{login.url}}">In</a></details>'
+        '<a href="{{join.url}}">Out</a>',
+}
+
+DISCLOSURE_QUIET = {
+    "both controls inside the disclosure":
+        '<details><summary>Menu</summary>'
+        '<a href="{{login.url}}">Log in</a><a href="{{join.url}}">Join</a>'
+        '<nav>x</nav></details>',
+    "a pattern with no disclosure at all":
+        '<section><a href="{{join.url}}">Join</a></section>',
+    "a disclosure holding a second disclosure":
+        '<details><summary>Menu</summary>'
+        '<details><summary>More</summary><nav>x</nav></details>'
+        '<a href="{{join.url}}">Join</a></details>',
+    "a control named only in a comment":
+        '<details><summary>Menu</summary><nav>x</nav></details>'
+        '<!-- the {{join.url}} control belongs inside the disclosure -->',
+    "a disclosure with no controls anywhere":
+        '<details><summary>Menu</summary><nav>x</nav></details>',
+}
+
+
+def check_disclosure():
+    """The gate this change exists for, both directions."""
+    import lint
+    failures = []
+    here = Path(__file__)
+    print("ci/lint.py, controls inside the disclosure")
+
+    def run(cases, want):
+        for name, markup in cases.items():
+            before = len(lint.findings)
+            lint.check_disclosure_holds_the_controls(here, markup)
+            got = len(lint.findings) - before
+            del lint.findings[before:]
+            ok = (got > 0) == bool(want)
+            verb = "catches" if want else "quiet on"
+            extra = "" if ok else f" (got {got} finding(s))"
+            print(f"  {'ok  ' if ok else 'FAIL'} {verb}: {name}{extra}")
+            if not ok:
+                failures.append(name)
+
+    run(DISCLOSURE_FIRES, 1)
+    run(DISCLOSURE_QUIET, 0)
+
+    # And against the real pattern, which is the only reason the rule exists.
+    # A synthetic fixture proves the function works; this proves the library
+    # is actually in the state the function is checking for.
+    header = HERE.parent / "patterns" / "masthead-nav" / "pattern.html"
+    before = len(lint.findings)
+    lint.check_disclosure_holds_the_controls(
+        header, header.read_text(encoding="utf-8"))
+    got = len(lint.findings) - before
+    del lint.findings[before:]
+    ok = got == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} quiet on: masthead-nav as it ships"
+          + ("" if ok else f" ({got} control(s) outside the disclosure)"))
+    if not ok:
+        failures.append("masthead-nav keeps a control outside its disclosure")
+    return failures
+
+
 def check_header():
     """The two header gates added with the variation work, both directions."""
     import lint
@@ -1434,6 +1521,8 @@ def main():
     print()
     failures += check_header()
     print()
+    failures += check_disclosure()
+    print()
     failures += check_pages()
     print()
     failures += check_phone()
@@ -1455,6 +1544,7 @@ def main():
              + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
+             + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
