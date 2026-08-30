@@ -1,6 +1,6 @@
 <!--
 name: masthead-nav
-version: 5
+version: 6
 type: component
 page-types: homepage, landing, pricing, safety, article, features, articles-landing
 requires: none
@@ -11,7 +11,7 @@ needs: the brand's logo, the menu items configured on the platform, and two word
 pairs-with: none
 avoid-with: none
 tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-rule, --color-scrim, --color-surface, --color-surface-soft, --color-text, --container-max, --font-heading, --logo-height, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --transition-fast, --type-scale, --weight-display
-variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row; sticky=static|pinned; menu-align=menu-start|menu-end
+variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row; sticky=static|pinned; menu-align=menu-start|menu-centre|menu-end; menu-side=side-start|side-end
 behaviours: drawer
 motion: subtle
 one-per-page: yes
@@ -25,7 +25,8 @@ added: 2026-08-25
                     --panel  a full-width panel under the header on a phone
                     --row    no button, the menu runs on beside the mark
        sticky:      --static in the flow | --pinned to the top of the viewport
-       menu-align:  --menu-start | --menu-end, below 60rem only
+       menu-align:  --menu-start | --menu-centre | --menu-end, below 60rem
+       menu-side:   --side-start | --side-end, the side the button and its drawer share
      Login and join are INSIDE the disclosure and must stay there: an open
      drawer covers the bar, so a control left outside it cannot be reached for
      as long as the menu is showing. ci/lint.py fails the build if one moves.
@@ -37,7 +38,7 @@ added: 2026-08-25
      classes it generates. Set the img width and height to the logo file's own
      pixel size - they set its aspect ratio, and --logo-height sets how tall it
      renders. -->
-<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--static masthead-nav--menu-start">
+<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--static masthead-nav--menu-start masthead-nav--side-end">
   <div class="masthead-nav-inner">
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">

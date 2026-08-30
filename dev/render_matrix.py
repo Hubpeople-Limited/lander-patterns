@@ -78,8 +78,16 @@ AXES = {
     "layout": ["inline", "centred"],
     "menu": ["drawer", "panel", "row"],
     "sticky": ["static", "pinned"],
-    "menu-align": ["menu-start", "menu-end"],
+    "menu-align": ["menu-start", "menu-centre", "menu-end"],
+    "menu-side": ["side-start", "side-end"],
 }
+
+# The axes that can move a box. Screenshots are taken only where these differ,
+# because a picture of the same layout on a different ground is a picture
+# nobody needs to look at - and at seven axes the full cross-product is 3888
+# renders. Every combination is still MEASURED; only the photography is
+# sampled, so no rule is checked less thoroughly than before.
+POSITIONAL = ("menu", "menu-align", "menu-side", "layout", "sticky")
 
 WIDTHS = (320, 768, 1280)
 HEIGHT = 720
@@ -241,6 +249,17 @@ def markup_for(combo):
     return html
 
 
+def shot_worthy(combo):
+    """One photograph per distinct positional arrangement, on one ground.
+
+    Ground is the only axis sampled out, because it is the only one that
+    cannot move a box. `sticky` was sampled out once and should not have been:
+    it compacts the bar's padding, so it changes shape and has to be seen.
+    Every combination is still MEASURED whatever this returns.
+    """
+    return combo.get("ground", "plain") == "plain"
+
+
 def label(combo):
     return "-".join(combo[a] for a in AXES if a in combo)
 
@@ -299,7 +318,7 @@ def main():
                     page.wait_for_timeout(30)
                     got = page.evaluate(MEASURE)
                     rendered += 1
-                    if not args.no_shots:
+                    if not args.no_shots and shot_worthy(combo):
                         page.screenshot(
                             path=str(out / ("%s--%d-%s.png" % (name, width, state))))
 
