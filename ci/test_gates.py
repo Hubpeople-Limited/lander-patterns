@@ -588,6 +588,81 @@ def check_header():
     return failures
 
 
+# A rung is reached by building the class `<pattern-name>--<value>`. That is
+# what ci/check_page.py does, what ci/compose.py does through it, and what the
+# two browser tools composing from the published bundle do. A pattern that
+# spells its modifier any other way ships a rung that is declared, offered in
+# the chooser, and returns the default when anybody picks it - with nothing
+# anywhere reporting a fault.
+MODIFIER_CASES = [
+    (".demo-sticky--pinned { position: sticky; }", "sticky=pinned", 1,
+     "a modifier with the axis name wedged in the middle"),
+    (".demo--static {} .demo--pinned { position: sticky; }",
+     "sticky=static|pinned", 0,
+     "both rungs spelled the way a variant is applied"),
+    (".demo-align--end {}", "menu-align=end", 1,
+     "the spelling that shipped a rung nothing could reach"),
+    (".demo--menu-end {}", "menu-align=menu-end", 0,
+     "a hyphenated value, still reachable"),
+    (".demo--ruled {}", "rule=default|ruled", 0,
+     "`default` names the markup as it ships and needs no class"),
+]
+
+
+def check_modifier_spelling():
+    """A declared rung has to be reachable, not merely present in the file."""
+    import lint
+    failures = []
+    print("ci/lint.py, a declared rung is reachable by the applier")
+    root = Path(tempfile.mkdtemp())
+    folder = root / "demo"
+    folder.mkdir(parents=True)
+    html, css = folder / "pattern.html", folder / "pattern.css"
+    html.write_text('<div class="demo"></div>', encoding="utf-8")
+    # lint.find reports a path relative to the repo, and these fixtures are not
+    # in it. Point lint at the fixture root for the duration rather than writing
+    # a throwaway pattern into patterns/, where an interrupted run leaves one
+    # behind and every later check counts it as part of the library.
+    held_root = lint.ROOT
+    lint.ROOT = root
+    try:
+        for sheet, variants, want, name in MODIFIER_CASES:
+            css.write_text(sheet, encoding="utf-8")
+            before = len(lint.findings)
+            lint.check_variants(html, css, {"variants": variants}, "demo")
+            got = 1 if len(lint.findings) > before else 0
+            del lint.findings[before:]
+            ok = got == want
+            verb = "catches" if want else "quiet on"
+            print(f"  {'ok  ' if ok else 'FAIL'} {verb}: {name}"
+                  + ("" if ok else f" (got {got}, want {want})"))
+            if not ok:
+                failures.append(name)
+    finally:
+        lint.ROOT = held_root
+        shutil.rmtree(root, ignore_errors=True)
+
+    # And the library itself, which is the half that catches the regression.
+    unreachable = []
+    for pattern in sorted(p for p in (HERE.parent / "patterns").iterdir()
+                          if p.is_dir()):
+        meta = lint.parse_header(
+            (pattern / "pattern.html").read_text(encoding="utf-8"),
+            pattern / "pattern.html")
+        before = len(lint.findings)
+        lint.check_variants(pattern / "pattern.html", pattern / "pattern.css",
+                            meta, pattern.name)
+        if len(lint.findings) > before:
+            unreachable.append(pattern.name)
+        del lint.findings[before:]
+    ok = not unreachable
+    print(f"  {'ok  ' if ok else 'FAIL'} quiet on: every rung in the library"
+          + ("" if ok else f" - unreachable in {', '.join(unreachable)}"))
+    if not ok:
+        failures.append("unreachable rung in the library")
+    return failures
+
+
 def check_modules():
     """Every gate module, both directions."""
     import legibility
@@ -1523,6 +1598,8 @@ def main():
     print()
     failures += check_disclosure()
     print()
+    failures += check_modifier_spelling()
+    print()
     failures += check_pages()
     print()
     failures += check_phone()
@@ -1545,6 +1622,7 @@ def main():
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
              + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
+             + len(MODIFIER_CASES) + 1
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)

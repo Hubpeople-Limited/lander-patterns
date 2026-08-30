@@ -45,12 +45,12 @@ it is not, so a scroll would otherwise part them and strand the reader.
   right for two or three short labels. **`--row`** drops the button and stacks the
   mark, a horizontally scrolling row of items and the controls as three bands; a
   submenu there runs on beside its parent rather than nesting under it.
-- `sticky=no|yes` — `-sticky--yes` pins the bar to the top of the viewport. A
+- `sticky=static|pinned` — `--pinned` holds the bar at the top of the viewport. A
   persistent header reads as a signal that the offer is still there and is worth
   around 22% quicker navigation; the price is that every pixel of it is page
   nobody can see, on every screen. So it compacts its padding above `60rem`, and
   suits `--inline` far better than `--centred`, two rows tall before it starts.
-- `menu-align=start|end` — which edge the items inside the small-screen sheet are
+- `menu-align=menu-start|menu-end` — which edge the items in the small-screen sheet are
   set against. It does not move the sheet: `menu` decides that, and the drawer is
   at the inline end on both rungs. Inert above `60rem`, and on `--row`.
 

@@ -255,10 +255,23 @@ def check_variants(html_path, css_path, meta, folder_name):
             # real choice and has no class of its own.
             if value == "default":
                 continue
-            if not re.search(rf"\.{re.escape(folder_name)}[\w-]*--{re.escape(value)}(?![\w-])", css):
+            # EXACTLY `.<pattern-name>--<value>`, not `.<pattern-name>*--<value>`.
+            # The looser form let a rung declare itself with a modifier nothing
+            # could reach: `apply_variants` builds the class as
+            # `<name>--<value>` and so do the two browser tools that compose
+            # from the published bundle, so a pattern spelling it
+            # `.masthead-nav-sticky--yes` had a rung that passed this check,
+            # passed check_variant_choice, appeared in the chooser - and
+            # returned the default when anybody picked it, silently.
+            if not re.search(rf"\.{re.escape(folder_name)}--{re.escape(value)}(?![\w-])", css):
+                loose = re.search(
+                    rf"\.{re.escape(folder_name)}[\w-]*--{re.escape(value)}(?![\w-])", css)
                 find(css_path, "variants",
                      f"variants declares {axis}={value} but no "
-                     f".{folder_name}*--{value} selector exists")
+                     f".{folder_name}--{value} selector exists"
+                     + (" - the modifier is spelled with something between the "
+                        "pattern name and the value, which nothing that applies "
+                        "a variant can reach" if loose else ""))
 
 
 def furniture_ok(token):
