@@ -742,15 +742,15 @@
     "row"
    ],
    "menu-align": [
-    "start",
-    "end"
+    "menu-start",
+    "menu-end"
    ],
    "sticky": [
-    "no",
-    "yes"
+    "static",
+    "pinned"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "media-card-grid": {

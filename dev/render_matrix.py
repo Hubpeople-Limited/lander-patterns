@@ -59,6 +59,8 @@ sys.path.insert(0, str(ROOT / "ci"))
 
 from build_preview import fill  # noqa: E402
 from check_phone import ACCEPTED  # noqa: E402
+from check_page import apply_variants  # noqa: E402
+import lint  # noqa: E402
 
 # The library's own baseline, imported rather than restated. A fault this
 # repository has already looked at and written a reason for is `known` here for
@@ -68,25 +70,15 @@ KNOWN = {phrase for pattern, phrase, _why in ACCEPTED if pattern == "masthead-na
 
 PATTERN = ROOT / "patterns" / "masthead-nav"
 PREVIEW = ROOT / "preview"
+META = lint.parse_header(
+    (PATTERN / "pattern.html").read_text(encoding="utf-8"), PATTERN / "pattern.html")
 
 AXES = {
     "ground": ["plain", "soft", "brand"],
     "layout": ["inline", "centred"],
     "menu": ["drawer", "panel", "row"],
-    "sticky": ["no", "yes"],
-    "menu-align": ["start", "end"],
-}
-
-# The class each rung puts on the root element. Kept beside the axes rather
-# than derived from them: two of the five do not spell their modifier
-# `.masthead-nav--<value>`, and a derivation that guessed would render the
-# pattern with no modifier on it and report the default over and over.
-CLASS = {
-    "ground": "masthead-nav--%s",
-    "layout": "masthead-nav--%s",
-    "menu": "masthead-nav--%s",
-    "sticky": "masthead-nav-sticky--%s",
-    "menu-align": "masthead-nav-align--%s",
+    "sticky": ["static", "pinned"],
+    "menu-align": ["menu-start", "menu-end"],
 }
 
 WIDTHS = (320, 768, 1280)
@@ -224,8 +216,20 @@ def markup_for(combo):
     # Both comments, not just the metadata header: the placement notes carry
     # the axis names and would sit in every screenshot.
     html = re.sub(r"<!--(?!\s*slot\s*:).*?-->", "", html, flags=re.S).strip()
-    classes = "masthead-nav " + " ".join(CLASS[a] % combo[a] for a in AXES if a in combo)
-    html = re.sub(r'class="masthead-nav[^"]*"', 'class="%s"' % classes, html, count=1)
+    # The library's own applier, not a class map of our own. ci/compose.py,
+    # ci/check_page.py and the two browser tools on the help site all reach a
+    # rung this way, so rendering it any other way would render something
+    # nobody can actually ask for - and would be blind to a rung that silently
+    # does nothing, which is the one fault a bespoke map cannot have.
+    html = apply_variants("masthead-nav", META, html, combo)
+    got = re.search(r'<header class="([^"]+)"', html).group(1).split()
+    missing = [v for v in combo.values() if "masthead-nav--" + v not in got]
+    if missing:
+        raise SystemExit(
+            "apply_variants did nothing for %s - the rung is declared in "
+            "`variants:` but its modifier is not spelled "
+            ".masthead-nav--<value>, so asking for it returns the default:\n  %s"
+            % (", ".join(missing), " ".join(got)))
     # A data URI, not a file: URL. set_content serves the page from about:blank
     # and the browser refuses a file: image to it, so the mark rendered as
     # broken-image alt text - narrower and shorter than the wordmark, in a
@@ -319,7 +323,7 @@ def main():
                         # answer on both rungs and NOT pinning is the fault.
                         held_by_drawer = (combo.get("menu") == "drawer"
                                           and width < 960)
-                        want = combo.get("sticky") == "yes" or held_by_drawer
+                        want = combo.get("sticky") == "pinned" or held_by_drawer
                         if want and not pinned:
                             faults.append(
                                 "%s: bar did not pin, header top %s%s"
@@ -340,7 +344,7 @@ def main():
                     # pinned bar owes this: a bar that scrolled away has taken
                     # its controls with it, which is what sticky=no means.
                     if state == "open" or (state == "scrolled"
-                                           and combo.get("sticky") == "yes"):
+                                           and combo.get("sticky") == "pinned"):
                         for control in ("join", "login"):
                             c = got[control]
                             if not c["visible"] or not c["inView"]:
