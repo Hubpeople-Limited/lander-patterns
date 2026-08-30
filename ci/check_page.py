@@ -412,20 +412,44 @@ def apply_variants(name, meta, body, mods):
 
     Shared with ci/compose.py, which builds the same markup into shells and
     must make the same swap or its pages would contradict their manifests.
+
+    It works on the CLASS TOKENS of the pattern's own element, not on the text
+    of the file, because two things went wrong when it worked on the text:
+
+    A substring search finds a rung named in a COMMENT. `opener-split` says
+    "Add opener-split--ruled for a hairline" in its placement notes, so asking
+    for `rule=ruled` found that sentence, swapped it for itself, counted the
+    swap as done and never touched the element.
+
+    An append needs somewhere to append TO. The fallback matched a class
+    attribute ending in the bare pattern name, and `hero-stated` ships
+    `class="hero-stated hero-stated--plain"`, which does not end that way - so
+    `alignment=centred`, whose other rung is `default` and therefore has no
+    class to swap, appended nothing and returned the pattern unchanged.
+
+    Both failed the same way: silently, returning the default while every
+    check downstream reasoned about the rung that was asked for.
     """
-    for key, value in mods.items():
-        swapped = False
-        for known in sorted(axes_of(meta).get(key, ())):
-            old = f'{name}--{known}'
-            if old in body:
-                body = body.replace(old, f'{name}--{value}')
-                swapped = True
-                break
-        if not swapped:
-            body = re.sub(
-                r'(class="[^"]*\b' + re.escape(name) + r')(")',
-                r'\1 ' + f'{name}--{value}' + r'\2', body, count=1)
-    return body
+    axes = axes_of(meta)
+    done = False
+
+    def rewrite(match):
+        nonlocal done
+        tokens = match.group(1).split()
+        # The pattern's own element is the one carrying the bare name.
+        if done or name not in tokens:
+            return match.group(0)
+        done = True
+        for key, value in mods.items():
+            # `default` is the markup as it ships and has no class of its own,
+            # so choosing it means removing the rung rather than naming one.
+            siblings = {f"{name}--{v}" for v in axes.get(key, ()) if v != "default"}
+            tokens = [t for t in tokens if t not in siblings]
+            if value != "default":
+                tokens.append(f"{name}--{value}")
+        return 'class="%s"' % " ".join(tokens)
+
+    return re.sub(r'class="([^"]*)"', rewrite, body)
 
 
 PAGE = """<!doctype html>
