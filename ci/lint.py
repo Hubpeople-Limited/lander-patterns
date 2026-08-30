@@ -866,6 +866,74 @@ def check_disclosure_holds_the_controls(html_path, markup):
                  "reached. Move it inside the disclosure")
 
 
+PAIRINGS_FILE = ROOT / "type-pairings.json"
+
+
+def check_type_pairings():
+    """The named type pairings a chooser offers, held to the token contract.
+
+    These carry `dials`, and a dial outside its documented range is a page the
+    contract does not promise: TOKENS.md states the contrast guarantees across
+    those ranges, not outside them. A pairing is also the only place in this
+    repository that names a font by URL, so it is the only place a stack can
+    be shipped with nothing to load it.
+
+    Read from ci/_dials.py rather than restated, so the ranges cannot drift
+    from the ones every other dial check uses.
+    """
+    from _dials import DIALS
+    if not PAIRINGS_FILE.is_file():
+        find(ROOT, "type-pairings", "type-pairings.json is missing")
+        return
+    try:
+        doc = json.loads(PAIRINGS_FILE.read_text(encoding="utf-8"))
+    except ValueError as exc:
+        find(PAIRINGS_FILE, "type-pairings", "not valid JSON: %s" % exc)
+        return
+    pairings = doc.get("pairings")
+    if not isinstance(pairings, list) or not pairings:
+        find(PAIRINGS_FILE, "type-pairings", "no pairings in the file")
+        return
+    seen = set()
+    for entry in pairings:
+        pid = entry.get("id") or "(no id)"
+        if pid in seen:
+            find(PAIRINGS_FILE, "type-pairings", "duplicate id %r" % pid)
+        seen.add(pid)
+        for field in ("id", "name", "suits", "url"):
+            if not str(entry.get(field, "")).strip():
+                find(PAIRINGS_FILE, "type-pairings", "%s: no %s" % (pid, field))
+        for side in ("heading", "body"):
+            face = entry.get(side) if isinstance(entry.get(side), dict) else {}
+            for field in ("family", "stack"):
+                if not str(face.get(field, "")).strip():
+                    find(PAIRINGS_FILE, "type-pairings",
+                         "%s: %s has no %s" % (pid, side, field))
+            fam = str(face.get("family", "")).strip()
+            if fam and fam not in str(face.get("stack", "")):
+                find(PAIRINGS_FILE, "type-pairings",
+                     "%s: %s stack does not name %r, so the family it loads "
+                     "is not the family it sets" % (pid, side, fam))
+        url = str(entry.get("url", ""))
+        if url and not url.startswith("https://fonts.googleapis.com/"):
+            find(PAIRINGS_FILE, "type-pairings",
+                 "%s: url is not a Google Fonts stylesheet" % pid)
+        for dial, value in (entry.get("dials") or {}).items():
+            if dial not in DIALS:
+                find(PAIRINGS_FILE, "type-pairings",
+                     "%s: %r is not a dial TOKENS.md documents" % (pid, dial))
+                continue
+            _kind, low, high = DIALS[dial]
+            if not isinstance(value, (int, float)) or isinstance(value, bool):
+                find(PAIRINGS_FILE, "type-pairings",
+                     "%s: %s is %r, which is not a bare number" % (pid, dial, value))
+            elif not (low <= value <= high):
+                find(PAIRINGS_FILE, "type-pairings",
+                     "%s: %s is %s, outside the documented range %s to %s - the "
+                     "contract's guarantees are stated across that range and "
+                     "not beyond it" % (pid, dial, value, low, high))
+
+
 def contract_tokens():
     """Every token TOKENS.md defines, read from the first column of its
     tables. The contract is the document; this parses it rather than
@@ -1405,6 +1473,7 @@ def main():
                 check_leaks(path, needles)
             check_control_bytes(path)
 
+    check_type_pairings()
     check_token_sets_are_complete()
     check_transition_tokens_are_durations()
 

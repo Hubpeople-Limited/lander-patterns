@@ -859,6 +859,66 @@ def check_variant_notes():
     return failures
 
 
+# The named type pairings a chooser offers. They carry `dials`, so a bad one is
+# a page outside the range TOKENS.md states its contrast guarantees across -
+# and they are the only place in this repository that names a font by URL.
+PAIRING_CASES = [
+    ("a dial outside the documented range",
+     lambda d: d["pairings"][0]["dials"].update({"type-scale": 1.6})),
+    ("a dial TOKENS.md does not document",
+     lambda d: d["pairings"][0]["dials"].update({"letter-spacing": 1})),
+    ("a dial written as a string",
+     lambda d: d["pairings"][0]["dials"].update({"type-scale": "1.05"})),
+    ("a stack that does not name its own family",
+     lambda d: d["pairings"][0]["heading"].update({"stack": "Georgia, serif"})),
+    ("a pairing with nothing to load the font",
+     lambda d: d["pairings"][1].update({"url": ""})),
+    ("a font URL that is not Google Fonts",
+     lambda d: d["pairings"][1].update({"url": "https://example.com/f.css"})),
+    ("two pairings sharing one id",
+     lambda d: d["pairings"][1].update({"id": d["pairings"][0]["id"]})),
+]
+
+
+def check_type_pairings():
+    """Both halves, on the file the chooser actually reads."""
+    import copy
+    import lint
+    failures = []
+    print("ci/lint.py, the named type pairings")
+    path = HERE.parent / "type-pairings.json"
+    good = json.loads(path.read_text(encoding="utf-8"))
+
+    def findings_for(doc):
+        tmp = Path(tempfile.mkdtemp())
+        (tmp / "type-pairings.json").write_text(json.dumps(doc), encoding="utf-8")
+        held_root, held_file = lint.ROOT, lint.PAIRINGS_FILE
+        lint.ROOT, lint.PAIRINGS_FILE = tmp, tmp / "type-pairings.json"
+        before = len(lint.findings)
+        try:
+            lint.check_type_pairings()
+            return len(lint.findings) - before
+        finally:
+            del lint.findings[before:]
+            lint.ROOT, lint.PAIRINGS_FILE = held_root, held_file
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    for label, mutate in PAIRING_CASES:
+        doc = copy.deepcopy(good)
+        mutate(doc)
+        ok = findings_for(doc) > 0
+        print(f"  {'ok  ' if ok else 'FAIL'} catches: {label}")
+        if not ok:
+            failures.append(label)
+
+    ok = findings_for(good) == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} quiet on: the twelve as they ship "
+          f"({len(good['pairings'])} pairings)")
+    if not ok:
+        failures.append("quiet on the real pairings")
+    return failures
+
+
 def check_modules():
     """Every gate module, both directions."""
     import legibility
@@ -1800,6 +1860,8 @@ def main():
     print()
     failures += check_variant_notes()
     print()
+    failures += check_type_pairings()
+    print()
     failures += check_pages()
     print()
     failures += check_phone()
@@ -1823,6 +1885,7 @@ def main():
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
              + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
              + len(MODIFIER_CASES) + 1 + 6 + len(NOTE_CASES) + 2
+             + len(PAIRING_CASES) + 1
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
