@@ -34,7 +34,12 @@ INDEX = ROOT / "INDEX.md"
 MANIFEST = ROOT / "patterns.json"
 
 REQUIRED_FIELDS = [
-    "name", "version", "type", "page-types", "content-shape", "description",
+    # `name` is the folder and what a brand pins. `display-name` and `summary`
+    # are what a person is shown instead: "colophon" is a printing term and
+    # "opener-split" is this library talking to itself, and neither belongs in
+    # a tool where somebody is choosing what to put on a page.
+    "name", "display-name", "summary",
+    "version", "type", "page-types", "content-shape", "description",
     "keywords", "needs", "tokens-used", "motion", "status", "added",
     "one-per-page",
 ]
@@ -1599,6 +1604,10 @@ def main():
         moves = f" · **brings {beh.strip()}**" if beh.strip() else ""
         needs = meta.get("needs", "")
         manifest[name] = {
+            # The name a folder has and the name a person is shown are not the
+            # same thing, and only one of them is safe to change.
+            "display-name": meta.get("display-name"),
+            "summary": meta.get("summary"),
             "version": meta.get("version"),
             "type": meta.get("type"),
             "page-types": [s.strip() for s in meta.get("page-types", "").split(",") if s.strip()],

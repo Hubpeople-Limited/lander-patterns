@@ -56,6 +56,8 @@ agent parses and the README is what a person reads. What each field means:
 
 | Field | Value |
 |---|---|
+| `display-name` | The name a PERSON sees - "Footer", "Section opener", "Questions and answers". `name` is a folder name and the thing a brand pins, so it can never change; this can, and it is what a chooser shows. `colophon` is a printing term and `opener-split` is this library talking to itself: neither belongs in a tool where somebody is picking what to put on a page |
+| `summary` | One sentence, in a partner's words, saying what the pattern is. Not `description`, which is written for an agent shortlisting and is longer and more precise than a person wants |
 | `type` | `component`, `section` or `page` |
 | `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `narrative`, `peer set`, `comparison`, `progression`, `single claim`, `question and answer`, `reference`. It is what an agent matches a pattern against before it opens one, so it is **that** list rather than a second one that reads like it — CI holds you to it. Two spellings for one idea is a lookup that quietly returns nothing, and adding a value here means adding it to the skill's own table in the same change |
 | `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip eighteen patterns without reading eighteen `needs` lines. It is on the index row for that reason |
