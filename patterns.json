@@ -743,14 +743,19 @@
    ],
    "menu-align": [
     "menu-start",
+    "menu-centre",
     "menu-end"
+   ],
+   "menu-side": [
+    "side-start",
+    "side-end"
    ],
    "sticky": [
     "static",
     "pinned"
    ]
   },
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "media-card-grid": {
