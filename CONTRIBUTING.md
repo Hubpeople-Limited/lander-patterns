@@ -283,6 +283,11 @@ On every pull request, CI:
   fit; then re-renders it with the furniture allowance the live defect had and
   requires that check to fire. See
   [The fold, measured on an assembled page](#the-fold-measured-on-an-assembled-page).
+- renders every pattern that carries a brand mark against the logo shapes real
+  brands ship — including an SVG with a `viewBox` and no dimensions — and
+  requires the mark to be drawn at the height the header reserved for it; then
+  re-renders it the way the live defect had it and requires that check to fire.
+  See [The brand mark](#the-brand-mark).
 
 A red check names the file and the rule. Fix and push again — nothing merges
 red.
@@ -520,6 +525,47 @@ a pixel size and a pixel size is a size in a particular typeface**: the
 whose line box is 57% taller. So `STALE` detection is reported only on the
 baseline set — on any other the run says so in its output rather than sending
 you to delete a live entry.
+
+### The brand mark
+
+Every sample image in this repository carries `width` and `height` attributes,
+and `preview/sample-wordmark.svg` carries them in the file too. **Real brand
+logos do not.** A brand mark is almost always an SVG exported with a `viewBox`
+and nothing else: it has a *ratio* and no intrinsic size at all, which is a
+different sizing problem and one nothing here had ever rendered.
+
+`masthead-nav` sized its logo with `width: auto; height: auto` under a
+`max-width` and a `max-height` — two ceilings and no floor. An image with
+intrinsic dimensions settles on those and is capped. An image with only a ratio
+has nothing to settle on and resolves to **0×0**: no brand mark at all, on every
+phone and tablet, on every brand using any of the six page shells. Every gate in
+this repository passed it, because the sample logo has a size.
+
+```
+python ci/check_logo.py                  every pattern that carries a logo
+python ci/check_logo.py --broken         the positive control
+python ci/check_logo.py --tokens display
+python ci/check_logo.py --out /tmp/logo  keep the rendered pages
+```
+
+It renders each pattern against four logo shapes — a ratio-only wordmark, the
+same file with the `<img>`'s own `width`/`height` dropped, a ratio-only square,
+and a sized wordmark as the control — at six widths straddling `60rem`, and
+fails a mark that is not drawn, one whose box is not as tall as `--logo-height`
+resolved to on that page, or one stretched out of its file's ratio. The token is
+measured off a probe element rather than read as text, because `--logo-height`
+is `2.75rem` or whatever the brand wrote, and the number that matters is the one
+the browser resolved.
+
+**Which patterns are discovered, not listed** — anything whose markup carries an
+`<img>` on `{{logo.src}}`. One does today. **`--broken` is a positive control
+and CI runs it**: it appends one rule putting the logo back the way the defect
+had it and requires the check to fire. It is appended rather than spliced into
+the stylesheet so that rewording the shipped rule cannot quietly disarm it.
+
+If you pin a replaced element's height, pin `object-fit` with it. The moment a
+`max-width` bites, a box with a set height and no `object-fit` stretches what is
+inside it.
 
 ### Display measures
 
