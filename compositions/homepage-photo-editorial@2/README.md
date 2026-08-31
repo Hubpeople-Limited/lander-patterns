@@ -16,7 +16,7 @@ This shell needs photography. An image slot takes real material - or, while the 
 
 ## Sections, in order
 
-1. **masthead-nav** v7 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar and two small-screen alignments.
+1. **masthead-nav** v8 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar, two small-screen alignments, a menu button with or without its word, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)

@@ -2,25 +2,25 @@
 name: masthead-nav
 display-name: Site header
 summary: Your logo, the menu, and the log in and join buttons.
-version: 7
+version: 8
 type: component
 page-types: homepage, landing, pricing, safety, article, features, articles-landing
 requires: none
 content-shape: reference
-description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar and two small-screen alignments.
+description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar, two small-screen alignments, a menu button with or without its word, and three bottom edges.
 keywords: header, masthead, navigation, menu, logo, mobile menu, drawer
 needs: the brand's logo, the menu items configured on the platform, and two words in the brand's own language - one for the small-screen menu button and one for that same button while the menu is showing. Every other value on it is platform furniture
 pairs-with: none
 avoid-with: none
 tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-rule, --color-scrim, --color-surface, --color-surface-soft, --color-text, --container-max, --font-heading, --logo-height, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --transition-fast, --type-scale, --weight-display
-variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row; sticky=static|pinned; menu-align=menu-start|menu-centre|menu-end; menu-side=side-start|side-end
+variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row; sticky=static|pinned; menu-align=menu-start|menu-centre|menu-end; menu-side=side-start|side-end; toggle=labelled|icon; edge=rule|shadow|flush
 behaviours: drawer
 motion: subtle
 one-per-page: yes
 status: active
 added: 2026-08-25
 -->
-<!-- Take one modifier from each of the five axes. See the README.
+<!-- Take one modifier from each of the eight axes. See the README.
        ground:      --plain page ground | --soft tinted fill | --brand brand colour
        layout:      --inline mark and menu on one row | --centred mark over the menu
        menu:        --drawer a side panel over the page on a phone
@@ -29,18 +29,19 @@ added: 2026-08-25
        sticky:      --static in the flow | --pinned to the top of the viewport
        menu-align:  --menu-start | --menu-centre | --menu-end, below 60rem
        menu-side:   --side-start | --side-end, the side the button and its drawer share
+       toggle:      --labelled the word beside the bars
+                    --icon    the bars alone, the word clipped and not removed
+       edge:        --rule a hairline | --shadow a soft edge | --flush neither
      Login and join are INSIDE the disclosure and must stay there: an open
      drawer covers the bar, so a control left outside it cannot be reached for
      as long as the menu is showing. ci/lint.py fails the build if one moves.
      The data-hub-module attribute belongs to the drawer and is inert on the
-     other two, because the behaviour acts only while the panel is fixed to
-     the viewport, so it can be left in place or deleted either way.
+     other two, so it can be left in place or deleted either way.
      {{menu.navigation}} expands to a <ul class="canvas-navigation-menu"> the
-     page cannot change. Leave it exactly as it is; pattern.css styles the
-     classes it generates. Set the img width and height to the logo file's own
-     pixel size - they set its aspect ratio, and --logo-height sets how tall it
-     renders. -->
-<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--static masthead-nav--menu-start masthead-nav--side-end">
+     page cannot change. Leave it as it is; pattern.css styles the classes it
+     generates. Set the img width and height to the logo file's own pixel size
+     - they set its aspect ratio, and --logo-height sets how tall it renders. -->
+<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--static masthead-nav--menu-start masthead-nav--side-end masthead-nav--labelled masthead-nav--rule">
   <div class="masthead-nav-inner">
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">
