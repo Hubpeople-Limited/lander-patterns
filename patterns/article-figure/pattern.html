@@ -1,0 +1,30 @@
+<!--
+name: article-figure
+display-name: Article picture
+summary: One picture inside a piece of writing, with its caption and credit.
+version: 1
+type: component
+page-types: article, safety
+requires: photography
+content-shape: narrative
+description: One image in the flow of a written piece - a real figure with its caption and the credit inside that caption, running a little wider than the text column it sits between.
+keywords: figure, caption, credit, article image, photo
+needs: one real photograph that shows something the writing refers to, its own alt text describing what is in it, a caption saying what the reader is looking at and why it is here, and the credit the picture is licensed under. A picture that only fills space carries no caption, and a figure with no caption is not this pattern
+pairs-with: none
+avoid-with: none
+tokens-used: --card-radius, --color-text-soft, --space-3, --space-4, --space-6
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-31
+-->
+<!-- Between two runs of body copy. width and height are a stand-in 16:9 -
+     replace them with the real file's pixel dimensions so the browser
+     reserves the right box and the text below it does not jump.
+     alt describes the picture and is never empty here: a picture worth a
+     caption is a picture carrying information. The credit stays inside the
+     figcaption - moved out, it is a floating line belonging to nothing. -->
+<figure class="article-figure">
+  <img class="article-figure-image" src="slot:figure-image" alt="slot:figure-alt" width="1600" height="900" loading="lazy">
+  <figcaption class="article-figure-caption"><!-- slot: caption --> <span class="article-figure-credit"><!-- slot: credit --></span></figcaption>
+</figure>

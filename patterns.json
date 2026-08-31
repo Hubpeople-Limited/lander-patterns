@@ -37,6 +37,29 @@
   "version": "3",
   "whole-page": false
  },
+ "article-figure": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "narrative",
+  "description": "One image in the flow of a written piece - a real figure with its caption and the credit inside that caption, running a little wider than the text column it sits between.",
+  "display-name": "Article picture",
+  "motion": "none",
+  "needs": "one real photograph that shows something the writing refers to, its own alt text describing what is in it, a caption saying what the reader is looking at and why it is here, and the credit the picture is licensed under. A picture that only fills space carries no caption, and a figure with no caption is not this pattern",
+  "one-per-page": false,
+  "page-types": [
+   "article",
+   "safety"
+  ],
+  "pairs-with": [],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "One picture inside a piece of writing, with its caption and credit.",
+  "type": "component",
+  "variants": {},
+  "version": "1",
+  "whole-page": false
+ },
  "article-masthead": {
   "avoid-with": [
    "hero-centred",
@@ -65,6 +88,52 @@
   "type": "section",
   "variants": {},
   "version": "9",
+  "whole-page": false
+ },
+ "article-toc": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away. No script anywhere.",
+  "display-name": "Contents list",
+  "motion": "none",
+  "needs": "the article's own section headings, in the order they appear, and an id written onto each of those headings in the body. The words in the list are the headings themselves, never a second set of titles written for the list",
+  "one-per-page": true,
+  "page-types": [
+   "article",
+   "safety"
+  ],
+  "pairs-with": [],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "A short list of links to the sections of a long piece, which a reader can put away.",
+  "type": "component",
+  "variants": {},
+  "version": "1",
+  "whole-page": false
+ },
+ "author-note": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "The block at the foot of a written piece - the writer's name, their standing, one paragraph of biography and an optional link to more of their work, on a panel that carries its weight without a portrait.",
+  "display-name": "About the author",
+  "motion": "none",
+  "needs": "the name of the person who actually wrote the piece and is willing to be named; what they do that bears on this subject - the job, the qualification, the years, the body they belong to; one paragraph of biography naming things a reader could go and check; and, where a page of their other work exists, a link to it",
+  "one-per-page": true,
+  "page-types": [
+   "article",
+   "safety"
+  ],
+  "pairs-with": [],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "The block at the end of a piece saying who wrote it and why they know the subject.",
+  "type": "component",
+  "variants": {},
+  "version": "1",
   "whole-page": false
  },
  "benefit-tiles": {
@@ -201,7 +270,7 @@
   "description": "A real table comparing three things against the same criteria - tier names across the top, one criterion per row, the recommended column named in words and never by colour alone.",
   "display-name": "Comparison table",
   "motion": "none",
-  "needs": "two or three real things the brand offers that are genuinely measured against the same criteria, and the criteria themselves - one per row, in the brand's own words. Each cell says what that thing actually gives, not a tick borrowed from a competitor. A recommended column only where the brand recommends one",
+  "needs": "two or three real things the brand offers that are genuinely comparable against the same criteria, and the criteria themselves - one per row, in the brand's own words. Each cell says what that thing actually gives, not a tick borrowed from a competitor. A recommended column only where the brand recommends one",
   "one-per-page": true,
   "page-types": [
    "features",
@@ -272,7 +341,9 @@
    "landing",
    "pricing",
    "safety",
-   "article"
+   "article",
+   "features",
+   "articles-landing"
   ],
   "pairs-with": [
    "pricing-tiers",
@@ -389,7 +460,9 @@
   "page-types": [
    "homepage",
    "landing",
-   "pricing"
+   "pricing",
+   "safety",
+   "features"
   ],
   "pairs-with": [
    "heading-block"
@@ -415,7 +488,8 @@
   "page-types": [
    "homepage",
    "landing",
-   "pricing"
+   "pricing",
+   "features"
   ],
   "pairs-with": [
    "opener-split",
@@ -644,7 +718,9 @@
    "homepage",
    "landing",
    "pricing",
-   "safety"
+   "safety",
+   "features",
+   "articles-landing"
   ],
   "pairs-with": [
    "cta-assurance",
@@ -672,6 +748,29 @@
   "version": "4",
   "whole-page": false
  },
+ "key-takeaways": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "The summary box near the top of a piece - a heading and three to five one-line points a reader gets without reading the article, set as a quiet tinted block inside the writing rather than a card beside it.",
+  "display-name": "Key takeaways",
+  "motion": "none",
+  "needs": "three to five points, each a complete statement that stands on its own, each answerable from the article's own body, and none of them the title or the lede reworded. A point that only makes sense once the piece has been read is not a takeaway, and a point the article never supports belongs on neither",
+  "one-per-page": true,
+  "page-types": [
+   "article",
+   "safety"
+  ],
+  "pairs-with": [],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "A short box near the top saying what the piece tells you.",
+  "type": "component",
+  "variants": {},
+  "version": "1",
+  "whole-page": false
+ },
  "link-cluster": {
   "avoid-with": [],
   "behaviours": [],
@@ -686,7 +785,8 @@
    "landing",
    "pricing",
    "safety",
-   "article"
+   "article",
+   "articles-landing"
   ],
   "pairs-with": [
    "heading-block",
@@ -1118,6 +1218,29 @@
   "type": "component",
   "variants": {},
   "version": "5",
+  "whole-page": false
+ },
+ "pull-quote": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "A line lifted out of the running text and set large between two runs of body copy - the article's own words, repeated for emphasis, with no attribution and no ask.",
+  "display-name": "Pull quote",
+  "motion": "none",
+  "needs": "one sentence taken word for word from the body copy on the same page, short enough to read in one glance, and carrying an idea rather than a fact. It is repetition on purpose: the line must already be somewhere above or below it, and shortening it to fit means shortening the sentence in the body too",
+  "one-per-page": false,
+  "page-types": [
+   "article",
+   "safety"
+  ],
+  "pairs-with": [],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "One line from the article, set large to break up a long read.",
+  "type": "component",
+  "variants": {},
+  "version": "1",
   "whole-page": false
  },
  "quote-feature": {

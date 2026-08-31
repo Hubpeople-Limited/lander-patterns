@@ -1,0 +1,45 @@
+<!--
+name: article-toc
+display-name: Contents list
+summary: A short list of links to the sections of a long piece, which a reader can put away.
+version: 1
+type: component
+page-types: article, safety
+requires: none
+content-shape: reference
+description: In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away. No script anywhere.
+keywords: contents, anchors, jump links, in-page navigation, longform, article
+needs: the article's own section headings, in the order they appear, and an id written onto each of those headings in the body. The words in the list are the headings themselves, never a second set of titles written for the list
+pairs-with: none
+avoid-with: none
+tokens-used: --color-focus, --color-rule, --color-text, --color-text-soft, --font-heading, --heading-leading, --heading-tracking, --space-2, --space-3, --space-4, --space-6, --type-scale
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-31
+-->
+<!-- WRITE THE IDS FIRST. Every href here is a hash plus the id of the heading
+     it points at, and those ids do not exist until somebody puts them on the
+     headings in the article body:
+
+       h2 id="how-we-check"   ->   href="#how-we-check"
+
+     A contents list pointing at ids nobody added is a page of dead links, and
+     nothing on the page says so - the browser stays where it is.
+
+     ONE entry. Duplicate the whole li for each section, in the order the
+     sections appear, and use the heading's own words. The list ships open;
+     delete `open` to have it arrive collapsed. -->
+<nav class="article-toc" aria-labelledby="article-toc-label">
+  <details class="article-toc-disclosure" open>
+    <summary class="article-toc-summary">
+      <span class="article-toc-label" id="article-toc-label"><!-- slot: contents-label --></span>
+      <span class="article-toc-icon" aria-hidden="true"></span>
+    </summary>
+    <ol class="article-toc-list" role="list">
+      <li class="article-toc-item">
+        <a class="article-toc-link" href="slot:section-anchor"><!-- slot: section-title --></a>
+      </li>
+    </ol>
+  </details>
+</nav>

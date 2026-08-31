@@ -28,59 +28,287 @@
   "recipes": [
     {
       "page": "homepage",
-      "patterns": ["hero-overlay", "stats-band", "cta-band"],
+      "patterns": [
+        "hero-overlay",
+        "stats-band",
+        "cta-band"
+      ],
       "why": "The photo-led homepage built in round 23. A full-viewport opener is the case the fold check exists for."
     },
     {
       "page": "homepage",
-      "patterns": ["masthead-nav:ground=soft", "hero-stated:ground=plain", "cta-band"],
+      "patterns": [
+        "masthead-nav:ground=soft",
+        "hero-stated:ground=plain",
+        "cta-band"
+      ],
       "why": "A page with its site header on it, which no other recipe has. masthead-nav is a component rather than a section on purpose: the fold check judges the first SECTION, so typing the header as one would quietly take every hero beneath it out of that check. This recipe is what notices."
     },
     {
       "page": "homepage",
-      "patterns": ["masthead-nav", "hero-split", "steps-plain", "faq-details", "cta-band", "colophon"],
+      "patterns": [
+        "masthead-nav",
+        "hero-split",
+        "steps-plain",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
       "why": "Opener, how it works, the questions, the ask - the ordinary conversion homepage.",
-      "composition": { "name": "homepage-conversion", "version": 3 }
+      "composition": {
+        "name": "homepage-conversion",
+        "version": 3
+      }
     },
     {
       "page": "homepage",
-      "patterns": ["masthead-nav", "hero-stated:ground=deep", "heading-block", "benefit-tiles", "cta-band", "colophon"],
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=deep",
+        "heading-block",
+        "benefit-tiles",
+        "cta-band",
+        "colophon"
+      ],
       "why": "The homepage for a brand with no photography. heading-block is not decoration here: benefit-tiles opens at h3 and says so in its own markup, so without an h2 above it the page skips a heading level.",
-      "composition": { "name": "homepage-no-photography", "version": 3 }
+      "composition": {
+        "name": "homepage-no-photography",
+        "version": 3
+      }
     },
     {
       "page": "homepage",
-      "patterns": ["masthead-nav", "hero-overlay", "steps-numbered", "faq-details", "cta-band", "colophon"],
+      "patterns": [
+        "masthead-nav",
+        "hero-overlay",
+        "steps-numbered",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
       "why": "The photography-led homepage: a cinematic full-screen opener, the sign-up flow as image cards, the questions, the ask. Nearly every live lander leads with imagery; this is the shell for them. Image slots take real material or the library's lib/placeholders/ stand-ins while the brand's photography is still coming.",
-      "composition": { "name": "homepage-photo-led", "version": 2 }
+      "composition": {
+        "name": "homepage-photo-led",
+        "version": 2
+      }
     },
     {
       "page": "homepage",
-      "patterns": ["masthead-nav", "hero-centred", "zigzag-rows", "faq-details", "cta-image", "colophon"],
+      "patterns": [
+        "masthead-nav",
+        "hero-centred",
+        "zigzag-rows",
+        "faq-details",
+        "cta-image",
+        "colophon"
+      ],
       "why": "The editorial photography homepage: the claim held above a wide image band rather than over it, alternating image-and-copy rows carrying the argument, and a photographic close. The image-led variant for a brand whose register is considered rather than cinematic.",
-      "composition": { "name": "homepage-photo-editorial", "version": 2 }
+      "composition": {
+        "name": "homepage-photo-editorial",
+        "version": 2
+      }
     },
     {
       "page": "pricing",
-      "patterns": ["masthead-nav", "hero-stated:ground=plain", "pricing-tiers", "faq-details", "cta-band", "colophon"],
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "pricing-tiers",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
       "why": "State the offer, show the tiers, answer the objection, ask.",
-      "composition": { "name": "pricing", "version": 3 }
+      "composition": {
+        "name": "pricing",
+        "version": 3
+      }
+    },
+    {
+      "page": "pricing",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=deep",
+        "comparison-table",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The pricing page as a table of criteria rather than a row of tier cards - the shape for a brand whose tiers differ on many small things rather than on one headline number.",
+      "composition": {
+        "name": "pricing-comparison",
+        "version": 1
+      }
+    },
+    {
+      "page": "pricing",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=brand",
+        "offer-split",
+        "pricing-tiers",
+        "trust-row",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The pricing page that argues before it prices: the case for paying, then the tiers, then the marks that say the brand is legitimate. For a brand whose price needs a reason first.",
+      "composition": {
+        "name": "pricing-value",
+        "version": 1
+      }
     },
     {
       "page": "safety",
-      "patterns": ["masthead-nav", "hero-stated:ground=brand", "safety-protections", "cta-band", "colophon"],
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=brand",
+        "safety-protections",
+        "cta-band",
+        "colophon"
+      ],
       "why": "On a dating brand this is a conversion page in disguise, so it closes like one.",
-      "composition": { "name": "safety", "version": 3 }
+      "composition": {
+        "name": "safety",
+        "version": 3
+      }
+    },
+    {
+      "page": "safety",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "prose-column",
+        "steps-plain",
+        "trust-row",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The safety page written as an explanation rather than a grid - prose, then what happens step by step, then the compliance marks. For a brand whose protections are a process rather than a list of features.",
+      "composition": {
+        "name": "safety-explained",
+        "version": 1
+      }
+    },
+    {
+      "page": "safety",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=deep",
+        "claim-stack:ground=plain",
+        "safety-protections",
+        "link-cluster:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The long safety page: the promises set large, then every protection categorised, then the policies themselves as real links. For a brand with the material to be specific.",
+      "composition": {
+        "name": "safety-detailed",
+        "version": 1
+      }
     },
     {
       "page": "article",
-      "patterns": ["article-masthead", "prose-column"],
+      "patterns": [
+        "article-masthead",
+        "prose-column"
+      ],
       "why": "The whole of an article: its header and its body."
     },
     {
+      "page": "article",
+      "patterns": [
+        "masthead-nav",
+        "article-masthead",
+        "key-takeaways",
+        "prose-column",
+        "source-note",
+        "author-note",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The ordinary advice article: the summary a reader gets without reading, the piece, where its figures came from, and who wrote it. The default shape for editorial on a dating brand.",
+      "composition": {
+        "name": "article-explainer",
+        "version": 1
+      }
+    },
+    {
+      "page": "article",
+      "patterns": [
+        "masthead-nav",
+        "article-masthead",
+        "article-toc",
+        "prose-column",
+        "pull-quote",
+        "prose-column",
+        "author-note",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The long read: contents at the top so a phone can navigate it, the writing broken part-way by one line lifted out of it, and the writer named at the foot. Two runs of body copy, because a line lifted out of the text has to have text on both sides of it. For a piece past about fifteen hundred words.",
+      "composition": {
+        "name": "article-longform",
+        "version": 1
+      }
+    },
+    {
+      "page": "article",
+      "patterns": [
+        "masthead-nav",
+        "article-masthead",
+        "key-takeaways",
+        "prose-column",
+        "article-figure",
+        "prose-column",
+        "author-note",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The illustrated guide: takeaways at the top, then the writing with a captioned picture set inside it rather than after it, and who wrote it at the foot. The shape for a how-to a reader arrives at with one question and needs shown as well as told.",
+      "composition": {
+        "name": "article-guide",
+        "version": 1
+      }
+    },
+    {
       "page": "landing",
-      "patterns": ["hero-squeeze"],
+      "patterns": [
+        "hero-squeeze"
+      ],
       "why": "A one-screen landing page. Nothing below the fold, so the fold is the entire page."
+    },
+    {
+      "page": "articles-landing",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "listing-rows:ground=soft",
+        "link-cluster:ground=plain",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The index of a brand's writing: a stated opener, the pieces as ruled rows rather than a grid of cards, and the topics as plain links. No photography anywhere, because an index rarely has one image per entry that is worth having.",
+      "composition": {
+        "name": "articles-landing",
+        "version": 1
+      }
+    },
+    {
+      "page": "features",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "feature-panels",
+        "comparison-table",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "What the brand actually does, as a page: the claim, the feature panels climbing the ground ladder, a table comparing what each tier includes, and the questions that follow. The page a partner asks for when the homepage cannot carry every capability.",
+      "composition": {
+        "name": "features",
+        "version": 1
+      }
     }
   ]
 }

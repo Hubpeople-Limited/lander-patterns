@@ -106,6 +106,14 @@ ACCEPTED = [
      "--type-scale, so a brand that dials type up does not rescue it"),
 ]
 
+# NO `* { box-sizing: border-box }`, and that absence is the point. This
+# harness used to inject one, as every harness in this repo does, and a
+# composition's page.css does not - so a pattern could lean on a reset it does
+# not ship with, pass here, and scroll sideways the moment it was served from
+# the shell it had been assembled into. One did: a panel setting a width, a
+# padding and a border took 930px where it declared 832, and every gate was
+# green. The tokens and the body reset stay because a brand's stylesheet
+# always supplies those; the box model is the pattern's own to state.
 SHELL = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,7 +122,6 @@ SHELL = """<!DOCTYPE html>
 <title>{name} at {width}px</title>
 <style>
 {tokens}
-* {{ box-sizing: border-box; }}
 body {{ margin: 0; font-family: var(--font-body); background: var(--color-bg);
        color: var(--color-text); line-height: 1.6; }}
 {css}

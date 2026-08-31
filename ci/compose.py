@@ -51,7 +51,10 @@ from check_page import (                                    # noqa: E402
 # to the same comment policy lint.py holds pattern comments to. lint never
 # scans compositions/ - the scan happens here instead, at the moment the text
 # is generated, where the fix is one file away.
-from lint import BANNED_COMMENT_PATTERNS, BANNED_COMMENT_TERMS  # noqa: E402
+from lint import (                                           # noqa: E402
+    BANNED_COMMENT_PATTERNS, BANNED_COMMENT_TERMS,
+    description_vocabulary_faults,
+)
 
 GENERATED_BY = "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit"
 
@@ -132,8 +135,19 @@ def comment_safe(text):
     return text.replace("-->", "-- >")
 
 
-def check_banner_policy(where, texts):
-    """The comment policy from lint.py, applied to generated comment text."""
+def check_banner_policy(where, texts, described=()):
+    """The comment policy from lint.py, applied to generated comment text.
+
+    Two rules, because a banner has two authors. What this script WRITES is
+    held to the full comment policy. What it COPIES out of a pattern's own
+    `description` and `needs` is held to lint.py's rule for those two fields
+    instead - deliberately the looser one. Those fields describe what a
+    pattern is for in the vocabulary of the thing being built, and lint
+    already rules on which ordinary domain words survive there; holding a
+    copy of them to the stricter rule would make a pattern shippable on its
+    own and unshippable inside a shell over the same words. `source-note` is
+    the case that shows it: its whole subject is who measured a figure.
+    """
     for text in texts:
         low = text.lower()
         for term in BANNED_COMMENT_TERMS:
@@ -144,6 +158,10 @@ def check_banner_policy(where, texts):
         for pattern, why in BANNED_COMMENT_PATTERNS:
             if re.search(pattern, low):
                 die(f"{where}: banner-policy: {why}")
+    for text in described:
+        for fault in description_vocabulary_faults(text):
+            die(f"{where}: banner-policy: a pattern's description or needs "
+                f"{fault}")
 
 
 def find_slots(body):
@@ -221,23 +239,35 @@ def slot_guidance(slot, sample):
 
 
 def section_banner(item, mods, position, total):
-    """The generated preface to one pattern's verbatim markup."""
+    """The generated preface to one pattern's verbatim markup.
+
+    Returns (banner, written, copied): the comment itself, the part this
+    script composes, and the part lifted out of the pattern's `description`
+    and `needs`. The two are returned apart because check_banner_policy holds
+    them to different rules - see its docstring.
+    """
     meta, sample = item["meta"], item["sample"]
     lines = [f"section {position} of {total} : {item['name']} v{meta.get('version', '?')}"]
     if mods:
         lines.append("variant: " + ", ".join(f"{k}={v}" for k, v in mods.items()))
-    lines += textwrap.wrap(meta.get("description", ""), width=64)
+    head = len(lines)
+    copied = meta.get("description", "")
+    lines += textwrap.wrap(copied, width=64)
     needs = meta.get("needs", "").strip()
     if needs and needs.lower() != "none":
+        copied += " " + needs
         lines += textwrap.wrap("needs: " + needs, width=64)
+    tail_from = len(lines)
     lines.append("slots:")
     for slot in find_slots(item["body"]):
         summary, sample_lines = slot_guidance(slot, sample)
-        tail = "; shape it like this sample:" if sample_lines else ""
-        lines.append(f"  {slot['key']:<18} {summary}{tail}")
+        note = "; shape it like this sample:" if sample_lines else ""
+        lines.append(f"  {slot['key']:<18} {summary}{note}")
         lines += [f"  {'':<18} {sample_line}" for sample_line in sample_lines]
     inner = "\n".join(f"     {line}".rstrip() for line in lines)
-    return f"<!-- {RULE}\n{inner}\n     {RULE} -->"
+    banner = f"<!-- {RULE}\n{inner}\n     {RULE} -->"
+    written = "\n".join(lines[:head] + lines[tail_from:])
+    return banner, written, copied
 
 
 class AmbiguousDrop(Exception):
@@ -254,7 +284,16 @@ def drop_variant_lines(inner, rungs):
     one (or be empty). Anything else raises rather than shipping half a
     sentence - the fix is rewording the pattern's comment, not a cleverer
     truncation here.
+
+    A pattern that declares no variant axes has no variant instruction to
+    drop, and nothing is taken from one. There the word `modifier` can only
+    name a fixed class the shell still ships and the builder still has to act
+    on - feature-panels' three ranked grounds, comparison-table's recommended
+    column - and removing those would take real instruction out of the shell
+    on the strength of one word.
     """
+    if not rungs:
+        return inner
     lines = inner.split("\n")
     doomed = {i for i, ln in enumerate(lines)
               if "modifier" in ln or any(r in ln for r in rungs)}
@@ -280,8 +319,9 @@ def drop_variant_lines(inner, rungs):
 
 
 def _prove_drop_safety():
-    """The two halves of drop_variant_lines, exercised on every run: a clean
-    drop lands, and a drop that would truncate a sentence is refused."""
+    """The three branches of drop_variant_lines, exercised on every run: a
+    clean drop lands, a drop that would truncate a sentence is refused, and a
+    pattern with no axes keeps every word."""
     clean = drop_variant_lines(" Take one ground modifier.\n Keep this. ",
                                {"--deep"})
     assert "Keep this." in clean and "modifier" not in clean
@@ -292,6 +332,8 @@ def _prove_drop_safety():
         pass
     else:
         raise AssertionError("a mid-sentence drop was not refused")
+    axeless = " Each panel carries one ground modifier\n and they are ranked. "
+    assert drop_variant_lines(axeless, set()) == axeless
 
 
 def rewrite_comments(name, meta, body):
@@ -425,10 +467,11 @@ def compose_one(recipe, library):
     css = [f"/* {name}@{version} - generated by ci/compose.py. The patterns' "
            f"CSS in page order. Never hand-edit: change the pattern and "
            f"regenerate. */"]
-    banners = []
+    banners, copied_texts = [], []
     for position, (item, mods) in enumerate(zip(page, chosen), start=1):
-        banner = section_banner(item, mods, position, total)
-        banners.append(banner)
+        banner, written, copied = section_banner(item, mods, position, total)
+        banners.append(written)
+        copied_texts.append(copied)
         sections.append(banner)
         sections.append(item["body"])
         css.append(f"/* ---- {item['name']} v{item['meta'].get('version', '?')} ---- */\n"
@@ -441,7 +484,8 @@ def compose_one(recipe, library):
     html = PAGE.format(rule=RULE, name=name, version=version,
                        markup="\n\n".join(sections))
 
-    check_banner_policy(where, banners + [html.split("<!doctype", 1)[0]])
+    check_banner_policy(where, banners + [html.split("<!doctype", 1)[0]],
+                        described=copied_texts)
 
     # Every furniture token a pattern carries must reach the shell byte for
     # byte - these render on live sites, and a mangled one renders as text.

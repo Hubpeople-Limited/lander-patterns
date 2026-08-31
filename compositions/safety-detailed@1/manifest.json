@@ -1,0 +1,54 @@
+{
+  "composition": "safety-detailed",
+  "version": 1,
+  "page": "safety",
+  "library": "v93",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "8"
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "deep"
+      }
+    },
+    {
+      "name": "claim-stack",
+      "version": "3",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
+      "name": "safety-protections",
+      "version": "4"
+    },
+    {
+      "name": "link-cluster",
+      "version": "6",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}

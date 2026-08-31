@@ -1,0 +1,45 @@
+{
+  "composition": "article-guide",
+  "version": 1,
+  "page": "article",
+  "library": "v93",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "8"
+    },
+    {
+      "name": "article-masthead",
+      "version": "9"
+    },
+    {
+      "name": "key-takeaways",
+      "version": "1"
+    },
+    {
+      "name": "prose-column",
+      "version": "5"
+    },
+    {
+      "name": "article-figure",
+      "version": "1"
+    },
+    {
+      "name": "prose-column",
+      "version": "5"
+    },
+    {
+      "name": "author-note",
+      "version": "1"
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ]
+}

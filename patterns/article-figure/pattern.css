@@ -1,0 +1,26 @@
+/* article-figure v1 - tokens only, selectors prefixed */
+.article-figure {
+  box-sizing: border-box;
+  /* 52rem is the article shell, held by the masthead, the contents list and
+     the author block. Any other number puts a third left edge on the page. */
+  width: min(100% - 2 * var(--space-4), 52rem);
+  margin-block: var(--space-6);
+  margin-inline: auto;
+}
+.article-figure-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--card-radius);
+}
+.article-figure-caption {
+  max-width: 60ch;
+  margin-block-start: var(--space-3);
+  color: var(--color-text-soft);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.article-figure-credit {
+  font-style: italic;
+}

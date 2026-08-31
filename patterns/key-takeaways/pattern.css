@@ -1,0 +1,41 @@
+/* key-takeaways v1 - tokens only, selectors prefixed */
+.key-takeaways {
+  --key-takeaways-measure: 68ch;
+  box-sizing: border-box;
+  width: min(100% - 2 * var(--space-4), var(--key-takeaways-measure));
+  margin-block: var(--space-6);
+  margin-inline: auto;
+  padding: var(--space-5);
+  background: var(--color-surface-soft);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  color: var(--color-text);
+  /* The body size the article column is set in: the measure above is in ch,
+     so it resolves against this and lands on the same column. */
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+.key-takeaways-heading {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-heading);
+  font-size: calc(1rem * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(0.06em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.3 * var(--heading-leading, 1));
+  text-transform: uppercase;
+  /* --color-text: the block paints a surface, and the label is small. */
+  color: var(--color-text);
+}
+.key-takeaways-list {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+}
+.key-takeaways-point {
+  margin: 0 0 var(--space-3);
+}
+.key-takeaways-point:last-child {
+  margin-bottom: 0;
+}
+.key-takeaways-point::marker {
+  color: var(--color-text-soft);
+}
