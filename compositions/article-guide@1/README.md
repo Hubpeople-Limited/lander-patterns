@@ -72,7 +72,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `author-bio` - text, about 37 word(s). Sample: A sample paragraph of preview biography, long enough to...
    - `author-url` - attribute (href): a short label, about 1 word(s)
    - `author-link-text` - text, about 6 word(s). Sample: More sample writing from this author
-8. **cta-band** v4 - Plain full-bleed closing call to action on the brand colour - a centred claim, one supporting line and one control; the ordinary page finale the library had no answer for.
+8. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

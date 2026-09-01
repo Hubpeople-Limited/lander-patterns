@@ -31,7 +31,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `track-label` - attribute (aria-label): a short label, about 2 word(s)
    - `tile-title` - text, about 3 word(s). Sample: Sample benefit title
    - `tile-copy` - text, about 26 word(s). Sample: Two short sentences of sample copy, here only to render...
-5. **cta-band** v4 - Plain full-bleed closing call to action on the brand colour - a centred claim, one supporting line and one control; the ordinary page finale the library had no answer for.
+5. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

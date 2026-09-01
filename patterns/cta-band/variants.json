@@ -1,0 +1,24 @@
+{
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind the closing block. This section ends nearly every page, so it is the one worth varying between page types - four pages that all finish on the same colour is what makes a site feel repetitive.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background, with the button in your brand colour. The quietest ending, and the right one where the section above it is already busy."
+      },
+      "soft": {
+        "label": "Light",
+        "note": "A soft tint, so the ending is marked without shouting. A good middle choice for a page that has already made its case."
+      },
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your brand colour across the full width, with the button reversed out of it. The strongest ending and the loudest - best on the pages where signing up is the whole point."
+      },
+      "deep": {
+        "label": "Dark",
+        "note": "A dark ground, confident and quiet at once. Suits a page that opened light, and gives a second strong ending that is not your brand colour again."
+      }
+    }
+  }
+}
