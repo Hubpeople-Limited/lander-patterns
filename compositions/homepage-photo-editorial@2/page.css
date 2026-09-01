@@ -281,8 +281,9 @@
     max-width: 45%;
     min-height: var(--masthead-nav-tap);
   }
-  /* A long label ellipsises rather than widening the button. */
+  /* A long label ellipsises; border-box holds the padding inside the cap. */
   .masthead-nav-toggle {
+    box-sizing: border-box;
     max-width: 100%;
   }
   .masthead-nav--labelled .masthead-nav-toggle-text {
