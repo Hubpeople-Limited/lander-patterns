@@ -64,6 +64,11 @@ jobs:
       # recipe change that alters one has to fail loudly until somebody
       # runs ci/compose.py and commits what it wrote - stale output on
       # main would be a page that contradicts the patterns it names.
+      #
+      # The manifest's `library` tag is the one exception, and it has to be:
+      # the release job below rewrites it on every merge, and it is
+      # `needs: validate`, so holding a new composition to a tag that job has
+      # not written yet is a check waiting on the thing it blocks.
       - name: Compositions match the recipes and patterns they are built from
         run: python ci/compose.py --check
       # recipes/ is the third index an agent reads, and the layer above the

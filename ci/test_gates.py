@@ -1924,6 +1924,54 @@ RECIPE_QUIET = [
 ]
 
 
+# compose.py --check and the one field a release moves on its own.
+RELEASE_TAG_CASES = [
+        ("a manifest whose tag alone has moved", "x@1/manifest.json",
+         json.dumps({"composition": "x", "library": "v41",
+                     "patterns": [{"name": "hero-split", "version": "9"}]}),
+         True),
+        ("a manifest naming a pattern version that is not there",
+         "x@1/manifest.json",
+         json.dumps({"composition": "x", "library": "v103",
+                     "patterns": [{"name": "hero-split", "version": "8"}]}),
+         False),
+        ("a stale tag AND a stale pattern version together",
+         "x@1/manifest.json",
+         json.dumps({"composition": "x", "library": "v41",
+                     "patterns": [{"name": "hero-split", "version": "8"}]}),
+         False),
+        ("a page.css whose text differs", "x@1/page.css",
+         ".x { color: red }", False),
+        ("a manifest that is not readable as JSON", "x@1/manifest.json",
+         "{ not json", False),
+]
+
+
+def check_release_tag_is_not_freshness():
+    """compose.py --check ignores the release tag and nothing else.
+
+    `library` is the one field in a manifest that moves without any pattern or
+    recipe moving, and the job that rewrites it cannot run until this check
+    passes. Both halves are asserted here: a tag-only difference is not
+    staleness, and a tag-only difference is not a licence to miss a real one.
+    """
+    sys.path.insert(0, str(HERE))
+    import compose
+    failures = []
+    print("ci/compose.py, the release tag and the freshness check")
+
+    fresh = json.dumps({"composition": "x", "library": "v103",
+                        "patterns": [{"name": "hero-split", "version": "9"}]})
+    for label, rel, held, want in RELEASE_TAG_CASES:
+        got = compose.only_the_release_tag_moved(rel, held, fresh)
+        ok = got == want
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<52} "
+              f"ignored={got} want={want}")
+        if not ok:
+            failures.append(label)
+    return failures
+
+
 def check_recipes():
     sys.path.insert(0, str(HERE))
     import check_recipes as cr
@@ -2043,6 +2091,8 @@ def main():
     print()
     failures += check_configurator()
     print()
+    failures += check_release_tag_is_not_freshness()
+    print()
     failures += check_recipes()
     print()
     if failures:
@@ -2058,6 +2108,7 @@ def main():
              + len(MODIFIER_CASES) + 1 + 6 + len(NOTE_CASES) + 2
              + len(PAIRING_CASES) + 1
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
+             + len(RELEASE_TAG_CASES)
              + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
