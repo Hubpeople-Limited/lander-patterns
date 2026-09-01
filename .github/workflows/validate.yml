@@ -129,6 +129,26 @@ jobs:
       # taller one.
       - name: The fold on the hostile type fixture
         run: python ci/check_fold.py --require-browser --tokens display
+      # The brand mark, rendered as the shapes brands actually ship it in.
+      # Every sample image in this repo carries width and height attributes; a
+      # real brand logo is an SVG with a viewBox and nothing else, which has a
+      # ratio and no intrinsic size. masthead-nav sized it under two ceilings
+      # and it resolved to 0x0 below 60rem - no brand mark on any phone or
+      # tablet, on every page built from any of the shells, with every gate
+      # here green.
+      - name: The brand mark is drawn at the size the header reserved
+        run: python ci/check_logo.py --require-browser
+      # And on the hostile type fixture, whose --logo-height is a different
+      # number: the check compares what was drawn against what that token
+      # resolved to on the page, so it has to be run somewhere it is not 44px.
+      - name: The brand mark on the hostile type fixture
+        run: python ci/check_logo.py --require-browser --tokens display
+      # The positive control, not optional, for the reason the other two are
+      # not: the steps above pass on a gate that measures nothing. This one
+      # puts the logo rule back the way the defect had it and requires the
+      # check to fire. Exit 0 here means the defect was detected.
+      - name: Confirm the logo gate can still catch a mark that is not drawn
+        run: python ci/check_logo.py --require-browser --broken
       - name: Legibility
         run: python ci/legibility.py
       - name: Build previews
