@@ -30,12 +30,13 @@
 </head>
 <body>
 <!-- ================================================================
-     section 1 of 6 : masthead-nav v7
+     section 1 of 6 : masthead-nav v8
      The site header the platform menu placeholder has no styling for
      - brand mark, the generated primary navigation and the login and
      join controls, on a choice of ground, two desktop arrangements,
-     three small-screen behaviours, an optional pinned bar and two
-     small-screen alignments.
+     three small-screen behaviours, an optional pinned bar, two
+     small-screen alignments, a menu button with or without its word,
+     and three bottom edges.
      needs: the brand's logo, the menu items configured on the
      platform, and two words in the brand's own language - one for
      the small-screen menu button and one for that same button while
@@ -51,14 +52,12 @@
      drawer covers the bar, so a control left outside it cannot be reached for
      as long as the menu is showing. ci/lint.py fails the build if one moves.
      The data-hub-module attribute belongs to the drawer and is inert on the
-     other two, because the behaviour acts only while the panel is fixed to
-     the viewport, so it can be left in place or deleted either way.
+     other two, so it can be left in place or deleted either way.
      {{menu.navigation}} expands to a <ul class="canvas-navigation-menu"> the
-     page cannot change. Leave it exactly as it is; pattern.css styles the
-     classes it generates. Set the img width and height to the logo file's own
-     pixel size - they set its aspect ratio, and --logo-height sets how tall it
-     renders. -->
-<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--static masthead-nav--menu-start masthead-nav--side-end">
+     page cannot change. Leave it as it is; pattern.css styles the classes it
+     generates. Set the img width and height to the logo file's own pixel size
+     - they set its aspect ratio, and --logo-height sets how tall it renders. -->
+<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--static masthead-nav--menu-start masthead-nav--side-end masthead-nav--labelled masthead-nav--rule">
   <div class="masthead-nav-inner">
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">

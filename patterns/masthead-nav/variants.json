@@ -94,5 +94,37 @@
         "note": "Button on the right, menu opens from the right. The default."
       }
     }
+  },
+  "toggle": {
+    "label": "Menu button",
+    "note": "Whether the button that opens the mobile menu carries a word beside the three bars. Your word is read out to anyone using a screen reader or voice control either way.",
+    "rungs": {
+      "labelled": {
+        "label": "Word and bars",
+        "note": "Your word for the menu, next to the three bars. People find it more readily than the bars on their own, so this is the safer choice and the default."
+      },
+      "icon": {
+        "label": "Bars only",
+        "note": "Just the three bars. Tidier, and it hands room in the bar back to a wide logo. Worth it when your menu is short and your visitors know the site."
+      }
+    }
+  },
+  "edge": {
+    "label": "Bottom edge",
+    "note": "How the header is separated from whatever sits under it. The header is exactly the same height whichever you pick.",
+    "rungs": {
+      "rule": {
+        "label": "Hairline",
+        "note": "A thin line across the bottom. Quiet, works on any page, and the default."
+      },
+      "shadow": {
+        "label": "Soft shadow",
+        "note": "No line - a soft shadow instead, so the bar reads as floating above the page. Suits a header that stays on screen as people scroll."
+      },
+      "flush": {
+        "label": "None",
+        "note": "Neither line nor shadow, so the header sits straight on the section below. Right when that section already has a colour or a picture of its own."
+      }
+    }
   }
 }
