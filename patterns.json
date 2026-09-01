@@ -331,7 +331,7 @@
   ],
   "behaviours": [],
   "content-shape": "single claim",
-  "description": "Plain full-bleed closing call to action on the brand colour - a centred claim, one supporting line and one control; the ordinary page finale the library had no answer for.",
+  "description": "Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.",
   "display-name": "Closing call to action",
   "motion": "none",
   "needs": "a closing headline and one supporting line of real copy, both saying something the page has earned the right to say",
@@ -355,8 +355,15 @@
   "status": "active",
   "summary": "A full-width closing band with one claim and one button.",
   "type": "section",
-  "variants": {},
-  "version": "4",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand",
+    "deep"
+   ]
+  },
+  "version": "5",
   "whole-page": false
  },
  "cta-curtain": {

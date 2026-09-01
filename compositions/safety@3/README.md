@@ -31,7 +31,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `protection-what` - text, about 17 word(s). Sample: One or two plain sentences saying what the brand actual...
    - `effect-label` - text, about 3 word(s). Sample: Sample takeaway label
    - `protection-effect` - text, about 9 word(s). Sample: One sentence of sample copy giving the reader-facing co...
-4. **cta-band** v4 - Plain full-bleed closing call to action on the brand colour - a centred claim, one supporting line and one control; the ordinary page finale the library had no answer for.
+4. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

@@ -1054,15 +1054,47 @@
   outline-offset: 3px;
 }
 
-/* ---- cta-band v4 ---- */
-/* cta-band v1 - tokens only, selectors prefixed */
+/* ---- cta-band v5 ---- */
+/* cta-band - tokens only, selectors prefixed */
+
+/* Each rung names its own ground, ink, control pair and ring, and every rule
+   below reads those rather than a token, so nothing here knows which ground it
+   is on. The ring is per rung and not --color-focus everywhere: on --brand and
+   --deep that token is a brand colour landing on a brand colour, and it
+   disappears into the band on every sample brand. See patterns/cta-band/README.md. */
+.cta-band--plain {
+  --cta-band-ground: var(--color-bg);
+  --cta-band-ink: var(--color-text);
+  --cta-band-btn-face: var(--color-primary);
+  --cta-band-btn-ink: var(--color-on-primary);
+  --cta-band-ring: var(--color-focus);
+}
+.cta-band--soft {
+  --cta-band-ground: var(--color-surface-soft);
+  --cta-band-ink: var(--color-text);
+  --cta-band-btn-face: var(--color-primary);
+  --cta-band-btn-ink: var(--color-on-primary);
+  --cta-band-ring: var(--color-focus);
+}
+.cta-band--brand {
+  --cta-band-ground: var(--color-primary);
+  --cta-band-ink: var(--color-on-primary);
+  --cta-band-btn-face: var(--color-on-primary);
+  --cta-band-btn-ink: var(--color-primary);
+  --cta-band-ring: var(--color-on-primary);
+}
+.cta-band--deep {
+  --cta-band-ground: var(--color-scrim);
+  --cta-band-ink: var(--color-on-scrim);
+  --cta-band-btn-face: var(--color-on-scrim);
+  --cta-band-btn-ink: var(--color-scrim);
+  --cta-band-ring: var(--color-on-scrim);
+}
 .cta-band {
   padding-block: var(--space-12);
   padding-inline: var(--space-4);
-  /* The one ground with a stated ink, so a supporting line may sit at body
-   size. */
-  background: var(--color-primary);
-  color: var(--color-on-primary);
+  background: var(--cta-band-ground);
+  color: var(--cta-band-ink);
   text-align: center;
 }
 .cta-band-inner {
@@ -1076,9 +1108,11 @@
   text-transform: uppercase;
   margin: 0 0 var(--space-4);
 }
+/* Not --color-heading: that token is promised against --color-bg, and three of
+   the four rungs paint a ground of their own. */
 .cta-band-title {
   font-family: var(--font-heading);
-  color: var(--color-on-primary);
+  color: var(--cta-band-ink);
   font-size: calc(clamp(2rem, 4.5vw, 3.25rem) * var(--type-scale, 1));
   font-weight: var(--weight-display, 700);
   letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
@@ -1100,9 +1134,8 @@
   min-height: 48px;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--btn-radius);
-  /* The pair inverted; contrast is symmetric, so the ratio holds. */
-  background: var(--color-on-primary);
-  color: var(--color-primary);
+  background: var(--cta-band-btn-face);
+  color: var(--cta-band-btn-ink);
   font-weight: 700;
   line-height: 1.5;
   text-decoration: none;
@@ -1111,10 +1144,10 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
-/* Not --color-focus: see patterns/cta-band/README.md. The offset leaves a band-coloured gap,
-   putting the guaranteed pair either side of the ring. */
+/* The offset leaves a band-coloured gap, putting the guaranteed pair either
+   side of the ring. */
 .cta-band-btn:focus-visible {
-  outline: 3px solid var(--color-on-primary);
+  outline: 3px solid var(--cta-band-ring);
   outline-offset: 4px;
 }
 

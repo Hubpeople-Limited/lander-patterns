@@ -42,7 +42,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `section-intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `link-url` - attribute (href): a short label, about 1 word(s)
    - `link-text` - text, about 2 word(s). Sample: Sample link
-6. **cta-band** v4 - Plain full-bleed closing call to action on the brand colour - a centred claim, one supporting line and one control; the ordinary page finale the library had no answer for.
+6. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

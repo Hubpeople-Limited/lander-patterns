@@ -1,20 +1,19 @@
 # cta-band
 
-**What it is and when to use it.** A full-bleed band on the brand colour
-carrying a centred claim, one supporting line and one control. It is the
-ordinary way a page ends, and until now the library had no answer for it: the
-only closing patterns were `cta-curtain`, a full-viewport pinned panel uncovered
-by the section above it, and `cta-sticky`, a mobile bar. Every page wanting a
-plain finale had to take the curtain, which is an elaborate thing to place and
-`one-per-page` besides.
+**What it is and when to use it.** A full-bleed band carrying a centred claim,
+one supporting line and one control, on a choice of four grounds. It is the
+ordinary way a page ends. The alternatives are `cta-curtain`, a full-viewport
+pinned panel uncovered by the section above it, and `cta-sticky`, a mobile bar;
+a page wanting a plain finale takes this.
 
 Reach for it when the page has made its case and needs to ask. Reach for
 `cta-image` instead when a photograph is doing the asking, and for `cta-curtain`
 only when the uncovering is genuinely the point rather than a way of ending.
 
-Do **not** use it as a mid-page break. It paints the brand colour across the
-full width, which reads as an ending wherever it is put; a band in the middle of
-a page tells a reader they have reached the bottom when they have not.
+Do **not** use it as a mid-page break. It paints a full-width ground, which
+reads as an ending wherever it is put; a band in the middle of a page tells a
+reader they have reached the bottom when they have not. That holds on every
+rung — `--plain` is quieter, not less final.
 
 **What it needs.** A closing headline and one supporting line, both saying
 something the page has earned the right to say. That is a lower bar than most
@@ -39,28 +38,38 @@ the band for the one who does. `cta-curtain` refuses the bar because the bar
 sits over the panel through the whole reveal, which is a mechanical conflict
 this pattern does not have.
 
-**Brand adaptability.** The section grounds on `--color-primary` and every ink
-is `--color-on-primary`, one of the three pairs carrying a stated ratio — that
-is what lets the supporting line sit here at body size, where a band grounded on
-any other token could not promise it. The title takes `--color-on-primary` too,
-not `--color-heading`: that token is promised against `--color-bg`, and this
-section paints its own ground.
+**Brand adaptability. `ground` takes the library's four rungs**, and this is the
+axis worth turning: the band closes almost every page in the library's shells,
+so a brand that never varies it ends every page the same way.
 
-The button inverts the pair — `--color-on-primary` fill, `--color-primary` ink.
-Contrast is symmetric, so the stated ratio holds either way round, and on a band
-of the brand colour it is the only fill that reads.
+| Rung | Ground | The control |
+|---|---|---|
+| `plain` | `--color-bg` | brand-coloured fill |
+| `soft` | `--color-surface-soft` | brand-coloured fill |
+| `brand` | `--color-primary` | the pair inverted |
+| `deep` | `--color-scrim` | the pair inverted |
 
-**The focus ring is the one place this pattern departs from the library's habit,
-and the reason is measured.** Every other pattern draws
-`outline: … var(--color-focus)`, which works because the ring lands on a page
-ground. Here it would land on `--color-primary`, and `--color-focus` is itself a
-brand colour: across the five sample token sets that ring measures **1.00, 1.14,
-1.34, 1.58 and 1.75** against the band, against a 3:1 bar — invisible on all
-five. The ring is therefore `--color-on-primary`, which measures **5.14, 6.28,
-7.59, 7.93 and 9.26**
-on the same brands, and the `4px` offset leaves a band-coloured gap so the
-guaranteed pair sits on both sides of it. Re-derive from `preview/tokens-*.css`
-before changing either value.
+Every rung grounds on a token whose ink the contract states a ratio for, which
+is what lets the supporting line sit here at body size. On `plain` and `soft`
+that ink is `--color-text`; on `brand` and `deep` it is the stated partner, and
+the control inverts the pair — contrast is symmetric, so the ratio holds either
+way round, and on a painted band an inverted fill is the only one that reads.
+The title takes the rung's ink, never `--color-heading`: that token is promised
+against `--color-bg`, and three of the four rungs paint a ground of their own.
+
+`--brand` is the default and the loudest. Take it where signing up is the point,
+and something quieter where the page has already asked once.
+
+**The focus ring is per rung, and the reason is measured.** Every other pattern
+draws `outline: … var(--color-focus)`, which works because the ring lands on a
+page ground — so that is what `plain` and `soft` use. On `brand` the ring would
+land on `--color-primary`, and `--color-focus` is itself a brand colour: across
+the five sample token sets it measures **1.00, 1.14, 1.34, 1.58 and 1.75**
+against the band, against a 3:1 bar — invisible on all five. Those two rungs use
+the ground's own stated partner instead, which measures **5.14, 6.28, 7.59, 7.93
+and 9.26**, and the `4px` offset leaves a band-coloured gap so the guaranteed
+pair sits on both sides of it. Re-derive from `preview/tokens-*.css` before
+changing a ring.
 
 `--btn-radius` shapes the control and `--container-max` holds the measure. The
 supporting line is capped at `46ch` independently of that, because one centred
