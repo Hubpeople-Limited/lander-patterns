@@ -2,7 +2,7 @@
   "composition": "article-guide",
   "version": 1,
   "page": "article",
-  "library": "v98",
+  "library": "v103",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
