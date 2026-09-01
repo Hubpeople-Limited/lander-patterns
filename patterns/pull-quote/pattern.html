@@ -1,0 +1,28 @@
+<!--
+name: pull-quote
+display-name: Pull quote
+summary: One line from the article, set large to break up a long read.
+version: 1
+type: component
+page-types: article, safety
+requires: none
+content-shape: single claim
+description: A line lifted out of the running text and set large between two runs of body copy - the article's own words, repeated for emphasis, with no attribution and no ask.
+keywords: pull quote, callout, emphasis, breaker, editorial
+needs: one sentence taken word for word from the body copy on the same page, short enough to read in one glance, and carrying an idea rather than a fact. It is repetition on purpose: the line must already be somewhere above or below it, and shortening it to fit means shortening the sentence in the body too
+pairs-with: none
+avoid-with: none
+tokens-used: --color-rule, --color-text, --font-heading, --heading-leading, --heading-tracking, --space-4, --space-5, --space-6, --type-scale, --weight-display
+motion: none
+one-per-page: no
+status: active
+added: 2026-08-31
+-->
+<!-- Between two runs of body copy, never at the top of a piece. The words are
+     already in the article, so this element is hidden from screen readers -
+     keep aria-hidden or the sentence is read out twice. Nothing that takes
+     focus goes inside it: a link here is reachable by keyboard and unnameable
+     by a screen reader. A quote needing a name beside it is quote-feature. -->
+<aside class="pull-quote" aria-hidden="true">
+  <p class="pull-quote-claim"><!-- slot: quote --></p>
+</aside>

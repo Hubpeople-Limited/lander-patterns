@@ -1164,9 +1164,18 @@ PHONE_FIRES = [
      "<p class='t-fine'>Sample small print for the preview.</p>",
      "renders at"),
     ("a form field iOS will zoom into",
-     ".t-field { font-size: 14px; padding: 14px; width: 100%; }",
+     ".t-field { box-sizing: border-box; font-size: 14px; padding: 14px;"
+     " width: 100%; }",
      "<label for='e'>Sample email</label>"
      "<input class='t-field' id='e' type='email'>", "iOS zooms"),
+    # No box-sizing, and that is the whole fixture. A full-width box whose
+    # padding sits outside its width is the shape that took a panel to 930px
+    # where it declared 832 and scrolled every article shell sideways - and
+    # it passed, because the harness used to inject a reset the shipped
+    # stylesheet does not.
+    ("a full-width box whose padding sits outside it",
+     ".t-panel { width: 100%; padding: 24px; border: 1px solid #ddd; }",
+     "<div class='t-panel'>Sample panel copy.</div>", "scrolls sideways"),
 ]
 
 # Valid work the gate must not complain about. Half of these are the exact
@@ -1208,7 +1217,8 @@ PHONE_QUIET = {
         (".t-hide { display: none; }",
          "<button class='t-hide'>Sample hidden</button>"),
     "a field at the size iOS leaves alone":
-        (".t-field { font-size: 16px; padding: 14px; width: 100%; }",
+        (".t-field { box-sizing: border-box; font-size: 16px; padding: 14px;"
+         " width: 100%; }",
          "<label for='e2'>Sample email</label>"
          "<input class='t-field' id='e2' type='email'>"),
 }
@@ -1810,6 +1820,165 @@ def check_configurator():
     return failures
 
 
+# ------------------------------------------------------------------ recipes
+#
+# ci/check_recipes.py. A recipe is the layer above a shell - which shell, which
+# ground each band sits on, how the page opens and closes - and every fault it
+# can carry is invisible to a reader. A shell name with no composition behind
+# it, four rungs for a five-band shell, a pin that disagrees with its own
+# filename: all of them read perfectly, and all of them hand a builder a
+# decision nobody made. So the fires below are the ones a person cannot see.
+#
+# The quiet half matters as much here as anywhere else, and more than usual in
+# one respect: `look` and `notes` are optional, so a gate quietly requiring
+# either would reject most of the menu on the day somebody wrote a plain one.
+
+RECIPE_VALID = """```recipe
+recipe: gate-fixture@1
+shape: reference
+shell: pricing
+look: hero-stated alignment=centred
+grounds: plain, soft, plain, brand
+opens: a claim, with the price named in the line under it
+closes: a full-width band in the brand colour
+signature: stated opener, tier cards, questions, band
+pairing: brand
+notes: a fixture, never offered to anybody
+```
+
+A fixture recipe. It exists to be checked.
+"""
+
+# (label, the stem the file is judged under, the text, the kind it must raise)
+RECIPE_FIRES = [
+    ("prose with no fenced block in it", "gate-fixture@1",
+     "Words and no recipe.\n", "fence"),
+    ("a field the grammar has no room for", "gate-fixture@1",
+     RECIPE_VALID.replace("shape:", "mood: airy\nshape:"), "fields"),
+    ("the fence broken by a blank line", "gate-fixture@1",
+     RECIPE_VALID.replace("grounds:", "\ngrounds:"), "fields"),
+    ("shape and shell the wrong way round", "gate-fixture@1",
+     RECIPE_VALID.replace("shape: reference\nshell: pricing",
+                          "shell: pricing\nshape: reference"), "fields"),
+    ("a filename that disagrees with the pin", "gate-fixture@2",
+     RECIPE_VALID, "pin"),
+    ("a content shape outside the seven", "gate-fixture@1",
+     RECIPE_VALID.replace("shape: reference", "shape: gallery"), "shape"),
+    ("a shell pinned to a version", "gate-fixture@1",
+     RECIPE_VALID.replace("shell: pricing", "shell: pricing@3"), "shell"),
+    ("a shell no composition provides", "gate-fixture@1",
+     RECIPE_VALID.replace("shell: pricing", "shell: checkout"), "shell"),
+    ("a look dial the pattern does not offer", "gate-fixture@1",
+     RECIPE_VALID.replace("alignment=centred", "alignment=justified"), "look"),
+    ("a look naming a pattern that is not there", "gate-fixture@1",
+     RECIPE_VALID.replace("hero-stated align", "hero-imagined align"), "look"),
+    ("one rung short of the shell's bands", "gate-fixture@1",
+     RECIPE_VALID.replace("plain, soft, plain, brand", "plain, soft, plain"),
+     "grounds"),
+    ("a rung that is not on the ladder", "gate-fixture@1",
+     RECIPE_VALID.replace("grounds: plain", "grounds: muted"), "grounds"),
+    ("a signature that is a description instead", "gate-fixture@1",
+     RECIPE_VALID.replace(
+         "signature: stated opener, tier cards, questions, band",
+         "signature: a stated opener above three tier cards, then the "
+         "questions, then a closing band"), "signature"),
+    ("a pairing that names a face", "gate-fixture@1",
+     RECIPE_VALID.replace("pairing: brand", "pairing: Fraunces and Inter"),
+     "pairing"),
+]
+
+# Valid shapes the gate must leave entirely alone. Every one of these is a form
+# a real recipe in the menu takes today.
+RECIPE_QUIET = [
+    ("the full form, every field present",
+     RECIPE_VALID),
+    ("no look, which is the commoner case",
+     RECIPE_VALID.replace("look: hero-stated alignment=centred\n", "")),
+    ("no notes",
+     RECIPE_VALID.replace("notes: a fixture, never offered to anybody\n", "")),
+    ("neither optional field",
+     RECIPE_VALID.replace("look: hero-stated alignment=centred\n", "")
+                 .replace("notes: a fixture, never offered to anybody\n", "")),
+    ("two look entries, separated by a semicolon",
+     RECIPE_VALID.replace("look: hero-stated alignment=centred",
+                          "look: hero-stated alignment=centred; "
+                          "link-cluster ground=soft")),
+    ("two dials on one pattern in look",
+     RECIPE_VALID.replace("look: hero-stated alignment=centred",
+                          "look: masthead-nav sticky=pinned menu=drawer")),
+    ("a three-band shell with three rungs",
+     RECIPE_VALID.replace("shell: pricing", "shell: safety")
+                 .replace("look: hero-stated alignment=centred\n", "")
+                 .replace("grounds: plain, soft, plain, brand",
+                          "grounds: brand, plain, brand")),
+    ("a seven-band shell with seven rungs",
+     RECIPE_VALID.replace("shell: pricing", "shell: article-guide")
+                 .replace("look: hero-stated alignment=centred\n", "")
+                 .replace("grounds: plain, soft, plain, brand",
+                          "grounds: plain, soft, plain, plain, plain, soft, "
+                          "brand")),
+    ("a signature of exactly ten words",
+     RECIPE_VALID.replace(
+         "signature: stated opener, tier cards, questions, band",
+         "signature: one two three four five six seven eight nine ten")),
+]
+
+
+def check_recipes():
+    sys.path.insert(0, str(HERE))
+    import check_recipes as cr
+    failures = []
+    print("ci/check_recipes.py, the recipe grammar")
+
+    known, axes = cr.shells(), cr.pattern_axes()
+
+    for label, stem, text, want in RECIPE_FIRES:
+        kinds = [k for k, _ in cr.faults_in(stem, text, known, axes)]
+        ok = want in kinds
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} [{want}] "
+              f"got {kinds or ['nothing']}")
+        if not ok:
+            failures.append(label)
+
+    for label, text in RECIPE_QUIET:
+        kinds = [k for k, _ in cr.faults_in("gate-fixture@1", text, known, axes)]
+        ok = not kinds
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} got "
+              f"{kinds or ['nothing']}")
+        if not ok:
+            failures.append(label)
+
+    # The control, as a subprocess: it is the step the workflow runs, and a
+    # gate whose own control has stopped firing is the case this whole file
+    # exists for.
+    got = subprocess.run([sys.executable, str(HERE / "check_recipes.py"),
+                          "--broken"], capture_output=True, text=True,
+                         encoding="utf-8")
+    ok = got.returncode == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} {'the positive control still fires':<46} "
+          f"exit={got.returncode} want=0")
+    if not ok:
+        failures.append("recipe positive control")
+
+    # And the committed menu against the recipes it is generated from. Nobody
+    # edits recipes/README.md, so the only way it goes wrong is a recipe
+    # changing without the file being rewritten.
+    got = subprocess.run([sys.executable, str(HERE / "check_recipes.py"),
+                          "--check"], capture_output=True, text=True,
+                         encoding="utf-8")
+    ok = got.returncode == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} "
+          f"{'recipes/README.md is what they generate':<46} "
+          f"exit={got.returncode} want=0")
+    if not ok:
+        failures.append("recipes/README.md is stale")
+        for line in got.stdout.splitlines():
+            if "FAIL" in line:
+                print(f"        {line.strip()}")
+
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -1874,6 +2043,8 @@ def main():
     print()
     failures += check_configurator()
     print()
+    failures += check_recipes()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -1891,8 +2062,9 @@ def main():
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
-             + 5 + 5)
-    print(f"clean: {total} gate cases across twelve modules behave as documented.")
+             + 5 + 5
+             + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2)
+    print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
 

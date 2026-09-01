@@ -1,0 +1,48 @@
+{
+  "composition": "pricing-value",
+  "version": 1,
+  "page": "pricing",
+  "library": "v95",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "8"
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "brand"
+      }
+    },
+    {
+      "name": "offer-split",
+      "version": "4"
+    },
+    {
+      "name": "pricing-tiers",
+      "version": "10"
+    },
+    {
+      "name": "trust-row",
+      "version": "4"
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}

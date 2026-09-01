@@ -1,0 +1,8 @@
+{
+  "heading": "In short (sample)",
+  "point": "A sample takeaway point, one line long, written only to render this preview",
+  "_repeat": {
+    "class": "key-takeaways-point",
+    "count": 4
+  }
+}

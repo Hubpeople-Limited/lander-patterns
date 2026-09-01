@@ -1127,6 +1127,35 @@ def check_comment_policy(path, kind):
              "reasoning to README.md")
 
 
+def description_vocabulary_faults(text):
+    """The narration ban as it applies to `description` and `needs`.
+
+    Looser than the comment rule by exactly two carve-outs, and those two are
+    the reason this is a function rather than a copy. These fields describe
+    what a pattern is FOR, in the vocabulary of the thing being built: a
+    dating brand has conversations and profile prompts, and a figure can be
+    corrected or claimed, so DOMAIN_WORDS are held to the comment rule and not
+    to this one. The bare word "measured" is the same case - source-note's
+    entire subject is who measured a figure and when. Everything about the
+    file's own history still fires, and a contrast ratio is always narration.
+
+    ci/compose.py holds a shell's banner to THIS rule wherever the banner is
+    copied out of these two fields, so a pattern cannot be shippable on its
+    own and unshippable inside a shell over words already ruled on here.
+    """
+    low = text.lower()
+    for term in BANNED_COMMENT_TERMS:
+        if term.strip() in DOMAIN_WORDS:
+            continue
+        if re.search(rf"(?<!\w){re.escape(term.strip())}(?!\w)", low):
+            return [f"says '{term.strip()}' - describe the pattern, not how "
+                    "it came to be"]
+    if re.search(r"\b\d+(\.\d+)?:1\b", low):
+        return ["states a contrast ratio - it belongs in README.md, not in "
+                "the line an agent reads to choose a pattern"]
+    return []
+
+
 def check_description_vocabulary(path, meta):
     """The narration ban, applied to the field that gets read the most.
 
@@ -1135,28 +1164,9 @@ def check_description_vocabulary(path, meta):
     text that reaches INDEX.md and patterns.json, and therefore the sentence
     an agent reads before it opens anything at all.
     """
-    low = (meta.get("description", "") + " " + meta.get("needs", "")).lower()
-    for term in BANNED_COMMENT_TERMS:
-        # These two fields describe what a pattern is FOR, in the vocabulary of
-        # the thing being built. A few banned terms are ordinary words in this
-        # domain - a dating brand has conversations and profile prompts, and a
-        # figure can be corrected or claimed - so they are held to the comment
-        # rule but not to this one. Everything about the file's own history
-        # still fires.
-        if term.strip() in DOMAIN_WORDS:
-            continue
-        if re.search(rf"(?<!\w){re.escape(term.strip())}(?!\w)", low):
-            find(path, "comment-policy",
-                 f"description or needs says '{term.strip()}' - describe the "
-                 "pattern, not how it came to be")
-            return
-    # A contrast ratio in a description is always narration. The bare word
-    # "measured" is not: these two fields describe what a pattern is for, and
-    # source-note's entire subject is who measured a figure and when.
-    if re.search(r"\b\d+(\.\d+)?:1\b", low):
-        find(path, "comment-policy",
-             "description or needs states a contrast ratio - it belongs in "
-             "README.md, not in the line an agent reads to choose a pattern")
+    text = meta.get("description", "") + " " + meta.get("needs", "")
+    for fault in description_vocabulary_faults(text):
+        find(path, "comment-policy", f"description or needs {fault}")
 
 
 def check_narration(path):

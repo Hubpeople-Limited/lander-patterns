@@ -1,0 +1,48 @@
+{
+  "composition": "safety-explained",
+  "version": 1,
+  "page": "safety",
+  "library": "v95",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "8"
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
+      "name": "prose-column",
+      "version": "5"
+    },
+    {
+      "name": "steps-plain",
+      "version": "4"
+    },
+    {
+      "name": "trust-row",
+      "version": "4"
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}

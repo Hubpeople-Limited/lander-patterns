@@ -66,6 +66,27 @@ jobs:
       # main would be a page that contradicts the patterns it names.
       - name: Compositions match the recipes and patterns they are built from
         run: python ci/compose.py --check
+      # recipes/ is the third index an agent reads, and the layer above the
+      # shells: which shell, which ground each band sits on, how the page opens
+      # and closes. Every fault one can carry reads perfectly to a person - a
+      # shell name with no composition behind it, four ground rungs for a
+      # five-band shell so the fifth band arrives with nobody having decided
+      # anything about it, a pin that no longer matches its own filename - so
+      # this step is the only thing that can see one. It also regenerates
+      # recipes/README.md; --check fails when the committed menu is not what
+      # the recipes produce, the treatment compositions/ gets and for the same
+      # reason.
+      - name: Recipes are valid and the menu is what they generate
+        run: python ci/check_recipes.py --check
+      # The positive control, not optional for the reason none of the others
+      # are: the step above passes on a gate that judges nothing at all. This
+      # one puts a synthetic recipe carrying each fault in turn through the
+      # same code path the real ones take and requires every one to be caught,
+      # and a valid recipe through it to raise nothing, because a gate that
+      # rejects everything catches nothing either. Exit 0 here means the faults
+      # were detected.
+      - name: Confirm the recipe gate can still catch a broken recipe
+        run: python ci/check_recipes.py --broken
       # ci/check_phone.py renders patterns in a real browser. Without one it
       # skips and exits 0, which is right for a contributor in the web editor
       # and wrong here - CI is the run that has to actually measure. Install
@@ -242,12 +263,12 @@ jobs:
           TAG="v${{ github.run_number }}"
           git fetch --tags origin
           git checkout "refs/tags/$TAG"
-          zip -qr "library-$TAG.zip" patterns compositions lib INDEX.md TOKENS.md patterns.json
+          zip -qr "library-$TAG.zip" patterns compositions recipes lib INDEX.md TOKENS.md patterns.json
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "library-$TAG.zip" --clobber
           else
             gh release create "$TAG" "library-$TAG.zip" --title "$TAG" \
-              --notes "The whole library at $TAG in one download: patterns/, compositions/, lib/, INDEX.md, TOKENS.md, patterns.json."
+              --notes "The whole library at $TAG in one download: patterns/, compositions/, recipes/, lib/, INDEX.md, TOKENS.md, patterns.json."
           fi
 
   publish-preview:

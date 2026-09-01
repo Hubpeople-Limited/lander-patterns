@@ -1,0 +1,75 @@
+/* author-note v1 - tokens only, selectors prefixed */
+.author-note {
+  /* Required: it holds the padding below inside this width, not outside it. */
+  box-sizing: border-box;
+  width: min(100% - 2 * var(--space-4), 52rem);
+  margin-inline: auto;
+  margin-block: var(--space-8);
+  padding: var(--space-6);
+  background: var(--color-surface-soft);
+  border: var(--card-border);
+  /* Keep both this and the fill above: a brand may set the card edge
+     transparent, and a brand may set the soft surface to the page ground. */
+  border-block-start: 3px solid var(--color-primary);
+  border-radius: var(--card-radius);
+  color: var(--color-text);
+}
+.author-note-heading {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-heading);
+  /* Not 0.8125rem: this rides --type-scale and would drop under the text floor. */
+  font-size: calc(0.875rem * var(--type-scale, 1));
+  font-weight: 700;
+  letter-spacing: calc(0.06em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.3 * var(--heading-leading, 1));
+  /* --color-text: a label this small is nowhere near the size --color-heading
+     is promised at, and this panel is not the page ground either. */
+  color: var(--color-text);
+  text-transform: uppercase;
+}
+.author-note-name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: calc(1.375rem * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.015em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  color: var(--color-text);
+}
+.author-note-role {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.author-note-bio {
+  max-width: 62ch;
+  margin: var(--space-4) 0 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.author-note-more {
+  margin: var(--space-4) 0 0;
+  font-size: 0.9375rem;
+}
+/* Inherit: the underline carries the affordance, on whatever ground the panel
+   turns out to be. See the README. */
+.author-note-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.author-note-link:hover {
+  text-decoration-thickness: 2px;
+}
+.author-note-link:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+@media (min-width: 48rem) {
+  .author-note {
+    padding: var(--space-8);
+  }
+}

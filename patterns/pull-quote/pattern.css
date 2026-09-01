@@ -1,0 +1,29 @@
+/* pull-quote v1 - tokens only, selectors prefixed */
+.pull-quote {
+  --pull-quote-measure: 68ch;
+  box-sizing: border-box;
+  width: min(100% - 2 * var(--space-4), var(--pull-quote-measure));
+  margin-block: var(--space-6);
+  margin-inline: auto;
+  padding-block: var(--space-5);
+  /* The ch measure resolves against this: it lands on the article column. */
+  font-size: 1.0625rem;
+  border-block: 1px solid var(--color-rule);
+}
+.pull-quote-claim {
+  /* em, not ch - a measure must not depend on the face in use. */
+  max-width: 15em;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: calc(clamp(1.375rem, 3.2vw, 2rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.25 * var(--heading-leading, 1));
+  color: var(--color-text);
+  text-wrap: balance;
+}
+@media (min-width: 48rem) {
+  .pull-quote {
+    padding-block: var(--space-6);
+  }
+}

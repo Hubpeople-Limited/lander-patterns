@@ -657,6 +657,105 @@ a pattern that has shipped — set `status: deprecated` and `replaced-by:` and
 leave it in place.
 
 
+## Contributing a recipe
+
+A recipe is not a pattern and not a shell. A shell is a thing — page markup,
+assembled and maintained. A recipe is the order sheet above it: which shell,
+which ground each band sits on, how the page opens and closes, the structural
+signature it commits to, and a slot for the brand's own typeface pairing. It
+exists because a shell alone risks sameness — every brand taking `pricing` gets
+one page — and a second recipe on the same shell is the cheapest way two brands
+end up with pages that read as genuinely different.
+
+One file, `recipes/<name>@<version>.md`, and **the filename is the pin**. It
+opens with a fenced block, then two or three short paragraphs somebody who is
+not a developer can read: what the page is, who it suits, and what it
+deliberately does not do. No class names, no jargon — the register of
+`patterns/masthead-nav/variants.json`'s notes, not of this document.
+
+````
+```recipe
+recipe: pricing-straight-answer@1
+shape: reference
+shell: pricing
+look: hero-stated alignment=centred
+grounds: plain, soft, plain, brand
+opens: a plain statement of what it costs, with no build-up in front of it
+closes: a full-width band in the brand colour, carrying the one control
+signature: stated opener, tier cards, questions, band
+pairing: brand
+notes: the price is above the fold and nothing is withheld
+```
+````
+
+One `field: value` per line, no blank lines inside the fence, in exactly that
+order. `look` and `notes` are optional; everything else is required.
+
+| Field | Value |
+|---|---|
+| `recipe` | `<kebab-name>@<integer>`, the recipe's own pin. Versioned like a pattern's and never renumbered: it is what a brand records when it takes one |
+| `shape` | The content shape this recipe fits — `narrative`, `peer-set`, `comparison`, `progression`, `single-claim`, `question-and-answer`, `reference`. The same seven a pattern's `content-shape` uses, hyphenated |
+| `shell` | A shell name from `compositions/`, **without its version** |
+| `look` | Semicolon-separated `<pattern> axis=value[ axis=value]` entries — the dials this recipe sets over and above what the shell already pins. Pattern names, also without a version. Every axis and value must be one the pattern really declares |
+| `grounds` | One rung per band, top to bottom, from `plain`, `soft`, `brand`, `deep` |
+| `opens` | One line: the thesis form — a photograph, a claim, the first row of the content, a number, a question |
+| `closes` | One line: a band, a line in the prose, a single link, a quiet panel, the last row, or nothing |
+| `signature` | Ten words or fewer — the structural signature the page commits to. Longer than that and it is a description of the page instead, which the paragraphs underneath already are |
+| `pairing` | The literal `brand`. A slot, filled at build time from the brand's own record |
+| `notes` | One line, or leave it out |
+
+Two rules decide most of what a recipe may say:
+
+- **Pinless by default.** A recipe names `pricing`, never `pricing@3`, and
+  `hero-stated`, never `hero-stated@4`. A bare name resolves at build time —
+  against the brand's own record first, then the library's current release. A
+  pinned one is a menu item that ages the day the library moves, and it ages
+  silently, because it still reads correctly.
+- **A library recipe is brand-agnostic.** It never names a brand's colours,
+  faces, prices or furniture. That is the whole reason `pairing` is the literal
+  word `brand` rather than two typefaces: the one decision a brand cannot share
+  with another brand is left where it belongs.
+
+**`grounds` counts bands, not sections.** A shell carries `masthead-nav` at the
+top and `colophon` at the foot, and both are brand-level — settled once for a
+site. A recipe restating them would be a second copy of a decision already made,
+so the list runs from the first real band to the last. Read the shell's own
+`README.md` for the order. Where a pattern fixes its own ground — `cta-band` is
+always the brand colour — record that fixed value, so the run reads correctly
+top to bottom rather than having a hole in it.
+
+**Keep grounds out of `look`.** `grounds` owns the ground run and `look` carries
+the other dials. `ground` is a legal axis on eight patterns, so nothing stops
+you writing it in both, and then there are two descriptions of one decision free
+to disagree. The gate does not fail this, because failing it would mean holding
+an opinion the pattern metadata does not; it is a review question.
+
+**The first sentence of your prose is the menu line.** `recipes/README.md` is
+generated from the recipes rather than written, and it takes that sentence
+verbatim — so write one, not a fragment. "The long read." tells nobody
+anything; "The long read: everything the ordinary article page has, plus a
+contents list a reader on a phone can jump from" tells them whether to open the
+file.
+
+Then run the gate, which also rewrites the menu:
+
+```
+python ci/check_recipes.py            check, and rewrite recipes/README.md
+python ci/check_recipes.py --check    what CI runs: fail if the menu is stale
+python ci/check_recipes.py --broken   the positive control
+```
+
+Commit `recipes/README.md` with your recipe. CI runs `--check` and fails when
+the committed menu is not what the recipes produce — the treatment
+`compositions/` gets, for the same reason: a menu that has drifted from the
+recipes behind it is one an agent will read and believe.
+
+**A second recipe on a shell has to earn it.** A different ground run and a
+different close is a different page, and that is the point of this layer. Two
+recipes nobody can tell apart is worse than one, because the menu is read in
+full and every line on it costs a reader something. Say in the prose what each
+one does that the other does not.
+
 ## Maintainer setup (once, when the repo is created)
 
 - **Pages**: Settings → Pages → source "GitHub Actions".

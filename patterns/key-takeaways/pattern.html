@@ -1,0 +1,30 @@
+<!--
+name: key-takeaways
+display-name: Key takeaways
+summary: A short box near the top saying what the piece tells you.
+version: 1
+type: component
+page-types: article, safety
+requires: none
+content-shape: peer set
+description: The summary box near the top of a piece - a heading and three to five one-line points a reader gets without reading the article, set as a quiet tinted block inside the writing rather than a card beside it.
+keywords: takeaways, summary, in short, key points, abstract
+needs: three to five points, each a complete statement that stands on its own, each answerable from the article's own body, and none of them the title or the lede reworded. A point that only makes sense once the piece has been read is not a takeaway, and a point the article never supports belongs on neither
+pairs-with: none
+avoid-with: none
+tokens-used: --card-border, --card-radius, --color-surface-soft, --color-text, --color-text-soft, --font-heading, --heading-leading, --heading-tracking, --space-3, --space-4, --space-5, --space-6, --type-scale, --weight-display
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-31
+-->
+<!-- Between the page's opener and the first run of body copy. The heading is
+     the reader's label for the box - "In short", "What this covers" - not the
+     article's title again. Duplicate the li for each point: three to five,
+     and stop. Opens at h2, under the opener's h1. -->
+<div class="key-takeaways">
+  <h2 class="key-takeaways-heading"><!-- slot: heading --></h2>
+  <ul class="key-takeaways-list">
+    <li class="key-takeaways-point"><!-- slot: point --></li>
+  </ul>
+</div>

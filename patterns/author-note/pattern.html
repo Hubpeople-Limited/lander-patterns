@@ -1,0 +1,31 @@
+<!--
+name: author-note
+display-name: About the author
+summary: The block at the end of a piece saying who wrote it and why they know the subject.
+version: 1
+type: component
+page-types: article, safety
+requires: none
+content-shape: reference
+description: The block at the foot of a written piece - the writer's name, their standing, one paragraph of biography and an optional link to more of their work, on a panel that carries its weight without a portrait.
+keywords: author, biography, attribution, expertise, credibility, editorial
+needs: the name of the person who actually wrote the piece and is willing to be named; what they do that bears on this subject - the job, the qualification, the years, the body they belong to; one paragraph of biography naming things a reader could go and check; and, where a page of their other work exists, a link to it
+pairs-with: none
+avoid-with: none
+tokens-used: --card-border, --card-radius, --color-focus, --color-primary, --color-surface-soft, --color-text, --color-text-soft, --font-heading, --heading-leading, --heading-tracking, --space-1, --space-4, --space-6, --space-8, --type-scale, --weight-display
+motion: none
+one-per-page: yes
+status: active
+added: 2026-08-31
+-->
+<!-- At the foot of the writing, above the site footer. The heading names the
+     block - "About the author" - and never the person: their name is the line
+     under it. Delete the last paragraph where there is no page of the author's
+     other work to send a reader to. -->
+<aside class="author-note" aria-labelledby="author-note-heading">
+  <h2 class="author-note-heading" id="author-note-heading"><!-- slot: block-heading --></h2>
+  <p class="author-note-name"><!-- slot: author-name --></p>
+  <p class="author-note-role"><!-- slot: author-role --></p>
+  <p class="author-note-bio"><!-- slot: author-bio --></p>
+  <p class="author-note-more"><a class="author-note-link" href="slot:author-url"><!-- slot: author-link-text --></a></p>
+</aside>

@@ -1,0 +1,48 @@
+{
+  "composition": "features",
+  "version": 1,
+  "page": "features",
+  "library": "v95",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "8"
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
+      "name": "feature-panels",
+      "version": "5"
+    },
+    {
+      "name": "comparison-table",
+      "version": "4"
+    },
+    {
+      "name": "faq-details",
+      "version": "6"
+    },
+    {
+      "name": "cta-band",
+      "version": "4"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}
