@@ -645,6 +645,37 @@ def generate():
     return files
 
 
+def only_the_release_tag_moved(rel, held, fresh):
+    """True when a manifest differs from the fresh one by `library` alone.
+
+    `library` is the release tag, and it is the one field here that moves
+    without any pattern or recipe moving: the release job bumps LATEST,
+    regenerates and commits, on every merge. So a branch that adds a
+    composition stamps it with the tag its branch was on, another merge
+    releases while the pull request is open, and the new manifest arrives
+    naming a tag main has moved past.
+
+    That made the freshness check fail on the push to main - and the release
+    job is `needs: validate`, so the job that would rewrite the field could
+    not run until the field was already right. No tag was cut, and the
+    release carried neither the new shells nor the recipes beside them.
+
+    Nothing hand-edits this field and nothing reads it to decide anything;
+    the release job is its only author. Every other byte of the manifest -
+    the patterns, their versions, the variants they were placed with - is
+    still compared exactly, so a real drift still fails.
+    """
+    if Path(rel).name != "manifest.json" or held is None:
+        return False
+    try:
+        was, now = json.loads(held), json.loads(fresh)
+    except json.JSONDecodeError:
+        return False                     # unreadable is not "only the tag"
+    was.pop("library", None)
+    now.pop("library", None)
+    return was == now
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="Generate compositions/ from ci/page-recipes.json.")
@@ -659,7 +690,7 @@ def main():
         for rel, text in sorted(files.items()):
             path = OUT / rel
             held = path.read_text(encoding="utf-8") if path.is_file() else None
-            if held != text:
+            if held != text and not only_the_release_tag_moved(rel, held, text):
                 findings.append(f"compositions/{rel}: stale-composition: does "
                                 f"not match the patterns and recipes; run ci/compose.py")
         if OUT.is_dir():
