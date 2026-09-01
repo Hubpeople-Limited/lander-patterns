@@ -2,7 +2,7 @@
   "composition": "homepage-photo-led",
   "version": 2,
   "page": "homepage",
-  "library": "v103",
+  "library": "v105",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
