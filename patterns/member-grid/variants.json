@@ -19,7 +19,7 @@
   },
   "flow": {
     "label": "Layout",
-    "note": "Whether the members wrap onto as many rows as they need, or sit in one row the visitor moves through sideways.",
+    "note": "Whether the members wrap onto as many rows as they need, sit in one row the visitor moves through sideways, or move along by themselves.",
     "rungs": {
       "grid": {
         "label": "Grid",
@@ -28,6 +28,10 @@
       "rail": {
         "label": "Swipe row",
         "note": "One row the visitor swipes, scrolls or arrows through, snapping to each member. It keeps a long set to one band's worth of height. Nothing moves on its own and nothing auto-advances - the visitor is always the one driving."
+      },
+      "marquee": {
+        "label": "Moving row",
+        "note": "The swipe row, moving along by itself, with a button to stop it. It needs the platform's behaviour library: where that is not served the block is simply the swipe row, which is why it is safe to choose. Nothing moves for a visitor who has asked their device for less motion, and it halts on hover, on keyboard focus, while it is being dragged, and whenever it scrolls out of view. Use it where the members are atmosphere rather than the thing being read - a homepage band rather than the block a location page is built around."
       }
     }
   }

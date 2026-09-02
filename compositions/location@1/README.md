@@ -40,7 +40,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 8 word(s). Sample: A sample section title for the preview render
    - `intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-5. **member-grid** v2 - A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.
+5. **member-grid** v3 - A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.
    - `members-country` - attribute (data-members-country): a short label, about 2 word(s)
    - `members-region` - attribute (data-members-region): a short label, about 2 word(s)
    - `members-cta-text` - attribute (data-members-cta-text): a short label, about 3 word(s)

@@ -205,7 +205,7 @@
 </div>
 
 <!-- ================================================================
-     section 5 of 9 : member-grid v2
+     section 5 of 9 : member-grid v3
      A block of live members the platform fills at render time - the
      page ships an empty section and the CMS writes real profiles
      into it, so nothing here is authored, invented or kept in sync.
@@ -234,7 +234,11 @@
 
      A wrong country or region is IGNORED, not refused, and the block quietly
      fills with people from elsewhere. Check both against the platform's
-     location reference before shipping. -->
+     location reference before shipping.
+
+     The marquee rung is the one variant that is not a class on its own: swap
+     data-hub-module="reveal" for "marquee" as well. Without the behaviour
+     library the block is then the rail, which is what it should be. -->
 <section class="member-grid member-grid--plain member-grid--grid"
          data-hub-module="reveal"
          data-members

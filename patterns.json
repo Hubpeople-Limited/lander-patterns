@@ -1022,10 +1022,11 @@
    ],
    "flow": [
     "grid",
-    "rail"
+    "rail",
+    "marquee"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "member-strip": {
