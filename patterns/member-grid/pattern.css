@@ -153,10 +153,14 @@
 .member-grid--grid .lp-grid {
   grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
 }
-.member-grid--rail {
+/* marquee is the rail plus a behaviour. With no behaviour library it IS the
+   rail, so it takes every rail rule and adds nothing of its own. */
+.member-grid--rail,
+.member-grid--marquee {
   padding-inline: 0;
 }
-.member-grid--rail .lp-grid {
+.member-grid--rail .lp-grid,
+.member-grid--marquee .lp-grid {
   display: flex;
   padding-inline: var(--space-4);
   gap: var(--space-4);
@@ -167,12 +171,14 @@
   padding-block: var(--space-2);
   max-width: none;
 }
-.member-grid--rail .mem-card {
+.member-grid--rail .mem-card,
+.member-grid--marquee .mem-card {
   flex: 0 0 auto;
   width: min(42vw, 11rem);
   scroll-snap-align: start;
 }
-.member-grid--rail .lp-grid:focus-visible {
+.member-grid--rail .lp-grid:focus-visible,
+.member-grid--marquee .lp-grid:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
@@ -184,7 +190,8 @@
   .member-grid--grid .lp-grid {
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   }
-  .member-grid--rail .mem-card {
+  .member-grid--rail .mem-card,
+  .member-grid--marquee .mem-card {
     width: 13rem;
   }
   .member-grid .mem-card--join {
@@ -193,7 +200,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .member-grid--rail .lp-grid {
+  .member-grid--rail .lp-grid,
+  .member-grid--marquee .lp-grid {
     scroll-behavior: smooth;
   }
   .member-grid .mem-card__cta {

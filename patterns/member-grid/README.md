@@ -43,12 +43,10 @@ What it does need is four decisions:
 says nothing about itself without one. `member-filter` wraps two or more of
 these and switches between them. `cta-band` below it.
 
-Think hard before putting `portrait-wall` or `member-strip` on the same page.
-All three are the same gesture — the wall is anonymous scale, the strip is a
-few named people beside a control, this is the live set — and a page making it
-twice with different furniture undercuts itself. Not an enforced edge, because
-a small strip in a hero above a live grid further down is defensible; two big
-member displays in one column is not.
+Think hard before `portrait-wall` or `member-strip` on the same page: all three
+are the same gesture, and a page making it twice undercuts itself. Not an
+enforced edge — a small strip in a hero above a live grid lower down is
+defensible; two big member displays in one column is not.
 
 **Brand adaptability.** `--card-radius`, `--card-border` and `--card-shadow`
 carry the whole feel — hairline-and-square reads as a directory, rounded-and-
@@ -60,8 +58,22 @@ Two axes. **Card style** — `plain` (square photo, no furniture), `framed`
 faces less). All three are deliberately quiet: member photographs are a real,
 mixed set, and furniture that flatters a shoot makes a mixed set look worse.
 **Layout** — `grid` wraps onto as many rows as it needs, `rail` is one row the
-visitor swipes through, snapping to each member.
+visitor swipes through snapping to each member, and `marquee` is that row moving
+along by itself.
 
-The rail **never auto-advances**, the same bargain `gallery-scroll` makes. The
-`reveal` hook fades the block in on platforms serving the behaviour library,
-and does nothing at all without it or under reduced motion.
+**`rail` never moves on its own**, the same bargain `gallery-scroll` makes.
+**`marquee` does, and it is the only rung needing a markup change as well as the
+class**: swap `data-hub-module="reveal"` for `"marquee"`. Where the behaviour
+library is not served the block is then simply the rail, which is why choosing
+it is safe.
+
+Everything the marquee needs is built rather than authored: it clones the run for
+a seamless loop, keeps the copies out of the tab order and hidden from assistive
+technology, and **makes its own pause control**. That control is not decoration —
+content that moves by itself needs a way to stop it, and pause-on-hover is not
+one, doing nothing for a visitor on a phone or a keyboard. It also halts on
+hover, on focus, while dragged, and off screen. Under reduced motion nothing
+moves and no control appears.
+
+The `reveal` hook on the other two rungs fades the block in where the library is
+served.
