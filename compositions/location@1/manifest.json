@@ -1,0 +1,59 @@
+{
+  "composition": "location",
+  "version": 1,
+  "page": "location",
+  "library": "v109",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "8"
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
+      "name": "prose-column",
+      "version": "5"
+    },
+    {
+      "name": "heading-block",
+      "version": "8"
+    },
+    {
+      "name": "member-grid",
+      "version": "2"
+    },
+    {
+      "name": "source-note",
+      "version": "1"
+    },
+    {
+      "name": "link-cluster",
+      "version": "6",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "cta-band",
+      "version": "5"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}

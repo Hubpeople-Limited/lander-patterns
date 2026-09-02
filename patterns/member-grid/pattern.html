@@ -2,9 +2,9 @@
 name: member-grid
 display-name: Live member grid
 summary: Real members from your own site, filled in by the platform when the page is built.
-version: 1
+version: 2
 type: component
-page-types: homepage, landing
+page-types: homepage, landing, location
 requires: none
 content-shape: peer set
 description: A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.
@@ -12,7 +12,7 @@ keywords: members, live, loop, profiles, grid, carousel, location, proof
 needs: nothing from the partner, which is what makes this different from every other people pattern here - the platform supplies the members. What it does need is the location the block is scoped to, written exactly as the platform spells it, and the brand's own words for the two links and the empty state
 pairs-with: heading-block, member-filter, cta-band
 avoid-with: none
-tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --transition-fast, --type-scale
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --transition-fast, --type-scale
 variants: card=plain|framed|portrait; flow=grid|rail
 behaviours: reveal
 motion: subtle

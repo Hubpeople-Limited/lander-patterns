@@ -309,6 +309,25 @@
         "name": "features",
         "version": 1
       }
+    },
+    {
+      "page": "location",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "prose-column",
+        "heading-block",
+        "member-grid",
+        "source-note",
+        "link-cluster:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "A page for one place, and the first shell whose main block is written by the platform rather than by the page. The prose above the members is the part no competitor can copy and the part an agent cannot invent; source-note under the grid is where the honest caveat about what the block shows goes; link-cluster carries the sibling places, which is what stops a set of these reading as isolated doorways.",
+      "composition": {
+        "name": "location",
+        "version": 1
+      }
     }
   ]
 }
