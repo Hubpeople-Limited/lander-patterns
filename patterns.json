@@ -247,7 +247,8 @@
    "article",
    "features",
    "articles-landing",
-   "location"
+   "location",
+   "locations-landing"
   ],
   "pairs-with": [],
   "replaced-by": "",
@@ -345,7 +346,8 @@
    "article",
    "features",
    "articles-landing",
-   "location"
+   "location",
+   "locations-landing"
   ],
   "pairs-with": [
    "pricing-tiers",
@@ -731,7 +733,8 @@
    "safety",
    "features",
    "articles-landing",
-   "location"
+   "location",
+   "locations-landing"
   ],
   "pairs-with": [
    "cta-assurance",
@@ -836,7 +839,8 @@
    "homepage",
    "landing",
    "safety",
-   "pricing"
+   "pricing",
+   "locations-landing"
   ],
   "pairs-with": [
    "heading-block",
@@ -879,7 +883,8 @@
    "article",
    "features",
    "articles-landing",
-   "location"
+   "location",
+   "locations-landing"
   ],
   "pairs-with": [],
   "replaced-by": "",

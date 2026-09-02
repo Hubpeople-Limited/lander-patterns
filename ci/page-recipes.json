@@ -328,6 +328,21 @@
         "name": "location",
         "version": 1
       }
+    },
+    {
+      "page": "locations-landing",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "listing-rows:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The index above a set of location pages. Rows rather than cards, because a place has no photograph of its own that is honest to use, and because the set grows: a brand adds a region and adds a row. It exists so a set of location pages is a structure with a parent rather than a run of pages reachable only from a search result.",
+      "composition": {
+        "name": "locations-landing",
+        "version": 1
+      }
     }
   ]
 }

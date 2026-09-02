@@ -1,0 +1,43 @@
+{
+  "composition": "locations-landing",
+  "version": 1,
+  "page": "locations-landing",
+  "library": "v112",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "8"
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
+      "name": "listing-rows",
+      "version": "3",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "cta-band",
+      "version": "5"
+    },
+    {
+      "name": "colophon",
+      "version": "1"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}
