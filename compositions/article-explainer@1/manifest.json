@@ -2,7 +2,7 @@
   "composition": "article-explainer",
   "version": 1,
   "page": "article",
-  "library": "v109",
+  "library": "v112",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
