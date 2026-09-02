@@ -15,6 +15,7 @@ Put two or three of these in front of whoever the page is for, described in thei
 - **homepage-quiet-start@1** - homepage - peer-set - shell: homepage-no-photography - The second, gentler way through the no-photography page, with the opening claim centred on the ordinary page background rather than held on a dark ground.
 - **homepage-said-plainly@1** - homepage - single-claim - shell: homepage-no-photography - The front page with no pictures on it at all.
 - **homepage-warm-welcome@1** - homepage - progression - shell: homepage-conversion - The straightforward front page: a picture of people with the promise beside it, how joining works in three short steps, the questions that stop somebody signing up, and the ask.
+- **location-place-first@1** - location - narrative - shell: location - The page for one place, written so it earns the URL: a claim naming the town or region, two to four sentences only somebody who knows the area could write, then the members who are actually there, then the neighbouring places.
 - **pricing-case-first@1** - pricing - narrative - shell: pricing-value - The pricing page that makes its case before it names a price.
 - **pricing-side-by-side@1** - pricing - comparison - shell: pricing-comparison - The pricing page built around a real table, with every plan a column and every thing a visitor might care about a row.
 - **pricing-stated-boldly@1** - pricing - single-claim - shell: pricing - The confident version of the pricing page, with the brand colour at both ends and the plans sitting quietly between them.

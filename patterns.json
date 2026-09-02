@@ -246,7 +246,8 @@
    "safety",
    "article",
    "features",
-   "articles-landing"
+   "articles-landing",
+   "location"
   ],
   "pairs-with": [],
   "replaced-by": "",
@@ -343,7 +344,8 @@
    "safety",
    "article",
    "features",
-   "articles-landing"
+   "articles-landing",
+   "location"
   ],
   "pairs-with": [
    "pricing-tiers",
@@ -560,7 +562,8 @@
    "landing",
    "pricing",
    "safety",
-   "article"
+   "article",
+   "location"
   ],
   "pairs-with": [
    "testimonial-grid",
@@ -727,7 +730,8 @@
    "pricing",
    "safety",
    "features",
-   "articles-landing"
+   "articles-landing",
+   "location"
   ],
   "pairs-with": [
    "cta-assurance",
@@ -793,7 +797,8 @@
    "pricing",
    "safety",
    "article",
-   "articles-landing"
+   "articles-landing",
+   "location"
   ],
   "pairs-with": [
    "heading-block",
@@ -873,7 +878,8 @@
    "safety",
    "article",
    "features",
-   "articles-landing"
+   "articles-landing",
+   "location"
   ],
   "pairs-with": [],
   "replaced-by": "",
@@ -965,7 +971,8 @@
   "one-per-page": true,
   "page-types": [
    "homepage",
-   "landing"
+   "landing",
+   "location"
   ],
   "pairs-with": [
    "member-grid",
@@ -994,7 +1001,8 @@
   "one-per-page": false,
   "page-types": [
    "homepage",
-   "landing"
+   "landing",
+   "location"
   ],
   "pairs-with": [
    "heading-block",
@@ -1017,7 +1025,7 @@
     "rail"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "member-strip": {
@@ -1277,7 +1285,8 @@
    "safety",
    "homepage",
    "landing",
-   "pricing"
+   "pricing",
+   "location"
   ],
   "pairs-with": [
    "article-masthead",
@@ -1414,7 +1423,8 @@
    "landing",
    "pricing",
    "safety",
-   "article"
+   "article",
+   "location"
   ],
   "pairs-with": [
    "stat-rows",

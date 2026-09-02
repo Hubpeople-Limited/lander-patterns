@@ -3,6 +3,12 @@
    names are a contract with it, not ours to rename. */
 .member-grid {
   display: block;
+  padding-inline: var(--space-4);
+}
+.member-grid .lp-grid,
+.member-grid .lp-members__empty {
+  max-width: var(--container-max);
+  margin-inline: auto;
 }
 .member-grid .lp-grid {
   display: grid;
@@ -94,11 +100,13 @@
   border-radius: var(--chip-radius);
 }
 /* The join tile is the platform's last li and carries no photograph, so it
-   needs a body of its own or it collapses to a link on the baseline. */
+   needs a body of its own or it collapses to a link on the baseline. A grid
+   item stretches to its row, so the floor is for the row it lands in ALONE -
+   it is the last of an unknown number, so it wraps by itself often. */
 .member-grid .mem-card--join {
   display: grid;
   place-items: center;
-  min-height: 100%;
+  min-height: 9rem;
   padding: var(--space-4);
   border: var(--card-border);
   border-radius: var(--card-radius);
@@ -145,14 +153,19 @@
 .member-grid--grid .lp-grid {
   grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
 }
+.member-grid--rail {
+  padding-inline: 0;
+}
 .member-grid--rail .lp-grid {
   display: flex;
+  padding-inline: var(--space-4);
   gap: var(--space-4);
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: var(--space-4);
   padding-block: var(--space-2);
+  max-width: none;
 }
 .member-grid--rail .mem-card {
   flex: 0 0 auto;
@@ -173,6 +186,9 @@
   }
   .member-grid--rail .mem-card {
     width: 13rem;
+  }
+  .member-grid .mem-card--join {
+    min-height: 11rem;
   }
 }
 
