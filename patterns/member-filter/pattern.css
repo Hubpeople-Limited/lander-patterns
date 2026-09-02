@@ -1,0 +1,79 @@
+/* member-filter v1 - tokens only, selectors prefixed.
+   The panels below are filled by member-grid, which owns their look. */
+.member-filter {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.member-filter-legend {
+  padding: 0;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-soft);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+/* Off-screen but focusable, so the pill still takes the keyboard and the
+   radio group is still announced. display:none would remove both. */
+.member-filter-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.member-filter-tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0 var(--space-2) var(--space-5) 0;
+  padding: var(--space-2) var(--space-5);
+  border: 1.5px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+  border-radius: var(--chip-radius);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.member-filter-tab:hover {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+}
+.member-filter-radio:checked + .member-filter-tab {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.member-filter-radio:focus-visible + .member-filter-tab {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--chip-radius);
+}
+/* The switch. Later-sibling only, which is why the radios sit above the
+   panels and why nothing may be wrapped around either. */
+.member-filter-panel {
+  display: none;
+}
+/* A panel holds whatever the page puts in it, so it may never be the reason
+   the viewport scrolls sideways. */
+.member-filter-panel img {
+  max-width: 100%;
+  height: auto;
+}
+.member-filter-radio--one:checked ~ .member-filter-panel--one,
+.member-filter-radio--two:checked ~ .member-filter-panel--two,
+.member-filter-radio--three:checked ~ .member-filter-panel--three {
+  display: block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .member-filter-tab {
+    transition: background var(--transition-fast),
+                color var(--transition-fast),
+                border-color var(--transition-fast);
+  }
+}

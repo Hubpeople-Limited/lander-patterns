@@ -1,0 +1,13 @@
+{
+  "filter-legend": "Sample filter label",
+  "filter-name": "sample-member-filter",
+  "filter-id-one": "sample-member-filter-one",
+  "filter-id-two": "sample-member-filter-two",
+  "filter-id-three": "sample-member-filter-three",
+  "tab-one": "Sample all",
+  "tab-two": "Sample set two",
+  "tab-three": "Sample set three",
+  "panel-one": "<p>Sample panel one. On a real page this is a member-grid, which brings its own stylesheet - a preview renders one pattern's CSS only, so it stands in as a paragraph here.</p>",
+  "panel-two": "<p>Sample panel two, scoped differently from the first. Preview stand-in.</p>",
+  "panel-three": "<p>Sample panel three, scoped differently again. Preview stand-in.</p>"
+}

@@ -1,0 +1,7 @@
+{
+  "members-country": "Sample country",
+  "members-region": "Sample region",
+  "members-cta-text": "Sample link text",
+  "members-join-text": "Sample join text",
+  "members-empty-text": "Sample empty-state sentence for the preview render."
+}

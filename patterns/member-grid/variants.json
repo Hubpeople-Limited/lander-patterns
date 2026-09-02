@@ -1,0 +1,34 @@
+{
+  "card": {
+    "label": "Card style",
+    "note": "How much furniture sits around each member's photograph. The photographs are your members' own and vary enormously in quality and crop, so the quieter styles usually flatter a real set more than the busier ones.",
+    "rungs": {
+      "plain": {
+        "label": "Photo only",
+        "note": "A square photograph with the name and place beneath it and nothing around them. The quietest choice, and the one that copes best with a mixed set of member photographs."
+      },
+      "framed": {
+        "label": "Boxed",
+        "note": "Each member in a bordered card on your surface colour. Use it where the block sits on a tinted band and needs an edge to stand on, or where the page around it is already made of cards."
+      },
+      "portrait": {
+        "label": "Tall photo",
+        "note": "The same as Photo only, but the pictures are taller than they are wide. Closer to how a profile photograph is usually taken, so faces are cropped less."
+      }
+    }
+  },
+  "flow": {
+    "label": "Layout",
+    "note": "Whether the members wrap onto as many rows as they need, or sit in one row the visitor moves through sideways.",
+    "rungs": {
+      "grid": {
+        "label": "Grid",
+        "note": "Members wrap onto as many rows as it takes. Everyone is visible without any effort from the visitor, which is what you want where the block is the reason the page exists."
+      },
+      "rail": {
+        "label": "Swipe row",
+        "note": "One row the visitor swipes, scrolls or arrows through, snapping to each member. It keeps a long set to one band's worth of height. Nothing moves on its own and nothing auto-advances - the visitor is always the one driving."
+      }
+    }
+  }
+}
