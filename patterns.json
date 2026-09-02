@@ -954,6 +954,72 @@
   "version": "10",
   "whole-page": false
  },
+ "member-filter": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "peer set",
+  "description": "A row of pills switching between two or three live member blocks - one set per pill, each scoped differently by the platform, changed with a radio group and CSS alone so the page still carries no JavaScript.",
+  "display-name": "Member filter",
+  "motion": "subtle",
+  "needs": "two or three genuinely different member sets and the brand's own word for each pill, plus one word for what the pills do. A pill that shows the same members as the one beside it is a control that does nothing",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "member-grid",
+   "heading-block",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "Pills that switch between two or three sets of live members, with no script.",
+  "type": "section",
+  "variants": {},
+  "version": "1",
+  "whole-page": false
+ },
+ "member-grid": {
+  "avoid-with": [],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.",
+  "display-name": "Live member grid",
+  "motion": "subtle",
+  "needs": "nothing from the partner, which is what makes this different from every other people pattern here - the platform supplies the members. What it does need is the location the block is scoped to, written exactly as the platform spells it, and the brand's own words for the two links and the empty state",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "member-filter",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "Real members from your own site, filled in by the platform when the page is built.",
+  "type": "component",
+  "variants": {
+   "card": [
+    "plain",
+    "framed",
+    "portrait"
+   ],
+   "flow": [
+    "grid",
+    "rail"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "member-strip": {
   "avoid-with": [
    "portrait-wall"

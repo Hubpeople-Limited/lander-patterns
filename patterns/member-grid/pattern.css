@@ -1,0 +1,186 @@
+/* member-grid v1 - tokens only, selectors prefixed.
+   Everything below .member-grid is markup the PLATFORM writes, so these class
+   names are a contract with it, not ours to rename. */
+.member-grid {
+  display: block;
+}
+.member-grid .lp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--space-4);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.member-grid .mem-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+  position: relative;
+}
+.member-grid .mem-card img,
+.member-grid .mem-card__initial {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--card-radius);
+  background: var(--color-surface);
+}
+.member-grid .mem-card__initial {
+  display: grid;
+  place-items: center;
+  font-family: var(--font-heading);
+  font-size: calc(2rem * var(--type-scale, 1));
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+}
+.member-grid .mem-card .badge {
+  position: absolute;
+  top: var(--space-2);
+  inset-inline-start: var(--space-2);
+  padding: 0.15rem var(--space-2);
+  border-radius: var(--chip-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.member-grid .mem-card__name {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-heading);
+  font-size: calc(1rem * var(--type-scale, 1));
+  font-weight: 700;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+.member-grid .mem-card__where,
+.member-grid .mem-card__line {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+  overflow-wrap: anywhere;
+}
+/* Two lines and no more. A blurb is member-written and has no length limit,
+   so without this one card sets the height of the whole row. */
+.member-grid .mem-card__line {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+/* 44px, not the 24px WCAG floor: on a phone this is the card's only control
+   and it sits between two photographs. */
+.member-grid .mem-card__cta {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: auto;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.member-grid .mem-card__cta:hover {
+  text-decoration: underline;
+}
+.member-grid .mem-card__cta:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--chip-radius);
+}
+/* The join tile is the platform's last li and carries no photograph, so it
+   needs a body of its own or it collapses to a link on the baseline. */
+.member-grid .mem-card--join {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  padding: var(--space-4);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  text-align: center;
+}
+.member-grid .mem-card--join .mem-card__cta {
+  justify-content: center;
+  margin: 0;
+}
+.member-grid .lp-members__empty {
+  margin: 0;
+  padding: var(--space-5) var(--space-4);
+  border: 1px dashed color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: var(--card-radius);
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* card: how much furniture sits around the photograph */
+.member-grid--plain .mem-card {
+  padding: 0;
+}
+.member-grid--framed .mem-card {
+  padding: var(--space-3);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--color-surface);
+  box-shadow: var(--card-shadow);
+}
+.member-grid--framed .mem-card .badge {
+  top: var(--space-4);
+  inset-inline-start: var(--space-4);
+}
+.member-grid--portrait .mem-card img,
+.member-grid--portrait .mem-card__initial {
+  aspect-ratio: 3 / 4;
+}
+
+/* flow: a wrapping grid, or one row the reader swipes. The rail never moves
+   on its own - the visitor drives it, the same bargain gallery-scroll makes. */
+.member-grid--grid .lp-grid {
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+}
+.member-grid--rail .lp-grid {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--space-4);
+  padding-block: var(--space-2);
+}
+.member-grid--rail .mem-card {
+  flex: 0 0 auto;
+  width: min(42vw, 11rem);
+  scroll-snap-align: start;
+}
+.member-grid--rail .lp-grid:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (min-width: 48rem) {
+  .member-grid .lp-grid {
+    gap: var(--space-5);
+  }
+  .member-grid--grid .lp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+  .member-grid--rail .mem-card {
+    width: 13rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .member-grid--rail .lp-grid {
+    scroll-behavior: smooth;
+  }
+  .member-grid .mem-card__cta {
+    transition: color var(--transition-fast);
+  }
+}

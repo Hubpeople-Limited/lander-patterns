@@ -100,6 +100,62 @@ SAMPLE_FOOTER_MENU = (
     '</ul>'
 )
 
+# The member loop, for the same reason as the two menus above, and it is the
+# strongest case of the three: a `data-members` section is authored EMPTY and
+# the platform fills it at render, so with no stand-in there is nothing in the
+# preview at all - not a token that reads as broken, a blank band. The pattern's
+# whole job is styling markup it does not write, so a preview that cannot show
+# that markup cannot show a fault in it.
+#
+# This carries what the renderer actually emits, read off buildMemberCardsHtml
+# with styles off: a card with a photograph, a card with none (the initial
+# stands in), a card carrying the verified badge, a card with no blurb line,
+# and the trailing join tile. Those are the five shapes the CSS has to survive
+# and four of them are easy to forget.
+SAMPLE_MEMBERS = (
+    '<ul class="lp-grid">'
+    '<li class="mem-card">'
+    '<img src="sample-portrait.svg" alt="" loading="eager">'
+    '<p class="mem-card__name">Sample One, 34</p>'
+    '<p class="mem-card__where">Sample town, Sample region</p>'
+    '<p class="mem-card__line">A sample line of preview text from a member.</p>'
+    '<a class="mem-card__cta" href="#sample">Sample link</a>'
+    '</li>'
+    '<li class="mem-card">'
+    '<span class="mem-card__initial">S</span>'
+    '<p class="mem-card__name">Sample Two, 28</p>'
+    '<p class="mem-card__where">Sample town, Sample region</p>'
+    '<p class="mem-card__line">A second sample line, longer than the first, so '
+    'the preview shows what a blurb running to two lines does to a card.</p>'
+    '<a class="mem-card__cta" href="#sample">Sample link</a>'
+    '</li>'
+    '<li class="mem-card">'
+    '<img src="sample-portrait.svg" alt="" loading="lazy">'
+    '<span class="badge">Sample verified</span>'
+    '<p class="mem-card__name">Sample Three, 41</p>'
+    '<p class="mem-card__where">Sample town, Sample region</p>'
+    '<p class="mem-card__line">A third sample line of preview text.</p>'
+    '<a class="mem-card__cta" href="#sample">Sample link</a>'
+    '</li>'
+    '<li class="mem-card">'
+    '<img src="sample-portrait.svg" alt="" loading="lazy">'
+    '<p class="mem-card__name">Sample Four, 25</p>'
+    '<p class="mem-card__where">Sample town, Sample region</p>'
+    '<a class="mem-card__cta" href="#sample">Sample link</a>'
+    '</li>'
+    '<li class="mem-card mem-card--join">'
+    '<a class="mem-card__cta" href="#sample">Sample join</a>'
+    '</li>'
+    '</ul>'
+)
+
+# An empty <section ... data-members ...></section>, however its attributes are
+# spelled or ordered. Matched on the attribute rather than on a class, because
+# that attribute IS the platform's contract and a pattern may call its own
+# wrapper anything - two of them do.
+EMPTY_MEMBER_SECTION = re.compile(
+    r"(<section\b[^>]*\sdata-members(?=[\s=>])[^>]*>)\s*(</section>)", re.I)
+
 FURNITURE_DISPLAY = {
     "{{join.url}}": "#",
     "{{login.url}}": "#",
@@ -214,6 +270,18 @@ def fill(markup, sample):
         markup = markup.replace(f"slot:{key}", value)
     for token, display in FURNITURE_DISPLAY.items():
         markup = markup.replace(token, display)
+    # After the slots, so a pattern's own data-members-* values are already in
+    # place and the section still matches whatever they were filled with.
+    markup, filled_loops = EMPTY_MEMBER_SECTION.subn(
+        lambda m: m.group(1) + SAMPLE_MEMBERS + m.group(2), markup)
+    # Refuse rather than emit a blank band, for the same reason repeat_block
+    # refuses: a member section that did not get filled renders as nothing, and
+    # every gate downstream would then measure an empty page and pass. That is
+    # the one failure this stand-in exists to prevent, so it may not be silent.
+    if "data-members" in markup and not filled_loops and "lp-grid" not in markup:
+        raise SystemExit(
+            "member loop: a data-members section is present but none was "
+            "filled - EMPTY_MEMBER_SECTION no longer matches how it is written")
     # Any furniture token left renders as a visible label rather than raw braces.
     markup = re.sub(r"\{\{\s*([^}]+?)\s*\}\}", r"[platform: \1]", markup)
     return markup

@@ -1,0 +1,49 @@
+<!--
+name: member-grid
+display-name: Live member grid
+summary: Real members from your own site, filled in by the platform when the page is built.
+version: 1
+type: component
+page-types: homepage, landing
+requires: none
+content-shape: peer set
+description: A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.
+keywords: members, live, loop, profiles, grid, carousel, location, proof
+needs: nothing from the partner, which is what makes this different from every other people pattern here - the platform supplies the members. What it does need is the location the block is scoped to, written exactly as the platform spells it, and the brand's own words for the two links and the empty state
+pairs-with: heading-block, member-filter, cta-band
+avoid-with: none
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --transition-fast, --type-scale
+variants: card=plain|framed|portrait; flow=grid|rail
+behaviours: reveal
+motion: subtle
+one-per-page: no
+status: active
+added: 2026-09-02
+-->
+<!-- Author it EMPTY and leave it empty: the platform replaces everything
+     inside at render, so anything written here is destroyed. The ul.lp-grid
+     and the cards are the platform's; pattern.css styles those class names.
+
+     data-members-strict MUST be lowercase "true". "True" or "false" silently
+     fills the page with other brands' members and looks completely normal.
+
+     data-members-min is the fewest members worth showing - below it the empty
+     state renders instead of a thin grid. data-members-count caps at 20.
+
+     A wrong country or region is IGNORED, not refused, and the block quietly
+     fills with people from elsewhere. Check both against the platform's
+     location reference before shipping. -->
+<section class="member-grid member-grid--plain member-grid--grid"
+         data-hub-module="reveal"
+         data-members
+         data-members-styles="none"
+         data-members-country="slot:members-country"
+         data-members-region="slot:members-region"
+         data-members-strict="true"
+         data-members-count="12"
+         data-members-min="4"
+         data-members-image-size="480"
+         data-members-cta-text="slot:members-cta-text"
+         data-members-join-text="slot:members-join-text"
+         data-members-verified-text="ID verified"
+         data-members-empty-text="slot:members-empty-text"></section>

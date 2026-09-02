@@ -1,0 +1,39 @@
+<!--
+name: member-filter
+display-name: Member filter
+summary: Pills that switch between two or three sets of live members, with no script.
+version: 1
+type: section
+page-types: homepage, landing
+requires: none
+content-shape: peer set
+description: A row of pills switching between two or three live member blocks - one set per pill, each scoped differently by the platform, changed with a radio group and CSS alone so the page still carries no JavaScript.
+keywords: members, filter, tabs, pills, switch, location, live
+needs: two or three genuinely different member sets and the brand's own word for each pill, plus one word for what the pills do. A pill that shows the same members as the one beside it is a control that does nothing
+pairs-with: member-grid, heading-block, cta-band
+avoid-with: none
+tokens-used: --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text-soft, --space-2, --space-3, --space-5, --transition-fast
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-09-02
+-->
+<!-- One member-grid per panel, each scoped differently, each its own query.
+     To drop the third, delete its input, its label AND its panel.
+
+     ORDER IS STRUCTURAL: every radio is a direct child of the fieldset and
+     sits before every panel. The switch reaches later siblings only.
+
+     filter-name and the three filter-id-* must be unique on the page. -->
+<fieldset class="member-filter">
+  <legend class="member-filter-legend"><!-- slot: filter-legend --></legend>
+  <input class="member-filter-radio member-filter-radio--one" type="radio" name="slot:filter-name" id="slot:filter-id-one" checked>
+  <label class="member-filter-tab" for="slot:filter-id-one"><!-- slot: tab-one --></label>
+  <input class="member-filter-radio member-filter-radio--two" type="radio" name="slot:filter-name" id="slot:filter-id-two">
+  <label class="member-filter-tab" for="slot:filter-id-two"><!-- slot: tab-two --></label>
+  <input class="member-filter-radio member-filter-radio--three" type="radio" name="slot:filter-name" id="slot:filter-id-three">
+  <label class="member-filter-tab" for="slot:filter-id-three"><!-- slot: tab-three --></label>
+  <div class="member-filter-panel member-filter-panel--one"><!-- slot: panel-one --></div>
+  <div class="member-filter-panel member-filter-panel--two"><!-- slot: panel-two --></div>
+  <div class="member-filter-panel member-filter-panel--three"><!-- slot: panel-three --></div>
+</fieldset>
