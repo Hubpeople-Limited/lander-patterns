@@ -2,7 +2,7 @@
   "composition": "articles-landing",
   "version": 1,
   "page": "articles-landing",
-  "library": "v116",
+  "library": "v118",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
