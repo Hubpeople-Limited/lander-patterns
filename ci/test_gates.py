@@ -2027,6 +2027,30 @@ def check_recipes():
     return failures
 
 
+def check_header_fit():
+    """ci/check_header.py, both directions: the shipped header holds one row
+    against the long menu, and the positive control fires when the fold is
+    switched off. Skips, and says so, without a browser."""
+    import check_phone
+    failures = []
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  skip check_header: {why}")
+        return failures
+    for label, argv, want in (
+            ("header gate quiet on the shipped header (1280 only)",
+             ["--widths", "1280", "1024"], 0),
+            ("header gate fires with the fold switched off", ["--broken"], 0)):
+        got = subprocess.run([sys.executable, str(HERE / "check_header.py")] + argv,
+                             capture_output=True, text=True, encoding="utf-8")
+        ok = got.returncode == want
+        print(f"  {'ok  ' if ok else 'FAIL'} {label} exit={got.returncode} want={want}")
+        if not ok:
+            print("      " + (got.stdout.strip().splitlines() or ["(no output)"])[-1])
+            failures.append(label)
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -2094,6 +2118,8 @@ def main():
     failures += check_release_tag_is_not_freshness()
     print()
     failures += check_recipes()
+    print()
+    failures += check_header_fit()
     print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "

@@ -49,6 +49,52 @@
       }
     }
   },
+  "overflow": {
+    "label": "When the menu is too long",
+    "note": "What happens on a computer screen when the links do not all fit on one row beside your logo.",
+    "rungs": {
+      "wrap": {
+        "label": "Second row",
+        "note": "The links that do not fit start a second row. The header gets taller, and anything designed to fill the first screen sits lower than it should."
+      },
+      "more": {
+        "label": "Fold into More",
+        "note": "The links that do not fit tuck into one last item that opens a list, so the header always stays one row. The safest choice for five links or more, and the default."
+      },
+      "scroll": {
+        "label": "Scrolling row",
+        "note": "One row that scrolls sideways, fading at the ends. Keeps every link in view of a swipe; any sub-links run on beside their parent rather than dropping down."
+      }
+    }
+  },
+  "submenu": {
+    "label": "Sub-links",
+    "note": "How a link with its own links underneath shows them on a computer screen.",
+    "rungs": {
+      "dropdown": {
+        "label": "Drop-down",
+        "note": "A small panel opens under that link. Right for a handful of sub-links, and the default."
+      },
+      "mega": {
+        "label": "Full-width panel",
+        "note": "One panel the width of the header, with the sub-links in columns. Right when a link has ten or more underneath it, such as a list of places."
+      }
+    }
+  },
+  "nav": {
+    "label": "Menu",
+    "note": "Whether the header carries the site menu at all.",
+    "rungs": {
+      "full": {
+        "label": "Show the menu",
+        "note": "The ordinary header, with the menu. The default."
+      },
+      "minimal": {
+        "label": "Logo and join only",
+        "note": "No menu - just your logo and the join button, with log in from a computer screen. For a page people arrive at from an advert, where every link away is a lost sign-up."
+      }
+    }
+  },
   "sticky": {
     "label": "Sticky header",
     "note": "Whether the header stays on screen as people scroll.",
@@ -60,6 +106,28 @@
       "pinned": {
         "label": "On",
         "note": "The header stays at the top. People find their way around about 22% faster and your sign-up button is always there, but it takes up room on every screen."
+      },
+      "compact": {
+        "label": "On, and shrinks",
+        "note": "The header stays at the top and tightens once people start scrolling, with the logo a little smaller, so it takes less of every screen than the plain sticky one."
+      }
+    }
+  },
+  "mark": {
+    "label": "Logo treatment",
+    "note": "How your logo sits on the header's background. Matters most on the brand-colour background, where a dark logo can disappear.",
+    "rungs": {
+      "direct": {
+        "label": "As it is",
+        "note": "Your logo file exactly as uploaded. Right on the default and light backgrounds, and the default."
+      },
+      "plate": {
+        "label": "On a plate",
+        "note": "Your logo on a small panel in the page colour, so it reads on the brand colour without changing the file."
+      },
+      "mono": {
+        "label": "White silhouette",
+        "note": "Your logo drawn in solid white. Only for a logo whose shape works in one colour, on a dark background."
       }
     }
   },

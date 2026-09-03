@@ -567,6 +567,37 @@ If you pin a replaced element's height, pin `object-fit` with it. The moment a
 `max-width` bites, a box with a set height and no `object-fit` stretches what is
 inside it.
 
+### The header against a real menu
+
+Every render of `masthead-nav` in this repository carried the same sample menu:
+a few short links and one small group. A real brand's menu is six or nine items,
+a group of places under one of them, and a label twenty-four characters long.
+Laid out with one of those, the header's items wrapped onto a second row above
+`60rem`, the bar grew, and every full-viewport opener under it measured its fold
+from a header height that was no longer true — with every gate green.
+
+```
+python ci/check_header.py                  the matrix, brand tokens
+python ci/check_header.py --tokens display
+python ci/check_header.py --broken         the positive control
+python ci/check_header.py --out /tmp/hdr   keep the rendered pages
+```
+
+It renders the header with three menus — short, typical and long — beside a
+ratio-only wordmark and a ratio-only square, at eight widths across the `60rem`
+line, with `lib/hub.js` on and off, on the rungs that decide what a long menu
+does, and holds it to one row above the line on `overflow=more` with the
+library and `overflow=scroll` without it; no overlap between the mark and
+anything pressable; every submenu it opens, and the folded item's own list,
+inside the viewport; the join control reachable on the bar and with the drawer
+open; 44px controls at phone widths; and no sideways scroll. **`--broken` is the
+positive control and CI runs it**: it forces the property the overflow behaviour
+reads to `off` and requires the one-row check to fire on the long menu.
+
+A header pattern that folds, scrolls or wraps its menu differently is welcome;
+it is measured here the moment its name is `masthead-nav`, and a second header
+pattern adds itself to `COMBOS` in the same change.
+
 ### Display measures
 
 A measure is a `max-width` on display type: the number that decides whether a

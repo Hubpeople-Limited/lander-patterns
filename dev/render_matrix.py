@@ -77,7 +77,10 @@ AXES = {
     "ground": ["plain", "soft", "brand"],
     "layout": ["inline", "centred"],
     "menu": ["drawer", "panel", "row"],
-    "sticky": ["static", "pinned"],
+    "overflow": ["wrap", "more", "scroll"],
+    "submenu": ["dropdown", "mega"],
+    "nav": ["full", "minimal"],
+    "sticky": ["static", "pinned", "compact"],
     "menu-align": ["menu-start", "menu-centre", "menu-end"],
     "menu-side": ["side-start", "side-end"],
 }
