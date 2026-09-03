@@ -295,6 +295,7 @@
      cap it takes the whole row and pushes the menu button onto a second one. */
   .masthead-nav-mark {
     max-width: 45%;
+    min-width: var(--masthead-nav-tap);
     min-height: var(--masthead-nav-tap);
   }
   /* A long label ellipsises; border-box holds the padding inside the cap. */
