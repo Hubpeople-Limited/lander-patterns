@@ -18,8 +18,8 @@ controls, stylesheet and script, and would sit beside this one as a second menu.
 
 **What it needs.** The logo file, the menu configured on the platform, and three words in the brand's
 language: `menu-label` on the button, `close-label` for it while the menu shows, and `more-label` for
-the item `overflow=more` folds the rest into. All three on every rung, because a brand changes rungs
-without changing markup. `home-url` is where the mark links.
+the item `overflow=more` folds the rest into - all three on every rung. `home-url` is where the mark
+links.
 
 **The logo is sized by its height, and the width follows.** Set the `<img>` `width` and `height` to
 the file's own pixel size and let `--logo-height` decide how tall it renders. Never put the height
@@ -27,15 +27,12 @@ back to `auto` under a `max-height`: a `viewBox`-only SVG has a ratio and no siz
 resolve it to 0x0. `object-fit: contain` keeps it undistorted once the small-screen cap bites.
 
 **The mark on a coloured ground is the `mark` axis, not a second file.** `--plate` sets the mark on a
-small `--color-bg` panel, which adds `--space-2` above and below to the bar - measure
-`--page-header-height` on the rung shipped. `--mono` draws it as a white silhouette, right only for a
-mark whose meaning survives one colour on a ground dark enough for white. `--direct` is the file as is.
+small `--color-bg` panel, which adds `--space-2` above and below to the bar. `--mono` draws it as a
+white silhouette, right only for a mark whose meaning survives one colour on a dark enough ground.
 
-**Pairing.** No neighbours, so `pairs-with` is empty. It is a `component`, not a `section`, on
-purpose: `ci/check_page.py` judges the first *section* against the fold.
-
-**Login and join live inside the disclosure.** An open drawer covers the page, so a control outside
-it is behind the scrim; `ci/lint.py` fails one left outside the `<details>`.
+**Pairing.** None; a `component`, not a `section`, so `ci/check_page.py` still judges the first
+section against the fold. **Login and join live inside the disclosure**: an open drawer covers the
+page, so a control outside it is behind the scrim, and `ci/lint.py` fails one left outside.
 
 **Brand adaptability.** Twelve axes, all real modifier classes. Below `60rem` is the small-screen
 arrangement; above it the menu is a row in the bar.
@@ -67,7 +64,11 @@ almost twice as often, 2.5 seconds slower and rated 15% harder. **Prefer `labell
 the bars is found faster than bars alone. **`edge` costs no height.**
 
 **No script, at any width.** The menu is a native `<details>`/`<summary>`; a shut drawer is
-`visibility: hidden`. Submenus open on hover and `:focus-within`. **The four behaviours add**:
+`visibility: hidden`. Submenus open on hover and `:focus-within`; the bar clips sideways, so a
+faded panel never widens the page, and the last two items hang their panels from the end edge.
+One limit stays without the library: on a row that has wrapped, a parent at a row's right edge
+has its panel clipped at the bar, because CSS cannot tell which item ends a row; `menu` measures
+it and turns the panel round, and every shell carries the bundle. **The four behaviours add**:
 `drawer`, Escape, a backdrop press and a held page; `menu`, every parent an operable control with
 `aria-expanded`, Escape, outside press, arrow keys, hover grace, and a panel that would leave the
 viewport anchored to its other edge; `overflow` and `shrink`, the two rungs above. Each acts only
@@ -75,6 +76,5 @@ while the stylesheet has the header in that state, so every rung renders complet
 library. `ci/check_header.py` renders this pattern against three-, six- and nine-item menus with
 submenus, beside two ratio-only marks, at eight widths, library on and off.
 
-**Three things the generated markup forces.** A parent with both children and a URL arrives as two
-`<li>` entries, so the label appears twice; the repair is in the menu data. The generated `<ul>`
-cannot carry `role="list"`. The `title` attribute is not escaped, so check punctuated labels.
+**The generated markup forces three things.** A parent with both children and a URL arrives as
+two `<li>` entries; the generated `<ul>` cannot carry `role="list"`; `title` is not escaped.

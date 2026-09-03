@@ -40,12 +40,15 @@
 }
 
 /* ---- the bar ---- */
-/* One number for every tap target here, and for the room the drawer keeps. */
+/* One number for every tap target here, and for the room the drawer keeps.
+   Clipped sideways, never scrolled: a faded submenu is laid out where it
+   will open, and one past the edge would otherwise widen the page. */
 .masthead-nav {
   --masthead-nav-tap: 2.75rem;
   background: var(--masthead-nav-ground);
   color: var(--masthead-nav-ink);
   border-block-end: 1px solid var(--masthead-nav-edge);
+  overflow-x: clip;
 }
 /* edge: every rung keeps the 1px border and changes only what paints it, so
    the bar is the same height on all three and --page-header-height holds. */
@@ -607,6 +610,12 @@
   .masthead-nav-links > ul > li:focus-within > ul {
     opacity: 1;
     pointer-events: auto;
+  }
+  /* The last two items sit nearest the edge, so their panels hang from
+     their end edge instead. */
+  .masthead-nav-links > ul > li:nth-last-child(-n + 2) > ul {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
   }
   .masthead-nav-links ul ul a,
   .masthead-nav-links ul ul button {
