@@ -32,7 +32,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `author-portrait-alt` - attribute (alt): what the image shows, in words
    - `author-name` - text, about 2 word(s). Sample: Sample Author
    - `author-role` - text, about 6 word(s). Sample: Sample role line for the preview
-3. **article-toc** v1 - In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away. No script anywhere.
+3. **article-toc** v2 - In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away; with the behaviour library the link for the section being read is marked, and without it the list is the list.
    - `contents-label` - text, about 2 word(s). Sample: Sample contents
    - `section-anchor` - attribute (href): a short label, about 1 word(s)
    - `section-title` - text, about 11 word(s). Sample: A sample section heading, as it is worded in the body

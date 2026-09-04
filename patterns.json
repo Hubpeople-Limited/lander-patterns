@@ -128,9 +128,11 @@
  },
  "article-toc": {
   "avoid-with": [],
-  "behaviours": [],
+  "behaviours": [
+   "scrollspy"
+  ],
   "content-shape": "reference",
-  "description": "In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away. No script anywhere.",
+  "description": "In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away; with the behaviour library the link for the section being read is marked, and without it the list is the list.",
   "display-name": "Contents list",
   "motion": "none",
   "needs": "the article's own section headings, in the order they appear, and an id written onto each of those headings in the body. The words in the list are the headings themselves, never a second set of titles written for the list",
@@ -146,7 +148,7 @@
   "summary": "A short list of links to the sections of a long piece, which a reader can put away.",
   "type": "component",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "author-note": {
@@ -607,9 +609,11 @@
    "portrait-wall",
    "steps-numbered"
   ],
-  "behaviours": [],
+  "behaviours": [
+   "carousel"
+  ],
   "content-shape": "peer set",
-  "description": "User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances.",
+  "description": "User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances, and gains previous and next controls when the behaviour library is on the page.",
   "display-name": "Photo gallery",
   "motion": "subtle",
   "needs": "three or more real images of the same kind, each with real alt text, sized for the slot via the CDN",
@@ -628,7 +632,7 @@
   "summary": "A row of photographs you swipe sideways through.",
   "type": "component",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "heading-block": {
@@ -1630,7 +1634,8 @@
    "stats-band"
   ],
   "behaviours": [
-   "reveal"
+   "reveal",
+   "counter"
   ],
   "content-shape": "reference",
   "description": "Full-width editorial statistic rows - a large figure, a hairline that draws itself across, one supporting sentence set against it on the right.",
@@ -1651,7 +1656,7 @@
   "summary": "Full-width rows, each a large figure with a line explaining it.",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "stats-band": {
@@ -1659,7 +1664,8 @@
    "stat-rows"
   ],
   "behaviours": [
-   "reveal"
+   "reveal",
+   "counter"
   ],
   "content-shape": "peer set",
   "description": "Full-bleed inverted proof band - a hairline lattice of real figures, each one paired with its label in a definition list; renders complete with no script.",
@@ -1683,7 +1689,7 @@
   "summary": "A full-width band of real figures, each paired with what it means.",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "steps-numbered": {
@@ -1756,9 +1762,11 @@
   "avoid-with": [
    "testimonial-grid"
   ],
-  "behaviours": [],
+  "behaviours": [
+   "carousel"
+  ],
   "content-shape": "peer set",
-  "description": "Reader-driven testimonial carousel on a radio group - one card centre stage, its neighbours peeking at reduced scale, no script and nothing that moves on its own.",
+  "description": "Reader-driven testimonial carousel on a radio group - one card centre stage, its neighbours peeking at reduced scale, nothing that moves on its own, and previous and next controls when the behaviour library is on the page.",
   "display-name": "Testimonial carousel",
   "motion": "subtle",
   "needs": "at least three real testimonials - each quote as the person actually wrote it, with a real name and a true attribution line; one real portrait per person with real alt text; a section heading; each quote short enough to read in about three lines, since the longest in the set sets the height of every slide. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
@@ -1777,7 +1785,7 @@
   "summary": "Testimonials you move through one at a time.",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "testimonial-grid": {

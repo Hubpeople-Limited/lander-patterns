@@ -6,5 +6,7 @@
   "_repeat": {
     "class": "gallery-scroll-item",
     "count": 4
-  }
+  },
+  "previous-label": "Previous (sample)",
+  "next-label": "Next (sample)"
 }

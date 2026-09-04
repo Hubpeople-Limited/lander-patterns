@@ -77,3 +77,4 @@ which is the one piece of display type here and moves with `--type-scale` — at
 because a size that moves has to clear the 12px text floor at the `0.9` bottom
 of that dial as well as at `1`. The links stay body-sized: they are the
 headings' words, and a reader is scanning them.
+With the library, `scrollspy` underlines the link for the section being read; without it the list is the list.

@@ -1032,8 +1032,8 @@
   }
 }
 
-/* ---- article-toc v1 ---- */
-/* article-toc v1 - tokens only, selectors prefixed */
+/* ---- article-toc v2 ---- */
+/* article-toc v2 - tokens only, selectors prefixed */
 .article-toc {
   width: min(100% - 2 * var(--space-4), 52rem);
   margin-inline: auto;
