@@ -161,6 +161,9 @@ ci/                         lint + index + preview generators (repo tooling; no
                             page and no consumer ever needs them)
 preview/                    the sample token sets and the sample images the
                             preview renders against
+publish/                    the behaviour bundle as it is served: built and
+                            versioned by the release job, and append-only, so
+                            every version ever published is still in here
 ```
 
 ## Behaviours (gated)
