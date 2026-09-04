@@ -175,6 +175,18 @@ jobs:
       # check to fire. Exit 0 here means the defect was detected.
       - name: Confirm the logo gate can still catch a mark that is not drawn
         run: python ci/check_logo.py --require-browser --broken
+      # The header against menus the size real brands have. Every other render
+      # in this workflow carries the same small sample menu, so a header that
+      # wrapped onto a second row with six items - and moved the fold under
+      # every opener with it - passed every step above.
+      - name: The header fits menus the size real brands have
+        run: python ci/check_header.py --require-browser
+      - name: The header on the hostile type fixture
+        run: python ci/check_header.py --require-browser --tokens display
+      # The positive control: the fold is switched off and the check has to
+      # fire on the long menu. Exit 0 here means the defect was detected.
+      - name: Confirm the header gate can still catch a menu that wraps
+        run: python ci/check_header.py --require-browser --broken
       - name: Legibility
         run: python ci/legibility.py
       - name: Build previews

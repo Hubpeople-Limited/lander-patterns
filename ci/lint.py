@@ -526,7 +526,8 @@ def check_html(path, meta, folder_name):
                    "srcset", "sizes", "data-hub-module",
                    # Visible prose, so a tier called "Silver" is a name and
                    # not a colour literal.
-                   "data-hub-tab-label", "data-hub-tabs-label"}
+                   "data-hub-tab-label", "data-hub-tabs-label",
+                   "data-hub-overflow-label", "data-hub-marquee-pause-label"}
     for m in re.finditer(
             r"""([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""",
             re.sub(r"<!--.*?-->", "", decoded_ws, flags=re.S)):

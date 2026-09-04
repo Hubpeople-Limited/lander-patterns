@@ -16,10 +16,11 @@ This shell needs photography. An image slot takes real material - or, while the 
 
 ## Sections, in order
 
-1. **masthead-nav** v8 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, an optional pinned bar, two small-screen alignments, a menu button with or without its word, and three bottom edges.
+1. **masthead-nav** v9 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
+   - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
 2. **article-masthead** v9 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
    - `tag` - text, about 2 word(s). Sample: Sample category
    - `read-time` - text, about 4 word(s). Sample: 6 min sample read

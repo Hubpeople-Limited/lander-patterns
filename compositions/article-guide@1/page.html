@@ -30,34 +30,35 @@
 </head>
 <body>
 <!-- ================================================================
-     section 1 of 9 : masthead-nav v8
+     section 1 of 9 : masthead-nav v9
      The site header the platform menu placeholder has no styling for
      - brand mark, the generated primary navigation and the login and
      join controls, on a choice of ground, two desktop arrangements,
-     three small-screen behaviours, an optional pinned bar, two
-     small-screen alignments, a menu button with or without its word,
-     and three bottom edges.
+     three small-screen behaviours, three answers for a menu too long
+     for its row, a dropdown or a full-width panel for submenus, a
+     bar that stays and shrinks as the page scrolls, a menu-free rung
+     for a campaign page, three ways the mark meets its ground, a
+     menu button with or without its word, and three bottom edges.
      needs: the brand's logo, the menu items configured on the
-     platform, and two words in the brand's own language - one for
-     the small-screen menu button and one for that same button while
-     the menu is showing. Every other value on it is platform
-     furniture
+     platform, and three words in the brand's own language - one for
+     the small-screen menu button, one for that same button while the
+     menu is showing, and one for the item that holds whatever does
+     not fit the row. Every other value on it is platform furniture
      slots:
        home-url           attribute (href): a short label, about 1 word(s)
        menu-label         text, about 2 word(s). Sample: Menu (sample)
        close-label        text, about 2 word(s). Sample: Close (sample)
+       more-label         attribute (data-hub-overflow-label): a short label, about 2 word(s)
      ================================================================ -->
 
 <!-- Login and join are INSIDE the disclosure and must stay there: an open
-     drawer covers the bar, so a control left outside it cannot be reached for
-     as long as the menu is showing. ci/lint.py fails the build if one moves.
-     The data-hub-module attribute belongs to the drawer and is inert on the
-     other two, so it can be left in place or deleted either way.
-     {{menu.navigation}} expands to a <ul class="canvas-navigation-menu"> the
-     page cannot change. Leave it as it is; pattern.css styles the classes it
-     generates. Set the img width and height to the logo file's own pixel size
-     - they set its aspect ratio, and --logo-height sets how tall it renders. -->
-<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--static masthead-nav--menu-start masthead-nav--side-end masthead-nav--labelled masthead-nav--rule">
+     drawer covers the bar. ci/lint.py fails the build if one moves.
+     Every data-hub-module attribute is inert without the behaviour library.
+     {{menu.navigation}} expands to a list the page cannot change; pattern.css
+     styles whatever list sits inside the nav landmark, so a list written by
+     hand in the same shape takes the same styling. Set the img width and
+     height to the logo file's own pixel size; --logo-height sets how tall it renders. -->
+<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--more masthead-nav--dropdown masthead-nav--full masthead-nav--static masthead-nav--direct masthead-nav--menu-start masthead-nav--side-end masthead-nav--labelled masthead-nav--rule" data-hub-module="shrink">
   <div class="masthead-nav-inner">
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">
@@ -69,7 +70,7 @@
         <span class="masthead-nav-toggle-icon" aria-hidden="true"></span>
       </summary>
       <div class="masthead-nav-tray">
-        <nav class="masthead-nav-links" aria-label="Primary">
+        <nav class="masthead-nav-links" aria-label="Primary" data-hub-module="overflow menu" data-hub-overflow-label="slot:more-label">
           {{menu.navigation}}
         </nav>
         <div class="masthead-nav-controls">
