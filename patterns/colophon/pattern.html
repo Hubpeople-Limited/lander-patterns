@@ -1,34 +1,44 @@
 <!--
 name: colophon
 display-name: Footer
-summary: Your site footer, with the menu, the legal links and the copyright line.
-version: 1
+summary: Your site footer, with the menu, the legal links and the copyright line - on one line or in columns, with or without your logo.
+version: 2
 type: component
 page-types: homepage, landing, pricing, safety, article, features, articles-landing, location, locations-landing
 requires: none
 content-shape: reference
-description: The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground; the platform fills every link, the page owns the markup.
-keywords: footer, site-footer, legal, copyright, privacy, terms
-needs: the brand's name for the copyright line. Every link on it is platform furniture
+description: The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+keywords: footer, site-footer, legal, copyright, privacy, terms, logo, columns
+needs: the brand's name for the copyright line, and where the mark links to when it is shown. Every link on it is platform furniture
 pairs-with: none
 avoid-with: none
-tokens-used: --color-bg, --color-focus, --color-rule, --color-surface, --color-text, --color-text-soft, --container-max, --space-2, --space-4, --space-6, --space-8
-variants: ground=plain|soft
+tokens-used: --color-bg, --color-focus, --color-rule, --color-surface, --color-text, --color-text-soft, --container-max, --logo-height, --space-2, --space-4, --space-6, --space-8
+variants: ground=plain|soft; layout=line|columns; mark=none|logo
 motion: none
 one-per-page: yes
 status: active
 added: 2026-08-27
 -->
-<!-- Take one ground modifier. See the README.
-       --plain page ground | --soft tinted fill
+<!-- Take one modifier from each of the three axes. See the README.
+       ground:  --plain page ground | --soft tinted fill
+       layout:  --line everything centred on one line | --columns three columns from 60rem up
+       mark:    --none no logo | --logo the brand mark above the rest
      Place as the last element of the page body: nothing sits below it.
      The legal links and the footer menu are platform furniture; keep each
      placeholder exactly as found, never a literal URL in its place.
      {{menu.footer}} expands to the brand's managed footer menu, and on a
      brand that manages none it expands to nothing - delete the whole nav
-     element then, rather than shipping an empty landmark. -->
-<footer class="colophon colophon--plain">
+     element then, rather than shipping an empty landmark.
+     On --logo the brand mark is drawn above the rest; on --none it is not.
+     A page built without the mark may delete the whole colophon-mark element
+     rather than leave a hidden image in place. Set the img width and height
+     to the logo file's own pixel size; the rendered height follows the
+     brand's logo height token. -->
+<footer class="colophon colophon--plain colophon--line colophon--none">
   <div class="colophon-inner">
+    <a class="colophon-mark" href="slot:home-url">
+      <img class="colophon-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">
+    </a>
     <nav class="colophon-menu" aria-label="Footer">
       {{menu.footer}}
     </nav>

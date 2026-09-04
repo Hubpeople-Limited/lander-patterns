@@ -214,13 +214,17 @@
 </section>
 
 <!-- ================================================================
-     section 6 of 6 : colophon v1
+     section 6 of 6 : colophon v2
      The site footer a page carries itself - the brand's footer menu,
      the four legal links and a copyright line, set small on a quiet
-     ground; the platform fills every link, the page owns the markup.
-     needs: the brand's name for the copyright line. Every link on it
-     is platform furniture
+     ground, centred on one line or laid out in columns, with the
+     brand mark above them or not; the platform fills every link, the
+     page owns the markup.
+     needs: the brand's name for the copyright line, and where the
+     mark links to when it is shown. Every link on it is platform
+     furniture
      slots:
+       home-url           attribute (href): a short label, about 1 word(s)
        copyright          text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
      ================================================================ -->
 
@@ -229,9 +233,16 @@
      placeholder exactly as found, never a literal URL in its place.
      {{menu.footer}} expands to the brand's managed footer menu, and on a
      brand that manages none it expands to nothing - delete the whole nav
-     element then, rather than shipping an empty landmark. -->
-<footer class="colophon colophon--plain">
+     element then, rather than shipping an empty landmark.
+     A page built without the mark may delete the whole colophon-mark element
+     rather than leave a hidden image in place. Set the img width and height
+     to the logo file's own pixel size; the rendered height follows the
+     brand's logo height token. -->
+<footer class="colophon colophon--plain colophon--line colophon--none">
   <div class="colophon-inner">
+    <a class="colophon-mark" href="slot:home-url">
+      <img class="colophon-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">
+    </a>
     <nav class="colophon-menu" aria-label="Footer">
       {{menu.footer}}
     </nav>

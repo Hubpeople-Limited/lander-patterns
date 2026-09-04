@@ -558,14 +558,33 @@ is `2.75rem` or whatever the brand wrote, and the number that matters is the one
 the browser resolved.
 
 **Which patterns are discovered, not listed** — anything whose markup carries an
-`<img>` on `{{logo.src}}`. One does today. **`--broken` is a positive control
-and CI runs it**: it appends one rule putting the logo back the way the defect
-had it and requires the check to fire. It is appended rather than spliced into
-the stylesheet so that rewording the shipped rule cannot quietly disarm it.
+`<img>` on `{{logo.src}}`. Two do today: the header and the footer. The height
+the mark is held to is the pattern's own `height:` declaration for its logo
+class — `--logo-height` in the header, a multiple of it in the footer — read off
+the stylesheet and resolved on the page by a probe. A pattern whose `mark` axis
+has a `none` rung is rendered on its first other rung, since `none` draws
+nothing to measure. **`--broken` is a positive control and CI runs it**: it
+appends rules putting the logo back the way the defects had it and requires the
+check to fire. They are appended rather than spliced into the stylesheet so that
+rewording the shipped rules cannot quietly disarm them.
 
 If you pin a replaced element's height, pin `object-fit` with it. The moment a
 `max-width` bites, a box with a set height and no `object-fit` stretches what is
 inside it.
+
+**The same gate measures whether the mark can be seen.** A pattern that offers
+`ground=brand` and a `mark` axis is rendered on the brand ground across every
+rung of that axis, with a dark-ink mark and a light-ink mark, and the result is
+read out of the browser: the mark's painted pixels, drawn through whatever
+filter the rung applies, against the colour of the nearest thing painting a
+background behind it. The first rung of the axis is the file as it is; every
+rung after it is the pattern's answer for a mark that does not read as it is.
+For each ink at least one rung must reach 3:1, WCAG's bar for a graphical
+object, and for the dark ink every rung after the first must reach it on its
+own. The as-it-is ratio is printed for both inks whether or not it passes,
+because that number is what tells a brand which rung to take. `--broken`
+disarms the plate and the silhouette as well as the size rule, and requires
+both halves of the check to fire.
 
 ### The header against a real menu
 

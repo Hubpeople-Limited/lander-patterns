@@ -12,5 +12,33 @@
         "note": "A soft tint. The easiest way to separate one section from the one above it."
       }
     }
+  },
+  "layout": {
+    "label": "Arrangement",
+    "note": "How the footer's three parts - your menu, the legal links and the copyright - are laid out on a computer screen. On a phone both look the same: stacked and centred.",
+    "rungs": {
+      "line": {
+        "label": "Centred",
+        "note": "Everything centred, one group under the next. Light and quiet; right under a short page."
+      },
+      "columns": {
+        "label": "Columns",
+        "note": "Your menu, the legal links and the copyright side by side in three columns, the way most established sites close. Right under a long page with a lot on it."
+      }
+    }
+  },
+  "mark": {
+    "label": "Logo",
+    "note": "Whether your logo appears in the footer, above everything else.",
+    "rungs": {
+      "none": {
+        "label": "No logo",
+        "note": "The footer without your logo. The default, and right for a logo that only works on a dark background."
+      },
+      "logo": {
+        "label": "Show the logo",
+        "note": "Your logo above the footer's contents, a touch larger than in the header, linking back to the homepage."
+      }
+    }
   }
 }

@@ -78,7 +78,8 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview
    - `lead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-9. **colophon** v1 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground; the platform fills every link, the page owns the markup.
+9. **colophon** v2 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+   - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 
 ## What is still yours to decide
