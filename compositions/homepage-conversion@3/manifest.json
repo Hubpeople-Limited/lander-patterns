@@ -2,7 +2,7 @@
   "composition": "homepage-conversion",
   "version": 3,
   "page": "homepage",
-  "library": "v118",
+  "library": "v122",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
