@@ -2,7 +2,7 @@
   "composition": "article-longform",
   "version": 1,
   "page": "article",
-  "library": "v134",
+  "library": "v137",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
