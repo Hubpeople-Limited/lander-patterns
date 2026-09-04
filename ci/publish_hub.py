@@ -114,6 +114,19 @@ def minify(source, out_dir):
     if run.returncode != 0:
         return None, ("esbuild did not run, so nothing was minified:\n"
                       + (run.stderr or run.stdout).strip())
+
+    # The map records where the source sat on the machine that built it,
+    # relative to an output directory that is a temporary one. That is a
+    # different string on every machine, which makes a published file depend on
+    # who ran the build and leaves --check unable to agree with itself
+    # anywhere but there. The whole source is embedded in the map already, so
+    # the path is a label: name it after the file in this repository.
+    smap = out.with_suffix(".js.map")
+    if smap.is_file():
+        data = json.loads(smap.read_text(encoding="utf-8"))
+        data["sources"] = ["lib/hub.js"] * len(data.get("sources", []))
+        smap.write_text(json.dumps(data, separators=(",", ":")),
+                        encoding="utf-8")
     return out, None
 
 
