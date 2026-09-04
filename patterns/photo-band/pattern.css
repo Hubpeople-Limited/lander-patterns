@@ -1,0 +1,22 @@
+/* photo-band v1 - tokens only, selectors prefixed */
+.photo-band {
+  display: block;
+  width: 100%;
+  background: var(--color-surface-soft);
+}
+/* Rem against the viewport width, never viewport height: see the README. */
+.photo-band--short {
+  --photo-band-height: clamp(10rem, 28vw, 18rem);
+}
+.photo-band--standard {
+  --photo-band-height: clamp(14rem, 40vw, 28rem);
+}
+.photo-band--tall {
+  --photo-band-height: clamp(18rem, 56vw, 40rem);
+}
+.photo-band-image {
+  display: block;
+  width: 100%;
+  height: var(--photo-band-height);
+  object-fit: cover;
+}

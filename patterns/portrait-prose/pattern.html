@@ -1,0 +1,45 @@
+<!--
+name: portrait-prose
+display-name: Person and story
+summary: A photograph of a person given room of its own, beside their story in their own words.
+version: 1
+type: section
+page-types: about, homepage, article
+requires: consented-people
+content-shape: narrative
+description: One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
+keywords: founder, portrait, story, about us, biography, person, who we are
+needs: one real portrait of a real person who has agreed to appear on a public page anyone can reach, at least 800px wide and taller than it is wide; their name and one line of standing for the caption; a heading; and two to four paragraphs of real prose in the brand's own voice about that person and why the brand exists
+pairs-with: claim-stack, photo-band, cta-band
+avoid-with: none
+tokens-used: --card-radius, --card-shadow, --color-heading, --color-text, --color-text-soft, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-12, --space-3, --space-4, --space-6, --space-8, --type-scale, --weight-display
+variants: side=start|end
+motion: none
+one-per-page: yes
+status: active
+added: 2026-09-04
+-->
+<!-- Take one side modifier: --start the portrait on the start side | --end on the end side.
+     Below 48rem the portrait comes first whichever side is chosen. The
+     eyebrow is a short label - "Our founder", "Who we are" - and the line
+     is deleted where there is nothing that short to say. The body takes
+     real paragraphs: duplicate the p for each, four at most. The name and
+     the standing line sit in the caption and nowhere else. -->
+<section class="portrait-prose portrait-prose--start" aria-labelledby="slot:section-id">
+  <div class="portrait-prose-inner">
+    <figure class="portrait-prose-figure">
+      <img class="portrait-prose-image" src="slot:portrait-image" alt="slot:portrait-alt" width="800" height="1000" loading="lazy">
+      <figcaption class="portrait-prose-caption">
+        <span class="portrait-prose-name"><!-- slot: person-name --></span>
+        <!-- slot: person-standing -->
+      </figcaption>
+    </figure>
+    <div class="portrait-prose-copy">
+      <p class="portrait-prose-eyebrow"><!-- slot: eyebrow --></p>
+      <h2 class="portrait-prose-heading" id="slot:section-id"><!-- slot: heading --></h2>
+      <div class="portrait-prose-body">
+        <p><!-- slot: body-paragraph --></p>
+      </div>
+    </div>
+  </div>
+</section>

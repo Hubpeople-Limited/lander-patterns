@@ -1,0 +1,16 @@
+{
+  "ground": {
+    "label": "Background",
+    "note": "The colour of the bar. Pick the one your site header is not on, so the two read as two things.",
+    "rungs": {
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your main brand colour, with the text in the colour that reads on it. The usual choice above a plain header."
+      },
+      "deep": {
+        "label": "Dark",
+        "note": "The site's dark ground. Quieter than the brand colour, and the right choice above a brand-colour header."
+      }
+    }
+  }
+}

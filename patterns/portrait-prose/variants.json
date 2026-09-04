@@ -1,0 +1,16 @@
+{
+  "side": {
+    "label": "Photo side",
+    "note": "Which side the portrait sits on when there is room for two columns. On a phone it always comes first.",
+    "rungs": {
+      "start": {
+        "label": "Photo on the left",
+        "note": "The portrait first, then the story. The default, and the way most readers expect a profile to run."
+      },
+      "end": {
+        "label": "Photo on the right",
+        "note": "The story first, then the portrait. Use it to swap sides with a section above that also carries a photograph."
+      }
+    }
+  }
+}

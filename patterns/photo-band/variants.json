@@ -1,0 +1,20 @@
+{
+  "height": {
+    "label": "Height",
+    "note": "How tall the photograph runs. The picture is cropped to fit, so a taller band shows more of it.",
+    "rungs": {
+      "short": {
+        "label": "Strip",
+        "note": "A slim strip of the photograph. A pause rather than a picture."
+      },
+      "standard": {
+        "label": "Standard",
+        "note": "A proper band of photograph, about a third of a laptop screen. The default."
+      },
+      "tall": {
+        "label": "Tall",
+        "note": "Most of a phone screen. For a photograph strong enough to hold that much room."
+      }
+    }
+  }
+}

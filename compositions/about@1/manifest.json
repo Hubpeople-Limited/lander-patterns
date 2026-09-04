@@ -1,0 +1,47 @@
+{
+  "composition": "about",
+  "version": 1,
+  "page": "about",
+  "library": "v122",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "9"
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
+      "name": "portrait-prose",
+      "version": "1"
+    },
+    {
+      "name": "claim-stack",
+      "version": "3",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "cta-band",
+      "version": "5"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}
