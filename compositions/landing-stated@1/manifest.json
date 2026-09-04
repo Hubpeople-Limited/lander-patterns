@@ -1,0 +1,51 @@
+{
+  "composition": "landing-stated",
+  "version": 1,
+  "page": "landing",
+  "library": "v122",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "9",
+      "variant": {
+        "nav": "minimal"
+      }
+    },
+    {
+      "name": "hero-stated",
+      "version": "4",
+      "variant": {
+        "ground": "brand"
+      }
+    },
+    {
+      "name": "heading-block",
+      "version": "8"
+    },
+    {
+      "name": "benefit-tiles",
+      "version": "5"
+    },
+    {
+      "name": "testimonial-grid",
+      "version": "10"
+    },
+    {
+      "name": "cta-band",
+      "version": "5"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ],
+  "slot-support": [
+    {
+      "name": "cta-assurance",
+      "version": "2",
+      "for-slot": "assurance",
+      "of": "hero-stated"
+    }
+  ]
+}

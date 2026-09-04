@@ -1,0 +1,32 @@
+<!--
+name: announcement-bar
+display-name: Announcement bar
+summary: One line and a link above the site header, for the thing you most want visitors to know right now.
+version: 1
+type: component
+page-types: homepage, landing, pricing, safety, article, features, articles-landing, location, locations-landing, about
+requires: none
+content-shape: single claim
+description: One short line and one link in a slim band above the site header, on the brand colour or the dark ground - an offer, a launch, a place newly served; the cheapest conversion lever a site has, and one line is all it holds.
+keywords: announcement, banner, promo bar, top bar, offer, notice
+needs: one line of real news the brand can stand behind - an offer that exists, a place newly served, a date that is true - and the page it links to, which must exist. The bar's own name for assistive technology, two or three words
+pairs-with: none
+avoid-with: none
+tokens-used: --color-on-primary, --color-on-scrim, --color-primary, --color-scrim, --container-max, --space-2, --space-3, --space-4
+variants: ground=brand|deep
+motion: none
+one-per-page: yes
+status: active
+added: 2026-09-04
+-->
+<!-- Take one ground modifier: --brand the brand colour | --deep the dark ground.
+     The first element of the page body, above the site header. It scrolls
+     away with the page, and a pinned header pins as it did. One line and
+     one link: a second sentence makes it a section, and a section belongs
+     on the page. -->
+<aside class="announcement-bar announcement-bar--brand" aria-label="slot:bar-label">
+  <p class="announcement-bar-inner">
+    <span class="announcement-bar-text"><!-- slot: message --></span>
+    <a class="announcement-bar-link" href="slot:link-url"><!-- slot: link-text --></a>
+  </p>
+</aside>

@@ -1,0 +1,16 @@
+{
+  "width": {
+    "label": "Width",
+    "note": "How wide the trail runs, so its left edge lines up with what is under it.",
+    "rungs": {
+      "page": {
+        "label": "Page width",
+        "note": "As wide as the page's other sections. The default, and right on any page whose sections run the full width."
+      },
+      "column": {
+        "label": "Article column",
+        "note": "As wide as the text column of an article, so the trail starts where the writing starts."
+      }
+    }
+  }
+}

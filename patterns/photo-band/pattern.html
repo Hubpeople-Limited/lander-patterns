@@ -1,0 +1,30 @@
+<!--
+name: photo-band
+display-name: Photo band
+summary: One wide photograph across the page with no words on it, to give a long page a breath.
+version: 1
+type: section
+page-types: homepage, landing, about, article, safety, location
+requires: photography
+content-shape: narrative
+description: A full-bleed photograph as a divider between two sections - no words on it or beside it, cover-cropped to one of three heights; the cheapest use of one good photograph, and the pause a long page needs between two runs of argument.
+keywords: photo, band, divider, full-bleed, image break, rhythm, breather
+needs: one real photograph at least 1600px wide that is worth looking at on its own, and alt text saying what is in it - or an empty alt where it is decoration only, which is the honest answer for most bands
+pairs-with: prose-column, portrait-prose, zigzag-rows
+avoid-with: none
+tokens-used: --color-surface-soft
+variants: height=short|standard|tall
+motion: none
+one-per-page: no
+status: active
+added: 2026-09-04
+-->
+<!-- Take one height modifier: --short a strip | --standard | --tall most of a phone screen.
+     Between two sections, never first and never last. Set width and height
+     to the file's own pixel size so the page reserves the box before the
+     image arrives. The alt says what is in the picture; where the band is
+     decoration only, an empty alt is the right answer and a screen reader
+     skips the band. -->
+<div class="photo-band photo-band--standard">
+  <img class="photo-band-image" src="slot:band-image" alt="slot:band-alt" width="1600" height="900" loading="lazy">
+</div>

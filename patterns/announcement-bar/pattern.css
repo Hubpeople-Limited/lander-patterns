@@ -1,0 +1,47 @@
+/* announcement-bar v1 - tokens only, selectors prefixed */
+
+/* Each rung names its ground and ink; every rule below reads those, so
+   nothing here knows which ground it is on. The ring is the ink rather than
+   --color-focus, which is a brand colour landing on a brand colour here. */
+.announcement-bar--brand {
+  --announcement-bar-ground: var(--color-primary);
+  --announcement-bar-ink: var(--color-on-primary);
+}
+.announcement-bar--deep {
+  --announcement-bar-ground: var(--color-scrim);
+  --announcement-bar-ink: var(--color-on-scrim);
+}
+.announcement-bar {
+  background: var(--announcement-bar-ground);
+  color: var(--announcement-bar-ink);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+.announcement-bar-inner {
+  box-sizing: border-box;
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  min-height: 44px;
+  margin: 0 auto;
+  padding-block: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  text-align: center;
+  text-wrap: pretty;
+}
+.announcement-bar-link {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+.announcement-bar-link:hover {
+  text-decoration-thickness: 2px;
+}
+.announcement-bar-link:focus-visible {
+  outline: 2px solid var(--announcement-bar-ink);
+  outline-offset: 2px;
+}

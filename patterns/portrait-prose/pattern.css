@@ -1,0 +1,85 @@
+/* portrait-prose v1 - tokens only, selectors prefixed */
+.portrait-prose {
+  padding-block: var(--space-8);
+  color: var(--color-text);
+}
+.portrait-prose-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  display: grid;
+  gap: var(--space-6);
+  align-items: start;
+}
+/* Capped on a phone: a portrait the full width of the screen is a poster,
+   and the story is what the section is for. */
+.portrait-prose-figure {
+  margin: 0;
+  max-width: 22rem;
+}
+.portrait-prose-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+.portrait-prose-caption {
+  margin-block-start: var(--space-3);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+.portrait-prose-name {
+  display: block;
+  font-weight: 700;
+  color: var(--color-text);
+}
+.portrait-prose-eyebrow {
+  margin: 0 0 var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-soft);
+}
+.portrait-prose-heading {
+  margin: 0 0 var(--space-4);
+  max-width: 18em;
+  font-family: var(--font-heading);
+  font-size: calc(clamp(1.75rem, 1.1rem + 2.4vw, 2.75rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.15 * var(--heading-leading, 1));
+  color: var(--color-heading);
+  text-wrap: balance;
+}
+.portrait-prose-body {
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.portrait-prose-body p {
+  margin: 0 0 var(--space-4);
+}
+.portrait-prose-body p:last-child {
+  margin-block-end: 0;
+}
+@media (min-width: 48rem) {
+  .portrait-prose {
+    padding-block: var(--space-12);
+  }
+  .portrait-prose-inner {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: var(--space-8);
+  }
+  .portrait-prose-figure {
+    max-width: none;
+  }
+  .portrait-prose--start .portrait-prose-figure {
+    order: 0;
+  }
+  .portrait-prose--end .portrait-prose-figure {
+    order: 1;
+  }
+}

@@ -1,0 +1,35 @@
+<!--
+name: crumb-trail
+display-name: Breadcrumb
+summary: The short trail of links above a page that says where it sits in the site.
+version: 1
+type: component
+page-types: pricing, safety, article, features, articles-landing, location, locations-landing, about
+requires: none
+content-shape: reference
+description: The breadcrumb for a page below the site root - the root, the parents that exist and the current page as plain text, in one quiet line under the header, the separators hidden from assistive technology and the trail set to the page's container or to the article column.
+keywords: breadcrumb, trail, navigation, hierarchy, parent page, where am I
+needs: the site root's relative path and its label, the label and relative path of each parent page that actually exists, and the current page's own title. A parent that has not been built is written as text, never linked
+pairs-with: none
+avoid-with: none
+tokens-used: --color-focus, --color-text, --color-text-soft, --container-max, --space-2, --space-3, --space-4
+variants: width=page|column
+motion: none
+one-per-page: yes
+status: active
+added: 2026-09-04
+-->
+<!-- Take one width modifier: --page the page's container | --column the 52rem article column.
+     Directly under the site header, above the opener. The root links by
+     relative path with a trailing slash; each parent is an extensionless
+     relative link to a page that exists; the current page is the last item,
+     text with aria-current and never a link. Duplicate the parent link and
+     its separator for each level between the root and this page, and
+     delete both where the page sits directly under the root. -->
+<nav class="crumb-trail crumb-trail--page" aria-label="Breadcrumb">
+  <a class="crumb-trail-link" href="slot:home-url"><!-- slot: home-label --></a>
+  <span class="crumb-trail-separator" aria-hidden="true">&rsaquo;</span>
+  <a class="crumb-trail-link" href="slot:parent-url"><!-- slot: parent-label --></a>
+  <span class="crumb-trail-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="crumb-trail-current" aria-current="page"><!-- slot: current-label --></span>
+</nav>

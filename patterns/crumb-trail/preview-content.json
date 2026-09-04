@@ -1,0 +1,7 @@
+{
+  "home-url": "#sample-home",
+  "home-label": "Sample home",
+  "parent-url": "#sample-parent",
+  "parent-label": "Sample parent page",
+  "current-label": "Sample current page"
+}

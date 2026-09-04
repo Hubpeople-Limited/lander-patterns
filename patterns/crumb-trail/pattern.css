@@ -1,0 +1,42 @@
+/* crumb-trail v1 - tokens only, selectors prefixed */
+.crumb-trail {
+  box-sizing: border-box;
+  margin-inline: auto;
+  padding-block: var(--space-3) var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-soft);
+}
+.crumb-trail--page {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+}
+/* 52rem is the article column, held by the article masthead, the contents
+   list and the author block. Any other number puts a second left edge on
+   the page. */
+.crumb-trail--column {
+  width: min(100% - 2 * var(--space-4), 52rem);
+}
+.crumb-trail-link {
+  color: var(--color-text-soft);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+.crumb-trail-link:hover {
+  color: var(--color-text);
+}
+.crumb-trail-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.crumb-trail-separator {
+  color: var(--color-text-soft);
+}
+.crumb-trail-current {
+  color: var(--color-text);
+  font-weight: 600;
+}

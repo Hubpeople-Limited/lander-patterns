@@ -343,6 +343,72 @@
         "name": "locations-landing",
         "version": 1
       }
+    },
+    {
+      "page": "landing",
+      "patterns": [
+        "masthead-nav:nav=minimal",
+        "hero-split",
+        "heading-block",
+        "benefit-tiles",
+        "testimonial-grid",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The paid campaign page: the header carries no menu, so every link on the page is one the page chose; the split opener, the reasons as tiles under the h2 heading-block supplies (benefit-tiles opens at h3 and says so in its own markup), three real voices, the ask. For traffic that arrived from an advert with one promise in mind.",
+      "composition": {
+        "name": "landing",
+        "version": 1
+      }
+    },
+    {
+      "page": "landing",
+      "patterns": [
+        "masthead-nav:nav=minimal",
+        "hero-stated:ground=brand",
+        "heading-block",
+        "benefit-tiles",
+        "testimonial-grid",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The one-promise campaign page, for a brand with no photograph worth leading with: the claim stated on the brand colour under a menu-free header, the reasons as tiles, three real voices, the ask.",
+      "composition": {
+        "name": "landing-stated",
+        "version": 1
+      }
+    },
+    {
+      "page": "about",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "portrait-prose",
+        "claim-stack:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The founder page: a plain statement of who is behind the brand, the person and their story with the portrait given room, the promises the story earns set large, the ask. The page every small brand has and the one a narrative shape was made for.",
+      "composition": {
+        "name": "about",
+        "version": 1
+      }
+    },
+    {
+      "page": "about",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=plain",
+        "claim-stack:ground=soft",
+        "portrait-prose",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The about page led by what the brand stands for: the promises before the person, then the founder and their story as the evidence for them. For a brand whose values are the point and whose founder is the proof.",
+      "composition": {
+        "name": "about-values",
+        "version": 1
+      }
     }
   ]
 }

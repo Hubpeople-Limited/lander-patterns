@@ -37,6 +37,42 @@
   "version": "3",
   "whole-page": false
  },
+ "announcement-bar": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "One short line and one link in a slim band above the site header, on the brand colour or the dark ground - an offer, a launch, a place newly served; the cheapest conversion lever a site has, and one line is all it holds.",
+  "display-name": "Announcement bar",
+  "motion": "none",
+  "needs": "one line of real news the brand can stand behind - an offer that exists, a place newly served, a date that is true - and the page it links to, which must exist. The bar's own name for assistive technology, two or three words",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "pricing",
+   "safety",
+   "article",
+   "features",
+   "articles-landing",
+   "location",
+   "locations-landing",
+   "about"
+  ],
+  "pairs-with": [],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "One line and a link above the site header, for the thing you most want visitors to know right now.",
+  "type": "component",
+  "variants": {
+   "ground": [
+    "brand",
+    "deep"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "article-figure": {
   "avoid-with": [],
   "behaviours": [],
@@ -206,7 +242,8 @@
    "landing",
    "safety",
    "pricing",
-   "article"
+   "article",
+   "about"
   ],
   "pairs-with": [
    "heading-block",
@@ -248,7 +285,8 @@
    "features",
    "articles-landing",
    "location",
-   "locations-landing"
+   "locations-landing",
+   "about"
   ],
   "pairs-with": [],
   "replaced-by": "",
@@ -300,6 +338,40 @@
   "type": "section",
   "variants": {},
   "version": "4",
+  "whole-page": false
+ },
+ "crumb-trail": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "reference",
+  "description": "The breadcrumb for a page below the site root - the root, the parents that exist and the current page as plain text, in one quiet line under the header, the separators hidden from assistive technology and the trail set to the page's container or to the article column.",
+  "display-name": "Breadcrumb",
+  "motion": "none",
+  "needs": "the site root's relative path and its label, the label and relative path of each parent page that actually exists, and the current page's own title. A parent that has not been built is written as text, never linked",
+  "one-per-page": true,
+  "page-types": [
+   "pricing",
+   "safety",
+   "article",
+   "features",
+   "articles-landing",
+   "location",
+   "locations-landing",
+   "about"
+  ],
+  "pairs-with": [],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "The short trail of links above a page that says where it sits in the site.",
+  "type": "component",
+  "variants": {
+   "width": [
+    "page",
+    "column"
+   ]
+  },
+  "version": "1",
   "whole-page": false
  },
  "cta-assurance": {
@@ -355,7 +427,8 @@
    "features",
    "articles-landing",
    "location",
-   "locations-landing"
+   "locations-landing",
+   "about"
   ],
   "pairs-with": [
    "pricing-tiers",
@@ -573,7 +646,8 @@
    "pricing",
    "safety",
    "article",
-   "location"
+   "location",
+   "about"
   ],
   "pairs-with": [
    "testimonial-grid",
@@ -742,7 +816,8 @@
    "features",
    "articles-landing",
    "location",
-   "locations-landing"
+   "locations-landing",
+   "about"
   ],
   "pairs-with": [
    "cta-assurance",
@@ -895,7 +970,8 @@
    "features",
    "articles-landing",
    "location",
-   "locations-landing"
+   "locations-landing",
+   "about"
   ],
   "pairs-with": [],
   "replaced-by": "",
@@ -1160,6 +1236,43 @@
   "version": "4",
   "whole-page": false
  },
+ "photo-band": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "narrative",
+  "description": "A full-bleed photograph as a divider between two sections - no words on it or beside it, cover-cropped to one of three heights; the cheapest use of one good photograph, and the pause a long page needs between two runs of argument.",
+  "display-name": "Photo band",
+  "motion": "none",
+  "needs": "one real photograph at least 1600px wide that is worth looking at on its own, and alt text saying what is in it - or an empty alt where it is decoration only, which is the honest answer for most bands",
+  "one-per-page": false,
+  "page-types": [
+   "homepage",
+   "landing",
+   "about",
+   "article",
+   "safety",
+   "location"
+  ],
+  "pairs-with": [
+   "prose-column",
+   "portrait-prose",
+   "zigzag-rows"
+  ],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "One wide photograph across the page with no words on it, to give a long page a breath.",
+  "type": "section",
+  "variants": {
+   "height": [
+    "short",
+    "standard",
+    "tall"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "photo-cards": {
   "avoid-with": [
    "gallery-scroll",
@@ -1248,6 +1361,39 @@
   "version": "5",
   "whole-page": false
  },
+ "portrait-prose": {
+  "avoid-with": [],
+  "behaviours": [],
+  "content-shape": "narrative",
+  "description": "One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.",
+  "display-name": "Person and story",
+  "motion": "none",
+  "needs": "one real portrait of a real person who has agreed to appear on a public page anyone can reach, at least 800px wide and taller than it is wide; their name and one line of standing for the caption; a heading; and two to four paragraphs of real prose in the brand's own voice about that person and why the brand exists",
+  "one-per-page": true,
+  "page-types": [
+   "about",
+   "homepage",
+   "article"
+  ],
+  "pairs-with": [
+   "claim-stack",
+   "photo-band",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "consented-people",
+  "status": "active",
+  "summary": "A photograph of a person given room of its own, beside their story in their own words.",
+  "type": "section",
+  "variants": {
+   "side": [
+    "start",
+    "end"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "portrait-wall": {
   "avoid-with": [
    "gallery-scroll",
@@ -1322,7 +1468,8 @@
    "homepage",
    "landing",
    "pricing",
-   "location"
+   "location",
+   "about"
   ],
   "pairs-with": [
    "article-masthead",
