@@ -23,7 +23,10 @@ page, and holds each behaviour to what its row says:
     carousel   two controls are built inside the block and none ship in the
                authored render; next moves the slide and previous moves it
                back, wrapping on a radio carousel and disabling at the ends
-               of a scroller; the controls are thumb-sized at a phone width
+               of a scroller; the controls are thumb-sized at a phone width,
+               and they hold their place while the carousel is operated -
+               a control that moves as the rail does is one the reader has
+               to chase, and it passes every other check on this list
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -68,6 +71,10 @@ BEHAVIOURS = ("counter", "scrollspy", "carousel")
 WIDTH, HEIGHT = 1280, 800
 PHONE = 360
 TAP_MIN = 44
+# How far a control a behaviour builds may travel while its carousel is
+# operated. Not zero: a scrollbar appearing or a snap settling can shift a row
+# by a pixel or two, and a gate that fails on that teaches people to ignore it.
+CONTROL_DRIFT_MAX = 4
 # Past the counter's default duration, with room for a slow runner.
 COUNTER_SETTLE_MS = 2600
 # The figures a real brand writes: a grouped integer with a suffix, a
@@ -415,7 +422,131 @@ def check_carousel(shell, name, tokens):
         if not box or min(box) < TAP_MIN:
             faults.append(f"{where}: the {label} control is {box} at {PHONE}px, under "
                           f"the {TAP_MIN}px thumb target")
+    # Phone: the controls hold their place while the carousel is operated. A
+    # control that moves as the rail does is one the reader has to chase, and a
+    # thumb already travelling towards it lands on a photograph instead. This is
+    # the half a working control can still fail: the two above prove it is built,
+    # big enough and moves the slide, all of which stay true of a button that
+    # will not stay still. Phone width because that is where a control is aimed
+    # at rather than clicked, and where the scrollport is narrowest.
+    tab = shell.open(html, f"{name}-carousel-stability", width=PHONE)
+    try:
+        tab.wait_for_timeout(100)
+        travel = tab.evaluate(CAROUSEL_STABILITY_JS)
+    finally:
+        tab.close()
+    if travel.get("controls"):
+        for label in ("previous", "next"):
+            moved = travel["moved"][label]
+            if moved > CONTROL_DRIFT_MAX:
+                faults.append(
+                    f"{where}: the {label} control moves {moved}px across the "
+                    f"carousel's range at {PHONE}px, over the {CONTROL_DRIFT_MAX}px "
+                    f"a control may travel - it sits at {travel['seen'][label]}")
+            if not travel["visible"][label]:
+                faults.append(f"{where}: the {label} control leaves the viewport "
+                              f"while the carousel is operated")
+    # Every placement the registry offers, on this pattern's own markup. A
+    # placement is an option a page can set, so each one is a way this pattern
+    # can ship: "none" has to build nothing at all, and anything else has to
+    # record what it resolved to and still hold its controls still.
+    for asked in ("none", "edges"):
+        marked = html.replace('data-hub-module="carousel"',
+                              f'data-hub-module="carousel" '
+                              f'data-hub-carousel-controls="{asked}"', 1)
+        tab = shell.open(marked, f"{name}-carousel-controls-{asked}", width=PHONE)
+        try:
+            tab.wait_for_timeout(100)
+            placed = tab.evaluate(CAROUSEL_PLACEMENT_JS)
+        finally:
+            tab.close()
+        used = placed.get("used")
+        if asked == "none":
+            if placed["controls"]:
+                faults.append(f"{where}: controls are built with "
+                              f'data-hub-carousel-controls="none"')
+            if used != "none":
+                faults.append(f'{where}: asked for "none" and recorded "{used}"')
+            continue
+        if used not in ("edges", "under"):
+            faults.append(f'{where}: asked for "edges" and recorded "{used}" - '
+                          f"the placement in force is not one the registry offers")
+        if not placed["controls"]:
+            faults.append(f'{where}: no controls built for "{asked}", which '
+                          f"resolved to \"{used}\"")
+        elif placed["nameKept"] is not True:
+            faults.append(f"{where}: a control in the {used} placement lost its "
+                          f"label as its accessible name")
     return faults
+
+
+CAROUSEL_STABILITY_JS = """
+async () => {
+  const block = document.querySelector('[data-hub-module~="carousel"]');
+  const prev = block && block.querySelector('.hub-carousel-prev');
+  const next = block && block.querySelector('.hub-carousel-next');
+  if (!prev || !next) return { controls: false };
+  const scroller = /^(auto|scroll)$/.test(getComputedStyle(block).overflowX)
+    ? block : Array.from(block.querySelectorAll('ul, ol'))
+        .find(l => /^(auto|scroll)$/.test(getComputedStyle(l).overflowX));
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const seen = { previous: [], next: [] };
+  const vis = { previous: true, next: true };
+  const sample = () => {
+    for (const [label, el] of [['previous', prev], ['next', next]]) {
+      const r = el.getBoundingClientRect();
+      seen[label].push(Math.round(r.left));
+      if (r.right < 1 || r.left > window.innerWidth - 1) vis[label] = false;
+    }
+  };
+  sample();
+  if (scroller) {
+    // A scroller moves continuously, so walk its whole range rather than
+    // trusting the ends: a control can sit still at both and travel between.
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    for (const frac of [0.25, 0.5, 0.75, 1]) {
+      scroller.scrollLeft = Math.round(max * frac);
+      await wait(160);
+      sample();
+    }
+  } else {
+    // A radio carousel moves in steps; one full lap covers every state.
+    const radios = Array.from(block.querySelectorAll('input[type="radio"]'));
+    for (let i = 0; i < Math.max(radios.length, 1); i++) {
+      next.click();
+      await wait(160);
+      sample();
+    }
+  }
+  const spread = xs => Math.max(...xs) - Math.min(...xs);
+  return {
+    controls: true,
+    moved: { previous: spread(seen.previous), next: spread(seen.next) },
+    visible: vis,
+    seen,
+  };
+}
+"""
+
+
+CAROUSEL_PLACEMENT_JS = """
+() => {
+  const block = document.querySelector('[data-hub-module~="carousel"]');
+  const prev = block && block.querySelector('.hub-carousel-prev');
+  const next = block && block.querySelector('.hub-carousel-next');
+  const asked = block ? block.getAttribute('data-hub-carousel-prev-label') : null;
+  return {
+    used: block ? block.getAttribute('data-hub-carousel-controls-used') : null,
+    controls: !!(prev && next),
+    // The words stay the control's accessible name in every placement, even
+    // where the look replaces them with an arrow.
+    nameKept: prev && next
+      ? (prev.textContent.trim() === (asked || 'Previous') || prev.textContent.trim().length > 0)
+        && next.textContent.trim().length > 0
+      : null,
+  };
+}
+"""
 
 
 CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel}
