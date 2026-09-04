@@ -755,6 +755,15 @@ change. **A major is a new floating URL**, and pages on the old one are never
 moved to it — which is what makes the third row of that table safe rather than
 frightening.
 
+**Going back to an earlier release is a release like any other.** Restore the
+earlier bundle's contents, give them a new version, and let that carry the
+floating URL forward. There is no way to point the floating URL at a version
+already published, and that is deliberate: the bundle reports its own version
+at runtime, so a floating URL serving bytes that call themselves something else
+would leave nobody able to say what a page is running. Where a cache sits in
+front of the published files, it needs clearing too, or the fix waits for that
+cache to expire rather than the browser's.
+
 None of this is yours to run. `ci/publish_hub.py` needs a minifier, so the
 release job builds `publish/` and commits it; a pull request only rehearses it,
 which is enough to catch a bundle that will not minify or a version already

@@ -9,9 +9,15 @@ URL forms and they behave differently:
 
 A served page loads the floating one, so a released fix reaches every live page
 without that page being rebuilt. The pinned one is what a site references when
-it wants to hold a version still, and what a floating URL is rolled back to.
-Once published its bytes never change, because something out there is holding
-it.
+it wants to hold a version still. Once published its bytes never change,
+because something out there is holding it.
+
+Going back to an earlier release is a release like any other: restore the
+earlier bundle's contents, give it a new version, and let that move the
+floating URL forward. There is no way to point the floating URL at a version
+already published, and that is deliberate - the bundle reports its own version
+at runtime, so a floating URL serving bytes that call themselves something
+else would leave nobody able to say what a page is running.
 
 `publish/` only ever grows, and it is committed. The host replaces its whole
 contents on each deploy, so the accumulated tree in the repository is both the
@@ -108,6 +114,19 @@ def minify(source, out_dir):
     if run.returncode != 0:
         return None, ("esbuild did not run, so nothing was minified:\n"
                       + (run.stderr or run.stdout).strip())
+
+    # The map records where the source sat on the machine that built it,
+    # relative to an output directory that is a temporary one. That is a
+    # different string on every machine, which makes a published file depend on
+    # who ran the build and leaves --check unable to agree with itself
+    # anywhere but there. The whole source is embedded in the map already, so
+    # the path is a label: name it after the file in this repository.
+    smap = out.with_suffix(".js.map")
+    if smap.is_file():
+        data = json.loads(smap.read_text(encoding="utf-8"))
+        data["sources"] = ["lib/hub.js"] * len(data.get("sources", []))
+        smap.write_text(json.dumps(data, separators=(",", ":")),
+                        encoding="utf-8")
     return out, None
 
 
