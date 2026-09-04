@@ -298,6 +298,12 @@
     min-width: var(--masthead-nav-tap);
     min-height: var(--masthead-nav-tap);
   }
+  /* A button with no word in it is one tap target wide, so the mark may
+     take the rest of the row. --row has no button and keeps the 45%. */
+  .masthead-nav--drawer.masthead-nav--icon .masthead-nav-mark,
+  .masthead-nav--panel.masthead-nav--icon .masthead-nav-mark {
+    max-width: calc(100% - var(--masthead-nav-tap) - var(--space-3));
+  }
   /* A long label ellipsises; border-box holds the padding inside the cap. */
   .masthead-nav-toggle {
     box-sizing: border-box;
