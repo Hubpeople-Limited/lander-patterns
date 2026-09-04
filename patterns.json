@@ -234,10 +234,10 @@
   "avoid-with": [],
   "behaviours": [],
   "content-shape": "reference",
-  "description": "The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground; the platform fills every link, the page owns the markup.",
+  "description": "The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.",
   "display-name": "Footer",
   "motion": "none",
-  "needs": "the brand's name for the copyright line. Every link on it is platform furniture",
+  "needs": "the brand's name for the copyright line, and where the mark links to when it is shown. Every link on it is platform furniture",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -254,15 +254,23 @@
   "replaced-by": "",
   "requires": "none",
   "status": "active",
-  "summary": "Your site footer, with the menu, the legal links and the copyright line.",
+  "summary": "Your site footer, with the menu, the legal links and the copyright line - on one line or in columns, with or without your logo.",
   "type": "component",
   "variants": {
    "ground": [
     "plain",
     "soft"
+   ],
+   "layout": [
+    "line",
+    "columns"
+   ],
+   "mark": [
+    "none",
+    "logo"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "comparison-table": {

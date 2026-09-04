@@ -1346,8 +1346,8 @@
   outline-offset: 4px;
 }
 
-/* ---- colophon v1 ---- */
-/* colophon v1 - tokens only, selectors prefixed */
+/* ---- colophon v2 ---- */
+/* colophon v2 - tokens only, selectors prefixed */
 .colophon {
   border-top: 1px solid var(--color-rule);
   padding-block: var(--space-8) var(--space-6);
@@ -1365,9 +1365,32 @@
   max-width: var(--container-max);
   margin-inline: auto;
   display: grid;
-  justify-items: center;
   gap: var(--space-4);
+}
+/* layout: --line is the centred stack at every width; --columns spreads the
+   three groups across the row from 60rem up and is the same stack below. */
+.colophon--line .colophon-inner,
+.colophon--columns .colophon-inner {
+  justify-items: center;
   text-align: center;
+}
+/* mark: the brand mark above everything else, or nothing at all. */
+.colophon--none .colophon-mark {
+  display: none;
+}
+.colophon--logo .colophon-mark {
+  display: inline-flex;
+  margin-block-end: var(--space-2);
+}
+/* The set height is the floor: `height: auto` under a `max-height` alone
+   resolves a viewBox-only SVG to 0x0. A tenth over the header's height, so
+   the footer mark reads as a signature and not a repeat of the bar. */
+.colophon-logo {
+  display: block;
+  width: auto;
+  height: calc(var(--logo-height, 2.75rem) * 1.1);
+  max-width: 100%;
+  object-fit: contain;
 }
 /* The platform decides the menu's own markup, so its rules reach it by
    descent rather than by a generated class name. */
@@ -1406,4 +1429,31 @@
 }
 .colophon-copyright {
   margin: 0;
+}
+@media (min-width: 60rem) {
+  .colophon--columns .colophon-inner {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: start;
+    align-items: start;
+    text-align: start;
+    gap: var(--space-6) var(--space-8);
+  }
+  /* A brand with no managed footer menu deletes the nav: two columns then,
+     not two columns and a hole. */
+  .colophon--columns .colophon-inner:not(:has(.colophon-menu)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .colophon--columns .colophon-mark {
+    grid-column: 1 / -1;
+  }
+  .colophon--columns .colophon-menu ul,
+  .colophon--columns .colophon-legal {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: var(--space-2);
+  }
+  .colophon--columns .colophon-copyright {
+    justify-self: end;
+    text-align: end;
+  }
 }
