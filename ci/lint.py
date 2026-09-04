@@ -1011,11 +1011,14 @@ def check_version_bumps(folders):
         rel = f"patterns/{folder.name}"
         old = {}
         for name in ("pattern.html", "pattern.css"):
+            # Decoded here, not by subprocess: text=True uses the locale
+            # encoding, and where that is not UTF-8 the first non-ASCII
+            # character in a pattern reads as a change that is not one.
             got = subprocess.run(["git", "show", f"{ref}:{rel}/{name}"],
-                                 capture_output=True, text=True, cwd=ROOT)
+                                 capture_output=True, cwd=ROOT)
             if got.returncode != 0:
                 break             # new pattern in this branch
-            old[name] = got.stdout
+            old[name] = got.stdout.decode("utf-8")
         if len(old) != 2:
             continue
         now_html = (folder / "pattern.html").read_text(encoding="utf-8")
@@ -1041,6 +1044,106 @@ def check_version_bumps(folders):
                  f"{' and '.join(moved)} changed since {ref[:8]} but version "
                  f"is still {now.group(1).strip()} - a brand that pinned "
                  f"{folder.name}@{now.group(1).strip()} has different code")
+
+
+HUB_VERSION = re.compile(r"window\.HubBehaviours\s*=\s*\{[^}]*?version\s*:\s*"
+                         r"[\"']([^\"']+)[\"']", re.S)
+SEMVER = re.compile(r"\d+\.\d+\.\d+")
+
+
+def hub_version_of(text):
+    m = HUB_VERSION.search(text)
+    return m.group(1).strip() if m else None
+
+
+def hub_version_faults(now_text, was_text=None):
+    """What is wrong with the bundle's version, as plain sentences.
+
+    The decision only, with no repository and no git in it, so the gate can be
+    put through every case it claims to catch. `was_text` is the bundle as it
+    stands on the branch this one came from, or None when there is nothing to
+    compare against.
+    """
+    faults = []
+    now = hub_version_of(now_text)
+    if now is None:
+        return ["does not declare a version on window.HubBehaviours, so there "
+                "is no name to publish it under"]
+    if not SEMVER.fullmatch(now):
+        return [f"version {now} is not major.minor.patch - the published URL "
+                f"and the floating major are both derived from it"]
+
+    # The header comment states the version too, and a reader believes
+    # whichever they happen to look at. Require them to agree on the part the
+    # header carries.
+    head = re.match(r"\s*/\*\s*hub-behaviours v(\d+\.\d+)", now_text)
+    if head and head.group(1) != ".".join(now.split(".")[:2]):
+        faults.append(f"the header says v{head.group(1)} and the constant "
+                      f"says {now}")
+
+    if was_text is None or was_text == now_text:
+        return faults
+    was = hub_version_of(was_text)
+    if was is None:
+        return faults
+    if was == now:
+        faults.append(f"changed but the version is still {now} - a site that "
+                      f"pinned {now} would be served different code under the "
+                      f"same URL")
+    elif SEMVER.fullmatch(was):
+        def parts(v):
+            return tuple(int(n) for n in v.split("."))
+        if parts(now) < parts(was):
+            faults.append(f"version went backwards, {was} to {now}. "
+                          f"Publishing is append-only, so a lower number names "
+                          f"a URL that is already serving other bytes")
+    return faults
+
+
+def check_hub_version_bump():
+    """The bundle's version is a URL, and a published URL is a promise.
+
+    `window.HubBehaviours.version` decides what
+    `/hub-behaviours/<version>/hub.min.js` is published as, and a published
+    version is immutable - a site pins it and gets those exact bytes for as
+    long as it runs. So the guarantee the patterns get from
+    `check_version_bumps` applies here too: lib/hub.js may not change under an
+    unchanged version.
+
+    Which part moves is the contributor's call, and the shape says it: patch
+    for a fix inside a behaviour, minor for a new behaviour or a new optional
+    `data-hub-*` option, major for anything that breaks a markup contract - a
+    major is a new floating URL, and pages on the old one stay on it.
+
+    The comparison is skipped when there is no git or no upstream to diff
+    against, the same conditions check_version_bumps skips under; the checks
+    that need no history still run.
+    """
+    hub = ROOT / "lib" / "hub.js"
+    if not hub.is_file():
+        return
+    now_text = hub.read_text(encoding="utf-8")
+    was_text = None
+
+    inside_git = subprocess.run(["git", "rev-parse", "--git-dir"],
+                                capture_output=True, text=True, cwd=ROOT)
+    if inside_git.returncode == 0:
+        base = subprocess.run(["git", "merge-base", "HEAD", "origin/main"],
+                              capture_output=True, text=True, cwd=ROOT)
+        # An unresolvable base is already reported by check_version_bumps.
+        if base.returncode == 0:
+            # Decoded here rather than by subprocess: text=True uses the locale
+            # encoding, which is not UTF-8 everywhere this is run, and the
+            # first non-ASCII character in the file then reads as a change that
+            # is not one.
+            got = subprocess.run(
+                ["git", "show", f"{base.stdout.strip()}:lib/hub.js"],
+                capture_output=True, cwd=ROOT)
+            if got.returncode == 0:     # otherwise the bundle is new here
+                was_text = got.stdout.decode("utf-8")
+
+    for detail in hub_version_faults(now_text, was_text):
+        find(hub, "hub-version", detail)
 
 
 def check_control_bytes(path):
@@ -1743,6 +1846,7 @@ def main():
 
     check_dial_range_is_stated_once()
     check_hub_tokens(CONTRACT)
+    check_hub_version_bump()
     check_version_bumps(sorted(p for p in PATTERNS.iterdir() if p.is_dir()))
 
     for path, field, ref in cross_refs:

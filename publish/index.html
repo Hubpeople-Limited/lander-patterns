@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Behaviour bundle</title>
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; margin: 3rem auto;
+         max-width: 44rem; padding: 0 1.25rem; color: #16181d;
+         background: #fff; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+              font-size: 0.9em; }
+  pre { background: #f4f5f7; padding: 0.9rem 1rem; border-radius: 6px;
+         overflow-x: auto; }
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e8eaed; background: #16181d; }
+    pre { background: #23262d; }
+  }
+</style>
+<h1>Behaviour bundle</h1>
+<p>The JavaScript half of the pattern library, served as an ES module. Markup
+opts in with <code>data-hub-module</code> attributes, which do nothing until
+this file is on the page.</p>
+
+<h2>Current release</h2>
+<p><strong>1.5.0</strong>, 19,011 bytes minified.</p>
+
+<h2>For a page the platform serves</h2>
+<p>The floating URL for the major. Each release repoints it, so a fix arrives
+without the page being rebuilt.</p>
+<pre>&lt;script type="module"
+        src="/hub-behaviours/v1/hub.min.js"&gt;&lt;/script&gt;</pre>
+
+<h2>For a site that holds a version still</h2>
+<p>Immutable, so it can carry an integrity hash. A module script is fetched
+cross-origin, which is what the <code>crossorigin</code> attribute is for.</p>
+<pre>&lt;script type="module" crossorigin="anonymous"
+        src="/hub-behaviours/1.5.0/hub.min.js"
+        integrity="sha384-v6LzUo2CdLDnVsLtbMGlNuTKq8OuznM5Ohgbp9+5WfI4OdE7Y6/GCE74lwNRXpNl"&gt;&lt;/script&gt;</pre>
+
+<h2>Every version</h2>
+<p><a href="/hub-behaviours/manifest.json">manifest.json</a> lists each published
+version with its integrity hash and the date it was first served.</p>
+</html>

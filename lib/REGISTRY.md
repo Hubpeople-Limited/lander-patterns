@@ -12,6 +12,12 @@ hooks are inert data attributes until the platform injects the library on
 served pages. Behaviours must therefore always be pure enhancements — the
 no-JS render is the page.
 
+Each release publishes the built bundle at
+`/hub-behaviours/v1/hub.min.js`, and at an immutable
+`/hub-behaviours/<version>/hub.min.js` beside it. The version is
+`window.HubBehaviours.version` and it moves under the rules in
+[CONTRIBUTING.md](../CONTRIBUTING.md#the-bundles-version-and-what-publishing-does-with-it).
+
 | Behaviour | Since | What it does | Markup contract |
 |---|---|---|---|
 | `menu` | v1.4 | Makes every parent item of a navigation list an operable control with `aria-expanded`: click and `Enter` toggle its panel, `ArrowDown` opens it and moves into it, `Escape` closes it and returns focus, `ArrowLeft` and `ArrowRight` move between parents, an outside press closes, and hover opens with a short grace before it closes. A parent that is a real link keeps the link and gains a button beside it; a parent with no `href` becomes the button. A panel whose edge would leave the viewport is anchored to its other edge. Acts only while the stylesheet positions the child list, so the same list inline in a drawer is left as authored; with no library the panels still open on hover and `:focus-within` from the stylesheet. Emits `hub:menu:open` and `hub:menu:close`; it moves nothing itself | `data-hub-module="menu"` on a `<nav>` whose first list is the menu; a parent is any item of that list holding a list of its own, and its control is its first `<a>` or `<button>` |

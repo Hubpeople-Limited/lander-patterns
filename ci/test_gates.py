@@ -2074,6 +2074,156 @@ def check_behaviours_run():
     return failures
 
 
+def _hub(version, header=None, body=""):
+    """A stand-in lib/hub.js carrying a version and nothing else that matters.
+
+    The header line is written separately from the constant so the two can be
+    made to disagree, which is one of the things the gate is for.
+    """
+    header = header if header is not None else ".".join(version.split(".")[:2])
+    return (f"/* hub-behaviours v{header} - the controlled behaviour library.\n"
+            f" */\n{body}\n"
+            f'window.HubBehaviours = {{ version: "{version}", initAll }};\n')
+
+
+# (label, the bundle now, the bundle on main or None, how many faults)
+HUB_VERSION_CASES = [
+    # Fires. Each is a URL that would end up serving bytes it did not promise.
+    ("changed with no bump", _hub("1.4.0", body="const a = 1;"),
+     _hub("1.4.0"), 1),
+    ("version rolled backwards", _hub("1.3.0"), _hub("1.4.0"), 1),
+    ("no version to publish under",
+     "/* hub-behaviours v1.4 */\nwindow.HubBehaviours = { initAll };\n",
+     None, 1),
+    ("a version that is not major.minor.patch", _hub("1.4"), None, 1),
+    ("header and constant disagree", _hub("1.5.0", header="1.4"), None, 1),
+
+    # Quiet. A gate that fails an ordinary release teaches people to ignore it.
+    ("unchanged", _hub("1.4.0"), _hub("1.4.0"), 0),
+    ("a patch for a fix", _hub("1.4.1", body="const a = 1;"),
+     _hub("1.4.0"), 0),
+    ("a minor for a new behaviour", _hub("1.5.0", body="const a = 1;"),
+     _hub("1.4.0"), 0),
+    ("a major for a broken contract", _hub("2.0.0", header="2.0",
+                                           body="const a = 1;"),
+     _hub("1.4.0"), 0),
+    ("no history to compare against", _hub("1.4.0"), None, 0),
+    ("the bundle exactly as it ships",
+     (HERE.parent / "lib" / "hub.js").read_text(encoding="utf-8"), None, 0),
+]
+
+
+def check_hub_version():
+    """lint.py's bundle-version gate, both directions.
+
+    The bundle is the one file in the library published to a URL rather than
+    copied into a page, so its version is a promise to whatever pinned it.
+    Every case runs against the decision itself, with no repository and no git
+    in the way.
+    """
+    sys.path.insert(0, str(HERE))
+    import lint
+    failures = []
+    print("ci/lint.py, the behaviour bundle's version")
+    for label, now, was, want in HUB_VERSION_CASES:
+        got = len(lint.hub_version_faults(now, was))
+        ok = got == want
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} "
+              f"faults={got} want={want}")
+        if not ok:
+            failures.append(label)
+    return failures
+
+
+def check_hub_publish():
+    """ci/publish_hub.py, and the two properties the delivery rests on.
+
+    A published version is immutable, and publishing is append-only. Neither
+    is visible in a single run - the first needs a version to already be out
+    there, the second needs a release after it - so both are driven here
+    against a throwaway tree, with the minified file supplied rather than
+    built, so the cases need no network.
+    """
+    failures = []
+    print("ci/publish_hub.py, the published tree")
+    script = str(HERE / "publish_hub.py")
+
+    def run_publish(source_text, minified_text, out, extra=()):
+        work = out.parent
+        source = work / "hub.js"
+        source.write_text(source_text, encoding="utf-8")
+        minified = work / "min.js"
+        minified.write_text(minified_text, encoding="utf-8")
+        return subprocess.run(
+            [sys.executable, script, "--source", str(source), "--out",
+             str(out), "--minified", str(minified), *extra],
+            capture_output=True, text=True, encoding="utf-8")
+
+    def case(label, got, want):
+        ok = got.returncode == want
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} "
+              f"exit={got.returncode} want={want}")
+        if not ok:
+            print("      " + (got.stdout.strip().splitlines()
+                              or ["(no output)"])[-1])
+            failures.append(label)
+        return ok
+
+    work = Path(tempfile.mkdtemp(prefix="hub-gate-"))
+    try:
+        out = work / "publish"
+        case("a first release", run_publish(_hub("1.4.0"), "//a", out), 0)
+        case("the same release again",
+             run_publish(_hub("1.4.0"), "//a", out), 0)
+        # The one that matters. Same version, different bytes: a site holding
+        # the pin would be served code it never agreed to.
+        case("republishing a version with other bytes",
+             run_publish(_hub("1.4.0"), "//b", out), 1)
+        case("a bumped release", run_publish(_hub("1.4.1"), "//b", out), 0)
+
+        # Append-only. The release above must not have taken the earlier URL
+        # with it, because that is exactly what a deploy of the whole site
+        # would do without this tree behind it.
+        kept = (out / "hub-behaviours" / "1.4.0" / "hub.min.js")
+        ok = kept.is_file() and kept.read_text(encoding="utf-8") == "//a"
+        print(f"  {'ok  ' if ok else 'FAIL'} "
+              f"{'the earlier pinned URL still serves its own bytes':<46} "
+              f"kept={kept.is_file()} want=True")
+        if not ok:
+            failures.append("earlier pinned URL survives a release")
+
+        # And the floating URL moved to the new one, which is the other half:
+        # a fix that reaches a page without the page changing.
+        floating = (out / "hub-behaviours" / "v1" / "hub.min.js")
+        ok = floating.read_text(encoding="utf-8") == "//b"
+        print(f"  {'ok  ' if ok else 'FAIL'} "
+              f"{'the floating URL moved to the new release':<46} "
+              f"want=True")
+        if not ok:
+            failures.append("floating URL follows the release")
+
+        # A rehearsal must leave nothing behind, or the check a pull request
+        # runs would itself be a publication.
+        before = sorted(p.name for p in (out / "hub-behaviours").iterdir())
+        run_publish(_hub("1.5.0"), "//c", out, extra=["--dry-run"])
+        after = sorted(p.name for p in (out / "hub-behaviours").iterdir())
+        ok = before == after
+        print(f"  {'ok  ' if ok else 'FAIL'} "
+              f"{'a dry run publishes nothing':<46} want=True")
+        if not ok:
+            failures.append("dry run writes nothing")
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+    # Deliberately no assertion here that the committed publish/ is current.
+    # It is written by the release job, so on a pull request that moves the
+    # bundle it is one release behind by design, and a check for it would fail
+    # every such contribution. What the pull request gets instead is the
+    # --dry-run in the workflow, which builds the whole thing and writes none
+    # of it.
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -2143,7 +2293,12 @@ def main():
     failures += check_recipes()
     print()
     failures += check_header_fit()
+    print()
     failures += check_behaviours_run()
+    print()
+    failures += check_hub_version()
+    print()
+    failures += check_hub_publish()
     print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
@@ -2164,7 +2319,8 @@ def main():
              + len(MEASURE_CALIBRATION) + 3
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
              + 5 + 5
-             + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2)
+             + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
+             + len(HUB_VERSION_CASES) + 7)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

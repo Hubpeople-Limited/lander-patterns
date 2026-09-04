@@ -723,6 +723,45 @@ and a pattern demonstrates it — and it must obey five rules:
 The preview harness embeds `lib/hub.js` so behaviour patterns can be seen
 working; real pages get it only from the platform.
 
+### The bundle's version, and what publishing does with it
+
+`lib/hub.js` is the one file here **published to a URL** rather than copied
+into a page, so it carries its own version, separate from the library tag in
+`LATEST`. The library tag moves on every merge. The bundle's version moves only
+when the bundle does.
+
+It lives in one place — `window.HubBehaviours.version` at the foot of the file
+— and CI refuses a change to `lib/hub.js` that leaves it alone. Which part to
+move is yours to judge:
+
+| The change | Move |
+|---|---|
+| A fix inside a behaviour, markup contract unchanged | patch |
+| A new behaviour, or a new optional `data-hub-*` option | minor |
+| Anything a page's existing markup would notice | major |
+
+A release then writes two URLs, and the difference between them is the whole
+delivery:
+
+```
+/hub-behaviours/1.4.0/hub.min.js     pinned, immutable, cached for a year
+/hub-behaviours/v1/hub.min.js        the current 1.x, cached for an hour
+```
+
+A served page loads the floating one, so a patch reaches every live page
+without any of them being rebuilt. A site holding a version still references
+the pinned one and can carry its `integrity` hash, because those bytes never
+change. **A major is a new floating URL**, and pages on the old one are never
+moved to it — which is what makes the third row of that table safe rather than
+frightening.
+
+None of this is yours to run. `ci/publish_hub.py` needs a minifier, so the
+release job builds `publish/` and commits it; a pull request only rehearses it,
+which is enough to catch a bundle that will not minify or a version already
+serving other bytes. `publish/` only ever grows: the host replaces its whole
+contents on each deploy, so that committed tree is what stops a release
+deleting a URL something still loads.
+
 ## Changing an existing pattern
 
 Any change to `pattern.css` (or to the markup's structure) bumps `version` in

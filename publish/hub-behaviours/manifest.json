@@ -1,0 +1,16 @@
+{
+  "current": {
+    "v1": "1.5.0"
+  },
+  "floating": {
+    "v1": "/hub-behaviours/v1/hub.min.js"
+  },
+  "versions": {
+    "1.5.0": {
+      "bytes": 19011,
+      "integrity": "sha384-v6LzUo2CdLDnVsLtbMGlNuTKq8OuznM5Ohgbp9+5WfI4OdE7Y6/GCE74lwNRXpNl",
+      "path": "/hub-behaviours/1.5.0/hub.min.js",
+      "published": "2026-09-04"
+    }
+  }
+}
