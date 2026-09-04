@@ -2,12 +2,12 @@
 name: testimonial-carousel
 display-name: Testimonial carousel
 summary: Testimonials you move through one at a time.
-version: 7
+version: 8
 type: section
 page-types: homepage, landing, pricing
 requires: consented-people
 content-shape: peer set
-description: Reader-driven testimonial carousel on a radio group - one card centre stage, its neighbours peeking at reduced scale, no script and nothing that moves on its own.
+description: Reader-driven testimonial carousel on a radio group - one card centre stage, its neighbours peeking at reduced scale, nothing that moves on its own, and previous and next controls when the behaviour library is on the page.
 keywords: testimonials, carousel, slider, social proof, quotes, reviews
 needs: at least three real testimonials - each quote as the person actually wrote it, with a real name and a true attribution line; one real portrait per person with real alt text; a section heading; each quote short enough to read in about three lines, since the longest in the set sets the height of every slide. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing
 pairs-with: heading-block
@@ -17,6 +17,7 @@ motion: subtle
 one-per-page: yes
 status: active
 added: 2026-08-22
+behaviours: carousel
 -->
 <section class="testimonial-carousel">
   <div class="testimonial-carousel-inner">
@@ -28,7 +29,7 @@ added: 2026-08-22
          <label>, give all three the same number, and add that number to each
          of the five selector lists in pattern.css. Every accessible name
          below says "of 3" - change all of them when the count changes. -->
-    <div class="testimonial-carousel-machine" role="group" aria-labelledby="slot:carousel-title-id">
+    <div class="testimonial-carousel-machine" role="group" aria-labelledby="slot:carousel-title-id" data-hub-module="carousel" data-hub-carousel-prev-label="slot:previous-label" data-hub-carousel-next-label="slot:next-label">
       <!-- These inputs are the keyboard interface: arrow keys move between
            them and the stage follows. They are clipped, never hidden, and
            they must stay here, ahead of the stage. -->

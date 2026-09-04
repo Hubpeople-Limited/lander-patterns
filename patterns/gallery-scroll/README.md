@@ -31,3 +31,8 @@ images are portrait. Smooth scrolling engages only for visitors who have not
 asked for reduced motion. The items ship `width="480" height="360"` as a
 stand-in ratio — **set both attributes to each real image's intrinsic
 dimensions** when filling the slots.
+
+**With the library, `carousel` builds a previous and a next control** inside the
+scroller, sticky to its start edge so they stay in view; each moves the rail by one
+item and disables at the ends. Without it the rail is the rail: swipe, scroll or
+keyboard, exactly as authored.

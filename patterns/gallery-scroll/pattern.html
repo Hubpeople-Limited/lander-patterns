@@ -2,12 +2,12 @@
 name: gallery-scroll
 display-name: Photo gallery
 summary: A row of photographs you swipe sideways through.
-version: 4
+version: 5
 type: component
 page-types: homepage, landing, article
 requires: photography
 content-shape: peer set
-description: User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances.
+description: User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances, and gains previous and next controls when the behaviour library is on the page.
 keywords: gallery, carousel, scroll-snap, images
 needs: three or more real images of the same kind, each with real alt text, sized for the slot via the CDN
 pairs-with: pricing-tiers
@@ -17,11 +17,12 @@ motion: subtle
 one-per-page: no
 status: active
 added: 2026-08-21
+behaviours: carousel
 -->
 <!-- The visitor scrolls or swipes; nothing moves by itself. Duplicate one
      gallery-scroll-item per real image. tabindex="0" keeps the scroller
      keyboard-reachable; the label tells assistive tech what it is. -->
-<div class="gallery-scroll" tabindex="0" role="region" aria-label="slot:gallery-label">
+<div class="gallery-scroll" tabindex="0" role="region" aria-label="slot:gallery-label" data-hub-module="carousel" data-hub-carousel-prev-label="slot:previous-label" data-hub-carousel-next-label="slot:next-label">
   <ul class="gallery-scroll-track" role="list">
     <li class="gallery-scroll-item">
       <img src="slot:image" alt="slot:image-alt" width="480" height="360" loading="lazy">

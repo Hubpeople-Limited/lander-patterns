@@ -61,4 +61,5 @@ serving the behaviour library the cells fade and rise in as the band scrolls
 into view, staggered, and reduced-motion visitors get nothing. Without the
 library the attributes are inert and the band renders fully visible and
 complete — which is the only state the figures are allowed to depend on.
-There is no count-up animation and there will not be one.
+The count-up is the library's `counter` behaviour on the same hook: the authored
+figure is the final figure, byte for byte, and under reduced motion the only one.

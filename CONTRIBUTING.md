@@ -617,6 +617,31 @@ A header pattern that folds, scrolls or wraps its menu differently is welcome;
 it is measured here the moment its name is `masthead-nav`, and a second header
 pattern adds itself to `COMBOS` in the same change.
 
+### The section behaviours, run for real
+
+The phone gate renders with no script on purpose, and the header gate runs
+the bundle for the header alone, so a section behaviour that mangled a figure,
+marked the wrong link or built no control passed every check.
+
+```
+python ci/check_behaviours.py                every pattern declaring one
+python ci/check_behaviours.py --broken       the positive control
+python ci/check_behaviours.py --out /tmp/b   keep the rendered pages
+```
+
+It puts every pattern declaring `counter`, `scrollspy` or `carousel` in a page
+with the bundle, launched with file access allowed so the module script runs,
+proves the bundle ran by reading its version off the page, and holds each to
+its registry row: a figure that ends on the authored text byte for byte and
+moved on the way there, and never moves under reduced motion; the one link
+whose heading was passed last carrying `aria-current`, and none above the first
+heading; two controls built inside the block and none in the authored render,
+next moving the slide and previous moving it back, wrapping on a radio carousel
+and disabling at a scroller's ends, thumb-sized at a phone width. **`--broken`
+is the positive control and CI runs it**: a copy of the bundle with one named
+line of each behaviour turned wrong, and every check must fire; a substitution
+that no longer matches fails the control rather than letting it go stale.
+
 ### Display measures
 
 A measure is a `max-width` on display type: the number that decides whether a

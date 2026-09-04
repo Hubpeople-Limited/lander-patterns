@@ -2,7 +2,7 @@
 name: stats-band
 display-name: Statistics band
 summary: A full-width band of real figures, each paired with what it means.
-version: 8
+version: 9
 type: section
 page-types: homepage, landing, pricing
 requires: none
@@ -17,7 +17,7 @@ motion: none
 one-per-page: yes
 status: active
 added: 2026-08-21
-behaviours: reveal
+behaviours: reveal, counter
 -->
 <section class="stats-band">
   <div class="stats-band-inner">
@@ -25,7 +25,7 @@ behaviours: reveal
       <p class="stats-band-eyebrow"><!-- slot: eyebrow --></p>
       <h2 class="stats-band-title"><!-- slot: band-title --></h2>
     </div>
-    <dl class="stats-band-grid" data-hub-module="reveal" data-hub-reveal-children>
+    <dl class="stats-band-grid" data-hub-module="reveal counter" data-hub-reveal-children>
       <!-- One group per real statistic. Duplicate this whole
            stats-band-item block once for each figure the brand actually
            has, and delete this one if there is nothing true to put in it.

@@ -129,10 +129,12 @@
 </div>
 
 <!-- ================================================================
-     section 3 of 9 : article-toc v1
+     section 3 of 9 : article-toc v2
      In-page contents for a long piece - a short list of anchor links
      to the sections below, inside a native disclosure so a reader
-     can put it away. No script anywhere.
+     can put it away; with the behaviour library the link for the
+     section being read is marked, and without it the list is the
+     list.
      needs: the article's own section headings, in the order they
      appear, and an id written onto each of those headings in the
      body. The words in the list are the headings themselves, never a
@@ -155,7 +157,7 @@
      ONE entry. Duplicate the whole li for each section, in the order the
      sections appear, and use the heading's own words. The list ships open;
      delete `open` to have it arrive collapsed. -->
-<nav class="article-toc" aria-labelledby="article-toc-label">
+<nav class="article-toc" aria-labelledby="article-toc-label" data-hub-module="scrollspy">
   <details class="article-toc-disclosure" open>
     <summary class="article-toc-summary">
       <span class="article-toc-label" id="article-toc-label"><!-- slot: contents-label --></span>

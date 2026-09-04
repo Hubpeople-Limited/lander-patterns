@@ -187,6 +187,17 @@ jobs:
       # fire on the long menu. Exit 0 here means the defect was detected.
       - name: Confirm the header gate can still catch a menu that wraps
         run: python ci/check_header.py --require-browser --broken
+      # The section behaviours, run for real: the bundle on the page with file
+      # access allowed, and each behaviour held to what its registry row
+      # promises - a figure that ends on the authored text, a contents link
+      # that follows the reader, controls that move the slide and none in the
+      # authored render.
+      - name: The section behaviours do what the registry says
+        run: python ci/check_behaviours.py --require-browser
+      # The positive control: a copy of the bundle with one line of each
+      # behaviour turned wrong, and every one of the three checks has to fire.
+      - name: Confirm the behaviour gate can still catch a broken behaviour
+        run: python ci/check_behaviours.py --require-browser --broken
       - name: Legibility
         run: python ci/legibility.py
       - name: Build previews

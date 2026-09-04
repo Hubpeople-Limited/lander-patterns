@@ -19,5 +19,7 @@
   "avatar-alt-3": "Sample portrait placeholder, preview only",
   "quote-3": "A third sample quotation, kept short for the preview.",
   "person-name-3": "Sample Person Three",
-  "person-role-3": "Sample attribution line for the preview"
+  "person-role-3": "Sample attribution line for the preview",
+  "previous-label": "Previous (sample)",
+  "next-label": "Next (sample)"
 }

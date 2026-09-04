@@ -2,7 +2,7 @@
 name: stat-rows
 display-name: Statistic rows
 summary: Full-width rows, each a large figure with a line explaining it.
-version: 9
+version: 10
 type: section
 page-types: homepage, landing
 requires: none
@@ -17,10 +17,10 @@ motion: subtle
 one-per-page: yes
 status: active
 added: 2026-08-21
-behaviours: reveal
+behaviours: reveal, counter
 -->
 <section class="stat-rows" aria-label="slot:strip-label">
-  <dl class="stat-rows-list" data-hub-module="reveal" data-hub-reveal-children>
+  <dl class="stat-rows-list" data-hub-module="reveal counter" data-hub-reveal-children>
     <!-- One group per statistic; duplicate the whole div and increment
          --stat-rows-row-index. Three to five figures is the useful range.
          Every figure must be one the brand publishes. -->

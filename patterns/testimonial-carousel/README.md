@@ -77,4 +77,4 @@ at `--weight-display` (700) with tight tracking does the work in the quote. The 
 carry responsive values on `.testimonial-carousel`, so overriding one means a
 `.testimonial-carousel { … }` rule after the appended CSS — a `:root`
 declaration is not specific enough to reach it. Below 60rem the neighbours are
-not drawn.
+not drawn. With the library, `carousel` adds previous and next controls after the dots; they wrap.

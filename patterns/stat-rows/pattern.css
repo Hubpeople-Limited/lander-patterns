@@ -1,4 +1,4 @@
-/* stat-rows v5 - tokens only, selectors prefixed */
+/* stat-rows v10 - tokens only, selectors prefixed */
 /* Dials, never declared here so a brand's :root reaches them:
    --stat-rows-weight (300), --stat-rows-row-height (9.6875rem). */
 .stat-rows {

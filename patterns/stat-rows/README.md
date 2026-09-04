@@ -56,3 +56,8 @@ it is designed to be read; the animation is never load-bearing.
 broken by accident: the figure would grow with the brand's dial while the
 sentence beside it stayed put, and the relationship the pattern is built on
 would quietly come apart on exactly the brands that had customised most.
+
+**The figures count up as they arrive**, through the library's `counter`
+behaviour on the list's hook. The authored figure is the final figure, byte for
+byte - `12,500+` counts from nought and ends as `12,500+` - and under reduced
+motion, or with no library, it is the only figure that ever shows.
