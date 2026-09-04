@@ -446,6 +446,37 @@ def check_carousel(shell, name, tokens):
             if not travel["visible"][label]:
                 faults.append(f"{where}: the {label} control leaves the viewport "
                               f"while the carousel is operated")
+    # Every placement the registry offers, on this pattern's own markup. A
+    # placement is an option a page can set, so each one is a way this pattern
+    # can ship: "none" has to build nothing at all, and anything else has to
+    # record what it resolved to and still hold its controls still.
+    for asked in ("none", "edges"):
+        marked = html.replace('data-hub-module="carousel"',
+                              f'data-hub-module="carousel" '
+                              f'data-hub-carousel-controls="{asked}"', 1)
+        tab = shell.open(marked, f"{name}-carousel-controls-{asked}", width=PHONE)
+        try:
+            tab.wait_for_timeout(100)
+            placed = tab.evaluate(CAROUSEL_PLACEMENT_JS)
+        finally:
+            tab.close()
+        used = placed.get("used")
+        if asked == "none":
+            if placed["controls"]:
+                faults.append(f"{where}: controls are built with "
+                              f'data-hub-carousel-controls="none"')
+            if used != "none":
+                faults.append(f'{where}: asked for "none" and recorded "{used}"')
+            continue
+        if used not in ("edges", "under"):
+            faults.append(f'{where}: asked for "edges" and recorded "{used}" - '
+                          f"the placement in force is not one the registry offers")
+        if not placed["controls"]:
+            faults.append(f'{where}: no controls built for "{asked}", which '
+                          f"resolved to \"{used}\"")
+        elif placed["nameKept"] is not True:
+            faults.append(f"{where}: a control in the {used} placement lost its "
+                          f"label as its accessible name")
     return faults
 
 
@@ -493,6 +524,26 @@ async () => {
     moved: { previous: spread(seen.previous), next: spread(seen.next) },
     visible: vis,
     seen,
+  };
+}
+"""
+
+
+CAROUSEL_PLACEMENT_JS = """
+() => {
+  const block = document.querySelector('[data-hub-module~="carousel"]');
+  const prev = block && block.querySelector('.hub-carousel-prev');
+  const next = block && block.querySelector('.hub-carousel-next');
+  const asked = block ? block.getAttribute('data-hub-carousel-prev-label') : null;
+  return {
+    used: block ? block.getAttribute('data-hub-carousel-controls-used') : null,
+    controls: !!(prev && next),
+    // The words stay the control's accessible name in every placement, even
+    // where the look replaces them with an arrow.
+    nameKept: prev && next
+      ? (prev.textContent.trim() === (asked || 'Previous') || prev.textContent.trim().length > 0)
+        && next.textContent.trim().length > 0
+      : null,
   };
 }
 """
