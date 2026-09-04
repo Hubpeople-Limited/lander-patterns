@@ -9,9 +9,15 @@ URL forms and they behave differently:
 
 A served page loads the floating one, so a released fix reaches every live page
 without that page being rebuilt. The pinned one is what a site references when
-it wants to hold a version still, and what a floating URL is rolled back to.
-Once published its bytes never change, because something out there is holding
-it.
+it wants to hold a version still. Once published its bytes never change,
+because something out there is holding it.
+
+Going back to an earlier release is a release like any other: restore the
+earlier bundle's contents, give it a new version, and let that move the
+floating URL forward. There is no way to point the floating URL at a version
+already published, and that is deliberate - the bundle reports its own version
+at runtime, so a floating URL serving bytes that call themselves something
+else would leave nobody able to say what a page is running.
 
 `publish/` only ever grows, and it is committed. The host replaces its whole
 contents on each deploy, so the accumulated tree in the repository is both the
