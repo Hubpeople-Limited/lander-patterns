@@ -2,7 +2,7 @@
   "composition": "homepage-no-photography",
   "version": 3,
   "page": "homepage",
-  "library": "v132",
+  "library": "v134",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
