@@ -2,7 +2,7 @@
   "composition": "locations-landing",
   "version": 1,
   "page": "locations-landing",
-  "library": "v130",
+  "library": "v132",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {

@@ -2,7 +2,7 @@
   "composition": "about-values",
   "version": 1,
   "page": "about",
-  "library": "v130",
+  "library": "v132",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
