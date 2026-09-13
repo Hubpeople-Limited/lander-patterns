@@ -28,7 +28,11 @@ pattern, also without a version, and an `axis=value` that pattern actually
 declares - read through `ci/check_page.py`'s own `axes_of`, so the recipes and
 the page checker can never disagree about what a pattern offers. A `grounds`
 list as long as the shell has bands. A `signature` of ten words or fewer, and
-`pairing: brand`, which is a slot rather than a value.
+`pairing: brand`, which is a slot rather than a value. An `opens` and a
+`closes` that begin with the word `decide`: a menu recipe hands the page's two
+regions to the build, saying what each has to do and what to weigh it from,
+and a line that states an answer instead has decided for a page it has not
+seen - which is the shell's shipped default under another name.
 
 WHAT IT DELIBERATELY DOES NOT CHECK, and each of these is a judgement rather
 than an oversight:
@@ -36,9 +40,10 @@ than an oversight:
 - Whether two recipes on one shell are different enough to both be worth
   offering. That is the entire value of the layer and no machine can see it.
   It is a review question, and the menu is short enough to read.
-- The words in `opens`, `closes` and `notes`. They are one line of plain
-  language for somebody choosing, and a vocabulary rule over them would either
-  be trivially satisfied or would start rejecting good sentences.
+- The words in `opens`, `closes` and `notes`, beyond that first word. They are
+  one line of plain language for somebody choosing, and a vocabulary rule over
+  them would either be trivially satisfied or would start rejecting good
+  sentences.
 - Whether a ground run reads well - whether two neighbouring bands landing on
   the same rung run together. `ci/check_page.py` answers that about a page it
   can see the markup of; here there is only a rung list, and a rule that cannot
@@ -346,6 +351,27 @@ def grounds_faults(values, known):
     return bad
 
 
+def region_faults(values):
+    """`opens` and `closes` begin with `decide`. The build owns both regions.
+
+    A menu recipe cannot see the material, so it cannot know whether the page
+    opens on a claim, on the content's own first row or on a member's words.
+    A line that names one anyway is read as the decision made, and the shell's
+    default sits in the page unargued. The line says what the region has to do
+    for this page and what to weigh it from; the build decides.
+    """
+    bad = []
+    for field in ("opens", "closes"):
+        value = values.get(field, "")
+        if value and not value.lower().startswith("decide"):
+            bad.append(("regions", f"{field}: {value!r} states an answer - a "
+                                   f"menu recipe begins this line with "
+                                   f"`decide`, says what the {field[:-1]}ing "
+                                   f"has to do and what to weigh it from, and "
+                                   f"leaves the choice to the build"))
+    return bad
+
+
 def signature_faults(values):
     words = values.get("signature", "").split()
     if len(words) > SIGNATURE_WORDS:
@@ -385,6 +411,7 @@ def faults_in(stem, text, known=None, axes=None):
     bad += shell_faults(values, known)
     bad += look_faults(values, axes)
     bad += grounds_faults(values, known)
+    bad += region_faults(values)
     bad += signature_faults(values)
     bad += pairing_faults(values)
     return bad
@@ -452,9 +479,9 @@ shape: reference
 shell: pricing
 look: hero-stated alignment=centred
 grounds: plain, soft, plain, brand
-opens: a claim, set large, with the price named in the line under it
-closes: a full-width band on the brand colour
-signature: stated opener, tier cards, questions, band
+opens: decide it from the plans - the first screen states what it costs
+closes: decide it from the page - a band, a line after the questions, or a link
+signature: tier cards, questions
 pairing: brand
 notes: a sample recipe, used only to prove this gate fires
 ```
@@ -508,8 +535,17 @@ def broken_fixtures():
         ("more rungs than the shell has bands", *edit(
             "grounds: plain, soft, plain, brand",
             "grounds: plain, soft, plain, soft, brand"), "grounds"),
+        ("an opening decided for a page nobody has seen", *edit(
+            "opens: decide it from the plans - the first screen states what "
+            "it costs",
+            "opens: a claim, set large, with the price named in the line "
+            "under it"), "regions"),
+        ("a close that names the shell's band as settled", *edit(
+            "closes: decide it from the page - a band, a line after the "
+            "questions, or a link",
+            "closes: a full-width band on the brand colour"), "regions"),
         ("a signature past ten words", *edit(
-            "signature: stated opener, tier cards, questions, band",
+            "signature: tier cards, questions",
             "signature: a stated opener, then the tier cards, then the "
             "questions, then the closing band"), "signature"),
         ("a pairing naming a face instead of the slot", *edit(

@@ -3,17 +3,17 @@ recipe: pricing-case-first@1
 shape: narrative
 shell: pricing-value
 grounds: plain, soft, plain, soft, brand
-opens: a claim about what membership is worth, before any figure appears
-closes: a full-width band in the brand colour, carrying the one control
-signature: claim, the argument, tiers, trust marks, band
+opens: decide it from the argument - the first screen says what membership is worth before any figure appears: a claim, or the argument's own first line
+closes: decide it from the page - after the trust marks, one visible way to act: a band, or a single control under the marks
+signature: the argument, tiers, trust marks
 pairing: brand
 notes: the reasons come before the number, and the marks come after it
 ```
 
-The pricing page that makes its case before it names a price. The opener states
-what membership is for, a mid-page section sets the argument out properly with
-the offer beside it, the plans follow, and a row of assurance marks sits between
-the plans and the ask.
+The pricing page that makes its case before it names a price. The first
+screen says what membership is for, a mid-page section sets the argument out
+properly with the offer beside it, the plans follow, and a row of assurance
+marks sits between the plans and the ask.
 
 It suits a brand asking for more than the obvious competitor, or asking for money
 where a visitor expects free. The order is the whole design: by the time the

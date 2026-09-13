@@ -251,18 +251,20 @@ def slot_guidance(slot, sample):
 REGION_NOTES = {
     "opening": [
         "region: OPENING - decided per page, not by this shell. The pattern",
-        "below is the default the shell ships with; the recipe's opens: line,",
-        "or the material itself, may put another opener from INDEX.md here,",
-        "or the content's own first row, or nothing above the content at all.",
-        "The frame - head, header, main, footer, the order of what follows -",
-        "stays as it is.",
+        "below is the default the shell ships with. The recipe's opens: line",
+        "says what the first screen has to do; the material decides what",
+        "does it - another opener from INDEX.md, the content's own first row,",
+        "a real member's words, or nothing above the content at all. The",
+        "default stays only where the page can say why. The frame - head,",
+        "header, main, footer, the order of what follows - stays as it is.",
     ],
     "closing": [
         "region: CLOSING - decided per page, not by this shell. The pattern",
-        "below is the default; a page may close instead on a line in the",
-        "prose, a single link, a quiet panel or the last row of its content -",
-        "the recipe's closes: line says which. Every page keeps one visible",
-        "way to act, and checks it is visible on a phone.",
+        "below is the default. The recipe's closes: line says what the foot",
+        "has to do; the page decides what does it - a line in the prose, a",
+        "single link, a quiet panel, the last row of its content, or this",
+        "band where the page can say why. Every page keeps one visible way",
+        "to act, and checks it is visible on a phone.",
     ],
 }
 
@@ -648,12 +650,15 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "",
         f"- **The opening** - `{content[0] if content else '?'}` is the shipped "
         "default. A page may open instead on another opener from INDEX.md, on "
-        "the content's own first row, or on nothing above the content at all. "
-        "The recipe's `opens:` line, or the material, decides.",
+        "the content's own first row, on a real member's words, or on nothing "
+        "above the content at all. The recipe's `opens:` line says what the "
+        "first screen has to do; the material decides what does it, and the "
+        "default stays only where the page can say why.",
         f"- **The closing** - `{content[-1] if len(content) > 1 else '?'}` is the "
         "shipped default. A page may close instead on a line in the prose, a "
         "single link, a quiet panel or the last row of its content. The "
-        "recipe's `closes:` line decides; every page keeps one visible way to act.",
+        "recipe's `closes:` line says what the foot has to do; the page decides "
+        "what does it, and every page keeps one visible way to act.",
         "- **The middle's density** - how many items, a line or a paragraph "
         "each, one section or three - is the material's, within the patterns' "
         "stated needs.",

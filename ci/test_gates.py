@@ -1839,9 +1839,9 @@ shape: reference
 shell: pricing
 look: hero-stated alignment=centred
 grounds: plain, soft, plain, brand
-opens: a claim, with the price named in the line under it
-closes: a full-width band in the brand colour
-signature: stated opener, tier cards, questions, band
+opens: decide it from the plans - the first screen states what it costs
+closes: decide it from the page - a band, a line after the questions, or a link
+signature: tier cards, questions
 pairing: brand
 notes: a fixture, never offered to anybody
 ```
@@ -1877,9 +1877,19 @@ RECIPE_FIRES = [
      "grounds"),
     ("a rung that is not on the ladder", "gate-fixture@1",
      RECIPE_VALID.replace("grounds: plain", "grounds: muted"), "grounds"),
+    ("an opening the recipe decided instead of the build", "gate-fixture@1",
+     RECIPE_VALID.replace(
+         "opens: decide it from the plans - the first screen states what it "
+         "costs", "opens: a claim, with the price named in the line under it"),
+     "regions"),
+    ("a close naming the band as already settled", "gate-fixture@1",
+     RECIPE_VALID.replace(
+         "closes: decide it from the page - a band, a line after the "
+         "questions, or a link", "closes: a full-width band in the brand colour"),
+     "regions"),
     ("a signature that is a description instead", "gate-fixture@1",
      RECIPE_VALID.replace(
-         "signature: stated opener, tier cards, questions, band",
+         "signature: tier cards, questions",
          "signature: a stated opener above three tier cards, then the "
          "questions, then a closing band"), "signature"),
     ("a pairing that names a face", "gate-fixture@1",

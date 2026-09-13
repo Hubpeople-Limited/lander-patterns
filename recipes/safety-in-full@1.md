@@ -3,16 +3,16 @@ recipe: safety-in-full@1
 shape: reference
 shell: safety-detailed
 grounds: deep, plain, soft, plain, brand
-opens: a claim on a dark ground, with the promises set very large under it
-closes: a full-width band in the brand colour, after the policies themselves
-signature: dark opener, large promises, protections, policy links, band
+opens: decide it from the promises - the first screen is on a dark ground: a claim above the promises, or the first promise itself set very large
+closes: decide it from the page - the policies themselves as links can close the page, or a band after them
+signature: large promises, protections, policy links
 pairing: brand
 notes: the longest safety page; it needs real policies to link to
 ```
 
 The safety page for a brand that has everything and wants it all on one page.
-The opener is dark, the promises underneath are set one to a screenful with
-nothing to hide behind, the protections follow categorised, and then the actual
+The first screen is dark, the promises are set one to a screenful with nothing
+to hide behind, the protections follow categorised, and then the actual
 policies appear as plain links a reader can go and read.
 
 It suits a brand that will be asked hard questions - by a payment provider, an

@@ -3,8 +3,8 @@ recipe: article-how-to@1
 shape: question-and-answer
 shell: article-guide
 grounds: plain, soft, plain, plain, plain, soft, brand
-opens: the headline and byline over a picture, then the summary box
-closes: the follow-up questions answered, the writer named, then the band
+opens: decide it from the piece - a guide opens on its own headline and byline, with a picture over them or without one; the takeaways sit under whichever it is
+closes: decide it from the piece - the writer named, the follow-up questions answered, a single link onward, or a band; one visible way to act
 signature: takeaways, the guide, a picture, the questions, author
 pairing: brand
 notes: for a reader who arrived with one specific question

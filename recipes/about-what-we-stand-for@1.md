@@ -2,20 +2,19 @@
 recipe: about-what-we-stand-for@1
 shape: single-claim
 shell: about-values
-look: hero-stated alignment=centred; portrait-prose side=end
+look: portrait-prose side=end
 grounds: plain, soft, plain, brand
-opens: one claim about what the brand is for, centred, no photograph, the join control under it
-closes: a full-width band in the brand colour, carrying the one control
-signature: claim opener, promises first, the person as proof, band
+opens: decide it from the material - the first screen names what the brand stands for: the first promise itself, set large, or one claim above the promises
+closes: decide it from what the page has said - the founder's story can close the page, or a single link, or a band
+signature: promises first, the person as proof
 pairing: brand
 notes: the promises lead and the founder is the evidence for them
 ```
 
-The about page led by what the brand stands for: one claim stated at the
-top, the promises set large on a tinted band straight after it, and then the
-person behind them with their story as the evidence, and the ask. The
-portrait sits on the right, so the page's two photographs-free openers and
-the face do not all fall down the left edge.
+The about page led by what the brand stands for: the promises set large on a
+tinted band before the person, and then the founder and their story as the
+evidence for them. The portrait sits on the right, so the promises and the
+face do not all fall down the left edge.
 
 It suits a brand whose values are the point - a community brand, a brand
 built around one conviction - and whose founder is the proof of them rather

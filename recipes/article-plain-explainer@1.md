@@ -3,17 +3,16 @@ recipe: article-plain-explainer@1
 shape: narrative
 shell: article-explainer
 grounds: plain, soft, plain, plain, soft, brand
-opens: the headline and byline over a picture, then the summary box
-closes: the writer named on a quiet panel, then the band
-signature: bylined header, takeaways, the piece, sources, author
+opens: decide it from the piece - the headline and byline, over a picture where there is a real one and plain where there is not; the summary box sits under it
+closes: decide it from the piece - the writer named, a single link onward, or a band
+signature: takeaways, the piece, sources, author
 pairing: brand
 notes: the default editorial page; the summary is read more than the article
 ```
 
-The ordinary advice article: a bylined header, a summary a reader gets without
-reading on, the piece itself, where its figures came from, and who wrote it. The
-takeaways box sits near the top and gives the answer to anybody who only wants
-the answer.
+The ordinary advice article: a summary a reader gets without reading on, the
+piece itself, where its figures came from, and who wrote it. The takeaways box
+sits near the top and gives the answer to anybody who only wants the answer.
 
 It suits any piece of editorial between about six hundred and fifteen hundred
 words, and it is the shape to use unless there is a reason to use another. The

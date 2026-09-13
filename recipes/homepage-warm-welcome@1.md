@@ -3,17 +3,17 @@ recipe: homepage-warm-welcome@1
 shape: progression
 shell: homepage-conversion
 grounds: plain, soft, plain, brand
-opens: a photograph of two people, with the claim set beside it
-closes: a full-width band in the brand colour, carrying the one control
-signature: photograph beside words, then steps, questions, band
+opens: decide it from the material - the first screen shows people and says the promise: a photograph beside the words, or the promise alone where the photograph is not yet real
+closes: decide it from what the page has said - the ask at the foot: a band, or the last step with a single control under it
+signature: how it works in steps, the questions
 pairing: brand
 notes: the ordinary homepage, and the right answer more often than not
 ```
 
-The straightforward front page: a picture of people with the promise beside it,
-how joining works in three short steps, the questions that stop somebody signing
-up, and the ask. Nothing on it is clever, which is the point - a visitor knows
-within one screen what the site is and what happens next.
+The straightforward front page: people and the promise on the first screen,
+how joining works in three short steps, the questions that stop somebody
+signing up, and the ask. Nothing on it is clever, which is the point - a
+visitor knows within one screen what the site is and what happens next.
 
 It suits a brand that has real photography and a simple offer. If the pictures
 are ready and the proposition can be said in a sentence, this is the page to

@@ -784,8 +784,11 @@ leave it in place.
 
 A recipe is not a pattern and not a shell. A shell is a thing — page markup,
 assembled and maintained. A recipe is the order sheet above it: which shell,
-which ground each band sits on, how the page opens and closes, the structural
-signature it commits to, and a slot for the brand's own typeface pairing. It
+which ground each band sits on, what the page's opening and its close have to
+do, the structural signature its middle commits to, and a slot for the brand's
+own typeface pairing. The two regions themselves stay the build's: a recipe
+cannot see the material, so it says what each region is for and what to weigh
+it from, never which pattern fills it. It
 exists because a shell alone risks sameness — every brand taking `pricing` gets
 one page — and a second recipe on the same shell is the cheapest way two brands
 end up with pages that read as genuinely different.
@@ -803,9 +806,9 @@ shape: reference
 shell: pricing
 look: hero-stated alignment=centred
 grounds: plain, soft, plain, brand
-opens: a plain statement of what it costs, with no build-up in front of it
-closes: a full-width band in the brand colour, carrying the one control
-signature: stated opener, tier cards, questions, band
+opens: decide it from the plans - the first screen states what it costs with no build-up: the plans themselves can be the first screen, or a plain statement above them
+closes: decide it from what the page has said - a band, a line after the questions, or a single link
+signature: tier cards, questions
 pairing: brand
 notes: the price is above the fold and nothing is withheld
 ```
@@ -821,9 +824,9 @@ order. `look` and `notes` are optional; everything else is required.
 | `shell` | A shell name from `shells/`, **without its version** |
 | `look` | Semicolon-separated `<pattern> axis=value[ axis=value]` entries — the dials this recipe sets over and above what the shell already pins. Pattern names, also without a version. Every axis and value must be one the pattern really declares |
 | `grounds` | One rung per band, top to bottom, from `plain`, `soft`, `brand`, `deep` |
-| `opens` | One line: the thesis form — a photograph, a claim, the first row of the content, a number, a question |
-| `closes` | One line: a band, a line in the prose, a single link, a quiet panel, the last row, or nothing |
-| `signature` | Ten words or fewer — the structural signature the page commits to. Longer than that and it is a description of the page instead, which the paragraphs underneath already are |
+| `opens` | One line, beginning `decide`: what the first screen has to do for this page and what to weigh it from — the content's own first row, a claim, a member's words, a photograph. The build chooses from the material; the shell's shipped opener is one candidate, kept only where the page can say why. A line that states the answer instead has decided for a page it has not seen, and the gate refuses it |
+| `closes` | One line, beginning `decide`: what the foot has to do and what to weigh it from — a band, a line in the prose, a single link, a quiet panel, the last row. The build chooses; every page keeps one visible way to act |
+| `signature` | Ten words or fewer — the structural signature the middle commits to. It names no opener and no close, because the recipe has not decided them. Longer than that and it is a description of the page instead, which the paragraphs underneath already are |
 | `pairing` | The literal `brand`. A slot, filled at build time from the brand's own record |
 | `notes` | One line, or leave it out |
 
@@ -874,7 +877,8 @@ the committed menu is not what the recipes produce — the treatment
 recipes behind it is one an agent will read and believe.
 
 **A second recipe on a shell has to earn it.** A different ground run and a
-different close is a different page, and that is the point of this layer. Two
+different job for the first screen is a different page, and that is the point
+of this layer. Two
 recipes nobody can tell apart is worse than one, because the menu is read in
 full and every line on it costs a reader something. Say in the prose what each
 one does that the other does not.

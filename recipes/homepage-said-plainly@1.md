@@ -3,17 +3,16 @@ recipe: homepage-said-plainly@1
 shape: single-claim
 shell: homepage-no-photography
 grounds: deep, plain, soft, brand
-opens: a claim set very large on a dark ground, and nothing else
-closes: a full-width band in the brand colour, carrying the one control
-signature: dark stated opener, section title, four tiles, band
+opens: decide it from the material - the first screen is words on a dark ground and nothing else: the promise set very large, or one true sentence about the brand
+closes: decide it from what the tiles have said - one visible way to act at the foot: a band, or a single control
+signature: words on dark, section title, four tiles
 pairing: brand
 notes: no photography anywhere; the first screen is words on a dark ground
 ```
 
-The front page with no pictures on it at all. It opens with the promise set
-large on a dark ground, names what follows, lays out four things the brand does
-as bordered tiles, and asks at the foot. The whole page is made of words and
-colour.
+The front page with no pictures on it at all. It opens on words on a dark
+ground, names what follows, lays out four things the brand does as bordered
+tiles, and asks at the foot. The whole page is made of words and colour.
 
 It suits a new brand that has nothing photographed yet, and a brand whose
 pictures would be stock images of people who never used it. A page with no

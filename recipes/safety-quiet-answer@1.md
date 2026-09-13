@@ -2,18 +2,17 @@
 recipe: safety-quiet-answer@1
 shape: single-claim
 shell: safety
-look: hero-stated alignment=centred
 grounds: plain, soft, brand
-opens: a centred promise on the page's own background, stated calmly
-closes: a full-width band in the brand colour, carrying the one control
-signature: calm centred promise, protection cards, band
+opens: decide it from the material - the first screen is on the page's own background and stated calmly: a short promise, or the first protection itself
+closes: decide it from the page - the colour appears once, at the foot: a band, or a single control on it
+signature: protection cards on a soft tint
 pairing: brand
 notes: the same shell without the colour at the top; reassurance, not volume
 ```
 
-The same three-screen safety page said quietly, with the promise centred on the
-ordinary page background rather than held on the brand colour. The protection
-cards sit on a soft tint below it, and the colour appears once, at the close.
+The same three-screen safety page said quietly, with the first screen on the
+ordinary page background rather than on the brand colour. The protection cards
+sit on a soft tint below it, and the colour appears once, at the close.
 
 It suits a brand whose readers are cautious by nature - an older audience, a
 faith or community brand, anything where a page shouting about safety would

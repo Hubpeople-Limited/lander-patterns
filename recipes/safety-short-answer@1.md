@@ -3,9 +3,9 @@ recipe: safety-short-answer@1
 shape: peer-set
 shell: safety
 grounds: brand, plain, brand
-opens: a direct promise on the brand colour, in the brand's own voice
-closes: a full-width band in the same brand colour, carrying the one control
-signature: brand promise, protection cards, brand close
+opens: decide it from the material - the first screen is the promise on the brand colour: one sentence, or the strongest protection named
+closes: decide it from the page - the brand colour again at the foot: a band, or a single control on it
+signature: protection cards, colour at both ends
 pairing: brand
 notes: the shortest safety page in the menu, and a conversion page underneath
 ```
