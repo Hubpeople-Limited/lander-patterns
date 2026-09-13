@@ -15,6 +15,11 @@
        5. page.css beside this file is the page's whole stylesheet beyond
           the brand's tokens - load it after the brand's own stylesheet,
           or merge it into the brand stylesheet unchanged.
+       6. This shell is a frame. The head, the site header, the <main>
+          landmark, the order of the sections and the footer are settled;
+          the first and last content sections are REGIONS - shipped as
+          defaults, decided per page. Their banners say what may replace
+          them. The middle's density is the material's to set.
      ================================================================ -->
 <!doctype html>
 <html lang="en">
@@ -82,8 +87,16 @@
   </div>
 </header>
 
+<main>
+
 <!-- ================================================================
      section 2 of 6 : hero-split v9
+     region: OPENING - decided per page, not by this shell. The pattern
+     below is the default the shell ships with; the recipe's opens: line,
+     or the material itself, may put another opener from INDEX.md here,
+     or the content's own first row, or nothing above the content at all.
+     The frame - head, header, main, footer, the order of what follows -
+     stays as it is.
      Conversion opener - value proposition left, one strong image
      right, single join CTA; stacks image-first on phones.
      needs: one hero image at least 1280px wide from real material; a
@@ -189,6 +202,11 @@
 
 <!-- ================================================================
      section 5 of 6 : cta-band v5
+     region: CLOSING - decided per page, not by this shell. The pattern
+     below is the default; a page may close instead on a line in the
+     prose, a single link, a quiet panel or the last row of its content -
+     the recipe's closes: line says which. Every page keeps one visible
+     way to act, and checks it is visible on a phone.
      Plain full-bleed closing call to action on a choice of four
      grounds - a centred claim, one supporting line and one control;
      the ordinary page finale, and the section most pages on a brand
@@ -212,6 +230,8 @@
     <a class="cta-band-btn" href="{{join.url}}">{{join.text}}</a>
   </div>
 </section>
+
+</main>
 
 <!-- ================================================================
      section 6 of 6 : colophon v2

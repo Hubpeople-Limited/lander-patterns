@@ -80,6 +80,14 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 
+## Regions
+
+This shell is a frame. What it settles: the head, the site header, the `<main>` landmark round the content, the order of the sections, the footer, and the responsive behaviour every pattern carries. What it leaves open, and marks in `page.html`:
+
+- **The opening** - `article-masthead` is the shipped default. A page may open instead on another opener from INDEX.md, on the content's own first row, or on nothing above the content at all. The recipe's `opens:` line, or the material, decides.
+- **The closing** - `cta-band` is the shipped default. A page may close instead on a line in the prose, a single link, a quiet panel or the last row of its content. The recipe's `closes:` line decides; every page keeps one visible way to act.
+- **The middle's density** - how many items, a line or a paragraph each, one section or three - is the material's, within the patterns' stated needs.
+
 ## What is still yours to decide
 
-Copy, imagery and brand - never structure. The words in every slot are the brand's own; images are real material meeting each pattern's stated needs; the look comes from the brand's token values ([TOKENS.md](../../TOKENS.md)). The sections, their order and their markup are the composition - to change those, build from patterns directly instead.
+Copy, imagery, brand - and the three regions above. The words in every slot are the brand's own; images are real material meeting each pattern's stated needs; the look comes from the brand's token values ([TOKENS.md](../../TOKENS.md)). To change the frame itself - the sections between the regions and their order - build from patterns directly instead.

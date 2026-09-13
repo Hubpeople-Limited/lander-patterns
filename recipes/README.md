@@ -10,7 +10,7 @@ Put two or three of these in front of whoever the page is for, described in thei
 - **article-plain-explainer@1** - article - narrative - shell: article-explainer - The ordinary advice article: a bylined header, a summary a reader gets without reading on, the piece itself, where its figures came from, and who wrote it.
 - **articles-by-topic@1** - articles-landing - peer-set - shell: articles-landing - The same index of a brand's writing, opened as a statement rather than a label.
 - **articles-index@1** - articles-landing - reference - shell: articles-landing - The page that lists a brand's writing, as full-width ruled rows rather than a grid of cards.
-- **features-compared@1** - features - comparison - shell: features - The features page for a visitor who is comparing rather than exploring.
+- **features-compared@1** - features - comparison - shell: features-table - The features page for a visitor who is comparing rather than exploring.
 - **features-what-you-get@1** - features - peer-set - shell: features - The page that lists what the brand does, at the length the homepage cannot afford.
 - **homepage-cinematic-open@1** - homepage - progression - shell: homepage-photo-led - The front page that leads with a picture rather than a sentence.
 - **homepage-editorial-calm@1** - homepage - peer-set - shell: homepage-photo-editorial - The front page for a brand that wants to look thought about.
