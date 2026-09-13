@@ -1727,7 +1727,7 @@ def check_shells():
     # carry a `section-title` slot and their sample values differ. Both have to
     # be on the page, in that order. A whole-document fill puts one of them in
     # both places, and the page still renders.
-    conversion = HERE.parent / "compositions" / "homepage-conversion@2"
+    conversion = HERE.parent / "shells" / "homepage-conversion@2"
     if not conversion.exists():
         print("  ok   skipped: homepage-conversion@2 is not in this tree")
         return failures
@@ -1824,7 +1824,7 @@ def check_configurator():
 #
 # ci/check_recipes.py. A recipe is the layer above a shell - which shell, which
 # ground each band sits on, how the page opens and closes - and every fault it
-# can carry is invisible to a reader. A shell name with no composition behind
+# can carry is invisible to a reader. A shell name with no folder behind
 # it, four rungs for a five-band shell, a pin that disagrees with its own
 # filename: all of them read perfectly, and all of them hand a builder a
 # decision nobody made. So the fires below are the ones a person cannot see.
@@ -1866,7 +1866,7 @@ RECIPE_FIRES = [
      RECIPE_VALID.replace("shape: reference", "shape: gallery"), "shape"),
     ("a shell pinned to a version", "gate-fixture@1",
      RECIPE_VALID.replace("shell: pricing", "shell: pricing@3"), "shell"),
-    ("a shell no composition provides", "gate-fixture@1",
+    ("a shell no folder provides", "gate-fixture@1",
      RECIPE_VALID.replace("shell: pricing", "shell: checkout"), "shell"),
     ("a look dial the pattern does not offer", "gate-fixture@1",
      RECIPE_VALID.replace("alignment=centred", "alignment=justified"), "look"),

@@ -818,7 +818,7 @@ order. `look` and `notes` are optional; everything else is required.
 |---|---|
 | `recipe` | `<kebab-name>@<integer>`, the recipe's own pin. Versioned like a pattern's and never renumbered: it is what a brand records when it takes one |
 | `shape` | The content shape this recipe fits — `narrative`, `peer-set`, `comparison`, `progression`, `single-claim`, `question-and-answer`, `reference`. The same seven a pattern's `content-shape` uses, hyphenated |
-| `shell` | A shell name from `compositions/`, **without its version** |
+| `shell` | A shell name from `shells/`, **without its version** |
 | `look` | Semicolon-separated `<pattern> axis=value[ axis=value]` entries — the dials this recipe sets over and above what the shell already pins. Pattern names, also without a version. Every axis and value must be one the pattern really declares |
 | `grounds` | One rung per band, top to bottom, from `plain`, `soft`, `brand`, `deep` |
 | `opens` | One line: the thesis form — a photograph, a claim, the first row of the content, a number, a question |
@@ -870,7 +870,7 @@ python ci/check_recipes.py --broken   the positive control
 
 Commit `recipes/README.md` with your recipe. CI runs `--check` and fails when
 the committed menu is not what the recipes produce — the treatment
-`compositions/` gets, for the same reason: a menu that has drifted from the
+`shells/` gets, for the same reason: a menu that has drifted from the
 recipes behind it is one an agent will read and believe.
 
 **A second recipe on a shell has to earn it.** A different ground run and a
