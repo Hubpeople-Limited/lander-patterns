@@ -55,8 +55,8 @@ Also in `page.css`: **cta-assurance** v2, carried for hero-stated's `assurance` 
 
 This shell is a frame. What it settles: the head, the site header, the `<main>` landmark round the content, the order of the sections, the footer, and the responsive behaviour every pattern carries. What it leaves open, and marks in `page.html`:
 
-- **The opening** - `hero-stated` is the shipped default. A page may open instead on another opener from INDEX.md, on the content's own first row, or on nothing above the content at all. The recipe's `opens:` line, or the material, decides.
-- **The closing** - `cta-band` is the shipped default. A page may close instead on a line in the prose, a single link, a quiet panel or the last row of its content. The recipe's `closes:` line decides; every page keeps one visible way to act.
+- **The opening** - `hero-stated` is the shipped default, and the menu recipes describe that default; neither has decided this page's opening. Decide it from the material: another opener from INDEX.md, the content's own first row, a real member's words, or nothing above the content at all - and keep the default only where you can say why it beats those here.
+- **The closing** - `cta-band` is the shipped default, described the same way by the menu recipes. Decide the close from the material: a line in the prose, a single link, a quiet panel, or the last row of the content - and keep the band only where the page needs it. Every page keeps one visible way to act.
 - **The middle's density** - how many items, a line or a paragraph each, one section or three - is the material's, within the patterns' stated needs.
 
 ## What is still yours to decide

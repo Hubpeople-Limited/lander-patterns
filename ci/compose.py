@@ -250,19 +250,25 @@ def slot_guidance(slot, sample):
 
 REGION_NOTES = {
     "opening": [
-        "region: OPENING - decided per page, not by this shell. The pattern",
-        "below is the default the shell ships with; the recipe's opens: line,",
-        "or the material itself, may put another opener from INDEX.md here,",
-        "or the content's own first row, or nothing above the content at all.",
-        "The frame - head, header, main, footer, the order of what follows -",
-        "stays as it is.",
+        "region: OPENING - not yet decided. The pattern below is the shell's",
+        "default, and the menu recipes describe that default: a recipe that",
+        "names it has decided nothing about this page. Decide the opening",
+        "from the material before writing a word here - another opener from",
+        "INDEX.md, the content's own first row, a real member's words, or",
+        "nothing above the content at all. Keep this pattern only where you",
+        "can say why it beats those for this page, and record the choice in",
+        "the build's log line. The frame - head, header, main, footer, the",
+        "order of what follows - stays as it is.",
     ],
     "closing": [
-        "region: CLOSING - decided per page, not by this shell. The pattern",
-        "below is the default; a page may close instead on a line in the",
-        "prose, a single link, a quiet panel or the last row of its content -",
-        "the recipe's closes: line says which. Every page keeps one visible",
-        "way to act, and checks it is visible on a phone.",
+        "region: CLOSING - not yet decided. The pattern below is the shell's",
+        "default, and the menu recipes describe that default: a recipe that",
+        "names it has decided nothing about this page. Decide the close from",
+        "the material before writing a word here - a line in the prose, a",
+        "single link, a quiet panel, or the last row of the content. Keep",
+        "this band only where the page needs it and you can say why, and",
+        "record the choice in the build's log line. Every page keeps one",
+        "visible way to act, and checks it is visible on a phone.",
     ],
 }
 
@@ -647,13 +653,16 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "What it leaves open, and marks in `page.html`:",
         "",
         f"- **The opening** - `{content[0] if content else '?'}` is the shipped "
-        "default. A page may open instead on another opener from INDEX.md, on "
-        "the content's own first row, or on nothing above the content at all. "
-        "The recipe's `opens:` line, or the material, decides.",
+        "default, and the menu recipes describe that default; neither has "
+        "decided this page's opening. Decide it from the material: another "
+        "opener from INDEX.md, the content's own first row, a real member's "
+        "words, or nothing above the content at all - and keep the default "
+        "only where you can say why it beats those here.",
         f"- **The closing** - `{content[-1] if len(content) > 1 else '?'}` is the "
-        "shipped default. A page may close instead on a line in the prose, a "
-        "single link, a quiet panel or the last row of its content. The "
-        "recipe's `closes:` line decides; every page keeps one visible way to act.",
+        "shipped default, described the same way by the menu recipes. Decide "
+        "the close from the material: a line in the prose, a single link, a "
+        "quiet panel, or the last row of the content - and keep the band only "
+        "where the page needs it. Every page keeps one visible way to act.",
         "- **The middle's density** - how many items, a line or a paragraph "
         "each, one section or three - is the material's, within the patterns' "
         "stated needs.",
