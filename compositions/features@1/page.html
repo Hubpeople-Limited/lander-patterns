@@ -15,6 +15,11 @@
        5. page.css beside this file is the page's whole stylesheet beyond
           the brand's tokens - load it after the brand's own stylesheet,
           or merge it into the brand stylesheet unchanged.
+       6. This shell is a frame. The head, the site header, the <main>
+          landmark, the order of the sections and the footer are settled;
+          the first and last content sections are REGIONS - shipped as
+          defaults, decided per page. Their banners say what may replace
+          them. The middle's density is the material's to set.
      ================================================================ -->
 <!doctype html>
 <html lang="en">
@@ -82,16 +87,28 @@
   </div>
 </header>
 
+<main>
+
 <!-- ================================================================
      section 2 of 7 : hero-stated v4
      variant: ground=plain
+     region: OPENING - decided per page, not by this shell. The pattern
+     below is the default the shell ships with; the recipe's opens: line,
+     or the material itself, may put another opener from INDEX.md here,
+     or the content's own first row, or nothing above the content at all.
+     The frame - head, header, main, footer, the order of what follows -
+     stays as it is.
      An opener made of words - a display claim, one supporting line
      and the join control - on a choice of three grounds and two
      alignments, with no photograph anywhere in it.
      needs: a headline the brand can stand behind and one supporting
      sentence that says something the headline does not. Nothing else
      - no photograph, no figure, no logo. This is the opener for a
-     brand that has words and nothing else yet
+     brand that has words and nothing else yet. The headline is a
+     fact the brand can evidence: never a member number, a success
+     rate, a superiority claim or an unqualified free without a
+     source, and never that every profile is verified - verification
+     on this platform is free and optional
      slots:
        eyebrow            text, about 2 word(s). Sample: Sample eyebrow
        headline           text, about 7 word(s). Sample: A sample headline for preview, set large
@@ -127,7 +144,12 @@
      the middle panel; for four, repeat the middle ground rather than
      inventing a fourth. Each needs a short label, one claim of a few
      words, and a simple line mark drawn inline. A section heading,
-     and a supporting line only where there is something true to say
+     and a supporting line only where there is something true to say.
+     Every claim here is a fact the brand can evidence: never a
+     member number, a success rate, a superiority claim or an
+     unqualified free without a source, and never that every profile
+     is verified - verification on this platform is free and
+     optional, so that one is untrue on every brand
      slots:
        section-id         attribute (aria-labelledby/id): a page-unique id drawn from the heading
        eyebrow            text, about 2 word(s). Sample: Sample eyebrow
@@ -334,6 +356,11 @@
 
 <!-- ================================================================
      section 6 of 7 : cta-band v5
+     region: CLOSING - decided per page, not by this shell. The pattern
+     below is the default; a page may close instead on a line in the
+     prose, a single link, a quiet panel or the last row of its content -
+     the recipe's closes: line says which. Every page keeps one visible
+     way to act, and checks it is visible on a phone.
      Plain full-bleed closing call to action on a choice of four
      grounds - a centred claim, one supporting line and one control;
      the ordinary page finale, and the section most pages on a brand
@@ -357,6 +384,8 @@
     <a class="cta-band-btn" href="{{join.url}}">{{join.text}}</a>
   </div>
 </section>
+
+</main>
 
 <!-- ================================================================
      section 7 of 7 : colophon v2

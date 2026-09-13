@@ -58,6 +58,11 @@ from lint import (                                           # noqa: E402
 
 GENERATED_BY = "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit"
 
+# The furniture: the site header and footer a page carries. They are landmarks
+# of their own, so the <main> a shell wraps its content in excludes them, and a
+# recipe's ground run excludes them too (ci/check_recipes.py).
+FURNITURE_PATTERNS = {"masthead-nav", "colophon"}
+
 FURNITURE = re.compile(r"\{\{[^{}]+\}\}")
 COMMENT = re.compile(r"<!--(.*?)-->", re.S)
 SLOT_INNER = re.compile(r"^\s*slot\s*:\s*[\w-]+\s*$")
@@ -85,6 +90,11 @@ PAGE = """<!-- {rule}
        5. page.css beside this file is the page's whole stylesheet beyond
           the brand's tokens - load it after the brand's own stylesheet,
           or merge it into the brand stylesheet unchanged.
+       6. This shell is a frame. The head, the site header, the <main>
+          landmark, the order of the sections and the footer are settled;
+          the first and last content sections are REGIONS - shipped as
+          defaults, decided per page. Their banners say what may replace
+          them. The middle's density is the material's to set.
      {rule} -->
 <!doctype html>
 <html lang="en">
@@ -238,18 +248,41 @@ def slot_guidance(slot, sample):
     return f"text, about {words} word(s). Sample: {shown}", []
 
 
-def section_banner(item, mods, position, total):
+REGION_NOTES = {
+    "opening": [
+        "region: OPENING - decided per page, not by this shell. The pattern",
+        "below is the default the shell ships with; the recipe's opens: line,",
+        "or the material itself, may put another opener from INDEX.md here,",
+        "or the content's own first row, or nothing above the content at all.",
+        "The frame - head, header, main, footer, the order of what follows -",
+        "stays as it is.",
+    ],
+    "closing": [
+        "region: CLOSING - decided per page, not by this shell. The pattern",
+        "below is the default; a page may close instead on a line in the",
+        "prose, a single link, a quiet panel or the last row of its content -",
+        "the recipe's closes: line says which. Every page keeps one visible",
+        "way to act, and checks it is visible on a phone.",
+    ],
+}
+
+
+def section_banner(item, mods, position, total, role=None):
     """The generated preface to one pattern's verbatim markup.
 
     Returns (banner, written, copied): the comment itself, the part this
     script composes, and the part lifted out of the pattern's `description`
     and `needs`. The two are returned apart because check_banner_policy holds
-    them to different rules - see its docstring.
+    them to different rules - see its docstring. `role` names the region the
+    section is the shipped default for - "opening" or "closing" - and adds
+    the note that says so.
     """
     meta, sample = item["meta"], item["sample"]
     lines = [f"section {position} of {total} : {item['name']} v{meta.get('version', '?')}"]
     if mods:
         lines.append("variant: " + ", ".join(f"{k}={v}" for k, v in mods.items()))
+    if role:
+        lines += REGION_NOTES[role]
     head = len(lines)
     copied = meta.get("description", "")
     lines += textwrap.wrap(copied, width=64)
@@ -468,12 +501,24 @@ def compose_one(recipe, library):
            f"CSS in page order. Never hand-edit: change the pattern and "
            f"regenerate. */"]
     banners, copied_texts = [], []
+    # The page's content sits in one <main> between the furniture: the site
+    # header and footer are landmarks of their own and stay outside it. The
+    # first and last content sections are the shell's two regions.
+    content = [i for i, item in enumerate(page) if item["name"] not in FURNITURE_PATTERNS]
+    first_content, last_content = (content[0], content[-1]) if content else (None, None)
     for position, (item, mods) in enumerate(zip(page, chosen), start=1):
-        banner, written, copied = section_banner(item, mods, position, total)
+        index = position - 1
+        role = ("opening" if index == first_content else
+                "closing" if index == last_content and index != first_content else None)
+        banner, written, copied = section_banner(item, mods, position, total, role)
         banners.append(written)
         copied_texts.append(copied)
+        if index == first_content:
+            sections.append("<main>")
         sections.append(banner)
         sections.append(item["body"])
+        if index == last_content:
+            sections.append("</main>")
         css.append(f"/* ---- {item['name']} v{item['meta'].get('version', '?')} ---- */\n"
                    + pattern_css(item))
     for extra, for_slot, of_pattern in support:
@@ -591,15 +636,35 @@ def compose_readme(recipe, name, version, page, chosen, support):
                         for extra, for_slot, of_pattern in support)
             + ".",
         ]
+    content = [item["name"] for item in page if item["name"] not in FURNITURE_PATTERNS]
     lines += [
+        "",
+        "## Regions",
+        "",
+        "This shell is a frame. What it settles: the head, the site header, "
+        "the `<main>` landmark round the content, the order of the sections, "
+        "the footer, and the responsive behaviour every pattern carries. "
+        "What it leaves open, and marks in `page.html`:",
+        "",
+        f"- **The opening** - `{content[0] if content else '?'}` is the shipped "
+        "default. A page may open instead on another opener from INDEX.md, on "
+        "the content's own first row, or on nothing above the content at all. "
+        "The recipe's `opens:` line, or the material, decides.",
+        f"- **The closing** - `{content[-1] if len(content) > 1 else '?'}` is the "
+        "shipped default. A page may close instead on a line in the prose, a "
+        "single link, a quiet panel or the last row of its content. The "
+        "recipe's `closes:` line decides; every page keeps one visible way to act.",
+        "- **The middle's density** - how many items, a line or a paragraph "
+        "each, one section or three - is the material's, within the patterns' "
+        "stated needs.",
         "",
         "## What is still yours to decide",
         "",
-        "Copy, imagery and brand - never structure. The words in every slot "
-        "are the brand's own; images are real material meeting each "
-        "pattern's stated needs; the look comes from the brand's token "
-        "values ([TOKENS.md](../../TOKENS.md)). The sections, their order "
-        "and their markup are the composition - to change those, build from "
+        "Copy, imagery, brand - and the three regions above. The words in "
+        "every slot are the brand's own; images are real material meeting "
+        "each pattern's stated needs; the look comes from the brand's token "
+        "values ([TOKENS.md](../../TOKENS.md)). To change the frame itself - "
+        "the sections between the regions and their order - build from "
         "patterns directly instead.",
         "",
     ]
@@ -612,8 +677,13 @@ def compose_index(built):
         "",
         "Pre-assembled page shells - generated by `ci/compose.py` from "
         "`ci/page-recipes.json`, never hand-edited.",
-        "Fetch one folder, write real copy into its slots, strip the "
-        "comments, done - instead of assembling patterns by hand.",
+        "Each shell is a frame: the head, the site header, the `<main>` "
+        "landmark, the order of the sections and the footer are settled. "
+        "Its first and last content sections are regions - shipped as "
+        "defaults, decided per page - and the middle's density is the "
+        "material's; each folder's README says what may replace what. Fetch "
+        "one folder, decide the regions, write real copy into the slots, "
+        "strip the comments.",
         "",
     ]
     for folder, recipe in built:

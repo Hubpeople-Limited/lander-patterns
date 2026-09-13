@@ -311,6 +311,22 @@
       }
     },
     {
+      "page": "features",
+      "patterns": [
+        "masthead-nav",
+        "hero-stated:ground=deep",
+        "comparison-table",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The features page as a comparison: the claim on a dark ground, then straight into the table of what each tier includes, then the questions. For a visitor who arrived to compare rather than to explore - the table is the page, and nothing stands between the opener and it.",
+      "composition": {
+        "name": "features-table",
+        "version": 1
+      }
+    },
+    {
       "page": "location",
       "patterns": [
         "masthead-nav",

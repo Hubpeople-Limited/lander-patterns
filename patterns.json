@@ -183,7 +183,7 @@
   "description": "A four-up run of tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.",
   "display-name": "Benefit tiles",
   "motion": "none",
-  "needs": "three to five real capabilities the brand actually offers, each with a short title and one or two sentences of real copy; a simple line mark per tile, drawn inline so it takes the badge's ink; a label naming what the set is",
+  "needs": "three to five real capabilities the brand actually offers, each with a short title and one or two sentences of real copy; a simple line mark per tile, drawn inline so it takes the badge's ink; a label naming what the set is. Every claim here is a fact the brand can evidence: never a member number, a success rate, a superiority claim or an unqualified free without a source, and never that every profile is verified - verification on this platform is free and optional, so that one is untrue on every brand",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -237,7 +237,7 @@
   "description": "Three to five promises set very large, one to a screenful, separated by hairlines and nothing else - the section with nowhere to hide, for words the brand can stand behind.",
   "display-name": "Big promises",
   "motion": "none",
-  "needs": "three to five claims the brand genuinely stands behind, each true, each said in about twelve words or fewer, and each carrying something the one above it did not. An optional line of plain support under any of them where a claim needs a condition stating. Nothing else - no figures, no photographs, no logos",
+  "needs": "three to five claims the brand genuinely stands behind, each true, each said in about twelve words or fewer, and each carrying something the one above it did not. An optional line of plain support under any of them where a claim needs a condition stating. Nothing else - no figures, no photographs, no logos. Every claim here is a fact the brand can evidence: never a member number, a success rate, a superiority claim or an unqualified free without a source, and never that every profile is verified - verification on this platform is free and optional, so that one is untrue on every brand",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -383,7 +383,7 @@
   "description": "The short run of reassurances that sits under a join control - what it costs, what is not being committed to, how long it takes - each one a fact the brand can evidence.",
   "display-name": "Reassurance line",
   "motion": "none",
-  "needs": "two to four things about signing up that are true and checkable - the price, whether a card is required, how long it takes, what is visible to whom. Each must be a fact the brand can evidence, never a promise about the future and never a time-limited offer",
+  "needs": "two to four things about signing up that are true and checkable - the price, whether a card is required, how long it takes, what is visible to whom. Each must be a fact the brand can evidence, never a promise about the future and never a time-limited offer. A bare free is not one - say what is free - and neither is verified members: verification on this platform is free and optional, so a line implying every member has it is untrue on every brand",
   "one-per-page": false,
   "page-types": [
    "homepage",
@@ -577,7 +577,7 @@
   "description": "A run of full-bleed panels climbing a ground ladder - light, then the brand colour, then dark - each carrying a mark, a label, one large claim and a link on its floor.",
   "display-name": "Feature panels",
   "motion": "subtle",
-  "needs": "two to four real things the brand offers that genuinely sit in an order - tiers, levels, degrees of visibility. Three panels ship and there are exactly three grounds: for two, delete the middle panel; for four, repeat the middle ground rather than inventing a fourth. Each needs a short label, one claim of a few words, and a simple line mark drawn inline. A section heading, and a supporting line only where there is something true to say",
+  "needs": "two to four real things the brand offers that genuinely sit in an order - tiers, levels, degrees of visibility. Three panels ship and there are exactly three grounds: for two, delete the middle panel; for four, repeat the middle ground rather than inventing a fourth. Each needs a short label, one claim of a few words, and a simple line mark drawn inline. A section heading, and a supporting line only where there is something true to say. Every claim here is a fact the brand can evidence: never a member number, a success rate, a superiority claim or an unqualified free without a source, and never that every profile is verified - verification on this platform is free and optional, so that one is untrue on every brand",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -810,7 +810,7 @@
   "description": "An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.",
   "display-name": "Worded opener",
   "motion": "none",
-  "needs": "a headline the brand can stand behind and one supporting sentence that says something the headline does not. Nothing else - no photograph, no figure, no logo. This is the opener for a brand that has words and nothing else yet",
+  "needs": "a headline the brand can stand behind and one supporting sentence that says something the headline does not. Nothing else - no photograph, no figure, no logo. This is the opener for a brand that has words and nothing else yet. The headline is a fact the brand can evidence: never a member number, a success rate, a superiority claim or an unqualified free without a source, and never that every profile is verified - verification on this platform is free and optional",
   "one-per-page": true,
   "page-types": [
    "homepage",
