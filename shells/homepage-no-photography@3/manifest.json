@@ -14,7 +14,9 @@
       "version": "4",
       "variant": {
         "ground": "deep"
-      }
+      },
+      "region": "opening",
+      "in": "opening-default.html"
     },
     {
       "name": "heading-block",
@@ -26,7 +28,9 @@
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "5",
+      "region": "closing",
+      "in": "closing-default.html"
     },
     {
       "name": "colophon",

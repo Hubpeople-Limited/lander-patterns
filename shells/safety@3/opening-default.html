@@ -1,0 +1,43 @@
+<!-- ================================================================
+     section 2 of 5 : hero-stated v4
+     variant: ground=brand
+     region: OPENING - the default this shell was designed with, held
+     here and not in page.html, whose first content section is an empty
+     gap. Paste this section into that gap to keep the default, and keep
+     it only where the page can say why. The recipe's opens: line says
+     what the first screen has to do; the material decides what does it
+     - this, another opener from INDEX.md, the content's own first row,
+     a real member's words, or nothing above the content at all.
+     An opener made of words - a display claim, one supporting line
+     and the join control - on a choice of three grounds and two
+     alignments, with no photograph anywhere in it.
+     needs: a headline the brand can stand behind and one supporting
+     sentence that says something the headline does not. Nothing else
+     - no photograph, no figure, no logo. This is the opener for a
+     brand that has words and nothing else yet. The headline is a
+     fact the brand can evidence: never a member number, a success
+     rate, a superiority claim or an unqualified free without a
+     source, and never that every profile is verified - verification
+     on this platform is free and optional
+     slots:
+       eyebrow            text, about 2 word(s). Sample: Sample eyebrow
+       headline           text, about 7 word(s). Sample: A sample headline for preview, set large
+       subhead            text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
+       assurance          markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; shape it like this sample:
+                          <ul class="cta-assurance" role="list"><li
+                          class="cta-assurance-item">Sample assurance</li><li
+                          class="cta-assurance-item">Sample assurance</li></ul>
+     ================================================================ -->
+<!-- Delete the eyebrow when nothing true fills it; drop cta-assurance into
+     the assurance slot. -->
+<section class="hero-stated hero-stated--brand">
+  <div class="hero-stated-inner">
+    <p class="hero-stated-eyebrow"><!-- slot: eyebrow --></p>
+    <h1 class="hero-stated-title"><!-- slot: headline --></h1>
+    <p class="hero-stated-sub"><!-- slot: subhead --></p>
+    <div class="hero-stated-cta">
+      <a class="hero-stated-btn" href="{{join.url}}">{{join.text}}</a>
+      <!-- slot: assurance -->
+    </div>
+  </div>
+</section>

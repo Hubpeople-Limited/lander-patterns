@@ -11,7 +11,9 @@
     },
     {
       "name": "article-masthead",
-      "version": "9"
+      "version": "9",
+      "region": "opening",
+      "in": "opening-default.html"
     },
     {
       "name": "article-toc",
@@ -35,7 +37,9 @@
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "5",
+      "region": "closing",
+      "in": "closing-default.html"
     },
     {
       "name": "colophon",

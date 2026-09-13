@@ -1,0 +1,32 @@
+<!-- ================================================================
+     section 7 of 8 : cta-band v5
+     region: CLOSING - the default this shell was designed with, held
+     here and not in page.html, whose last content section is an empty
+     gap. Paste this section into that gap to keep the default, and keep
+     it only where the page can say why. The recipe's closes: line says
+     what the foot has to do; the page decides what does it - this, a
+     line in the prose, a single link, a quiet panel, or the last row of
+     its content. Every page keeps one visible way to act, and checks it
+     is visible on a phone.
+     Plain full-bleed closing call to action on a choice of four
+     grounds - a centred claim, one supporting line and one control;
+     the ordinary page finale, and the section most pages on a brand
+     have in common.
+     needs: a closing headline and one supporting line of real copy,
+     both saying something the page has earned the right to say
+     slots:
+       cta-band-id        attribute (aria-labelledby/id): a page-unique id drawn from the heading
+       eyebrow            text, about 2 word(s). Sample: Sample eyebrow
+       title              text, about 5 word(s). Sample: Sample closing headline for preview
+       lead               text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
+     ================================================================ -->
+<!-- Place as the page's last content block, before the footer. Delete the
+     eyebrow when there is nothing true to put in it. -->
+<section class="cta-band cta-band--brand" aria-labelledby="slot:cta-band-id">
+  <div class="cta-band-inner">
+    <p class="cta-band-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="cta-band-title" id="slot:cta-band-id"><!-- slot: title --></h2>
+    <p class="cta-band-lead"><!-- slot: lead --></p>
+    <a class="cta-band-btn" href="{{join.url}}">{{join.text}}</a>
+  </div>
+</section>

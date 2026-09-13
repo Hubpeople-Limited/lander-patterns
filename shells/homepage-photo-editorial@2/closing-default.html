@@ -1,0 +1,55 @@
+<!-- ================================================================
+     section 5 of 6 : cta-image v4
+     region: CLOSING - the default this shell was designed with, held
+     here and not in page.html, whose last content section is an empty
+     gap. Paste this section into that gap to keep the default, and keep
+     it only where the page can say why. The recipe's closes: line says
+     what the foot has to do; the page decides what does it - this, a
+     line in the prose, a single link, a quiet panel, or the last row of
+     its content. Every page keeps one visible way to act, and checks it
+     is visible on a phone.
+     Full-bleed photographic closing call to action - one landscape
+     image, a scrim carrying the contrast, and a centred claim with
+     both platform controls over it.
+     needs: one landscape photograph strong enough to fill a band at
+     least 2000px wide, with its own alt text and a CDN srcset
+     ladder; a closing headline and one supporting line of real copy
+     slots:
+       cta-image-id       attribute (aria-labelledby/id): a page-unique id drawn from the heading
+       background-image   attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+       background-image-srcset attribute (srcset): a short label, about 4 word(s)
+       background-image-alt attribute (alt): what the image shows, in words
+       eyebrow            text, about 2 word(s). Sample: Sample eyebrow
+       title              text, about 5 word(s). Sample: Sample closing headline for preview
+       lead               text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
+     ================================================================ -->
+<!-- Place as the page's last content block, before the footer.
+
+     The image is decoration under a scrim, but it is the section's whole
+     atmosphere, so it takes real alt text unless it is a pure texture - then
+     empty the value, never delete the attribute. Fill srcset with a CDN
+     ladder; sizes is 100vw because the band is genuinely full-bleed.
+     loading is lazy on purpose: this sits at the foot of a long page, so it
+     is never the LCP element. -->
+<section class="cta-image" aria-labelledby="slot:cta-image-id">
+  <img class="cta-image-img"
+       src="slot:background-image"
+       srcset="slot:background-image-srcset"
+       sizes="100vw"
+       alt="slot:background-image-alt"
+       width="2000"
+       height="1125"
+       loading="lazy"
+       decoding="async">
+  <div class="cta-image-inner">
+    <p class="cta-image-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="cta-image-title" id="slot:cta-image-id"><!-- slot: title --></h2>
+    <p class="cta-image-lead"><!-- slot: lead --></p>
+    <!-- Two platform controls, no invented destinations. Delete the second
+         anchor for a pure acquisition page; never repoint it by hand. -->
+    <div class="cta-image-actions">
+      <a class="cta-image-btn" href="{{join.url}}">{{join.text}}</a>
+      <a class="cta-image-ghost" href="{{login.url}}">{{login.text}}</a>
+    </div>
+  </div>
+</section>

@@ -14,7 +14,9 @@
       "version": "4",
       "variant": {
         "ground": "plain"
-      }
+      },
+      "region": "opening",
+      "in": "opening-default.html"
     },
     {
       "name": "pricing-tiers",
@@ -26,7 +28,9 @@
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "5",
+      "region": "closing",
+      "in": "closing-default.html"
     },
     {
       "name": "colophon",

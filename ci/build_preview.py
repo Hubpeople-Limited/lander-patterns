@@ -310,9 +310,30 @@ def shell_sections(body):
             for i, (_, name) in enumerate(marks)]
 
 
+REGION_GAP = re.compile(
+    r"<!--(?:(?!-->).)*?region: (OPENING|CLOSING) - empty(?:(?!-->).)*?-->", re.S)
+
+
+def with_defaults(folder, page):
+    """page.html with each empty region's default spliced back in.
+
+    A shell ships its opening and its close as gaps, the default for each in
+    a file beside the page. The preview shows the shell as it looks with those
+    defaults kept, which is the one rendering the folder can stand behind.
+    """
+    def splice(m):
+        role = m.group(1).lower()
+        held = folder / f"{role}-default.html"
+        if not held.is_file():
+            raise SystemExit(f"{folder.name}: page.html has an empty {role} "
+                             f"region and no {held.name} beside it")
+        return held.read_text(encoding="utf-8")
+    return REGION_GAP.sub(splice, page)
+
+
 def build_shell(folder):
     """Fill one shell and return its body markup, ready to render."""
-    page = (folder / "page.html").read_text(encoding="utf-8")
+    page = with_defaults(folder, (folder / "page.html").read_text(encoding="utf-8"))
     inside = re.search(r"<body>(.*)</body>", page, re.S)
     if not inside:
         raise SystemExit(f"{folder.name}: no <body> in page.html")

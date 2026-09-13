@@ -17,9 +17,11 @@
           or merge it into the brand stylesheet unchanged.
        6. This shell is a frame. The head, the site header, the <main>
           landmark, the order of the sections and the footer are settled;
-          the first and last content sections are REGIONS - shipped as
-          defaults, decided per page. Their banners say what may replace
-          them. The middle's density is the material's to set.
+          the first and last content sections are REGIONS, and they arrive
+          EMPTY. Each gap names the default the shell was designed with
+          and the file beside this one that holds it, ready to paste in;
+          the material decides what goes there. The middle's density is
+          the material's to set.
      ================================================================ -->
 <!doctype html>
 <html lang="en">
@@ -90,49 +92,19 @@
 <main>
 
 <!-- ================================================================
-     section 2 of 6 : hero-stated v4
-     variant: ground=plain
-     region: OPENING - decided per page, not by this shell. The pattern
-     below is the default the shell ships with. The recipe's opens: line
-     says what the first screen has to do; the material decides what
-     does it - another opener from INDEX.md, the content's own first row,
-     a real member's words, or nothing above the content at all. The
-     default stays only where the page can say why. The frame - head,
-     header, main, footer, the order of what follows - stays as it is.
-     An opener made of words - a display claim, one supporting line
-     and the join control - on a choice of three grounds and two
-     alignments, with no photograph anywhere in it.
-     needs: a headline the brand can stand behind and one supporting
-     sentence that says something the headline does not. Nothing else
-     - no photograph, no figure, no logo. This is the opener for a
-     brand that has words and nothing else yet. The headline is a
-     fact the brand can evidence: never a member number, a success
-     rate, a superiority claim or an unqualified free without a
-     source, and never that every profile is verified - verification
-     on this platform is free and optional
-     slots:
-       eyebrow            text, about 2 word(s). Sample: Sample eyebrow
-       headline           text, about 7 word(s). Sample: A sample headline for preview, set large
-       subhead            text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-       assurance          markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; shape it like this sample:
-                          <ul class="cta-assurance" role="list"><li
-                          class="cta-assurance-item">Sample assurance</li><li
-                          class="cta-assurance-item">Sample assurance</li></ul>
+     section 2 of 6 : region: OPENING - empty
+     This shell ships nothing here. The first content section is the
+     page's opening, decided from the material. The default this
+     shell was designed with is hero-stated v4 (ground=plain), in
+     opening-default.html beside this file with its CSS already in
+     page.css: paste it into this gap to keep it, and keep it only
+     where the page can say why. Otherwise put another opener from
+     INDEX.md, the content's own first row, a real member's words, or
+     nothing above the content at all.
+     The recipe's opens: line says what the first screen has to do.
+     The frame - head, header, main, footer, the order of what
+     follows - stays as it is.
      ================================================================ -->
-
-<!-- Delete the eyebrow when nothing true fills it; drop cta-assurance into
-     the assurance slot. -->
-<section class="hero-stated hero-stated--plain">
-  <div class="hero-stated-inner">
-    <p class="hero-stated-eyebrow"><!-- slot: eyebrow --></p>
-    <h1 class="hero-stated-title"><!-- slot: headline --></h1>
-    <p class="hero-stated-sub"><!-- slot: subhead --></p>
-    <div class="hero-stated-cta">
-      <a class="hero-stated-btn" href="{{join.url}}">{{join.text}}</a>
-      <!-- slot: assurance -->
-    </div>
-  </div>
-</section>
 
 <!-- ================================================================
      section 3 of 6 : listing-rows v3
@@ -218,36 +190,19 @@
 </section>
 
 <!-- ================================================================
-     section 5 of 6 : cta-band v5
-     region: CLOSING - decided per page, not by this shell. The pattern
-     below is the default. The recipe's closes: line says what the foot
-     has to do; the page decides what does it - a line in the prose, a
-     single link, a quiet panel, the last row of its content, or this
-     band where the page can say why. Every page keeps one visible way
-     to act, and checks it is visible on a phone.
-     Plain full-bleed closing call to action on a choice of four
-     grounds - a centred claim, one supporting line and one control;
-     the ordinary page finale, and the section most pages on a brand
-     have in common.
-     needs: a closing headline and one supporting line of real copy,
-     both saying something the page has earned the right to say
-     slots:
-       cta-band-id        attribute (aria-labelledby/id): a page-unique id drawn from the heading
-       eyebrow            text, about 2 word(s). Sample: Sample eyebrow
-       title              text, about 5 word(s). Sample: Sample closing headline for preview
-       lead               text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
+     section 5 of 6 : region: CLOSING - empty
+     This shell ships nothing here. The last content section is the
+     page's closing, decided from the material. The default this
+     shell was designed with is cta-band v5, in closing-default.html
+     beside this file with its CSS already in page.css: paste it into
+     this gap to keep it, and keep it only where the page can say
+     why. Otherwise put a line in the prose, a single link, a quiet
+     panel, or the last row of the content; every page keeps one
+     visible way to act.
+     The recipe's closes: line says what the foot has to do. The
+     frame - head, header, main, footer, the order of what follows -
+     stays as it is.
      ================================================================ -->
-
-<!-- Place as the page's last content block, before the footer. Delete the
-     eyebrow when there is nothing true to put in it. -->
-<section class="cta-band cta-band--brand" aria-labelledby="slot:cta-band-id">
-  <div class="cta-band-inner">
-    <p class="cta-band-eyebrow"><!-- slot: eyebrow --></p>
-    <h2 class="cta-band-title" id="slot:cta-band-id"><!-- slot: title --></h2>
-    <p class="cta-band-lead"><!-- slot: lead --></p>
-    <a class="cta-band-btn" href="{{join.url}}">{{join.text}}</a>
-  </div>
-</section>
 
 </main>
 

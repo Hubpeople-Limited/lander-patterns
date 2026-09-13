@@ -11,7 +11,9 @@
     },
     {
       "name": "hero-centred",
-      "version": "6"
+      "version": "6",
+      "region": "opening",
+      "in": "opening-default.html"
     },
     {
       "name": "zigzag-rows",
@@ -23,7 +25,9 @@
     },
     {
       "name": "cta-image",
-      "version": "4"
+      "version": "4",
+      "region": "closing",
+      "in": "closing-default.html"
     },
     {
       "name": "colophon",

@@ -1,0 +1,51 @@
+<!-- ================================================================
+     section 2 of 9 : article-masthead v9
+     region: OPENING - the default this shell was designed with, held
+     here and not in page.html, whose first content section is an empty
+     gap. Paste this section into that gap to keep the default, and keep
+     it only where the page can say why. The recipe's opens: line says
+     what the first screen has to do; the material decides what does it
+     - this, another opener from INDEX.md, the content's own first row,
+     a real member's words, or nothing above the content at all.
+     Bylined article header - metadata eyebrow over a hairline,
+     display h1, a lede held to a short measure, and an author row
+     under a second hairline.
+     needs: a real article title and a real lede of one or two
+     sentences; the category the piece genuinely sits in; an honest
+     read time and a genuine publication date; the name and role of
+     the person who actually wrote it, with their real portrait and
+     real alt text
+     slots:
+       tag                text, about 2 word(s). Sample: Sample category
+       read-time          text, about 4 word(s). Sample: 6 min sample read
+       publish-datetime   attribute (datetime): a short label, about 1 word(s)
+       publish-date       text, about 4 word(s). Sample: 1 January 2026 (sample)
+       title              text, about 8 word(s). Sample: A sample article title for the preview render
+       lede               text, about 19 word(s). Sample: One or two sentences of sample standfirst, written only...
+       author-portrait    attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+       author-portrait-alt attribute (alt): what the image shows, in words
+       author-name        text, about 2 word(s). Sample: Sample Author
+       author-role        text, about 6 word(s). Sample: Sample role line for the preview
+     ================================================================ -->
+<!-- All three eyebrow items are required; the separators between them are
+     decorative and go with whatever item they precede. datetime takes the
+     machine-readable date (2026-08-22), the slot beside it the words a reader
+     sees. This block carries the page's only h1. -->
+<div class="article-masthead">
+  <div class="article-masthead-meta">
+    <p class="article-masthead-item article-masthead-tag"><!-- slot: tag --></p>
+    <span class="article-masthead-sep" aria-hidden="true">&middot;</span>
+    <p class="article-masthead-item"><!-- slot: read-time --></p>
+    <span class="article-masthead-sep" aria-hidden="true">&middot;</span>
+    <time class="article-masthead-item" datetime="slot:publish-datetime"><!-- slot: publish-date --></time>
+  </div>
+  <h1 class="article-masthead-title"><!-- slot: title --></h1>
+  <p class="article-masthead-lede"><!-- slot: lede --></p>
+  <div class="article-masthead-author">
+    <img class="article-masthead-avatar" src="slot:author-portrait" alt="slot:author-portrait-alt" width="88" height="88" loading="lazy">
+    <div class="article-masthead-author-meta">
+      <p class="article-masthead-byline"><!-- slot: author-name --></p>
+      <p class="article-masthead-role"><!-- slot: author-role --></p>
+    </div>
+  </div>
+</div>

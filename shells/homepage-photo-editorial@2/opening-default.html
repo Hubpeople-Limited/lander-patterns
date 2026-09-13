@@ -1,0 +1,48 @@
+<!-- ================================================================
+     section 2 of 6 : hero-centred v6
+     region: OPENING - the default this shell was designed with, held
+     here and not in page.html, whose first content section is an empty
+     gap. Paste this section into that gap to keep the default, and keep
+     it only where the page can say why. The recipe's opens: line says
+     what the first screen has to do; the material decides what does it
+     - this, another opener from INDEX.md, the content's own first row,
+     a real member's words, or nothing above the content at all.
+     Opener with the claim centred above a wide cropped photograph in
+     its own band - the one hero that never lays a word over an
+     image, so no scrim has to carry a ratio.
+     needs: a headline of one or two lines and one supporting
+     sentence, both from real brand material; one landscape
+     photograph at least 1600px wide with its own alt text and a CDN
+     srcset ladder
+     slots:
+       headline           text, about 4 word(s). Sample: Sample headline for preview
+       subhead            text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
+       hero-image         attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+       hero-image-srcset  attribute (srcset): a short label, about 4 word(s)
+       hero-image-alt     attribute (alt): what the image shows, in words
+     ================================================================ -->
+<section class="hero-centred">
+  <div class="hero-centred-copy">
+    <!-- The page's only h1. -->
+    <h1 class="hero-centred-title"><!-- slot: headline --></h1>
+    <p class="hero-centred-sub"><!-- slot: subhead --></p>
+    <a class="hero-centred-btn" href="{{join.url}}">{{join.text}}</a>
+  </div>
+  <!-- No word is ever laid over this image, so it takes real alt text and
+       needs no scrim. It is still the page's LCP element: never lazy, high
+       fetch priority, and width/height carrying the real file's intrinsic
+       pixel size so the box is reserved before a byte arrives. Fill srcset
+       with a CDN ladder; sizes matches the band, which is capped at the
+       container rather than full-bleed. -->
+  <div class="hero-centred-media">
+    <img class="hero-centred-img"
+         src="slot:hero-image"
+         srcset="slot:hero-image-srcset"
+         sizes="(min-width: 78rem) 72rem, 100vw"
+         alt="slot:hero-image-alt"
+         width="1600"
+         height="900"
+         fetchpriority="high"
+         decoding="async">
+  </div>
+</section>

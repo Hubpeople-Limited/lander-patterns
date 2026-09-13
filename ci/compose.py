@@ -92,9 +92,11 @@ PAGE = """<!-- {rule}
           or merge it into the brand stylesheet unchanged.
        6. This shell is a frame. The head, the site header, the <main>
           landmark, the order of the sections and the footer are settled;
-          the first and last content sections are REGIONS - shipped as
-          defaults, decided per page. Their banners say what may replace
-          them. The middle's density is the material's to set.
+          the first and last content sections are REGIONS, and they arrive
+          EMPTY. Each gap names the default the shell was designed with
+          and the file beside this one that holds it, ready to paste in;
+          the material decides what goes there. The middle's density is
+          the material's to set.
      {rule} -->
 <!doctype html>
 <html lang="en">
@@ -250,23 +252,70 @@ def slot_guidance(slot, sample):
 
 REGION_NOTES = {
     "opening": [
-        "region: OPENING - decided per page, not by this shell. The pattern",
-        "below is the default the shell ships with. The recipe's opens: line",
-        "says what the first screen has to do; the material decides what",
-        "does it - another opener from INDEX.md, the content's own first row,",
-        "a real member's words, or nothing above the content at all. The",
-        "default stays only where the page can say why. The frame - head,",
-        "header, main, footer, the order of what follows - stays as it is.",
+        "region: OPENING - the default this shell was designed with, held",
+        "here and not in page.html, whose first content section is an empty",
+        "gap. Paste this section into that gap to keep the default, and keep",
+        "it only where the page can say why. The recipe's opens: line says",
+        "what the first screen has to do; the material decides what does it",
+        "- this, another opener from INDEX.md, the content's own first row,",
+        "a real member's words, or nothing above the content at all.",
     ],
     "closing": [
-        "region: CLOSING - decided per page, not by this shell. The pattern",
-        "below is the default. The recipe's closes: line says what the foot",
-        "has to do; the page decides what does it - a line in the prose, a",
-        "single link, a quiet panel, the last row of its content, or this",
-        "band where the page can say why. Every page keeps one visible way",
-        "to act, and checks it is visible on a phone.",
+        "region: CLOSING - the default this shell was designed with, held",
+        "here and not in page.html, whose last content section is an empty",
+        "gap. Paste this section into that gap to keep the default, and keep",
+        "it only where the page can say why. The recipe's closes: line says",
+        "what the foot has to do; the page decides what does it - this, a",
+        "line in the prose, a single link, a quiet panel, or the last row of",
+        "its content. Every page keeps one visible way to act, and checks it",
+        "is visible on a phone.",
     ],
 }
+
+# What page.html carries where a region's section would be: the gap, and
+# what it says. A marker line each, which ci/build_preview.py splices the
+# default back into when it renders the shell.
+GAP_MARK = {"opening": "region: OPENING - empty",
+            "closing": "region: CLOSING - empty"}
+
+
+def region_gap(item, mods, position, total, role):
+    """The comment that stands in a region's place in page.html.
+
+    Returns (comment, written): the whole comment, and the same text for the
+    banner policy - all of it is this script's own writing.
+    """
+    meta = item["meta"]
+    variant = (" (" + ", ".join(f"{k}={v}" for k, v in mods.items()) + ")"
+               if mods else "")
+    where = "first" if role == "opening" else "last"
+    job = ("the recipe's opens: line says what the first screen has to do"
+           if role == "opening" else
+           "the recipe's closes: line says what the foot has to do")
+    instead = ("another opener from INDEX.md, the content's own first row, a "
+               "real member's words, or nothing above the content at all"
+               if role == "opening" else
+               "a line in the prose, a single link, a quiet panel, or the last "
+               "row of the content; every page keeps one visible way to act")
+    lines = [f"section {position} of {total} : {GAP_MARK[role]}",
+             f"This shell ships nothing here. The {where} content section is "
+             f"the page's",
+             f"{role}, decided from the material. The default this shell was "
+             f"designed",
+             f"with is {item['name']} v{meta.get('version', '?')}{variant}, in "
+             f"{role}-default.html beside",
+             "this file with its CSS already in page.css: paste it into this "
+             "gap to",
+             "keep it, and keep it only where the page can say why. Otherwise "
+             "put",
+             f"{instead}."]
+    lines = textwrap.wrap(" ".join(l.strip() for l in lines[1:]), width=64)
+    lines = [f"section {position} of {total} : {GAP_MARK[role]}"] + lines
+    lines += textwrap.wrap(f"{job[0].upper()}{job[1:]}. The frame - head, "
+                           "header, main, footer, the order of what follows - "
+                           "stays as it is.", width=64)
+    inner = "\n".join(f"     {line}".rstrip() for line in lines)
+    return f"<!-- {RULE}\n{inner}\n     {RULE} -->", "\n".join(lines)
 
 
 def section_banner(item, mods, position, total, role=None):
@@ -508,6 +557,7 @@ def compose_one(recipe, library):
     # first and last content sections are the shell's two regions.
     content = [i for i, item in enumerate(page) if item["name"] not in FURNITURE_PATTERNS]
     first_content, last_content = (content[0], content[-1]) if content else (None, None)
+    defaults = {}
     for position, (item, mods) in enumerate(zip(page, chosen), start=1):
         index = position - 1
         role = ("opening" if index == first_content else
@@ -517,8 +567,14 @@ def compose_one(recipe, library):
         copied_texts.append(copied)
         if index == first_content:
             sections.append("<main>")
-        sections.append(banner)
-        sections.append(item["body"])
+        if role:
+            gap, gap_written = region_gap(item, mods, position, total, role)
+            banners.append(gap_written)
+            sections.append(gap)
+            defaults[f"{role}-default.html"] = banner + "\n" + item["body"] + "\n"
+        else:
+            sections.append(banner)
+            sections.append(item["body"])
         if index == last_content:
             sections.append("</main>")
         css.append(f"/* ---- {item['name']} v{item['meta'].get('version', '?')} ---- */\n"
@@ -536,9 +592,10 @@ def compose_one(recipe, library):
 
     # Every furniture token a pattern carries must reach the shell byte for
     # byte - these render on live sites, and a mangled one renders as text.
+    shipped = html + "".join(defaults.values())
     for item in page:
         for token in FURNITURE.findall(item["body"]):
-            if token not in html:
+            if token not in shipped:
                 die(f"{where}: furniture token {token} from {item['name']} "
                     f"did not survive assembly")
 
@@ -551,8 +608,12 @@ def compose_one(recipe, library):
         "patterns": [
             {"name": item["name"],
              "version": item["meta"].get("version", ""),
-             **({"variant": mods} if mods else {})}
-            for item, mods in zip(page, chosen)
+             **({"variant": mods} if mods else {}),
+             **({"region": "opening", "in": "opening-default.html"}
+                if i == first_content else
+                {"region": "closing", "in": "closing-default.html"}
+                if i == last_content and i != first_content else {})}
+            for i, (item, mods) in enumerate(zip(page, chosen))
         ],
     }
     if support:
@@ -569,6 +630,7 @@ def compose_one(recipe, library):
         "page.css": "\n\n".join(css) + "\n",
         "manifest.json": json.dumps(manifest, indent=2) + "\n",
         "README.md": readme,
+        **defaults,
     }
 
 
@@ -584,7 +646,11 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "Fetch `page.html` and `page.css`, write real copy into the slots, "
         "duplicate whatever block a pattern's comments say to duplicate, "
         "strip every comment, and keep each `{{ }}` token exactly as found - "
-        "the platform fills those.",
+        "the platform fills those. The first and last content sections are "
+        "empty in `page.html`: they are the page's opening and its close, "
+        "decided from the material, and the default this shell was designed "
+        "with for each sits beside the page in `opening-default.html` and "
+        "`closing-default.html`, ready to paste in where the page can say why.",
         "",
         "## Wiring",
         "",
@@ -618,10 +684,19 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "## Sections, in order",
         "",
     ]
+    content = [item["name"] for item in page if item["name"] not in FURNITURE_PATTERNS]
+    region_of = {}
+    if content:
+        region_of[content[0]] = "opening"
+        if len(content) > 1:
+            region_of[content[-1]] = "closing"
     for position, (item, mods) in enumerate(zip(page, chosen), start=1):
         variant = " (" + ", ".join(f"{k}={v}" for k, v in mods.items()) + ")" if mods else ""
+        role = region_of.get(item["name"])
+        held = (f" - **the {role} region's default**, in `{role}-default.html`, "
+                f"not in `page.html`" if role else "")
         lines.append(f"{position}. **{item['name']}** "
-                     f"v{item['meta'].get('version', '?')}{variant} - "
+                     f"v{item['meta'].get('version', '?')}{variant}{held} - "
                      f"{item['meta'].get('description', '')}")
         for slot in find_slots(item["body"]):
             summary, sample_lines = slot_guidance(slot, item["sample"])
@@ -638,7 +713,6 @@ def compose_readme(recipe, name, version, page, chosen, support):
                         for extra, for_slot, of_pattern in support)
             + ".",
         ]
-    content = [item["name"] for item in page if item["name"] not in FURNITURE_PATTERNS]
     lines += [
         "",
         "## Regions",
@@ -646,19 +720,23 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "This shell is a frame. What it settles: the head, the site header, "
         "the `<main>` landmark round the content, the order of the sections, "
         "the footer, and the responsive behaviour every pattern carries. "
-        "What it leaves open, and marks in `page.html`:",
+        "What it leaves open, and ships empty in `page.html`:",
         "",
-        f"- **The opening** - `{content[0] if content else '?'}` is the shipped "
-        "default. A page may open instead on another opener from INDEX.md, on "
-        "the content's own first row, on a real member's words, or on nothing "
-        "above the content at all. The recipe's `opens:` line says what the "
-        "first screen has to do; the material decides what does it, and the "
-        "default stays only where the page can say why.",
-        f"- **The closing** - `{content[-1] if len(content) > 1 else '?'}` is the "
-        "shipped default. A page may close instead on a line in the prose, a "
-        "single link, a quiet panel or the last row of its content. The "
-        "recipe's `closes:` line says what the foot has to do; the page decides "
-        "what does it, and every page keeps one visible way to act.",
+        f"- **The opening** - the first gap. `{content[0] if content else '?'}` "
+        "is the default this shell was designed with; it is in "
+        "`opening-default.html`, its CSS already in `page.css`, and it goes "
+        "into the gap only where the page can say why. Otherwise the page "
+        "opens on another opener from INDEX.md, on the content's own first "
+        "row, on a real member's words, or on nothing above the content at "
+        "all. The recipe's `opens:` line says what the first screen has to "
+        "do; the material decides what does it.",
+        f"- **The closing** - the last gap. "
+        f"`{content[-1] if len(content) > 1 else '?'}` is the default, in "
+        "`closing-default.html`, and it goes in only where the page can say "
+        "why. Otherwise the page closes on a line in the prose, a single "
+        "link, a quiet panel or the last row of its content. The recipe's "
+        "`closes:` line says what the foot has to do; the page decides what "
+        "does it, and every page keeps one visible way to act.",
         "- **The middle's density** - how many items, a line or a paragraph "
         "each, one section or three - is the material's, within the patterns' "
         "stated needs.",
@@ -684,15 +762,22 @@ def compose_index(built):
         "`ci/page-recipes.json`, never hand-edited.",
         "Each shell is a frame: the head, the site header, the `<main>` "
         "landmark, the order of the sections and the footer are settled. "
-        "Its first and last content sections are regions - shipped as "
-        "defaults, decided per page - and the middle's density is the "
-        "material's; each folder's README says what may replace what. Fetch "
-        "one folder, decide the regions, write real copy into the slots, "
-        "strip the comments.",
+        "Its first and last content sections are regions, and they arrive "
+        "empty: the page's opening and its close are decided from the "
+        "material, and the default the shell was designed with for each is "
+        "named in brackets below and held in a file beside the page, to paste "
+        "in where the page can say why. The middle's density is the "
+        "material's. Fetch one folder, decide the regions, write real copy "
+        "into the slots, strip the comments.",
         "",
     ]
     for folder, recipe in built:
-        order = " -> ".join(recipe["patterns"])
+        names = recipe["patterns"]
+        content = [i for i, n in enumerate(names)
+                   if n.split(":")[0] not in FURNITURE_PATTERNS]
+        regions = set(content[:1] + content[-1:])
+        order = " -> ".join(f"[{n}]" if i in regions else n
+                            for i, n in enumerate(names))
         lines.append(f"- **{folder}** - {recipe['page']} - {order} - {recipe['why']}")
     return "\n".join(lines) + "\n"
 

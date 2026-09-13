@@ -17,9 +17,11 @@
           or merge it into the brand stylesheet unchanged.
        6. This shell is a frame. The head, the site header, the <main>
           landmark, the order of the sections and the footer are settled;
-          the first and last content sections are REGIONS - shipped as
-          defaults, decided per page. Their banners say what may replace
-          them. The middle's density is the material's to set.
+          the first and last content sections are REGIONS, and they arrive
+          EMPTY. Each gap names the default the shell was designed with
+          and the file beside this one that holds it, ready to paste in;
+          the material decides what goes there. The middle's density is
+          the material's to set.
      ================================================================ -->
 <!doctype html>
 <html lang="en">
@@ -90,54 +92,19 @@
 <main>
 
 <!-- ================================================================
-     section 2 of 6 : hero-centred v6
-     region: OPENING - decided per page, not by this shell. The pattern
-     below is the default the shell ships with. The recipe's opens: line
-     says what the first screen has to do; the material decides what
-     does it - another opener from INDEX.md, the content's own first row,
-     a real member's words, or nothing above the content at all. The
-     default stays only where the page can say why. The frame - head,
-     header, main, footer, the order of what follows - stays as it is.
-     Opener with the claim centred above a wide cropped photograph in
-     its own band - the one hero that never lays a word over an
-     image, so no scrim has to carry a ratio.
-     needs: a headline of one or two lines and one supporting
-     sentence, both from real brand material; one landscape
-     photograph at least 1600px wide with its own alt text and a CDN
-     srcset ladder
-     slots:
-       headline           text, about 4 word(s). Sample: Sample headline for preview
-       subhead            text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-       hero-image         attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
-       hero-image-srcset  attribute (srcset): a short label, about 4 word(s)
-       hero-image-alt     attribute (alt): what the image shows, in words
+     section 2 of 6 : region: OPENING - empty
+     This shell ships nothing here. The first content section is the
+     page's opening, decided from the material. The default this
+     shell was designed with is hero-centred v6, in opening-
+     default.html beside this file with its CSS already in page.css:
+     paste it into this gap to keep it, and keep it only where the
+     page can say why. Otherwise put another opener from INDEX.md,
+     the content's own first row, a real member's words, or nothing
+     above the content at all.
+     The recipe's opens: line says what the first screen has to do.
+     The frame - head, header, main, footer, the order of what
+     follows - stays as it is.
      ================================================================ -->
-
-<section class="hero-centred">
-  <div class="hero-centred-copy">
-    <!-- The page's only h1. -->
-    <h1 class="hero-centred-title"><!-- slot: headline --></h1>
-    <p class="hero-centred-sub"><!-- slot: subhead --></p>
-    <a class="hero-centred-btn" href="{{join.url}}">{{join.text}}</a>
-  </div>
-  <!-- No word is ever laid over this image, so it takes real alt text and
-       needs no scrim. It is still the page's LCP element: never lazy, high
-       fetch priority, and width/height carrying the real file's intrinsic
-       pixel size so the box is reserved before a byte arrives. Fill srcset
-       with a CDN ladder; sizes matches the band, which is capped at the
-       container rather than full-bleed. -->
-  <div class="hero-centred-media">
-    <img class="hero-centred-img"
-         src="slot:hero-image"
-         srcset="slot:hero-image-srcset"
-         sizes="(min-width: 78rem) 72rem, 100vw"
-         alt="slot:hero-image-alt"
-         width="1600"
-         height="900"
-         fetchpriority="high"
-         decoding="async">
-  </div>
-</section>
 
 <!-- ================================================================
      section 3 of 6 : zigzag-rows v9
@@ -247,59 +214,19 @@
 </section>
 
 <!-- ================================================================
-     section 5 of 6 : cta-image v4
-     region: CLOSING - decided per page, not by this shell. The pattern
-     below is the default. The recipe's closes: line says what the foot
-     has to do; the page decides what does it - a line in the prose, a
-     single link, a quiet panel, the last row of its content, or this
-     band where the page can say why. Every page keeps one visible way
-     to act, and checks it is visible on a phone.
-     Full-bleed photographic closing call to action - one landscape
-     image, a scrim carrying the contrast, and a centred claim with
-     both platform controls over it.
-     needs: one landscape photograph strong enough to fill a band at
-     least 2000px wide, with its own alt text and a CDN srcset
-     ladder; a closing headline and one supporting line of real copy
-     slots:
-       cta-image-id       attribute (aria-labelledby/id): a page-unique id drawn from the heading
-       background-image   attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
-       background-image-srcset attribute (srcset): a short label, about 4 word(s)
-       background-image-alt attribute (alt): what the image shows, in words
-       eyebrow            text, about 2 word(s). Sample: Sample eyebrow
-       title              text, about 5 word(s). Sample: Sample closing headline for preview
-       lead               text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
+     section 5 of 6 : region: CLOSING - empty
+     This shell ships nothing here. The last content section is the
+     page's closing, decided from the material. The default this
+     shell was designed with is cta-image v4, in closing-default.html
+     beside this file with its CSS already in page.css: paste it into
+     this gap to keep it, and keep it only where the page can say
+     why. Otherwise put a line in the prose, a single link, a quiet
+     panel, or the last row of the content; every page keeps one
+     visible way to act.
+     The recipe's closes: line says what the foot has to do. The
+     frame - head, header, main, footer, the order of what follows -
+     stays as it is.
      ================================================================ -->
-
-<!-- Place as the page's last content block, before the footer.
-
-     The image is decoration under a scrim, but it is the section's whole
-     atmosphere, so it takes real alt text unless it is a pure texture - then
-     empty the value, never delete the attribute. Fill srcset with a CDN
-     ladder; sizes is 100vw because the band is genuinely full-bleed.
-     loading is lazy on purpose: this sits at the foot of a long page, so it
-     is never the LCP element. -->
-<section class="cta-image" aria-labelledby="slot:cta-image-id">
-  <img class="cta-image-img"
-       src="slot:background-image"
-       srcset="slot:background-image-srcset"
-       sizes="100vw"
-       alt="slot:background-image-alt"
-       width="2000"
-       height="1125"
-       loading="lazy"
-       decoding="async">
-  <div class="cta-image-inner">
-    <p class="cta-image-eyebrow"><!-- slot: eyebrow --></p>
-    <h2 class="cta-image-title" id="slot:cta-image-id"><!-- slot: title --></h2>
-    <p class="cta-image-lead"><!-- slot: lead --></p>
-    <!-- Two platform controls, no invented destinations. Delete the second
-         anchor for a pure acquisition page; never repoint it by hand. -->
-    <div class="cta-image-actions">
-      <a class="cta-image-btn" href="{{join.url}}">{{join.text}}</a>
-      <a class="cta-image-ghost" href="{{login.url}}">{{login.text}}</a>
-    </div>
-  </div>
-</section>
 
 </main>
 

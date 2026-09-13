@@ -1,0 +1,33 @@
+<!-- ================================================================
+     section 2 of 6 : hero-split v9
+     region: OPENING - the default this shell was designed with, held
+     here and not in page.html, whose first content section is an empty
+     gap. Paste this section into that gap to keep the default, and keep
+     it only where the page can say why. The recipe's opens: line says
+     what the first screen has to do; the material decides what does it
+     - this, another opener from INDEX.md, the content's own first row,
+     a real member's words, or nothing above the content at all.
+     Conversion opener - value proposition left, one strong image
+     right, single join CTA; stacks image-first on phones.
+     needs: one hero image at least 1280px wide from real material; a
+     headline and one-sentence subhead that state the actual offer
+     slots:
+       headline           text, about 4 word(s). Sample: Sample headline for preview
+       subhead            text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
+       hero-image         attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+       hero-image-alt     attribute (alt): what the image shows, in words
+     ================================================================ -->
+<section class="hero-split">
+  <div class="hero-split-inner">
+    <div class="hero-split-copy">
+      <h1 class="hero-split-title"><!-- slot: headline --></h1>
+      <p class="hero-split-sub"><!-- slot: subhead --></p>
+      <div class="hero-split-cta">
+        <a class="hero-split-btn" href="{{join.url}}">{{join.text}}</a>
+      </div>
+    </div>
+    <div class="hero-split-visual">
+      <img src="slot:hero-image" alt="slot:hero-image-alt" width="640" height="720">
+    </div>
+  </div>
+</section>
