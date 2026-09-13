@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Hold every page recipe to its grammar, and regenerate the menu from them.
 
-A composition is a THING - page markup, assembled and maintained. A recipe is
+A shell is a THING - page markup, assembled and maintained. A recipe is
 the order sheet above it: which shell, which ground each band sits on, how the
 page opens and closes, the structural signature it commits to, and the slot
 where a brand's own typeface pairing arrives. Two brands taking `pricing` get
@@ -23,7 +23,7 @@ WHAT IT CHECKS. The fenced `recipe` block: the fields present, in order, none
 unknown, none repeated, no blank line inside the fence. A pin that matches its
 own filename, and no two recipes sharing one. A `shape` from the seven the
 building vocabulary has and no eighth. A `shell` that is a real folder under
-`compositions/`, named WITHOUT its version. A `look` entry naming a real
+`shells/`, named WITHOUT its version. A `look` entry naming a real
 pattern, also without a version, and an `axis=value` that pattern actually
 declares - read through `ci/check_page.py`'s own `axes_of`, so the recipes and
 the page checker can never disagree about what a pattern offers. A `grounds`
@@ -76,7 +76,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 ROOT = Path(__file__).resolve().parent.parent
 RECIPES = ROOT / "recipes"
-COMPOSITIONS = ROOT / "compositions"
+SHELLS = ROOT / "shells"
 PATTERNS = ROOT / "patterns"
 MENU = RECIPES / "README.md"
 
@@ -125,13 +125,13 @@ SIGNATURE_WORDS = 10
 def shells():
     """{shell name without its version: {"page": ..., "bands": [...]}}.
 
-    Read from each composition's own manifest rather than from its folder name
+    Read from each shell's own manifest rather than from its folder name
     or its README, because the manifest is what `ci/compose.py` writes and is
     the only one of the three that cannot describe a page the generator did not
     produce.
     """
     out = {}
-    for folder in sorted(COMPOSITIONS.iterdir()):
+    for folder in sorted(SHELLS.iterdir()):
         manifest = folder / "manifest.json"
         if not folder.is_dir() or not manifest.is_file():
             continue
@@ -278,7 +278,7 @@ def shell_faults(values, known):
                           f"against, not the one being built from")]
     if name not in known:
         offered = ", ".join(sorted(known)) or "none"
-        return [("shell", f"shell: no composition called {name!r} - the shells "
+        return [("shell", f"shell: no shell called {name!r} - the shells "
                           f"are {offered}")]
     return []
 
@@ -489,7 +489,7 @@ def broken_fixtures():
         ("a shape outside the seven", *edit(
             "shape: reference", "shape: listicle"), "shape"),
         ("a pinned shell", *edit("shell: pricing", "shell: pricing@3"), "shell"),
-        ("a shell with no composition behind it", *edit(
+        ("a shell no folder provides", *edit(
             "shell: pricing", "shell: pricing-imaginary"), "shell"),
         ("a pinned pattern in look", *edit(
             "look: hero-stated", "look: hero-stated@4"), "look"),
@@ -580,7 +580,7 @@ def main():
 
     known, axes = shells(), pattern_axes()
     if not known:
-        print("ci/check_recipes.py: no compositions to check a shell against - "
+        print("ci/check_recipes.py: no shells to check a recipe against - "
               "run ci/compose.py first", file=sys.stderr)
         return 2
 

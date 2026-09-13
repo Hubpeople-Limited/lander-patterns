@@ -190,7 +190,7 @@ def build():
         patterns[folder.name] = pattern_entry(folder, patterns_meta[folder.name])
 
     shells = {}
-    for folder in sorted(p for p in (ROOT / "compositions").iterdir() if p.is_dir()):
+    for folder in sorted(p for p in (ROOT / "shells").iterdir() if p.is_dir()):
         entry = shell_entry(folder)
         unknown = [p["name"] for p in entry["patterns"] if p["name"] not in patterns]
         if unknown:

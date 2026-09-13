@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Assemble static preview pages: every pattern x every sample token set,
-and every composition shell rendered as a whole page.
+and every shell rendered as a whole page.
 
 Output goes to preview/site/ (gitignored; published by CI). This is repo
 tooling only - the inline <style> it writes exists nowhere but the preview.
@@ -311,7 +311,7 @@ def shell_sections(body):
 
 
 def build_shell(folder):
-    """Fill one composition shell and return its body markup, ready to render."""
+    """Fill one shell and return its body markup, ready to render."""
     page = (folder / "page.html").read_text(encoding="utf-8")
     inside = re.search(r"<body>(.*)</body>", page, re.S)
     if not inside:
@@ -621,8 +621,8 @@ def main():
         )
 
     shells = []
-    composition_dir = ROOT / "compositions"
-    for folder in sorted(p for p in composition_dir.iterdir() if p.is_dir()):
+    shell_dir = ROOT / "shells"
+    for folder in sorted(p for p in shell_dir.iterdir() if p.is_dir()):
         body, patterns = build_shell(folder)
         manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
         # The manifest is what a consumer pins against and the banners are what

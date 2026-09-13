@@ -58,7 +58,7 @@ jobs:
           LANDER_LEAK_NEEDLES: ${{ secrets.LANDER_LEAK_NEEDLES }}
           LANDER_LEAK_SKIP: ${{ github.event.pull_request.head.repo.fork }}
         run: python ci/lint.py
-      # compositions/ is generated output committed to the repo, like
+      # shells/ is generated output committed to the repo, like
       # INDEX.md. Unlike INDEX.md it is not regenerated here on the fly:
       # a shell an agent already fetched is a contract, so a pattern or
       # recipe change that alters one has to fail loudly until somebody
@@ -67,19 +67,19 @@ jobs:
       #
       # The manifest's `library` tag is the one exception, and it has to be:
       # the release job below rewrites it on every merge, and it is
-      # `needs: validate`, so holding a new composition to a tag that job has
+      # `needs: validate`, so holding a new shell to a tag that job has
       # not written yet is a check waiting on the thing it blocks.
-      - name: Compositions match the recipes and patterns they are built from
+      - name: Shells match the recipes and patterns they are built from
         run: python ci/compose.py --check
       # recipes/ is the third index an agent reads, and the layer above the
       # shells: which shell, which ground each band sits on, how the page opens
       # and closes. Every fault one can carry reads perfectly to a person - a
-      # shell name with no composition behind it, four ground rungs for a
+      # shell name with no folder behind it, four ground rungs for a
       # five-band shell so the fifth band arrives with nobody having decided
       # anything about it, a pin that no longer matches its own filename - so
       # this step is the only thing that can see one. It also regenerates
       # recipes/README.md; --check fails when the committed menu is not what
-      # the recipes produce, the treatment compositions/ gets and for the same
+      # the recipes produce, the treatment shells/ gets and for the same
       # reason.
       - name: Recipes are valid and the menu is what they generate
         run: python ci/check_recipes.py --check
@@ -208,7 +208,7 @@ jobs:
       # in the release job, which is also where the tree is regenerated and
       # committed - minifying needs a toolchain a contributor working in the
       # web editor does not have, so this is INDEX.md's treatment, not
-      # compositions/'s.
+      # shells/'s.
       - name: The behaviour bundle publishes
         run: python ci/publish_hub.py --dry-run
       - name: Build previews
@@ -274,9 +274,9 @@ jobs:
           python ci/lint.py
           python ci/test_gates.py
           echo "$TAG" > LATEST
-          # compositions/ stamps the library tag into each manifest.json and
+          # shells/ stamps the library tag into each manifest.json and
           # nowhere else, so regenerating after LATEST moves rewrites one
-          # file per composition; they ship in the release commit, the same
+          # file per shell; they ship in the release commit, the same
           # treatment INDEX.md gets, for the same reason.
           python ci/compose.py
           # The published form of the behaviour bundle. Regenerated here
@@ -296,7 +296,7 @@ jobs:
           # was never staged, so every commit of it in this repo's history is
           # a hand-run - which left the file agents fetch to choose patterns
           # only as current as someone's last local run.
-          git add INDEX.md LATEST patterns.json compositions publish
+          git add INDEX.md LATEST patterns.json shells publish
           git commit -m "ci: release $TAG [skip ci]" || true
           git tag "$TAG"
           git push --atomic origin main "refs/tags/$TAG"
@@ -313,12 +313,12 @@ jobs:
           TAG="v${{ github.run_number }}"
           git fetch --tags origin
           git checkout "refs/tags/$TAG"
-          zip -qr "library-$TAG.zip" patterns compositions recipes lib INDEX.md TOKENS.md patterns.json
+          zip -qr "library-$TAG.zip" patterns shells recipes lib INDEX.md TOKENS.md patterns.json
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "library-$TAG.zip" --clobber
           else
             gh release create "$TAG" "library-$TAG.zip" --title "$TAG" \
-              --notes "The whole library at $TAG in one download: patterns/, compositions/, recipes/, lib/, INDEX.md, TOKENS.md, patterns.json."
+              --notes "The whole library at $TAG in one download: patterns/, shells/, recipes/, lib/, INDEX.md, TOKENS.md, patterns.json."
           fi
 
   publish-bundle:
