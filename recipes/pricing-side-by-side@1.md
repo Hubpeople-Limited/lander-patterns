@@ -3,9 +3,9 @@ recipe: pricing-side-by-side@1
 shape: comparison
 shell: pricing-comparison
 grounds: deep, plain, soft, brand
-opens: a claim on a dark ground, framing what is about to be compared
-closes: a full-width band in the brand colour, carrying the one control
-signature: dark opener, comparison table, questions, band
+opens: decide it from the plans - the first screen frames what is about to be compared: a claim on the dark ground, or the table's own first rows
+closes: decide it from what the table has settled - a band after the questions, or a single link
+signature: comparison table, questions
 pairing: brand
 notes: for plans that differ on many small things rather than one number
 ```

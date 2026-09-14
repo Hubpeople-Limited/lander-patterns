@@ -4,16 +4,17 @@ shape: narrative
 shell: about
 look: portrait-prose side=start
 grounds: plain, plain, soft, brand
-opens: a plain statement of who is behind the brand and why it exists, no photograph, the join control under it
-closes: a full-width band in the brand colour, carrying the one control
-signature: stated opener, the person and their story, promises, band
+opens: decide it from the material - the first screen says who is behind the brand and why it exists: the founder's own first sentence, the portrait itself, or a plain statement
+closes: decide it from what the story has earned - one visible way to act at the foot: a band, a line in the founder's own voice, or a single link
+signature: the person and their story, then the promises it earns
 pairing: brand
 notes: the story is the page; everything else is what the story earns
 ```
 
-The founder page: a plain statement of who is behind the brand, then the
-person and their story with the portrait given room, the promises the story
-has earned set large on a tinted band, and the ask. The one page a small brand
+The founder page: the person and their story with the portrait given room,
+then the promises the story has earned set large on a tinted band. How the
+page opens and how it asks at the foot are decided from the material, and the
+founder's own words are usually the better opening. The one page a small brand
 has that no competitor can copy, because the story is true and theirs.
 
 It suits a brand with one founder or one face, a real portrait of them, and a

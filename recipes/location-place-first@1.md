@@ -3,18 +3,18 @@ recipe: location-place-first@1
 shape: narrative
 shell: location
 grounds: plain, plain, plain, plain, plain, soft, brand
-opens: a plain claim naming the place, with the join control under it
-closes: a full-width band in the brand colour, carrying the one control
-signature: place claim, local prose, members, sibling places, band
+opens: decide it from the place - the first screen names the town or region: the local prose itself can open the page, or a plain claim naming the place above it
+closes: decide it from the set - the neighbouring places can be the last thing on the page, or a band after them
+signature: local prose, members, sibling places
 pairing: brand
 notes: the prose above the members is the whole defence; without it this is a doorway page
 ```
 
-The page for one place, written so it earns the URL: a claim naming the town or
-region, two to four sentences only somebody who knows the area could write, then
-the members who are actually there, then the neighbouring places.
+The page for one place, written so it earns the URL: the place named on the
+first screen, two to four sentences only somebody who knows the area could
+write, then the members who are actually there, then the neighbouring places.
 
-It suits a brand with real depth in a region and something true to say about it —
+It suits a brand with real depth in a region and something true to say about it -
 how far people there travel to meet, what the area is actually like, which towns
 people treat as one place. That paragraph is the entire reason the page is not
 spam, and it is the one part nothing can generate: a stranger guessing at it
@@ -26,6 +26,6 @@ where the honest caveat goes about what the block is showing. The sibling places
 at the foot are what stop a set of these reading as isolated doorways.
 
 It is the wrong page where the brand has few members in the place, or nothing
-specific to say about it. Both failures look identical from the outside — a
-page that reads fine and argues nothing — so go one rung wider and build the
+specific to say about it. Both failures look identical from the outside - a
+page that reads fine and argues nothing - so go one rung wider and build the
 region instead of the town.

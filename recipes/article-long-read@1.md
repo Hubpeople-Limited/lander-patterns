@@ -3,9 +3,9 @@ recipe: article-long-read@1
 shape: narrative
 shell: article-longform
 grounds: plain, plain, plain, soft, plain, soft, brand
-opens: the headline and byline over a picture, then a contents list
-closes: the writer named on a quiet panel, then the band
-signature: bylined header, contents, the piece, a lifted line, author
+opens: decide it from the piece - the headline and byline, with a picture over them or not; the contents list follows whichever it is
+closes: decide it from the piece - the writer named on a quiet panel, a single link to the next piece, or a band
+signature: contents, the piece, a lifted line, the writer named
 pairing: brand
 notes: for a piece past about fifteen hundred words
 ```
