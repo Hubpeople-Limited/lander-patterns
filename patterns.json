@@ -1072,7 +1072,7 @@
   "summary": "A grid of upright cards, each led by a photograph.",
   "type": "section",
   "variants": {},
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "member-filter": {
@@ -1689,7 +1689,7 @@
   "summary": "A full-width band of real figures, each paired with what it means.",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "steps-numbered": {
@@ -1722,7 +1722,7 @@
   "summary": "How it works, as numbered image cards.",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "steps-plain": {
