@@ -83,6 +83,8 @@
   padding-top: var(--space-6);
 }
 .media-card-grid-heading {
+  /* Set, not inherited: a brand's own h3 { color } beats inheritance. */
+  color: var(--color-on-scrim);
   font-family: var(--font-heading);
   font-size: calc(clamp(1.125rem, 0.95rem + 0.7vw, 1.4375rem) * var(--type-scale, 1));
   line-height: calc(1.2 * var(--heading-leading, 1));

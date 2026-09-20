@@ -26,6 +26,8 @@
   text-transform: uppercase;
 }
 .stats-band-title {
+  /* Set, not inherited: a brand's own h2 { color } beats inheritance. */
+  color: var(--color-on-primary);
   margin: 0;
   font-family: var(--font-heading);
   font-size: calc(clamp(1.625rem, 1.1rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
