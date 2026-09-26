@@ -2234,6 +2234,252 @@ def check_hub_publish():
     return failures
 
 
+# Slot names a wildcard clause must and must not match. A clause that matched
+# an `-alt` slot would claim the alt text is an image.
+SLOT_MATCH_CASES = [
+    ("row-*-image", "row-1-image", True),
+    ("row-*-image", "row-12-image", True),
+    ("row-*-image", "row-1-image-alt", False),
+    ("tile-*", "tile-14", True),
+    ("tile-*", "tile-1-x", False),
+    ("hero-image", "hero-image", True),
+    ("hero-image", "hero-image-alt", False),
+]
+
+
+def check_placeholder_set():
+    """The generated placeholder set: complete, well-formed, and a changed
+    file is caught by --check rather than shipped under an old hash."""
+    import xml.etree.ElementTree as ET
+    import _placeholders as ph
+    import make_placeholders as mp
+    failures = []
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(label)
+
+    for declared, name, want in SLOT_MATCH_CASES:
+        case(f"slot {declared!r} {'matches' if want else 'does not match'} {name!r}",
+             ph.slot_matches(declared, name) == want)
+
+    files = mp.expected()
+    case("one file per subject and crop",
+         sorted(files) == sorted(ph.file_name(s, c) for s in ph.SUBJECTS for c in ph.CROPS))
+    sized = True
+    for s in ph.SUBJECTS:
+        for c, (w, h) in ph.CROPS.items():
+            root = ET.fromstring(files[ph.file_name(s, c)])
+            sized &= root.get("width") == str(w) and root.get("height") == str(h)
+            sized &= "Photo to come" in files[ph.file_name(s, c)]
+    case("every file parses, is sized to its crop and carries the mark", sized)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp)
+        mp.write(out)
+        case("a fresh write is not stale", mp.stale(out) == [])
+        first = ph.file_name("couple", "wide")
+        (out / first).write_text(files[first] + "<!-- edited -->", encoding="utf-8")
+        (out / ph.file_name("place", "square")).unlink()
+        case("--check names an edited file and a missing one",
+             mp.stale(out) == sorted([first, ph.file_name("place", "square")]))
+    return failures
+
+
+IMG = '<img src="slot:hero-image" alt="slot:hero-image-alt">'
+OK_CLAUSE = "hero-image subject=couple|person crop=portrait min=1280 focal=center placeholder=yes"
+# (label, image-slots value, requires, needs, markup, findings wanted: 0 or 1)
+IMAGE_SLOT_CASES = [
+    ("a valid clause", OK_CLAUSE, "photography", "a photo at least 1280px wide", IMG, 0),
+    ("a photography pattern with no line", "", "photography", "", IMG, 1),
+    ("a pattern that needs no pictures and declares none", "", "none", "", IMG, 0),
+    ("a clause missing placeholder=", OK_CLAUSE.replace(" placeholder=yes", ""), "photography", "", IMG, 1),
+    ("an unknown subject", OK_CLAUSE.replace("couple|person", "dog"), "photography", "", IMG, 1),
+    ("an unknown crop", OK_CLAUSE.replace("portrait", "panorama"), "photography", "", IMG, 1),
+    ("an unknown focal side", OK_CLAUSE.replace("center", "bottom"), "photography", "", IMG, 1),
+    ("a consented-people slot offered a placeholder", OK_CLAUSE, "consented-people", "", IMG, 1),
+    ("a consented-people slot that refuses one", OK_CLAUSE.replace("yes", "no"), "consented-people", "", IMG, 0),
+    ("a clause no image answers to", OK_CLAUSE + "; band-image subject=place crop=wide min=1600 focal=center placeholder=yes",
+     "photography", "", IMG, 1),
+    ("an image no clause declares", OK_CLAUSE, "photography", "",
+     IMG + '<img src="slot:second-image" alt="">', 1),
+    ("a wildcard covering a numbered family",
+     "tile-* subject=person crop=portrait min=420 focal=center placeholder=no", "consented-people", "",
+     '<img src="slot:tile-1" alt=""><img src="slot:tile-2" alt="">', 0),
+    ("an image two clauses both claim",
+     "tile-* subject=person crop=portrait min=420 focal=center placeholder=no; "
+     "tile-1 subject=person crop=portrait min=420 focal=center placeholder=no", "consented-people", "",
+     '<img src="slot:tile-1" alt="">', 1),
+    ("a minimum that contradicts needs", OK_CLAUSE, "photography", "a photo at least 1600px wide", IMG, 1),
+    ("needs that states no width", OK_CLAUSE, "photography", "one real photograph", IMG, 0),
+]
+
+# (label, pattern.css text, findings wanted): a placeholder=yes clause held
+# against a stylesheet that either paints the tint or does not - the rest of
+# check_image_slots is already proven by IMAGE_SLOT_CASES above.
+TINT_CASES = [
+    ("a placeholder slot with no tint rule in pattern.css", "", 1),
+    ("a placeholder slot whose pattern.css paints the tint",
+     ".hero-split img[data-hub-placeholder] { background: "
+     "color-mix(in srgb, var(--color-surface-soft) 60%, transparent); }", 0),
+]
+
+
+def check_image_slots_gate():
+    import lint
+    failures = []
+    here = Path(__file__)
+    for label, value, requires, needs, markup, want in IMAGE_SLOT_CASES:
+        before = len(lint.findings)
+        meta = {"requires": requires, "needs": needs}
+        if value:
+            meta["image-slots"] = value
+        lint.check_image_slots(here, meta, markup)
+        got = 1 if len(lint.findings) > before else 0
+        del lint.findings[before:]
+        ok = got == want
+        verb = "catches" if want else "quiet on"
+        print(f"  {'ok  ' if ok else 'FAIL'} image-slots {verb}: {label}"
+              + ("" if ok else f" (got {got}, want {want})"))
+        if not ok:
+            failures.append(f"image-slots: {label}")
+
+    for label, css, want in TINT_CASES:
+        before = len(lint.findings)
+        meta = {"requires": "photography", "needs": "", "name": "hero-split",
+                "image-slots": OK_CLAUSE}
+        lint.check_image_slots(here, meta, IMG, css=css)
+        got = 1 if len(lint.findings) > before else 0
+        del lint.findings[before:]
+        ok = got == want
+        verb = "catches" if want else "quiet on"
+        print(f"  {'ok  ' if ok else 'FAIL'} image-slots tint {verb}: {label}"
+              + ("" if ok else f" (got {got}, want {want})"))
+        if not ok:
+            failures.append(f"image-slots tint: {label}")
+    return failures
+
+
+def check_placeholder_manifest_gate():
+    """The manifest names a CDN copy of every placeholder, and says so when a
+    local file has moved on from the copy that was uploaded."""
+    import lint
+    import _placeholders as ph
+    import make_placeholders as mp
+    failures = []
+
+    def build(tmp, mutate=None):
+        folder = Path(tmp)
+        mp.write(folder)
+        entries = {}
+        for i, (s, c) in enumerate((s, c) for s in ph.SUBJECTS for c in ph.CROPS):
+            w, h = ph.CROPS[c]
+            entries[f"{s}/{c}"] = {
+                "file": ph.file_name(s, c),
+                "url": f"https://b.hub-cdn.com/images/generic/00000000-0000-0000-0000-{i:012d}.svg",
+                "sha256": lint.placeholder_digest(folder / ph.file_name(s, c)),
+                "width": w, "height": h}
+        data = {"placeholders": entries}
+        if mutate:
+            mutate(folder, data)
+        (folder / "placeholders.json").write_text(json.dumps(data), encoding="utf-8")
+        return folder
+
+    def edit_file(folder, data):
+        name = ph.file_name("group", "portrait")
+        (folder / name).write_text((folder / name).read_text(encoding="utf-8") + " ", encoding="utf-8")
+
+    def crlf(folder, data):
+        name = ph.file_name("group", "portrait")
+        text = (folder / name).read_bytes().replace(b"\n", b"\r\n")
+        (folder / name).write_bytes(text)
+
+    cases = [
+        ("a complete manifest", None, 0),
+        ("a missing subject and crop", lambda f, d: d["placeholders"].pop("place/wide"), 1),
+        ("a file edited since upload", edit_file, 1),
+        ("the same file checked out with CRLF endings", crlf, 0),
+        ("a URL that is not the CDN", lambda f, d: d["placeholders"]["person/square"].update(
+            url="https://example.com/person-square.svg"), 1),
+        ("two entries sharing one URL", lambda f, d: d["placeholders"]["couple/wide"].update(
+            url=d["placeholders"]["couple/square"]["url"]), 1),
+        ("an entry for a crop the library does not have", lambda f, d: d["placeholders"].update(
+            {"couple/panorama": dict(d["placeholders"]["couple/wide"])}), 1),
+        ("one entry that is a string, not an object", lambda f, d: d["placeholders"].update(
+            {"couple/square": "not-an-object"}), 1),
+    ]
+    for label, mutate, want in cases:
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = build(tmp, mutate)
+            before = len(lint.findings)
+            lint.check_placeholder_manifest(folder)
+            got = 1 if len(lint.findings) > before else 0
+            del lint.findings[before:]
+        ok = got == want
+        print(f"  {'ok  ' if ok else 'FAIL'} placeholder manifest "
+              f"{'catches' if want else 'quiet on'}: {label}"
+              + ("" if ok else f" (got {got}, want {want})"))
+        if not ok:
+            failures.append(f"placeholder manifest: {label}")
+
+    # The top level itself may be malformed, before "placeholders" is ever
+    # looked up - a case build() cannot express, since it always writes a
+    # dict wrapping the entries.
+    with tempfile.TemporaryDirectory() as tmp:
+        folder = Path(tmp)
+        (folder / "placeholders.json").write_text(
+            json.dumps(["not", "a", "manifest"]), encoding="utf-8")
+        before = len(lint.findings)
+        lint.check_placeholder_manifest(folder)
+        got = 1 if len(lint.findings) > before else 0
+        del lint.findings[before:]
+    label = "a manifest whose top level is a list"
+    ok = got == 1
+    print(f"  {'ok  ' if ok else 'FAIL'} placeholder manifest catches: {label}"
+          + ("" if ok else f" (got {got}, want 1)"))
+    if not ok:
+        failures.append(f"placeholder manifest: {label}")
+    return failures
+
+
+def check_shell_placeholders():
+    """A shell shows a placeholder where a build would put one, marked the
+    way a build marks it, and leaves a people slot alone."""
+    sys.path.insert(0, str(HERE))
+    import build_preview as bp
+    failures = []
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(label)
+
+    split = bp.swap_in_placeholders(
+        "hero-split", '<img src="slot:hero-image" alt="slot:hero-image-alt" width="640" height="720">')
+    case("a photography slot takes the first subject in its crop",
+         'src="placeholder-couple-portrait.svg"' in split)
+    case("the placeholder is marked slot, subject and crop",
+         'data-hub-placeholder="hero-image · couple · portrait"' in split)
+    case("the placeholder carries an empty alt", 'alt=""' in split and "slot:" not in split)
+
+    overlay = (HERE.parent / "patterns" / "hero-overlay" / "pattern.html").read_text(encoding="utf-8")
+    swapped = bp.swap_in_placeholders("hero-overlay", overlay)
+    img = re.search(r'<img\b[^>]*data-hub-placeholder[^>]*>', swapped, re.S)
+    case("srcset and sizes go, so the browser cannot choose the sample instead",
+         bool(img) and "srcset" not in img.group(0) and "sizes" not in img.group(0))
+
+    avatar = '<img src="slot:avatar" alt="slot:avatar-alt" width="80" height="80">'
+    case("a consented-people slot is left for its sample",
+         bp.swap_in_placeholders("testimonial-grid", avatar) == avatar)
+
+    body, _ = bp.build_shell(HERE.parent / "shells" / "landing@1")
+    avatar_tag = re.search(r'<img\b[^>]*class="testimonial-grid-avatar"[^>]*>', body)
+    case("a shell preview keeps the testimonial-grid avatar sample, not a placeholder",
+         bool(avatar_tag) and "placeholder-" not in avatar_tag.group(0))
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -2310,6 +2556,14 @@ def main():
     print()
     failures += check_hub_publish()
     print()
+    failures += check_placeholder_set()
+    print()
+    failures += check_image_slots_gate()
+    print()
+    failures += check_placeholder_manifest_gate()
+    print()
+    failures += check_shell_placeholders()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -2330,7 +2584,9 @@ def main():
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
              + 5 + 5
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
-             + len(HUB_VERSION_CASES) + 7)
+             + len(HUB_VERSION_CASES) + 7
+             + len(SLOT_MATCH_CASES) + 4
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 6)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

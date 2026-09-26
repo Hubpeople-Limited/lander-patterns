@@ -122,3 +122,7 @@
     grid-column: 2;
   }
 }
+
+.zigzag-rows img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}

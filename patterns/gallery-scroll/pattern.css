@@ -41,3 +41,7 @@
     scroll-behavior: smooth;
   }
 }
+
+.gallery-scroll img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}

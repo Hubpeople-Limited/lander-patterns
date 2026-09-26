@@ -2,17 +2,18 @@
 name: photo-cards
 display-name: Photo cards
 summary: Cards with the photograph on top and the words underneath.
-version: 5
+version: 6
 type: section
 page-types: homepage, landing, pricing, article
 requires: photography
+image-slots: card-image subject=couple|person|group|place|object crop=landscape min=1440 focal=center placeholder=yes
 content-shape: peer set
 description: A run of cards with the photograph in its own box at the top and every word set below it on the card's own surface, so nothing is ever laid over an image.
 keywords: cards, photography, grid, peer set, no-scrim
 needs: one real photograph per card with its own alt text; a short heading, one or two sentences and a real destination per card. Three or four cards read best
 pairs-with: opener-split, heading-block, cta-band
 avoid-with: gallery-scroll, media-card-grid
-tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-heading, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --heading-leading, --heading-tracking, --weight-display
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-heading, --color-primary, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --heading-leading, --heading-tracking, --weight-display
 motion: none
 behaviours: reveal
 one-per-page: no

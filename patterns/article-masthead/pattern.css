@@ -102,3 +102,7 @@
     letter-spacing: calc(-0.025em + var(--heading-tracking, 0) * 1em);
   }
 }
+
+.article-masthead img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}

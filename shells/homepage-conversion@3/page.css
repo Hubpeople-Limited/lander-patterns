@@ -926,7 +926,7 @@
   }
 }
 
-/* ---- hero-split v9 ---- */
+/* ---- hero-split v10 ---- */
 /* hero-split v3 - tokens only, selectors prefixed */
 .hero-split {
   padding-block: var(--space-8);
@@ -998,6 +998,10 @@
   .hero-split-visual {
     order: 0;
   }
+}
+
+.hero-split img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 }
 
 /* ---- steps-plain v4 ---- */

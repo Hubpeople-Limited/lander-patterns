@@ -55,6 +55,7 @@ from lint import (                                           # noqa: E402
     BANNED_COMMENT_PATTERNS, BANNED_COMMENT_TERMS,
     description_vocabulary_faults,
 )
+from _placeholders import parse_image_slots, slot_matches      # noqa: E402
 
 GENERATED_BY = "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit"
 
@@ -211,7 +212,26 @@ def patterns_in_markup(value):
             if any(c == n or c.startswith(n + "-") for c in classes)]
 
 
-def slot_guidance(slot, sample):
+def image_slot_hint(key, meta):
+    """What a builder is told belongs in an image slot, read from the
+    pattern's own `image-slots` header line rather than said the same way
+    for every slot. A clause naming `placeholder=yes` names the shared
+    stand-in it allows; `placeholder=no` refuses one outright; a slot with no
+    clause at all (a `requires: none` pattern's own image, such as
+    trust-row's membership mark) gets the plain, offer-free wording."""
+    clauses = parse_image_slots(meta.get("image-slots", "")) or []
+    clause = next((c for c in clauses if slot_matches(c["slot"], key)), None)
+    if clause is None:
+        return "a path to real material"
+    if clause["placeholder"]:
+        subject, crop = clause["subjects"][0], clause["crop"]
+        return (f"real material, or the {subject}/{crop} placeholder from "
+                "lib/placeholders/placeholders.json, referenced by its CDN "
+                "URL and marked data-hub-placeholder")
+    return "real, consented material only - never a placeholder"
+
+
+def slot_guidance(slot, sample, meta):
     """What goes in the slot and roughly how long, from the pattern's own
     preview sample - fake by design, but its shape and length are the shape
     and length the pattern was drawn for. Returns (summary, sample_lines):
@@ -222,9 +242,7 @@ def slot_guidance(slot, sample):
     if attrs:
         where = "/".join(sorted(set(attrs)))
         if "src" in attrs:
-            hint = ("a path to real material, or a lib/placeholders/ stand-in "
-                    "while the brand's photography is still coming - said out "
-                    "loud, never silently")
+            hint = image_slot_hint(key, meta)
         elif "alt" in attrs:
             hint = "what the image shows, in words"
         elif "id" in attrs or "aria-labelledby" in attrs:
@@ -295,7 +313,7 @@ def section_banner(item, mods, position, total, role=None):
     tail_from = len(lines)
     lines.append("slots:")
     for slot in find_slots(item["body"]):
-        summary, sample_lines = slot_guidance(slot, sample)
+        summary, sample_lines = slot_guidance(slot, sample, meta)
         note = "; shape it like this sample:" if sample_lines else ""
         lines.append(f"  {slot['key']:<18} {summary}{note}")
         lines += [f"  {'':<18} {sample_line}" for sample_line in sample_lines]
@@ -605,13 +623,12 @@ def compose_readme(recipe, name, version, page, chosen, support):
     if any("src" in slot["attrs"]
            for item in page for slot in find_slots(item["body"])):
         lines += [
-            "This shell needs photography. An image slot takes real material "
-            "- or, while the brand's photography is still coming, one of the "
-            "library's stand-ins from `lib/placeholders/` (its README has "
-            "the shapes and the rules): copied into the brand's own "
-            "`site/images/`, named to the partner as a placeholder out loud, "
-            "and recorded in the brand log as an image still owed. Never a "
-            "placeholder for a person.",
+            "This shell needs photography. A photography slot may take the "
+            "shared placeholder named in `lib/placeholders/placeholders.json` "
+            "- referenced by its CDN address, never copied into the brand - "
+            "and the build lists every placeholder it placed. A people slot "
+            "never takes one: only real, consented material fills it. See "
+            "[lib/placeholders/README.md](../../lib/placeholders/README.md).",
             "",
         ]
     lines += [
@@ -624,7 +641,7 @@ def compose_readme(recipe, name, version, page, chosen, support):
                      f"v{item['meta'].get('version', '?')}{variant} - "
                      f"{item['meta'].get('description', '')}")
         for slot in find_slots(item["body"]):
-            summary, sample_lines = slot_guidance(slot, item["sample"])
+            summary, sample_lines = slot_guidance(slot, item["sample"], item["meta"])
             tail = ("; its sample shape is printed in page.html's banner"
                     if sample_lines else "")
             lines.append(f"   - `{slot['key']}` - {summary}{tail}")
