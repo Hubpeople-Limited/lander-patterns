@@ -24,7 +24,7 @@ from _display_type import display_faults
 from _heading_size import heading_size_faults
 from _containment import external_faults, spacing_faults
 from _placeholders import (CROPS, FOCAL, IMAGE_SRC_SLOT, SUBJECTS,
-                           parse_image_slots, slot_matches)
+                           file_name, parse_image_slots, slot_matches)
 import _dials as dials
 import _heading_size as heading_size
 
@@ -121,6 +121,9 @@ def registered_behaviours():
 # fork, so the workflow sets LANDER_LEAK_SKIP there and the scan runs again
 # on the merge, before anything is released.
 NEEDLES_FILE = ROOT / "ci" / "leak-needles.local"
+PLACEHOLDERS = ROOT / "lib" / "placeholders"
+CDN_SVG = re.compile(r"^https://b\.hub-cdn\.com/images/generic/"
+                     r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.svg$")
 
 
 def leak_needles():
@@ -1381,6 +1384,67 @@ def check_image_slots(path, meta, markup, css=None):
                  f"<img> slot {name} is matched by {claims} clauses, needs exactly one")
 
 
+def placeholder_digest(path):
+    # Over LF bytes, so a checkout that writes CRLF is not a changed file.
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+def check_placeholder_manifest(folder=PLACEHOLDERS):
+    """Every placeholder has one CDN copy, and the copy is of this file.
+
+    Brands reference the CDN URL, not the file here, so an edited file whose
+    hash no longer matches is a change nobody downstream will ever see.
+    """
+    path = folder / "placeholders.json"
+
+    def report(detail):
+        try:
+            find(path, "placeholders", detail)
+        except ValueError:
+            findings.append(f"{path}: placeholders: {detail}")
+
+    if not path.is_file():
+        report("missing - run ci/make_placeholders.py, upload each file and record it")
+        return
+    try:
+        doc = json.loads(path.read_text(encoding="utf-8"))
+    except ValueError as e:
+        report(str(e))
+        return
+    if not isinstance(doc, dict) or not isinstance(doc.get("placeholders"), dict):
+        report("top level and its 'placeholders' value must both be objects")
+        return
+    entries = doc["placeholders"]
+    wanted = {f"{s}/{c}" for s in SUBJECTS for c in CROPS}
+    for key in sorted(set(entries) - wanted):
+        report(f"{key}: not a subject and crop the library draws")
+    seen = {}
+    for key in sorted(wanted):
+        entry = entries.get(key)
+        if not entry:
+            report(f"{key}: no entry")
+            continue
+        if not isinstance(entry, dict):
+            report(f"{key}: entry is not an object")
+            continue
+        subject, crop = key.split("/")
+        file = folder / file_name(subject, crop)
+        if entry.get("file") != file.name or not file.is_file():
+            report(f"{key}: file should be {file.name} and exist beside the manifest")
+            continue
+        if entry.get("sha256") != placeholder_digest(file):
+            report(f"{key}: {file.name} has changed since it was uploaded - upload "
+                   "it again and record the new url and sha256")
+        url = entry.get("url", "")
+        if not CDN_SVG.match(url):
+            report(f"{key}: url must be the CDN address the upload returned")
+        elif url in seen:
+            report(f"{key}: url is also {seen[url]}'s - each placeholder is its own upload")
+        seen.setdefault(url, key)
+        if (entry.get("width"), entry.get("height")) != CROPS[crop]:
+            report(f"{key}: width and height should be {CROPS[crop][0]}x{CROPS[crop][1]}")
+
+
 def check_header_comments(html_path, meta_block):
     """The spec in CONTRIBUTING.md annotates fields with `# a | b | c` to say
     what is allowed. Those annotations are the spec's, not a pattern's, and
@@ -1657,6 +1721,7 @@ def main():
     check_type_pairings()
     check_token_sets_are_complete()
     check_transition_tokens_are_durations()
+    check_placeholder_manifest()
 
     rows = []
     manifest = {}

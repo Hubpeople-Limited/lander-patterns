@@ -2361,6 +2361,88 @@ def check_image_slots_gate():
     return failures
 
 
+def check_placeholder_manifest_gate():
+    """The manifest names a CDN copy of every placeholder, and says so when a
+    local file has moved on from the copy that was uploaded."""
+    import lint
+    import _placeholders as ph
+    import make_placeholders as mp
+    failures = []
+
+    def build(tmp, mutate=None):
+        folder = Path(tmp)
+        mp.write(folder)
+        entries = {}
+        for i, (s, c) in enumerate((s, c) for s in ph.SUBJECTS for c in ph.CROPS):
+            w, h = ph.CROPS[c]
+            entries[f"{s}/{c}"] = {
+                "file": ph.file_name(s, c),
+                "url": f"https://b.hub-cdn.com/images/generic/00000000-0000-0000-0000-{i:012d}.svg",
+                "sha256": lint.placeholder_digest(folder / ph.file_name(s, c)),
+                "width": w, "height": h}
+        data = {"placeholders": entries}
+        if mutate:
+            mutate(folder, data)
+        (folder / "placeholders.json").write_text(json.dumps(data), encoding="utf-8")
+        return folder
+
+    def edit_file(folder, data):
+        name = ph.file_name("group", "portrait")
+        (folder / name).write_text((folder / name).read_text(encoding="utf-8") + " ", encoding="utf-8")
+
+    def crlf(folder, data):
+        name = ph.file_name("group", "portrait")
+        text = (folder / name).read_bytes().replace(b"\n", b"\r\n")
+        (folder / name).write_bytes(text)
+
+    cases = [
+        ("a complete manifest", None, 0),
+        ("a missing subject and crop", lambda f, d: d["placeholders"].pop("place/wide"), 1),
+        ("a file edited since upload", edit_file, 1),
+        ("the same file checked out with CRLF endings", crlf, 0),
+        ("a URL that is not the CDN", lambda f, d: d["placeholders"]["person/square"].update(
+            url="https://example.com/person-square.svg"), 1),
+        ("two entries sharing one URL", lambda f, d: d["placeholders"]["couple/wide"].update(
+            url=d["placeholders"]["couple/square"]["url"]), 1),
+        ("an entry for a crop the library does not have", lambda f, d: d["placeholders"].update(
+            {"couple/panorama": dict(d["placeholders"]["couple/wide"])}), 1),
+        ("one entry that is a string, not an object", lambda f, d: d["placeholders"].update(
+            {"couple/square": "not-an-object"}), 1),
+    ]
+    for label, mutate, want in cases:
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = build(tmp, mutate)
+            before = len(lint.findings)
+            lint.check_placeholder_manifest(folder)
+            got = 1 if len(lint.findings) > before else 0
+            del lint.findings[before:]
+        ok = got == want
+        print(f"  {'ok  ' if ok else 'FAIL'} placeholder manifest "
+              f"{'catches' if want else 'quiet on'}: {label}"
+              + ("" if ok else f" (got {got}, want {want})"))
+        if not ok:
+            failures.append(f"placeholder manifest: {label}")
+
+    # The top level itself may be malformed, before "placeholders" is ever
+    # looked up - a case build() cannot express, since it always writes a
+    # dict wrapping the entries.
+    with tempfile.TemporaryDirectory() as tmp:
+        folder = Path(tmp)
+        (folder / "placeholders.json").write_text(
+            json.dumps(["not", "a", "manifest"]), encoding="utf-8")
+        before = len(lint.findings)
+        lint.check_placeholder_manifest(folder)
+        got = 1 if len(lint.findings) > before else 0
+        del lint.findings[before:]
+    label = "a manifest whose top level is a list"
+    ok = got == 1
+    print(f"  {'ok  ' if ok else 'FAIL'} placeholder manifest catches: {label}"
+          + ("" if ok else f" (got {got}, want 1)"))
+    if not ok:
+        failures.append(f"placeholder manifest: {label}")
+    return failures
+
+
 def check_shell_placeholders():
     """A shell shows a placeholder where a build would put one, marked the
     way a build marks it, and leaves a people slot alone."""
@@ -2478,6 +2560,8 @@ def main():
     print()
     failures += check_image_slots_gate()
     print()
+    failures += check_placeholder_manifest_gate()
+    print()
     failures += check_shell_placeholders()
     print()
     if failures:
@@ -2502,7 +2586,7 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 6)
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 6)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
