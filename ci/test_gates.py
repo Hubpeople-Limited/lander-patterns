@@ -2287,6 +2287,80 @@ def check_placeholder_set():
     return failures
 
 
+IMG = '<img src="slot:hero-image" alt="slot:hero-image-alt">'
+OK_CLAUSE = "hero-image subject=couple|person crop=portrait min=1280 focal=center placeholder=yes"
+# (label, image-slots value, requires, needs, markup, findings wanted: 0 or 1)
+IMAGE_SLOT_CASES = [
+    ("a valid clause", OK_CLAUSE, "photography", "a photo at least 1280px wide", IMG, 0),
+    ("a photography pattern with no line", "", "photography", "", IMG, 1),
+    ("a pattern that needs no pictures and declares none", "", "none", "", IMG, 0),
+    ("a clause missing placeholder=", OK_CLAUSE.replace(" placeholder=yes", ""), "photography", "", IMG, 1),
+    ("an unknown subject", OK_CLAUSE.replace("couple|person", "dog"), "photography", "", IMG, 1),
+    ("an unknown crop", OK_CLAUSE.replace("portrait", "panorama"), "photography", "", IMG, 1),
+    ("an unknown focal side", OK_CLAUSE.replace("center", "bottom"), "photography", "", IMG, 1),
+    ("a consented-people slot offered a placeholder", OK_CLAUSE, "consented-people", "", IMG, 1),
+    ("a consented-people slot that refuses one", OK_CLAUSE.replace("yes", "no"), "consented-people", "", IMG, 0),
+    ("a clause no image answers to", OK_CLAUSE + "; band-image subject=place crop=wide min=1600 focal=center placeholder=yes",
+     "photography", "", IMG, 1),
+    ("an image no clause declares", OK_CLAUSE, "photography", "",
+     IMG + '<img src="slot:second-image" alt="">', 1),
+    ("a wildcard covering a numbered family",
+     "tile-* subject=person crop=portrait min=420 focal=center placeholder=no", "consented-people", "",
+     '<img src="slot:tile-1" alt=""><img src="slot:tile-2" alt="">', 0),
+    ("an image two clauses both claim",
+     "tile-* subject=person crop=portrait min=420 focal=center placeholder=no; "
+     "tile-1 subject=person crop=portrait min=420 focal=center placeholder=no", "consented-people", "",
+     '<img src="slot:tile-1" alt="">', 1),
+    ("a minimum that contradicts needs", OK_CLAUSE, "photography", "a photo at least 1600px wide", IMG, 1),
+    ("needs that states no width", OK_CLAUSE, "photography", "one real photograph", IMG, 0),
+]
+
+# (label, pattern.css text, findings wanted): a placeholder=yes clause held
+# against a stylesheet that either paints the tint or does not - the rest of
+# check_image_slots is already proven by IMAGE_SLOT_CASES above.
+TINT_CASES = [
+    ("a placeholder slot with no tint rule in pattern.css", "", 1),
+    ("a placeholder slot whose pattern.css paints the tint",
+     ".hero-split img[data-hub-placeholder] { background: "
+     "color-mix(in srgb, var(--color-surface-soft) 60%, transparent); }", 0),
+]
+
+
+def check_image_slots_gate():
+    import lint
+    failures = []
+    here = Path(__file__)
+    for label, value, requires, needs, markup, want in IMAGE_SLOT_CASES:
+        before = len(lint.findings)
+        meta = {"requires": requires, "needs": needs}
+        if value:
+            meta["image-slots"] = value
+        lint.check_image_slots(here, meta, markup)
+        got = 1 if len(lint.findings) > before else 0
+        del lint.findings[before:]
+        ok = got == want
+        verb = "catches" if want else "quiet on"
+        print(f"  {'ok  ' if ok else 'FAIL'} image-slots {verb}: {label}"
+              + ("" if ok else f" (got {got}, want {want})"))
+        if not ok:
+            failures.append(f"image-slots: {label}")
+
+    for label, css, want in TINT_CASES:
+        before = len(lint.findings)
+        meta = {"requires": "photography", "needs": "", "name": "hero-split",
+                "image-slots": OK_CLAUSE}
+        lint.check_image_slots(here, meta, IMG, css=css)
+        got = 1 if len(lint.findings) > before else 0
+        del lint.findings[before:]
+        ok = got == want
+        verb = "catches" if want else "quiet on"
+        print(f"  {'ok  ' if ok else 'FAIL'} image-slots tint {verb}: {label}"
+              + ("" if ok else f" (got {got}, want {want})"))
+        if not ok:
+            failures.append(f"image-slots tint: {label}")
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -2365,6 +2439,8 @@ def main():
     print()
     failures += check_placeholder_set()
     print()
+    failures += check_image_slots_gate()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -2386,7 +2462,8 @@ def main():
              + 5 + 5
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
-             + len(SLOT_MATCH_CASES) + 4)
+             + len(SLOT_MATCH_CASES) + 4
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES))
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

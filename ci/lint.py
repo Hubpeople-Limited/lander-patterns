@@ -23,6 +23,8 @@ import legibility
 from _display_type import display_faults
 from _heading_size import heading_size_faults
 from _containment import external_faults, spacing_faults
+from _placeholders import (CROPS, FOCAL, IMAGE_SRC_SLOT, SUBJECTS,
+                           parse_image_slots, slot_matches)
 import _dials as dials
 import _heading_size as heading_size
 
@@ -1314,6 +1316,71 @@ def check_motion_claim(html_path, css_path, meta):
              f"motion: none, but pattern.css declares {sorted(set(moving))}")
 
 
+def check_image_slots(path, meta, markup, css=None):
+    """Every image slot says what it needs, in words the toolkit can act on.
+
+    Without this a build with no photograph for a slot has two choices, both
+    bad: drop the section, or guess what the picture should be. The line lets
+    it place the right placeholder and tell the partner exactly what to bring.
+
+    Where a clause says `placeholder=yes`, the pattern's own `pattern.css`
+    must also paint the tint behind it (`.<name> img[data-hub-placeholder]`)
+    - a placeholder's ground is transparent by design and reads as a defect on a bare
+    ground without one. `css` is the real stylesheet text; a caller with none
+    to give (the gate cases here run with no pattern folder at all) leaves it
+    `None` and this reads `path.with_name("pattern.css")` itself, skipping
+    the tint check where even that does not exist.
+    """
+    requires = meta.get("requires", "none")
+    value = meta.get("image-slots", "")
+    images = sorted(set(IMAGE_SRC_SLOT.findall(markup)))
+    if not value:
+        if requires in ("photography", "consented-people"):
+            find(path, "image-slots",
+                 f"requires: {requires} but no image-slots line - declare every "
+                 "<img src=\"slot:...\"> with subject, crop, min, focal and placeholder")
+        return
+    slots = parse_image_slots(value)
+    if slots is None:
+        find(path, "image-slots",
+             "malformed - each clause is `<slot> subject=a|b crop=<crop> min=<px> "
+             "focal=<side> placeholder=yes|no`, clauses separated by `;`")
+        return
+    if css is None:
+        css_path = path.with_name("pattern.css")
+        css = css_path.read_text(encoding="utf-8") if css_path.is_file() else None
+    pattern_name = meta.get("name") or path.parent.name
+    tint_rule = f".{pattern_name} img[data-hub-placeholder]"
+    px = re.search(r"(\d{3,4})px", meta.get("needs", ""))
+    for s in slots:
+        unknown = [x for x in s["subjects"] if x not in SUBJECTS]
+        if unknown:
+            find(path, "image-slots", f"{s['slot']}: subject {', '.join(unknown)} "
+                 f"not in {', '.join(SUBJECTS)}")
+        if s["crop"] not in CROPS:
+            find(path, "image-slots", f"{s['slot']}: crop {s['crop']} not in {', '.join(CROPS)}")
+        if s["focal"] not in FOCAL:
+            find(path, "image-slots", f"{s['slot']}: focal {s['focal']} not in {', '.join(FOCAL)}")
+        if requires == "consented-people" and s["placeholder"]:
+            find(path, "image-slots",
+                 f"{s['slot']}: placeholder=yes on a consented-people pattern "
+                 "- a placeholder never fills a slot that shows a member or a testimonial")
+        if not any(slot_matches(s["slot"], name) for name in images):
+            find(path, "image-slots", f"{s['slot']}: declared, but no <img src=\"slot:...\"> matches it")
+        if px and s["min"] != int(px.group(1)):
+            find(path, "image-slots",
+                 f"{s['slot']}: min={s['min']} but needs asks for {px.group(1)}px - one of them is wrong")
+        if s["placeholder"] and css is not None and tint_rule not in css:
+            find(path, "image-slots",
+                 f"{s['slot']}: placeholder=yes but pattern.css has no `{tint_rule}` "
+                 "rule - a placeholder shows on a bare ground without it")
+    for name in images:
+        claims = sum(slot_matches(s["slot"], name) for s in slots)
+        if claims != 1:
+            find(path, "image-slots",
+                 f"<img> slot {name} is matched by {claims} clauses, needs exactly one")
+
+
 def check_header_comments(html_path, meta_block):
     """The spec in CONTRIBUTING.md annotates fields with `# a | b | c` to say
     what is allowed. Those annotations are the spec's, not a pattern's, and
@@ -1628,6 +1695,8 @@ def main():
         meta = parse_header(html.read_text(encoding="utf-8"), html)
         slots = check_html(html, meta, folder.name)
         check_variants(html, folder / "pattern.css", meta, folder.name)
+        check_image_slots(html, meta, html.read_text(encoding="utf-8"),
+                          css=(css.read_text(encoding="utf-8") if css.is_file() else None))
         check_variant_notes(folder, html, meta)
         check_list_semantics(html, css, folder.name)
         check_disclosure_holds_the_controls(html, html.read_text(encoding="utf-8"))
@@ -1799,6 +1868,9 @@ def main():
             "whole-page": meta.get("whole-page") == "yes",
             "one-per-page": meta.get("one-per-page") == "yes",
             "needs": needs,
+            # What each image slot needs, so a build can place the right
+            # placeholder without opening the pattern.
+            "image-slots": parse_image_slots(meta.get("image-slots", "")) or [],
             "avoid-with": [s.strip() for s in meta.get("avoid-with", "").split(",")
                            if s.strip() and s.strip() != "none"],
             "pairs-with": [s.strip() for s in meta.get("pairs-with", "").split(",")
