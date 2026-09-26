@@ -34,7 +34,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `track-label` - attribute (aria-label): a short label, about 2 word(s)
    - `tile-title` - text, about 3 word(s). Sample: Sample benefit title
    - `tile-copy` - text, about 26 word(s). Sample: Two short sentences of sample copy, here only to render...
-5. **testimonial-grid** v10 - Three equal-height testimonial cards with portraits overlapping the card edge; one card may be filled and is named as featured in words.
+5. **testimonial-grid** v11 - Three equal-height testimonial cards with portraits overlapping the card edge; one card may be filled and is named as featured in words.
    - `section-title` - text, about 3 word(s). Sample: Sample testimonials heading
    - `avatar` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `avatar-alt` - attribute (alt): what the image shows, in words

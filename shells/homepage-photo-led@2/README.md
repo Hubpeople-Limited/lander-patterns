@@ -21,13 +21,13 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-overlay** v13 - Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.
+2. **hero-overlay** v14 - Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.
    - `hero-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-3. **steps-numbered** v10 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
+3. **steps-numbered** v11 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
    - `section-title` - text, about 5 word(s). Sample: Sample how-it-works heading for preview
    - `step-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `step-image-alt` - attribute (alt): what the image shows, in words

@@ -21,13 +21,13 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-centred** v6 - Opener with the claim centred above a wide cropped photograph in its own band - the one hero that never lays a word over an image, so no scrim has to carry a ratio.
+2. **hero-centred** v7 - Opener with the claim centred above a wide cropped photograph in its own band - the one hero that never lays a word over an image, so no scrim has to carry a ratio.
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **zigzag-rows** v9 - Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.
+3. **zigzag-rows** v10 - Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample section title
    - `row-1-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
@@ -46,7 +46,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `section-title` - text, about 3 word(s). Sample: Sample questions heading
    - `question` - text, about 11 word(s). Sample: A sample question, phrased the way a visitor would ask it?
    - `answer` - markup, about 22 words of copy; its sample shape is printed in page.html's banner
-5. **cta-image** v4 - Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
+5. **cta-image** v5 - Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
    - `cta-image-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `background-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `background-image-srcset` - attribute (srcset): a short label, about 4 word(s)

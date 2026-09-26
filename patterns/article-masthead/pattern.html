@@ -2,17 +2,18 @@
 name: article-masthead
 display-name: Article header
 summary: The top of a written piece: the title, who wrote it and when.
-version: 9
+version: 10
 type: section
 page-types: article
 requires: photography
+image-slots: author-portrait subject=person crop=square min=176 focal=center placeholder=yes
 content-shape: narrative
 description: Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
 keywords: article, byline, masthead, blog, editorial
 needs: a real article title and a real lede of one or two sentences; the category the piece genuinely sits in; an honest read time and a genuine publication date; the name and role of the person who actually wrote it, with their real portrait and real alt text
 pairs-with: heading-block
 avoid-with: hero-centred, hero-overlay, hero-split, hero-squeeze, hero-stated
-tokens-used: --color-bg, --color-heading, --color-rule, --color-text, --color-text-soft, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --heading-leading, --heading-tracking, --weight-display
+tokens-used: --color-bg, --color-heading, --color-primary, --color-rule, --color-surface, --color-text, --color-text-soft, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --heading-leading, --heading-tracking, --weight-display
 motion: none
 one-per-page: yes
 status: active

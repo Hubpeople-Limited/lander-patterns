@@ -21,7 +21,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-split** v9 - Conversion opener - value proposition left, one strong image right, single join CTA; stacks image-first on phones.
+2. **hero-split** v10 - Conversion opener - value proposition left, one strong image right, single join CTA; stacks image-first on phones.
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently

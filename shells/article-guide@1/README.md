@@ -21,7 +21,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **article-masthead** v9 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
+2. **article-masthead** v10 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
    - `tag` - text, about 2 word(s). Sample: Sample category
    - `read-time` - text, about 4 word(s). Sample: 6 min sample read
    - `publish-datetime` - attribute (datetime): a short label, about 1 word(s)
@@ -48,7 +48,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-5. **article-figure** v1 - One image in the flow of a written piece - a real figure with its caption and the credit inside that caption, running a little wider than the text column it sits between.
+5. **article-figure** v2 - One image in the flow of a written piece - a real figure with its caption and the credit inside that caption, running a little wider than the text column it sits between.
    - `figure-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `figure-alt` - attribute (alt): what the image shows, in words
    - `caption` - text, about 18 word(s). Sample: A sample caption saying what the reader is looking at, ...

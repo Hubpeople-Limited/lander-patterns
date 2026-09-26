@@ -26,7 +26,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **portrait-prose** v1 - One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
+3. **portrait-prose** v2 - One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `portrait-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `portrait-alt` - attribute (alt): what the image shows, in words

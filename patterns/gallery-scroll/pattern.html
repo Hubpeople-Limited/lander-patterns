@@ -2,17 +2,18 @@
 name: gallery-scroll
 display-name: Photo gallery
 summary: A row of photographs you swipe sideways through.
-version: 5
+version: 6
 type: component
 page-types: homepage, landing, article
 requires: photography
+image-slots: image subject=place|couple|group|person|object crop=landscape min=960 focal=center placeholder=yes
 content-shape: peer set
 description: User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances, and gains previous and next controls when the behaviour library is on the page.
 keywords: gallery, carousel, scroll-snap, images
 needs: three or more real images of the same kind, each with real alt text, sized for the slot via the CDN
 pairs-with: pricing-tiers
 avoid-with: hero-overlay, hero-split, media-card-grid, photo-cards, portrait-wall, steps-numbered
-tokens-used: --card-radius, --card-shadow, --color-focus, --color-text-soft, --space-2, --space-3, --space-4
+tokens-used: --card-radius, --card-shadow, --color-focus, --color-primary, --color-surface, --color-text-soft, --space-2, --space-3, --space-4
 motion: subtle
 one-per-page: no
 status: active

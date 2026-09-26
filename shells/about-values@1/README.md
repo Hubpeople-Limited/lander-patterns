@@ -31,7 +31,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `section-title` - text, about 3 word(s). Sample: Sample section heading
    - `claim` - text, about 8 word(s). Sample: A sample promise, set large for the preview.
    - `claim-note` - text, about 8 word(s). Sample: One sample line of supporting detail, preview only.
-4. **portrait-prose** v1 - One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
+4. **portrait-prose** v2 - One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `portrait-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
    - `portrait-alt` - attribute (alt): what the image shows, in words

@@ -926,7 +926,7 @@
   }
 }
 
-/* ---- hero-centred v6 ---- */
+/* ---- hero-centred v7 ---- */
 /* hero-centred v1 - tokens only, selectors prefixed */
 .hero-centred {
   --hero-centred-title-measure: 9.4em;
@@ -1007,7 +1007,11 @@
   }
 }
 
-/* ---- zigzag-rows v9 ---- */
+.hero-centred img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+
+/* ---- zigzag-rows v10 ---- */
 /* zigzag-rows v4 - tokens only, selectors prefixed */
 .zigzag-rows {
   /* One ratio for every media box, set once: equal-height rows are what hold
@@ -1133,6 +1137,10 @@
   }
 }
 
+.zigzag-rows img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+
 /* ---- faq-details v6 ---- */
 /* faq-details v3 - tokens only, selectors prefixed.
    No script anywhere: <details>/<summary> gives keyboard operation, the
@@ -1250,7 +1258,7 @@
   }
 }
 
-/* ---- cta-image v4 ---- */
+/* ---- cta-image v5 ---- */
 /* cta-image v1 - tokens only, selectors prefixed */
 .cta-image {
   /* Contrast floor: the words sit on a photograph, so the scrim carries the
@@ -1363,6 +1371,10 @@
   outline: 3px solid var(--color-on-scrim);
   outline-offset: 3px;
   box-shadow: 0 0 0 7px var(--color-scrim);
+}
+
+.cta-image img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 }
 
 /* ---- colophon v2 ---- */
