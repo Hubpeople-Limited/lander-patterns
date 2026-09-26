@@ -12,7 +12,7 @@ The brand's stylesheet loads first: link the brand's own `global.css` - its toke
 
 The page carries its own site footer: this shell closes with the `colophon` pattern, and the platform fills its legal links and footer menu at serve time - keep every `{{ }}` token in it exactly as found. A site header is likewise a pattern a page carries (`masthead-nav` in this library); this shell ships without one.
 
-This shell needs photography. An image slot takes real material - or, while the brand's photography is still coming, one of the library's stand-ins from `lib/placeholders/` (its README has the shapes and the rules): copied into the brand's own `site/images/`, named to the partner as a placeholder out loud, and recorded in the brand log as an image still owed. Never a placeholder for a person.
+This shell needs photography. A photography slot may take the shared placeholder named in `lib/placeholders/placeholders.json` - referenced by its CDN address, never copied into the brand - and the build lists every placeholder it placed. A people slot never takes one: only real, consented material fills it. See [lib/placeholders/README.md](../../lib/placeholders/README.md).
 
 ## Sections, in order
 
@@ -28,7 +28,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
 3. **portrait-prose** v2 - One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
-   - `portrait-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+   - `portrait-image` - attribute (src): real, consented material only - never a placeholder
    - `portrait-alt` - attribute (alt): what the image shows, in words
    - `person-name` - text, about 2 word(s). Sample: Sample Person
    - `person-standing` - text, about 5 word(s). Sample: Sample standing line for preview

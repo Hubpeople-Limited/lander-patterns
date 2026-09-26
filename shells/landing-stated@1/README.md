@@ -12,7 +12,7 @@ The brand's stylesheet loads first: link the brand's own `global.css` - its toke
 
 The page carries its own site footer: this shell closes with the `colophon` pattern, and the platform fills its legal links and footer menu at serve time - keep every `{{ }}` token in it exactly as found. A site header is likewise a pattern a page carries (`masthead-nav` in this library); this shell ships without one.
 
-This shell needs photography. An image slot takes real material - or, while the brand's photography is still coming, one of the library's stand-ins from `lib/placeholders/` (its README has the shapes and the rules): copied into the brand's own `site/images/`, named to the partner as a placeholder out loud, and recorded in the brand log as an image still owed. Never a placeholder for a person.
+This shell needs photography. A photography slot may take the shared placeholder named in `lib/placeholders/placeholders.json` - referenced by its CDN address, never copied into the brand - and the build lists every placeholder it placed. A people slot never takes one: only real, consented material fills it. See [lib/placeholders/README.md](../../lib/placeholders/README.md).
 
 ## Sections, in order
 
@@ -36,7 +36,7 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `tile-copy` - text, about 26 word(s). Sample: Two short sentences of sample copy, here only to render...
 5. **testimonial-grid** v11 - Three equal-height testimonial cards with portraits overlapping the card edge; one card may be filled and is named as featured in words.
    - `section-title` - text, about 3 word(s). Sample: Sample testimonials heading
-   - `avatar` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+   - `avatar` - attribute (src): real, consented material only - never a placeholder
    - `avatar-alt` - attribute (alt): what the image shows, in words
    - `quote` - text, about 10 word(s). Sample: A sample quotation, written only to render this preview...
    - `person-name` - text, about 2 word(s). Sample: Sample Person

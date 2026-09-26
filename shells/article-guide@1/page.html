@@ -113,7 +113,7 @@
        publish-date       text, about 4 word(s). Sample: 1 January 2026 (sample)
        title              text, about 8 word(s). Sample: A sample article title for the preview render
        lede               text, about 19 word(s). Sample: One or two sentences of sample standfirst, written only...
-       author-portrait    attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+       author-portrait    attribute (src): real material, or the person/square placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
        author-portrait-alt attribute (alt): what the image shows, in words
        author-name        text, about 2 word(s). Sample: Sample Author
        author-role        text, about 6 word(s). Sample: Sample role line for the preview
@@ -248,7 +248,7 @@
      space carries no caption, and a figure with no caption is not
      this pattern
      slots:
-       figure-image       attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+       figure-image       attribute (src): real material, or the place/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
        figure-alt         attribute (alt): what the image shows, in words
        caption            text, about 18 word(s). Sample: A sample caption saying what the reader is looking at, ...
        credit             text, about 3 word(s). Sample: Sample credit line
