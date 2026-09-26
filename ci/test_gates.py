@@ -2361,6 +2361,43 @@ def check_image_slots_gate():
     return failures
 
 
+def check_shell_placeholders():
+    """A shell shows a placeholder where a build would put one, marked the
+    way a build marks it, and leaves a people slot alone."""
+    sys.path.insert(0, str(HERE))
+    import build_preview as bp
+    failures = []
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(label)
+
+    split = bp.swap_in_placeholders(
+        "hero-split", '<img src="slot:hero-image" alt="slot:hero-image-alt" width="640" height="720">')
+    case("a photography slot takes the first subject in its crop",
+         'src="placeholder-couple-portrait.svg"' in split)
+    case("the placeholder is marked slot, subject and crop",
+         'data-hub-placeholder="hero-image · couple · portrait"' in split)
+    case("the placeholder carries an empty alt", 'alt=""' in split and "slot:" not in split)
+
+    overlay = (HERE.parent / "patterns" / "hero-overlay" / "pattern.html").read_text(encoding="utf-8")
+    swapped = bp.swap_in_placeholders("hero-overlay", overlay)
+    img = re.search(r'<img\b[^>]*data-hub-placeholder[^>]*>', swapped, re.S)
+    case("srcset and sizes go, so the browser cannot choose the sample instead",
+         bool(img) and "srcset" not in img.group(0) and "sizes" not in img.group(0))
+
+    avatar = '<img src="slot:avatar" alt="slot:avatar-alt" width="80" height="80">'
+    case("a consented-people slot is left for its sample",
+         bp.swap_in_placeholders("testimonial-grid", avatar) == avatar)
+
+    body, _ = bp.build_shell(HERE.parent / "shells" / "landing@1")
+    avatar_tag = re.search(r'<img\b[^>]*class="testimonial-grid-avatar"[^>]*>', body)
+    case("a shell preview keeps the testimonial-grid avatar sample, not a placeholder",
+         bool(avatar_tag) and "placeholder-" not in avatar_tag.group(0))
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -2441,6 +2478,8 @@ def main():
     print()
     failures += check_image_slots_gate()
     print()
+    failures += check_shell_placeholders()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -2463,7 +2502,7 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES))
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 6)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
