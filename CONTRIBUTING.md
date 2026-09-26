@@ -61,6 +61,7 @@ agent parses and the README is what a person reads. What each field means:
 | `type` | `component`, `section` or `page` |
 | `content-shape` | The shape of the content this suits, in the building skill's own vocabulary: `narrative`, `peer set`, `comparison`, `progression`, `single claim`, `question and answer`, `reference`. It is what an agent matches a pattern against before it opens one, so it is **that** list rather than a second one that reads like it — CI holds you to it. Two spellings for one idea is a lookup that quietly returns nothing, and adding a value here means adding it to the skill's own table in the same change |
 | `requires` | The class of material the pattern cannot exist without: `none`, `photography`, or `consented-people` — real pictures of real people who agreed to appear. It is coarser than `needs` and is read first, because a brand with no photography can skip eighteen patterns without reading eighteen `needs` lines. It is on the index row for that reason |
+| `image-slots` | Required when `requires` is `photography` or `consented-people`. One clause per `<img src="slot:...">`, separated by `;`: `<slot> subject=<subjects> crop=<crop> min=<px> focal=<side> placeholder=yes\|no`. Subjects are `couple`, `person`, `group`, `place`, `object`, most likely first. Crops are `wide`, `landscape`, `portrait`, `square`. `min` is the width `needs` asks for. `focal` is where the subject sits so the copy stays clear: `left`, `right`, `center` or `top` - it is advice for choosing and cropping a photograph, and pattern CSS does not apply it. `*` in a slot name stands for a run of digits (`row-*-image`). A slot on a `consented-people` pattern is always `placeholder=no`. A pattern with a `placeholder=yes` slot carries `.<pattern> img[data-hub-placeholder]` painting the tint, which CI checks too. CI checks every clause against the markup |
 | `whole-page` | `yes` if this pattern IS the page and nothing follows it. One pattern carries it today. Omit it otherwise. It is not only a label: a full-viewport section carrying it must subtract `--page-footer-height` as well as `--page-header-height`, because the site footer is inside a promise about the page |
 | `behaviours` | Names from `lib/REGISTRY.md`, where the pattern carries `data-hub-module` hooks. Omit it if there are none. The header, the markup and the registry must all agree, and CI checks all three |
 | `needs` | The real content this consumes. It gates use: no material, wrong pattern. Say "real" and mean it |
@@ -230,6 +231,15 @@ for the preview build; they never appear on a real page. To keep them
 honestly fake, CI requires every value — image paths included — to contain the word
 "sample" or "preview", so image values reference the `sample-*.svg` files
 that ship in `preview/`. A value reading like a real claim fails the check.
+
+A photography slot on a shell preview shows the library's placeholder rather
+than its sample image, because that is what a page looks like before its
+photographs arrive. The slot's `image-slots` line decides which one. Pattern
+previews keep the flat sample images: a photograph or pictogram in the slot
+would hide the layout faults those renders exist to show. See
+[lib/placeholders/README.md](lib/placeholders/README.md): a placeholder is a
+line pictogram, never a likeness of a person, and always marked, never
+disguised.
 
 ```json
 {

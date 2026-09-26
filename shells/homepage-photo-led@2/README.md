@@ -12,7 +12,7 @@ The brand's stylesheet loads first: link the brand's own `global.css` - its toke
 
 The page carries its own site footer: this shell closes with the `colophon` pattern, and the platform fills its legal links and footer menu at serve time - keep every `{{ }}` token in it exactly as found. A site header is likewise a pattern a page carries (`masthead-nav` in this library); this shell ships without one.
 
-This shell needs photography. An image slot takes real material - or, while the brand's photography is still coming, one of the library's stand-ins from `lib/placeholders/` (its README has the shapes and the rules): copied into the brand's own `site/images/`, named to the partner as a placeholder out loud, and recorded in the brand log as an image still owed. Never a placeholder for a person.
+This shell needs photography. A photography slot may take the shared placeholder named in `lib/placeholders/placeholders.json` - referenced by its CDN address, never copied into the brand - and the build lists every placeholder it placed. A people slot never takes one: only real, consented material fills it. See [lib/placeholders/README.md](../../lib/placeholders/README.md).
 
 ## Sections, in order
 
@@ -21,15 +21,15 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-overlay** v13 - Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.
-   - `hero-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+2. **hero-overlay** v14 - Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.
+   - `hero-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-3. **steps-numbered** v10 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
+3. **steps-numbered** v11 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
    - `section-title` - text, about 5 word(s). Sample: Sample how-it-works heading for preview
-   - `step-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+   - `step-image` - attribute (src): real material, or the person/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `step-image-alt` - attribute (alt): what the image shows, in words
    - `step-title` - text, about 3 word(s). Sample: Sample step title
    - `step-body` - text, about 12 word(s). Sample: One sentence of sample body copy, used only to render t...

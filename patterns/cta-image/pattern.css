@@ -111,3 +111,7 @@
   outline-offset: 3px;
   box-shadow: 0 0 0 7px var(--color-scrim);
 }
+
+.cta-image img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}

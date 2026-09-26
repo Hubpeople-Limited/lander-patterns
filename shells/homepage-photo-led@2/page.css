@@ -926,7 +926,7 @@
   }
 }
 
-/* ---- hero-overlay v13 ---- */
+/* ---- hero-overlay v14 ---- */
 /* hero-overlay v13 - tokens only, selectors prefixed. Nothing here moves. */
 .hero-overlay {
   /* Contrast floor: the scrim carries it, never the photo. */
@@ -1079,7 +1079,11 @@
   }
 }
 
-/* ---- steps-numbered v10 ---- */
+.hero-overlay img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+
+/* ---- steps-numbered v11 ---- */
 /* steps-numbered v3 - tokens only, selectors prefixed */
 .steps-numbered {
   /* Contrast floor. The words sit on a photograph, so the scrim carries the
@@ -1193,6 +1197,10 @@
   .steps-numbered-scrim {
     padding: var(--space-5);
   }
+}
+
+.steps-numbered img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 }
 
 /* ---- faq-details v6 ---- */

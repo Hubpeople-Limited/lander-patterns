@@ -20,3 +20,7 @@
   height: var(--photo-band-height);
   object-fit: cover;
 }
+
+.photo-band img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}

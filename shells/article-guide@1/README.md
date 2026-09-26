@@ -12,7 +12,7 @@ The brand's stylesheet loads first: link the brand's own `global.css` - its toke
 
 The page carries its own site footer: this shell closes with the `colophon` pattern, and the platform fills its legal links and footer menu at serve time - keep every `{{ }}` token in it exactly as found. A site header is likewise a pattern a page carries (`masthead-nav` in this library); this shell ships without one.
 
-This shell needs photography. An image slot takes real material - or, while the brand's photography is still coming, one of the library's stand-ins from `lib/placeholders/` (its README has the shapes and the rules): copied into the brand's own `site/images/`, named to the partner as a placeholder out loud, and recorded in the brand log as an image still owed. Never a placeholder for a person.
+This shell needs photography. A photography slot may take the shared placeholder named in `lib/placeholders/placeholders.json` - referenced by its CDN address, never copied into the brand - and the build lists every placeholder it placed. A people slot never takes one: only real, consented material fills it. See [lib/placeholders/README.md](../../lib/placeholders/README.md).
 
 ## Sections, in order
 
@@ -21,14 +21,14 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **article-masthead** v9 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
+2. **article-masthead** v10 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
    - `tag` - text, about 2 word(s). Sample: Sample category
    - `read-time` - text, about 4 word(s). Sample: 6 min sample read
    - `publish-datetime` - attribute (datetime): a short label, about 1 word(s)
    - `publish-date` - text, about 4 word(s). Sample: 1 January 2026 (sample)
    - `title` - text, about 8 word(s). Sample: A sample article title for the preview render
    - `lede` - text, about 19 word(s). Sample: One or two sentences of sample standfirst, written only...
-   - `author-portrait` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+   - `author-portrait` - attribute (src): real material, or the person/square placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `author-portrait-alt` - attribute (alt): what the image shows, in words
    - `author-name` - text, about 2 word(s). Sample: Sample Author
    - `author-role` - text, about 6 word(s). Sample: Sample role line for the preview
@@ -48,8 +48,8 @@ This shell needs photography. An image slot takes real material - or, while the 
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-5. **article-figure** v1 - One image in the flow of a written piece - a real figure with its caption and the credit inside that caption, running a little wider than the text column it sits between.
-   - `figure-image` - attribute (src): a path to real material, or a lib/placeholders/ stand-in while the brand's photography is still coming - said out loud, never silently
+5. **article-figure** v2 - One image in the flow of a written piece - a real figure with its caption and the credit inside that caption, running a little wider than the text column it sits between.
+   - `figure-image` - attribute (src): real material, or the place/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `figure-alt` - attribute (alt): what the image shows, in words
    - `caption` - text, about 18 word(s). Sample: A sample caption saying what the reader is looking at, ...
    - `credit` - text, about 3 word(s). Sample: Sample credit line

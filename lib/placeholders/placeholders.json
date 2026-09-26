@@ -1,0 +1,144 @@
+{
+  "placeholders": {
+    "couple/wide": {
+      "file": "couple-wide.svg",
+      "url": "https://b.hub-cdn.com/images/generic/785a7cb8-b3f1-4f84-bdb2-356a03ba41a4.svg",
+      "sha256": "85f16e0c366a487be41838f60b45951311a7df90ef0ac16358c3626df176b9cf",
+      "width": 1600,
+      "height": 900
+    },
+    "couple/landscape": {
+      "file": "couple-landscape.svg",
+      "url": "https://b.hub-cdn.com/images/generic/22748668-8f08-4ad1-85fb-e3ba1a41a8d3.svg",
+      "sha256": "2d9c154c136576292425c64d129caa9d08688e39acbe3e65d7da8ce8e3cf8d5b",
+      "width": 1200,
+      "height": 900
+    },
+    "couple/portrait": {
+      "file": "couple-portrait.svg",
+      "url": "https://b.hub-cdn.com/images/generic/f6387464-841d-4cf5-867b-a8c4489d0df1.svg",
+      "sha256": "9e9001af41c92881cd5cefdb852e9c3b85da828b4c0de6c5883c61438385ea67",
+      "width": 900,
+      "height": 1200
+    },
+    "couple/square": {
+      "file": "couple-square.svg",
+      "url": "https://b.hub-cdn.com/images/generic/101dc01c-8d8c-49bf-916f-859d1157c008.svg",
+      "sha256": "c61aec6c5967549998fbab2d282427efd3867907865ee95b1b95a8c00d635567",
+      "width": 1000,
+      "height": 1000
+    },
+    "person/wide": {
+      "file": "person-wide.svg",
+      "url": "https://b.hub-cdn.com/images/generic/6a0b734b-1254-4881-bf74-5e40ca34aa56.svg",
+      "sha256": "9709adf7de51cca0d17360d73b8c6b532c757ed593e748deec22f12c9829a524",
+      "width": 1600,
+      "height": 900
+    },
+    "person/landscape": {
+      "file": "person-landscape.svg",
+      "url": "https://b.hub-cdn.com/images/generic/7f27f4cc-4e0d-4787-b74a-36384cfc1072.svg",
+      "sha256": "c093785cb4594379c3a0d8da6dbc25b67e0ee6ea4ea7a90bfd7d695f7ba14c9c",
+      "width": 1200,
+      "height": 900
+    },
+    "person/portrait": {
+      "file": "person-portrait.svg",
+      "url": "https://b.hub-cdn.com/images/generic/364021d7-8dde-425d-a751-6798902881ac.svg",
+      "sha256": "f512bacd2a925439322d00a7f2e2b713bc9b16e205100be06ec3904a127ca34c",
+      "width": 900,
+      "height": 1200
+    },
+    "person/square": {
+      "file": "person-square.svg",
+      "url": "https://b.hub-cdn.com/images/generic/0e744f76-619a-4610-aea8-f81e424dd1e7.svg",
+      "sha256": "b5fbe5889e9ddc2f005d94f7df8024fce3af836789898adb5e46628ccaa21cf2",
+      "width": 1000,
+      "height": 1000
+    },
+    "group/wide": {
+      "file": "group-wide.svg",
+      "url": "https://b.hub-cdn.com/images/generic/11ade23d-ac13-4cd9-83c1-a992357a41e3.svg",
+      "sha256": "d5ba481111ebd5da99a8b03e80d170b6e90fc4c0c61c4099dbb81451975575ef",
+      "width": 1600,
+      "height": 900
+    },
+    "group/landscape": {
+      "file": "group-landscape.svg",
+      "url": "https://b.hub-cdn.com/images/generic/487c9f8d-cc0a-47b6-848e-1f58e50caf58.svg",
+      "sha256": "ce8b8fd2e6718ee01ddf29c3629d1d3e861973e9b0851efae4c3528ae43d2416",
+      "width": 1200,
+      "height": 900
+    },
+    "group/portrait": {
+      "file": "group-portrait.svg",
+      "url": "https://b.hub-cdn.com/images/generic/516e7320-72c9-4b12-aef4-8bc9410075ee.svg",
+      "sha256": "95c05d8b69fc6fedb64868b54e35d4be5ac0669cbe95623468a7091a3136ec46",
+      "width": 900,
+      "height": 1200
+    },
+    "group/square": {
+      "file": "group-square.svg",
+      "url": "https://b.hub-cdn.com/images/generic/0139f9d5-e7b3-46d7-8029-d0e4c752e6f4.svg",
+      "sha256": "07dfc24e4d753cc5f929d643cd326ebdf089ef5e77d152e9519184423ec9694f",
+      "width": 1000,
+      "height": 1000
+    },
+    "place/wide": {
+      "file": "place-wide.svg",
+      "url": "https://b.hub-cdn.com/images/generic/47cb81e4-bb04-440f-a02d-87d6edbb3086.svg",
+      "sha256": "174c36ddb7d2b13c6ddeebde204e465c3f099d798925504fef54d15753a7f048",
+      "width": 1600,
+      "height": 900
+    },
+    "place/landscape": {
+      "file": "place-landscape.svg",
+      "url": "https://b.hub-cdn.com/images/generic/626723cd-2a20-458e-9195-30eb7948b541.svg",
+      "sha256": "e75459626a30bad567a4d6a2e2bd41a54d9260e3a36c4abd83e4b910a50c85b0",
+      "width": 1200,
+      "height": 900
+    },
+    "place/portrait": {
+      "file": "place-portrait.svg",
+      "url": "https://b.hub-cdn.com/images/generic/d5d17dc6-b1bc-4eb3-a674-602c974e6b45.svg",
+      "sha256": "0dbc7342612c55920ae0257d1449367ee703f0359321d95fb2cb025e46cbf1fa",
+      "width": 900,
+      "height": 1200
+    },
+    "place/square": {
+      "file": "place-square.svg",
+      "url": "https://b.hub-cdn.com/images/generic/4c4a2acd-40c0-4345-a2fd-3fa7915042a3.svg",
+      "sha256": "0b9c848bdaf1229f3aa466be2d1c7d97ed7ded8338f156a2346ed287a12231a0",
+      "width": 1000,
+      "height": 1000
+    },
+    "object/wide": {
+      "file": "object-wide.svg",
+      "url": "https://b.hub-cdn.com/images/generic/7a9024da-f06d-4cc2-b0e6-ec7a9269989a.svg",
+      "sha256": "9c1711549d3c9bd726071a008e6e978e5c7aa9e77d382f55311968f11c8b9e30",
+      "width": 1600,
+      "height": 900
+    },
+    "object/landscape": {
+      "file": "object-landscape.svg",
+      "url": "https://b.hub-cdn.com/images/generic/1c027974-2bf3-48eb-b7d9-97d8e1c4ecf4.svg",
+      "sha256": "29eaa50cc4eb3101f348f21970ccbb324acb47476fbd01b254aa96ae9f4939cf",
+      "width": 1200,
+      "height": 900
+    },
+    "object/portrait": {
+      "file": "object-portrait.svg",
+      "url": "https://b.hub-cdn.com/images/generic/a337d86b-2bbf-4a1f-9b14-6ae5cdf41b29.svg",
+      "sha256": "21f89902d17418a54db91424cc13ed54bae73f0b7f7ac7bb1cd4e89faf606c99",
+      "width": 900,
+      "height": 1200
+    },
+    "object/square": {
+      "file": "object-square.svg",
+      "url": "https://b.hub-cdn.com/images/generic/88cff0f0-f60a-4c52-8de1-dd0b5e727030.svg",
+      "sha256": "43c08d1b6580abbdbf5eb2cb544eb879ee51e6683fbc8c6da6f93f875f93ff9a",
+      "width": 1000,
+      "height": 1000
+    }
+  }
+}

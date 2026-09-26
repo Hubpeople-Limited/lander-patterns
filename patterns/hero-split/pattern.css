@@ -70,3 +70,7 @@
     order: 0;
   }
 }
+
+.hero-split img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
