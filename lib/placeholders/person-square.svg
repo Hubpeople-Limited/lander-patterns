@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+  <title>Photo to come</title>
+  <g fill="none" stroke="#808080" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" transform="translate(290 290) scale(4.2)"><circle cx="50" cy="34" r="13"/><path d="M24 82c0-15 12-27 26-27s26 12 26 27"/></g>
+  <text x="500" y="250" text-anchor="middle" font-family="system-ui, sans-serif" font-size="45" font-weight="600" fill="#808080">Photo to come</text>
+</svg>

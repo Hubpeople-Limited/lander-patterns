@@ -2234,6 +2234,59 @@ def check_hub_publish():
     return failures
 
 
+# Slot names a wildcard clause must and must not match. A clause that matched
+# an `-alt` slot would claim the alt text is an image.
+SLOT_MATCH_CASES = [
+    ("row-*-image", "row-1-image", True),
+    ("row-*-image", "row-12-image", True),
+    ("row-*-image", "row-1-image-alt", False),
+    ("tile-*", "tile-14", True),
+    ("tile-*", "tile-1-x", False),
+    ("hero-image", "hero-image", True),
+    ("hero-image", "hero-image-alt", False),
+]
+
+
+def check_placeholder_set():
+    """The generated placeholder set: complete, well-formed, and a changed
+    file is caught by --check rather than shipped under an old hash."""
+    import xml.etree.ElementTree as ET
+    import _placeholders as ph
+    import make_placeholders as mp
+    failures = []
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(label)
+
+    for declared, name, want in SLOT_MATCH_CASES:
+        case(f"slot {declared!r} {'matches' if want else 'does not match'} {name!r}",
+             ph.slot_matches(declared, name) == want)
+
+    files = mp.expected()
+    case("one file per subject and crop",
+         sorted(files) == sorted(ph.file_name(s, c) for s in ph.SUBJECTS for c in ph.CROPS))
+    sized = True
+    for s in ph.SUBJECTS:
+        for c, (w, h) in ph.CROPS.items():
+            root = ET.fromstring(files[ph.file_name(s, c)])
+            sized &= root.get("width") == str(w) and root.get("height") == str(h)
+            sized &= "Photo to come" in files[ph.file_name(s, c)]
+    case("every file parses, is sized to its crop and carries the mark", sized)
+
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp)
+        mp.write(out)
+        case("a fresh write is not stale", mp.stale(out) == [])
+        first = ph.file_name("couple", "wide")
+        (out / first).write_text(files[first] + "<!-- edited -->", encoding="utf-8")
+        (out / ph.file_name("place", "square")).unlink()
+        case("--check names an edited file and a missing one",
+             mp.stale(out) == sorted([first, ph.file_name("place", "square")]))
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -2310,6 +2363,8 @@ def main():
     print()
     failures += check_hub_publish()
     print()
+    failures += check_placeholder_set()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -2330,7 +2385,8 @@ def main():
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
              + 5 + 5
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
-             + len(HUB_VERSION_CASES) + 7)
+             + len(HUB_VERSION_CASES) + 7
+             + len(SLOT_MATCH_CASES) + 4)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
