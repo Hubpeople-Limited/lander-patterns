@@ -821,6 +821,8 @@ def check_signup(shell, name, tokens):
         tops = tab.locator(f".{name}-top").count()
         if tops != 1:
             faults.append(f"{where}: with the bundle on the page twice the card was built {tops} times")
+        elif tab.locator(f".{name}-submit").is_visible():
+            faults.append(f"{where}: with the bundle on the page twice the first step shows the join button")
     finally:
         tab.close()
     # A failed search leaves nothing behind.
