@@ -1889,13 +1889,15 @@
    "hero-stated",
    "picker-chips"
   ],
-  "behaviours": [],
+  "behaviours": [
+   "signup"
+  ],
   "content-shape": "single claim",
   "description": "Conversion opener - a headline beside a short sign-up card that asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled; stacks card-under-headline on phones.",
   "display-name": "Sign-up opener",
   "image-slots": [],
   "motion": "subtle",
-  "needs": "a headline and one supporting sentence in the brand's own words; the card's title; the brand's wording for each answer; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples",
+  "needs": "a headline and one supporting sentence in the brand's own words; the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -1912,7 +1914,7 @@
   "summary": "An opening that asks the first sign-up questions on the page itself.",
   "type": "section",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "source-note": {

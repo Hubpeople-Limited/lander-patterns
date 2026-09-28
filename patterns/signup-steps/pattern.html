@@ -2,17 +2,18 @@
 name: signup-steps
 display-name: Sign-up opener
 summary: An opening that asks the first sign-up questions on the page itself.
-version: 1
+version: 2
 type: section
 page-types: homepage, landing
 requires: none
 content-shape: single claim
 description: Conversion opener - a headline beside a short sign-up card that asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled; stacks card-under-headline on phones.
 keywords: sign-up, signup, registration, join, form, hero, opener, conversion
-needs: a headline and one supporting sentence in the brand's own words; the card's title; the brand's wording for each answer; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples
+needs: a headline and one supporting sentence in the brand's own words; the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples
 pairs-with: member-grid, steps-plain, cta-band
 avoid-with: article-masthead, hero-centred, hero-overlay, hero-split, hero-squeeze, hero-stated, picker-chips
-tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-primary-dark, --color-rule, --color-surface, --color-text, --color-text-soft, --container-max, --font-body, --font-heading, --heading-leading, --heading-tracking, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --space-12, --transition-fast, --type-scale, --weight-display
+tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-primary-dark, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-body, --font-heading, --heading-leading, --heading-tracking, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --space-12, --transition-fast, --type-scale, --weight-display
+behaviours: signup
 motion: subtle
 one-per-page: yes
 status: active
@@ -20,7 +21,17 @@ added: 2026-09-28
 -->
 <!-- Keep every name= and value= exactly as they are: they are the join
      flow's own. Never pre-tick or pre-fill anything. -->
-<section class="signup-steps">
+<!-- WITH THE BEHAVIOUR the card asks one question at a time and adds two
+     interest steps and a first name. intent and enjoy are the brand's own
+     interest labels, ";"-separated, spelled exactly as its join flow spells
+     them; leave one empty to drop that step. Every other word has an English
+     default: the README lists the option for each. -->
+<section class="signup-steps" data-hub-module="signup"
+         data-hub-signup-intent="slot:intent-labels"
+         data-hub-signup-enjoy="slot:enjoy-labels"
+         data-hub-signup-intent-question="slot:intent-question"
+         data-hub-signup-enjoy-question="slot:enjoy-question"
+         data-hub-signup-name-label="slot:name-label">
   <div class="signup-steps-inner">
     <div class="signup-steps-copy">
       <h1 class="signup-steps-title"><!-- slot: headline --></h1>
@@ -29,11 +40,12 @@ added: 2026-09-28
     <form class="signup-steps-card" method="get" action="{{join.url}}">
       <h2 class="signup-steps-card-title"><!-- slot: card-title --></h2>
 
-      <fieldset class="signup-steps-step">
+      <fieldset class="signup-steps-step" data-hub-signup-part="iam">
         <legend class="signup-steps-q"><!-- slot: iam-question --></legend>
-        <!-- COUPLES ON EXCITE BRANDS ONLY. On an Excite brand, duplicate a <li>
-             with value="4" and the brand's word for a couple. On any other brand
-             leave it out: the join flow ignores 4 there without a word. -->
+        <!-- ANSWERS ARE THE BRAND'S: drop any it does not offer, word them
+             its way within what the value means. Couples (4) on Excite
+             brands only. ONE POSSIBLE ANSWER: replace this fieldset with
+             <input type="hidden" name="mt" value="1"> - the same for lf. -->
         <ul class="signup-steps-opts signup-steps-opts--two" role="list">
           <li class="signup-steps-opt">
             <label><input type="radio" name="mt" value="1" required><span class="signup-steps-opt-face"><span><!-- slot: iam-man --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>
@@ -45,7 +57,7 @@ added: 2026-09-28
         <label class="signup-steps-other"><input type="radio" name="mt" value="16"><span><span class="signup-steps-tick" aria-hidden="true"></span><!-- slot: iam-other --></span></label>
       </fieldset>
 
-      <fieldset class="signup-steps-step">
+      <fieldset class="signup-steps-step" data-hub-signup-part="seeking">
         <legend class="signup-steps-q"><!-- slot: seeking-question --></legend>
         <!-- One <li> per answer. value is who they are looking for: 2 women,
              1 men, 16 non-binary people, 4 couples (Excite brands only), and the
@@ -66,7 +78,7 @@ added: 2026-09-28
         </ul>
       </fieldset>
 
-      <fieldset class="signup-steps-step">
+      <fieldset class="signup-steps-step" data-hub-signup-part="dob">
         <legend class="signup-steps-q"><!-- slot: birthday-question --></legend>
         <p class="signup-steps-help"><!-- slot: birthday-help --></p>
         <div class="signup-steps-dob">
@@ -76,7 +88,7 @@ added: 2026-09-28
         </div>
       </fieldset>
 
-      <fieldset class="signup-steps-step">
+      <fieldset class="signup-steps-step" data-hub-signup-part="email">
         <legend class="signup-steps-q"><!-- slot: email-question --></legend>
         <label class="signup-steps-field"><span><!-- slot: email-label --></span><input type="email" name="em" autocomplete="email" spellcheck="false" required></label>
         <label class="signup-steps-consent"><input type="checkbox" required><span><!-- slot: consent --></span></label>
