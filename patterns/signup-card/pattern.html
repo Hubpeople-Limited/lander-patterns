@@ -1,0 +1,99 @@
+<!--
+name: signup-card
+display-name: Sign-up card
+summary: A short sign-up card that sits in an opener in place of its join button.
+version: 1
+type: component
+page-types: homepage, landing
+requires: none
+content-shape: single claim
+description: Conversion card for an opener - set in place of the join button in hero-overlay, hero-split, hero-stated or hero-squeeze, it asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled. The opener keeps its own headline and picture; on a wide screen it sets the words on one side and the card on the other.
+keywords: sign-up, signup, registration, join, form, card, opener, conversion
+needs: an opener to sit in (hero-overlay, hero-split, hero-stated or hero-squeeze); the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples
+pairs-with: hero-overlay, hero-split, hero-stated, hero-squeeze, member-grid, steps-plain
+avoid-with: picker-chips, signup-steps
+tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-primary-dark, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --font-body, --font-heading, --heading-leading, --heading-tracking, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --transition-fast, --type-scale, --weight-display
+behaviours: signup
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-09-28
+-->
+<!-- In place of an opener's join button, and anything beside it. Keep every
+     name= and value= as they are. Never pre-tick or pre-fill anything.
+     intent and enjoy: the brand's interest labels, ";"-separated, spelled
+     exactly as its join flow spells them; empty drops that step. -->
+<div class="signup-card" data-hub-module="signup"
+     data-hub-signup-intent="slot:intent-labels"
+     data-hub-signup-enjoy="slot:enjoy-labels"
+     data-hub-signup-intent-question="slot:intent-question"
+     data-hub-signup-enjoy-question="slot:enjoy-question"
+     data-hub-signup-name-label="slot:name-label">
+  <form class="signup-card-form" method="get" action="{{join.url}}">
+    <h2 class="signup-card-title"><!-- slot: card-title --></h2>
+
+    <fieldset class="signup-card-step" data-hub-signup-part="iam">
+      <legend class="signup-card-q"><!-- slot: iam-question --></legend>
+      <!-- ANSWERS ARE THE BRAND'S: drop any it does not offer, word them
+           its way within what the value means. Couples (4) on Excite
+           brands only. ONE POSSIBLE ANSWER: replace this fieldset with
+           <input type="hidden" name="mt" value="1"> - the same for lf. -->
+      <ul class="signup-card-opts signup-card-opts--two" role="list">
+        <li class="signup-card-opt">
+          <label><input type="radio" name="mt" value="1" required><span class="signup-card-opt-face"><span><!-- slot: iam-man --></span><span class="signup-card-tick" aria-hidden="true"></span></span></label>
+        </li>
+        <li class="signup-card-opt">
+          <label><input type="radio" name="mt" value="2"><span class="signup-card-opt-face"><span><!-- slot: iam-woman --></span><span class="signup-card-tick" aria-hidden="true"></span></span></label>
+        </li>
+      </ul>
+      <label class="signup-card-other"><input type="radio" name="mt" value="16"><span><span class="signup-card-tick" aria-hidden="true"></span><!-- slot: iam-other --></span></label>
+    </fieldset>
+
+    <fieldset class="signup-card-step" data-hub-signup-part="seeking">
+      <legend class="signup-card-q"><!-- slot: seeking-question --></legend>
+      <!-- One <li> per answer. value is who they are looking for: 2 women,
+           1 men, 16 non-binary people, 4 couples (Excite brands only), and the
+           sum for more than one - 3 is men and women. -->
+      <ul class="signup-card-opts" role="list">
+        <li class="signup-card-opt">
+          <label><input type="radio" name="lf" value="2" required><span class="signup-card-opt-face"><span><!-- slot: seeking-women --></span><span class="signup-card-tick" aria-hidden="true"></span></span></label>
+        </li>
+        <li class="signup-card-opt">
+          <label><input type="radio" name="lf" value="1"><span class="signup-card-opt-face"><span><!-- slot: seeking-men --></span><span class="signup-card-tick" aria-hidden="true"></span></span></label>
+        </li>
+        <li class="signup-card-opt">
+          <label><input type="radio" name="lf" value="3"><span class="signup-card-opt-face"><span><!-- slot: seeking-both --></span><span class="signup-card-tick" aria-hidden="true"></span></span></label>
+        </li>
+        <li class="signup-card-opt">
+          <label><input type="radio" name="lf" value="16"><span class="signup-card-opt-face"><span><!-- slot: seeking-nonbinary --></span><span class="signup-card-tick" aria-hidden="true"></span></span></label>
+        </li>
+      </ul>
+    </fieldset>
+
+    <fieldset class="signup-card-step" data-hub-signup-part="dob">
+      <legend class="signup-card-q"><!-- slot: birthday-question --></legend>
+      <p class="signup-card-help"><!-- slot: birthday-help --></p>
+      <div class="signup-card-dob">
+        <label class="signup-card-field"><span><!-- slot: birthday-day --></span><input name="dd" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="bday-day" required></label>
+        <label class="signup-card-field"><span><!-- slot: birthday-month --></span><input name="dm" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="bday-month" required></label>
+        <label class="signup-card-field signup-card-field--year"><span><!-- slot: birthday-year --></span><input name="dy" inputmode="numeric" pattern="(19|20)[0-9]{2}" maxlength="4" autocomplete="bday-year" required></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="signup-card-step" data-hub-signup-part="email">
+      <legend class="signup-card-q"><!-- slot: email-question --></legend>
+      <label class="signup-card-field"><span><!-- slot: email-label --></span><input type="email" name="em" autocomplete="email" spellcheck="false" required></label>
+      <label class="signup-card-consent"><input type="checkbox" required><span><!-- slot: consent --></span></label>
+    </fieldset>
+
+    <!-- culture is the join flow's language: en, es, pt, fr or de. -->
+    <input type="hidden" name="culture" value="slot:culture">
+    <input type="hidden" name="reg" value="1">
+
+    <div class="signup-card-actions">
+      <button class="signup-card-submit" type="submit">{{join.text}}</button>
+      <p class="signup-card-note"><!-- slot: password-note --></p>
+    </div>
+    <p class="signup-card-foot"><!-- slot: login-lead --> <a href="{{login.url}}">{{login.text}}</a></p>
+  </form>
+</div>

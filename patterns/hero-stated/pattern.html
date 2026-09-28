@@ -2,7 +2,7 @@
 name: hero-stated
 display-name: Worded opener
 summary: An opener made of words rather than pictures.
-version: 4
+version: 5
 type: section
 page-types: homepage, landing, pricing, safety, features, articles-landing, location, locations-landing, about
 requires: none
@@ -28,6 +28,8 @@ added: 2026-08-22
     <p class="hero-stated-eyebrow"><!-- slot: eyebrow --></p>
     <h1 class="hero-stated-title"><!-- slot: headline --></h1>
     <p class="hero-stated-sub"><!-- slot: subhead --></p>
+    <!-- A SIGN-UP OPENER puts signup-card here in place of the anchor, and
+         the assurance slot stays empty: the card is the one control. -->
     <div class="hero-stated-cta">
       <a class="hero-stated-btn" href="{{join.url}}">{{join.text}}</a>
       <!-- slot: assurance -->

@@ -848,7 +848,7 @@
   "summary": "One photograph filling the first screen, with the claim over it.",
   "type": "section",
   "variants": {},
-  "version": "14",
+  "version": "15",
   "whole-page": false
  },
  "hero-split": {
@@ -896,7 +896,7 @@
   "summary": "The opening claim on one side, a strong photograph on the other.",
   "type": "section",
   "variants": {},
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -944,7 +944,7 @@
   "summary": "The whole page in a single screen: a photograph, one claim, one button.",
   "type": "section",
   "variants": {},
-  "version": "12",
+  "version": "13",
   "whole-page": true
  },
  "hero-stated": {
@@ -998,7 +998,7 @@
     "deep"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "key-takeaways": {
@@ -1528,6 +1528,7 @@
  },
  "picker-chips": {
   "avoid-with": [
+   "signup-card",
    "signup-steps"
   ],
   "behaviours": [],
@@ -1879,6 +1880,42 @@
   "version": "4",
   "whole-page": false
  },
+ "signup-card": {
+  "avoid-with": [
+   "picker-chips",
+   "signup-steps"
+  ],
+  "behaviours": [
+   "signup"
+  ],
+  "content-shape": "single claim",
+  "description": "Conversion card for an opener - set in place of the join button in hero-overlay, hero-split, hero-stated or hero-squeeze, it asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled. The opener keeps its own headline and picture; on a wide screen it sets the words on one side and the card on the other.",
+  "display-name": "Sign-up card",
+  "image-slots": [],
+  "motion": "subtle",
+  "needs": "an opener to sit in (hero-overlay, hero-split, hero-stated or hero-squeeze); the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "hero-overlay",
+   "hero-split",
+   "hero-stated",
+   "hero-squeeze",
+   "member-grid",
+   "steps-plain"
+  ],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "A short sign-up card that sits in an opener in place of its join button.",
+  "type": "component",
+  "variants": {},
+  "version": "1",
+  "whole-page": false
+ },
  "signup-steps": {
   "avoid-with": [
    "article-masthead",
@@ -1887,7 +1924,8 @@
    "hero-split",
    "hero-squeeze",
    "hero-stated",
-   "picker-chips"
+   "picker-chips",
+   "signup-card"
   ],
   "behaviours": [
    "signup"
@@ -1908,13 +1946,13 @@
    "steps-plain",
    "cta-band"
   ],
-  "replaced-by": "",
+  "replaced-by": "signup-card",
   "requires": "none",
-  "status": "active",
+  "status": "deprecated",
   "summary": "An opening that asks the first sign-up questions on the page itself.",
   "type": "section",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "source-note": {

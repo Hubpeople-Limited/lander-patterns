@@ -19,7 +19,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-stated** v4 (ground=brand) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
+2. **hero-stated** v5 (ground=brand) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.

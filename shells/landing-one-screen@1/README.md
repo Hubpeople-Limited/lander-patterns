@@ -21,7 +21,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-squeeze** v12 - The whole page in one viewport - a photograph, one claim, one control, the reassurance under it and one piece of proof, with nothing below the fold at all.
+2. **hero-squeeze** v13 - The whole page in one viewport - a photograph, one claim, one control, the reassurance under it and one piece of proof, with nothing below the fold at all.
    - `hero-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 2 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words

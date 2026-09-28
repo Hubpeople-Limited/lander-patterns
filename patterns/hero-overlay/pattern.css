@@ -153,3 +153,47 @@
 .hero-overlay img[data-hub-placeholder] {
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 }
+
+/* Holding a signup-card: the photograph holds still from step to step. */
+.hero-overlay:has(.signup-card) {
+  overflow: clip;
+}
+.hero-overlay:has(.signup-card) .hero-overlay-img {
+  inset: 0 0 auto 0;
+  height: 56rem;
+}
+/* Wide: words left at the contrast floor, card right on its own surface. */
+@media (min-width: 60rem) {
+  .hero-overlay:has(.signup-card) {
+    align-items: flex-start;
+    min-height: 0;
+  }
+  .hero-overlay:has(.signup-card) .hero-overlay-img {
+    height: max(100%, 56rem);
+  }
+  .hero-overlay:has(.signup-card)::after {
+    background-image: linear-gradient(to right,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 100%), transparent) 0%,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 100%), transparent) 55%,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 32%), transparent) 78%,
+      color-mix(in srgb, var(--color-bg) calc(var(--hero-overlay-scrim-floor) * 10%), transparent) 100%);
+  }
+  .hero-overlay-inner:has(.signup-card) {
+    padding-block: var(--space-6) var(--space-8);
+  }
+  .hero-overlay-copy:has(.signup-card) {
+    max-width: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 24rem;
+    column-gap: var(--space-8);
+    align-items: start;
+  }
+  .hero-overlay-copy:has(.signup-card) > :not(.hero-overlay-actions) {
+    grid-column: 1;
+    max-width: 34rem;
+  }
+  .hero-overlay-copy:has(.signup-card) > .hero-overlay-actions {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+  }
+}
