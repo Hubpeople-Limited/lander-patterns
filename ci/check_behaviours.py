@@ -32,7 +32,9 @@ page, and holds each behaviour to what its row says:
                show once "looking for" is answered and never after a failed
                search; the hand-off goes to the join link with the answers
                summed, spaces as %20, never "+", interests as a %3B list and
-               no password; under reduced motion it still moves on
+               no password, and it carries what every join link carries -
+               the page's own parameters and its pn; under reduced motion it
+               still moves on
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -102,6 +104,8 @@ CONTROL_SUBSTITUTIONS = {
                           "void step;"),
     "signup": (".reduce((sum, r) => sum + Number(r.value), 0)",
                ".reduce((sum, r) => Number(r.value), 0)"),
+    "signup-attribution": ("new URLSearchParams(location.search).forEach((v, k) => first(k, v));",
+                           "void first;"),
 }
 
 # The signup check hands off to this link and never follows it; the GUID in it
@@ -278,7 +282,7 @@ class Shell:
         shutil.rmtree(self._dir, ignore_errors=True)
         return False
 
-    def open(self, html, stem, width=WIDTH, reduced=False, before=None):
+    def open(self, html, stem, width=WIDTH, reduced=False, before=None, query=""):
         path = self._dir / f"{stem}.html"
         path.write_text(html, encoding="utf-8", newline="\n")
         tab = self._browser.new_page(
@@ -286,7 +290,7 @@ class Shell:
             reduced_motion="reduce" if reduced else "no-preference")
         if before:
             before(tab)
-        tab.goto(path.as_uri())
+        tab.goto(path.as_uri() + query)
         return tab
 
 
@@ -591,6 +595,10 @@ def signup_stub(members):
         tab.route("https://example.invalid/**", lambda r: r.abort())
         tab.add_init_script("addEventListener('hub:signup:handoff', "
                             "e => { window.__signupHandoff = e.detail.url })")
+        # The platform's record of the page, as its footer script sets it.
+        tab.add_init_script("window.templateInfo = {template_name: 'Canvas Studio', "
+                            "page_guid: 'abc123def456', template_lang: 'en', "
+                            "template_brand_lang: 'en', is_prod: true}")
     return before
 
 
@@ -615,7 +623,8 @@ def check_signup(shell, name, tokens):
     faults = []
     html = page_for(name, "signup", tokens, "hub.js", PHONE)
     face = 'input[name="{0}"][value="{1}"] + .signup-steps-opt-face'
-    tab = shell.open(html, f"{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS))
+    tab = shell.open(html, f"{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS),
+                     query="?utm_source=s&utm_medium=m&cmp=abc&gclid=g&cmp=second")
     try:
         tab.wait_for_timeout(300)
         version = tab.evaluate(VERSION_JS)
@@ -678,6 +687,15 @@ def check_signup(shell, name, tokens):
                       f"a list separated by %3B")
     if "p" in fields:
         faults.append(f"{where}: a password was sent")
+    # What every join link on the platform carries: the page's own parameters,
+    # the first of each, and its pn attribution, ~ and / written plain.
+    carried = {k: fields.get(k) for k in ("utm_source", "utm_medium", "cmp", "gclid")}
+    if carried != {"utm_source": "s", "utm_medium": "m", "cmp": "abc", "gclid": "g"}:
+        faults.append(f"{where}: the page's own parameters arrived as {carried!r} - each is passed "
+                      f"on as it came, the first of each")
+    if not fields.get("pn", "").startswith("ai~canvas-studio~abc123def456~/") or "%2F" in fields.get("pn", ""):
+        faults.append(f"{where}: pn sent as {fields.get('pn')!r} - ai~<template>~<page>~<path>, "
+                      f"as the platform writes it on every join link")
     # A brand with one possible answer to each: the questions are hidden
     # values, nobody is asked them, and each value is sent once.
     single = re.sub(r'<fieldset class="signup-steps-step" data-hub-signup-part="(iam|seeking)">.*?</fieldset>',
