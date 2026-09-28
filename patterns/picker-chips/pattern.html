@@ -9,7 +9,7 @@ requires: none
 content-shape: peer set
 description: The first sign-up decision as one tap - a question, a helper line, and a row of pill links that each go straight into the join flow.
 keywords: picker, chips, pills, choice, join, sign-up, conversion
-needs: the real opening question the brand asks; two to four real options in the brand's own words; one helper line saying what picking does; a decision from the platform on whether the join flow reads a preference parameter
+needs: the real opening question the brand asks; two to four real options in the brand's own words; one helper line saying what picking does; and, where the question is who the visitor is or who they are looking for, the value each option sends to the join flow - the README lists them
 pairs-with: hero-split
 avoid-with: none
 tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --font-heading, --space-2, --space-3, --space-4, --space-5, --type-scale, --heading-leading
@@ -24,9 +24,11 @@ added: 2026-08-21
   <h2 class="picker-chips-title" id="slot:picker-id"><!-- slot: picker-question --></h2>
   <p class="picker-chips-helper"><!-- slot: picker-helper --></p>
   <!-- ONE <li> per real option; duplicate the whole <li>. Two to four is the
-       useful range. Every pill points at {{join.url}} and nothing else - add a
-       query parameter only if the platform has confirmed the brand's join flow
-       reads one. -->
+       useful range. Every pill points at {{join.url}}, plus the one answer its
+       question asks where the join flow reads it: ?lf= for who they are looking
+       for, ?mt= for who they are (1 man, 2 woman, 4 couple - Excite brands
+       only - 16 other), e.g. {{join.url}}?lf=2. Nothing else, and never a
+       written-out URL. -->
   <ul class="picker-chips-list" role="list">
     <li class="picker-chips-item">
       <a class="picker-chips-link" href="{{join.url}}">

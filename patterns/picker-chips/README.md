@@ -27,14 +27,19 @@ chassis-reserved class family.)
 
 **What it needs.** The real opening question in the brand's own words, and two
 to four real options behind it — past four this becomes the form it exists to
-replace. One helper line saying what picking does. And one decision that has
-to come from the platform, not from the pattern: **whether the join flow reads
-a preference parameter.** As shipped, every pill points at the bare
-`{{join.url}}` token, which always works. If the platform confirms a real
-parameter, append it to the token with the platform's own name and values
-(`{{join.url}}?realparam=realvalue`). Never invent a parameter, never copy one
-from another site, and never swap the token for a written-out URL — an unread
-parameter is harmless, a wrong URL is a dead sign-up.
+replace. One helper line saying what picking does.
+
+**Let each pill carry the answer it gives.** The join flow reads two answers
+from the link and skips the step each one settles: `lf`, who the visitor is
+looking for, and `mt`, who they are. The values are `1` a man, `2` a woman,
+`4` a couple and `16` other, and `lf` adds them for more than one (`3` is men
+and women). Append the one the question asks — for *Who are you looking for?*,
+the *Women* pill is `{{join.url}}?lf=2` — and nothing else. **`4` exists on
+Excite brands only**: an Affinity brand ignores it without a word, so a
+*Couples* pill there is a control that does nothing. An option with no value
+keeps the bare token, which always works. The parameters are HubPeople's
+Registration URL API; never invent another, and never swap the token for a
+written-out URL — a wrong URL is a dead sign-up.
 
 **Pairing.** Built for `hero-split`: drop it into the hero's copy column, and
 delete `hero-split`'s own join CTA so there is one action in the viewport

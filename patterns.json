@@ -1528,7 +1528,7 @@
   "display-name": "Quick chooser",
   "image-slots": [],
   "motion": "none",
-  "needs": "the real opening question the brand asks; two to four real options in the brand's own words; one helper line saying what picking does; a decision from the platform on whether the join flow reads a preference parameter",
+  "needs": "the real opening question the brand asks; two to four real options in the brand's own words; one helper line saying what picking does; and, where the question is who the visitor is or who they are looking for, the value each option sends to the join flow - the README lists them",
   "one-per-page": true,
   "page-types": [
    "homepage",
