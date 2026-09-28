@@ -327,11 +327,12 @@ def places_tree(source, out):
     if not index_path.is_file():
         return {}, None
     edition = json.loads(index_path.read_text(encoding="utf-8"))["edition"]
+    # A bundle that reads the places must read these ones.
     named = EDITION.search(source)
-    if not named or named.group(1) != edition:
-        return None, (f"the bundle names places edition "
-                      f"{named.group(1) if named else 'none'} and lib/places/ is "
-                      f"{edition} - set SIGNUP_PLACES_EDITION to match")
+    if named and named.group(1) != edition:
+        return None, (f"the bundle names places edition {named.group(1)} and "
+                      f"lib/places/ is {edition} - set SIGNUP_PLACES_EDITION "
+                      f"to match")
     tree = {}
     for path in sorted(PLACES.glob("*.json")):
         rel = f"{BASE}/places/{edition}/{path.name}"
