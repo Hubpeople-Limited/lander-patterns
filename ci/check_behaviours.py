@@ -27,6 +27,12 @@ page, and holds each behaviour to what its row says:
                and they hold their place while the carousel is operated -
                a control that moves as the rail does is one the reader has
                to chase, and it passes every other check on this list
+    signup     a phone opens on one question; Next with nothing chosen stays
+               and says why; a tapped answer moves on by itself; members
+               show once "looking for" is answered and never after a failed
+               search; the hand-off goes to the join link with the answers
+               summed, spaces as %20, never "+", interests as a %3B list and
+               no password; under reduced motion it still moves on
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -67,7 +73,7 @@ from build_preview import fill, repeat_block            # noqa: E402
 from check_phone import browser_unavailable             # noqa: E402
 import lint                                             # noqa: E402
 
-BEHAVIOURS = ("counter", "scrollspy", "carousel")
+BEHAVIOURS = ("counter", "scrollspy", "carousel", "signup")
 WIDTH, HEIGHT = 1280, 800
 PHONE = 360
 TAP_MIN = 44
@@ -94,7 +100,15 @@ CONTROL_SUBSTITUTIONS = {
                  "group[index].checked = group[index].checked;"),
     "carousel-scroller": ("scroller.scrollBy({ left: step * stepSize(), behavior });",
                           "void step;"),
+    "signup": (".reduce((sum, r) => sum + Number(r.value), 0);",
+               ".reduce((sum, r) => Number(r.value), 0);"),
 }
+
+# The signup check hands off to this link and never follows it; the GUID in it
+# is what the member strip searches with, and the search is answered here.
+SIGNUP_JOIN = "https://example.invalid/s/register/00000000-0000-4000-8000-000000000000"
+SIGNUP_MEMBERS = [{"MemberName": f"Sample {i}", "MemberImage": f"sample-portrait.svg?m={i}",
+                   "MemberAge": 28 + i, "Interests": ""} for i in range(6)]
 
 SHELL = """<!DOCTYPE html>
 <html lang="en">
@@ -187,6 +201,12 @@ def page_for(name, behaviour, tokens, bundle_file, width):
             + FILLER + "</section>" for k in range(1, 5))
     elif behaviour == "carousel":
         after = '<section class="behaviour-check-section">' + FILLER + "</section>"
+    elif behaviour == "signup":
+        # The preview fill writes "#" for the join link; the check needs a
+        # real-shaped one, because the member search reads its GUID from it.
+        filled = re.sub(r'(<form class="signup-steps-card"[^>]*action=")[^"]*"',
+                        lambda m: m.group(1) + SIGNUP_JOIN + '"', filled, count=1)
+        after = '<section class="behaviour-check-section">' + FILLER + "</section>"
     return SHELL.format(title=f"{name} {behaviour}", tokens=tokens, css=css,
                         bundle=bundle_file, before=before, markup=filled, after=after)
 
@@ -258,12 +278,14 @@ class Shell:
         shutil.rmtree(self._dir, ignore_errors=True)
         return False
 
-    def open(self, html, stem, width=WIDTH, reduced=False):
+    def open(self, html, stem, width=WIDTH, reduced=False, before=None):
         path = self._dir / f"{stem}.html"
         path.write_text(html, encoding="utf-8", newline="\n")
         tab = self._browser.new_page(
             viewport={"width": width, "height": HEIGHT}, device_scale_factor=1,
             reduced_motion="reduce" if reduced else "no-preference")
+        if before:
+            before(tab)
         tab.goto(path.as_uri())
         return tab
 
@@ -549,7 +571,131 @@ CAROUSEL_PLACEMENT_JS = """
 """
 
 
-CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel}
+SIGNUP_PARTS_JS = """
+() => Array.from(document.querySelectorAll('[data-hub-signup-part]'))
+        .filter(p => p.offsetParent !== null).map(p => p.getAttribute('data-hub-signup-part'))
+"""
+
+
+def signup_stub(members):
+    """Answer the member search, and keep the hand-off instead of following it."""
+    def before(tab):
+        def answer(route):
+            if members is None:
+                route.fulfill(status=502, body="")
+            else:
+                route.fulfill(status=200, content_type="application/json",
+                              headers={"Access-Control-Allow-Origin": "*"},
+                              body=json.dumps(members))
+        tab.route("**/api/hs/quicksearch**", answer)
+        tab.route("https://example.invalid/**", lambda r: r.abort())
+        tab.add_init_script("addEventListener('hub:signup:handoff', "
+                            "e => { window.__signupHandoff = e.detail.url })")
+    return before
+
+
+def tap(tab, selector):
+    """A real press at the middle of the thing, as a finger makes one."""
+    box = tab.locator(selector).first.bounding_box()
+    tab.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+
+
+def check_signup(shell, name, tokens):
+    where = f"{name} signup"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    face = 'input[name="{0}"][value="{1}"] + .signup-steps-opt-face'
+    tab = shell.open(html, f"{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS))
+    try:
+        tab.wait_for_timeout(300)
+        version = tab.evaluate(VERSION_JS)
+        if version != bundle_version():
+            return [f"{where}: the bundle did not run (version {version!r} on the page)"]
+        parts = tab.evaluate(SIGNUP_PARTS_JS)
+        if parts != ["iam"]:
+            faults.append(f"{where}: a phone opens on {parts!r} - one question, 'iam', is the step")
+        tap(tab, ".signup-steps-next")
+        tab.wait_for_timeout(150)
+        if tab.evaluate(SIGNUP_PARTS_JS) != ["iam"] or not tab.locator(
+                '[data-hub-signup-part="iam"] .signup-steps-error').is_visible():
+            faults.append(f"{where}: Next with nothing chosen must stay put and say why")
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        if tab.evaluate(SIGNUP_PARTS_JS) != ["seeking"]:
+            faults.append(f"{where}: a tapped single answer did not move on by itself")
+        tap(tab, face.format("lf", 1))
+        tap(tab, face.format("lf", 2))
+        tab.wait_for_timeout(600)
+        if tab.locator(".signup-steps-members img").count() != 4:
+            faults.append(f"{where}: four members should show once 'looking for' is answered")
+        tap(tab, ".signup-steps-next")
+        tab.wait_for_timeout(500)
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tap(tab, ".signup-steps-next")
+        tab.wait_for_timeout(500)
+        for chips in ("intent", "enjoy"):
+            if tab.evaluate(SIGNUP_PARTS_JS) == [chips]:
+                tap(tab, f'[data-hub-signup-part="{chips}"] .signup-steps-chip')
+                tap(tab, ".signup-steps-next")
+                tab.wait_for_timeout(500)
+        if tab.evaluate(SIGNUP_PARTS_JS) != ["email"]:
+            return faults + [f"{where}: the steps never reached the last one "
+                             f"(stopped on {tab.evaluate(SIGNUP_PARTS_JS)!r})"]
+        tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam Lee")
+        tab.fill('input[name="em"]', "sam@example.com")
+        tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+        tap(tab, ".signup-steps-submit")
+        tab.wait_for_timeout(400)
+        url = tab.evaluate("() => window.__signupHandoff || null")
+    finally:
+        tab.close()
+    if not url:
+        return faults + [f"{where}: the last step handed nothing off"]
+    query = url.split("?", 1)[-1]
+    fields = dict(pair.split("=", 1) for pair in query.split("&") if "=" in pair)
+    if not url.startswith(SIGNUP_JOIN + "?"):
+        faults.append(f"{where}: handed off to {url.split('?')[0]!r}, not the join link")
+    if fields.get("lf") != "3":
+        faults.append(f"{where}: 'looking for' men and women sent as lf={fields.get('lf')!r} - "
+                      f"the answers are summed, 3")
+    if "+" in query:
+        faults.append(f"{where}: the hand-off carries '+', which the join flow does not read as a space")
+    if fields.get("firstname") != "Sam%20Lee":
+        faults.append(f"{where}: a first name with a space sent as {fields.get('firstname')!r}")
+    if "%3B" not in fields.get("interests", ""):
+        faults.append(f"{where}: two interests sent as {fields.get('interests')!r} - "
+                      f"a list separated by %3B")
+    if "p" in fields:
+        faults.append(f"{where}: a password was sent")
+    # A failed search leaves nothing behind.
+    tab = shell.open(html, f"{name}-signup-failed", width=PHONE, before=signup_stub(None))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tab.wait_for_timeout(600)
+        if tab.locator(".signup-steps-members").is_visible():
+            faults.append(f"{where}: a failed member search left the strip showing")
+    finally:
+        tab.close()
+    # Reduced motion still moves on, without waiting on a tick nobody sees drawn.
+    tab = shell.open(html, f"{name}-signup-reduced", width=PHONE, reduced=True,
+                     before=signup_stub([]))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(250)
+        if tab.evaluate(SIGNUP_PARTS_JS) != ["seeking"]:
+            faults.append(f"{where}: under reduced motion a tapped answer did not move on")
+    finally:
+        tab.close()
+    return faults
+
+
+CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel,
+          "signup": check_signup}
 
 
 def main():
