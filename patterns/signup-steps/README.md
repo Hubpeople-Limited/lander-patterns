@@ -27,7 +27,9 @@ questions and the first-name label.
 **The interest labels are the join flow's own.** `data-hub-signup-intent` and
 `-enjoy` take them `;`-separated, spelled exactly as the brand's join flow
 spells them: a label it does not know is dropped without a word. Leave one
-empty to drop that step. Six can be picked on the second.
+empty to drop that step. Six can be picked on the second. Each step shows
+eight; any more wait behind a "show more" control in the same step, so a long
+list never pushes the step off a phone.
 
 **Keep every `name` and `value` as they are.** `mt` is who the visitor is: `1` a
 man, `2` a woman, `16` something else, `4` a couple on **Excite brands only**
@@ -35,13 +37,16 @@ man, `2` a woman, `16` something else, `4` a couple on **Excite brands only**
 the same values summed for more than one. `culture` is the join flow's
 language — `en`, `es`, `pt`, `fr` or `de`.
 
-**Options on the section**, all `data-hub-signup-*`: `dob` — `boxes`, the
+**Options on the section**, all `data-hub-signup-*`: `seeking` — `none`, the
+default, leaves "looking for" empty; `opposite` ticks it from "I am" (a woman,
+men), and `same` does so for a brand whose members meet their own sex; the
+visitor's own tick always wins. `dob` — `boxes`, the
 default, or `wheel`; `reward` for a complete date — `sign` (age and star sign,
 the default), `age` or `none`; `settle="off"` stops a phone scrolling the card
 up at each step; `guid` where the join link carries no site GUID, without which
 there is no member strip. Every visible word has an English default and an
 option of its own — `next`, `back`, `skip`, `step`, `seeking-help`,
-`intent-help`, `enjoy-help`, `tally`, `tally-none`, `tally-full`, the five
+`intent-help`, `enjoy-help`, `tally`, `tally-none`, `tally-full`, `more`, the five
 `error-*`, `members`, `who`, `signs`, `done`, `going` — so a brand in another
 language sets them all.
 

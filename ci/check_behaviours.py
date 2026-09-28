@@ -595,8 +595,18 @@ def signup_stub(members):
 
 
 def tap(tab, selector):
-    """A real press at the middle of the thing, as a finger makes one."""
-    box = tab.locator(selector).first.bounding_box()
+    """A real press at the middle of the thing, as a finger makes one - once it
+    has stopped moving. A step change scrolls the card up smoothly and the
+    member strip can arrive above it, and a press measured mid-move lands on
+    whatever slid under it."""
+    target = tab.locator(selector).first
+    box = target.bounding_box()
+    for _ in range(40):
+        tab.wait_for_timeout(50)
+        again = target.bounding_box()
+        if again == box:
+            break
+        box = again
     tab.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
 
 

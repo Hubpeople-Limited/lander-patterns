@@ -489,6 +489,19 @@
   border-style: dashed;
   color: var(--color-text-soft);
 }
+.signup-steps-more {
+  min-height: 44px;
+  margin-top: var(--space-2);
+  padding: 0 var(--space-1);
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
 .signup-steps-tally {
   margin: var(--space-3) 0 0;
   font-size: .875rem;
@@ -634,6 +647,7 @@
 .signup-steps-back:focus-visible,
 .signup-steps-next:focus-visible,
 .signup-steps-skip:focus-visible,
+.signup-steps-more:focus-visible,
 .signup-steps-wheel:focus-visible,
 .signup-steps-chip input:focus-visible + span {
   outline: 3px solid var(--color-focus);
