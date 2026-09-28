@@ -298,6 +298,13 @@ On every pull request, CI:
   requires the mark to be drawn at the height the header reserved for it; then
   re-renders it the way the live defect had it and requires that check to fire.
   See [The brand mark](#the-brand-mark).
+- renders every pattern that lays a placeholder under a photo scrim on all
+  five sample brands, with the copy hidden, and requires the placeholder's
+  drawing to show and the copy's ground to hold 4.5:1; then appends a scrim
+  at full strength and a scrim taken away, and requires each to fire
+  (`ci/check_placeholder_scrim.py`, `--broken`). A placeholder's ground is
+  known, which is why a pattern may lighten its scrim over one and never over
+  a photograph.
 
 A red check names the file and the rule. Fix and push again — nothing merges
 red.

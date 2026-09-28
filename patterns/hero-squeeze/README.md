@@ -43,13 +43,17 @@ ground, one of the pairs the contract states. The headline takes it too:
 The control is `--color-primary` with `--color-on-primary`, at 52px rather
 than the usual 48: it is the only control on the page. Its focus indicator is
 two bands, an `--color-on-scrim` ring backed by a `--color-scrim` halo, because
-a photograph sits behind it and no token describes a photograph. Same technique
-as `media-card-grid`.
+a photograph sits behind it and no token describes a photograph.
 
 `--hero-squeeze-scrim-strength` is the one dial, held by `clamp()` at a floor of
 `0.86`. That floor is lower than `cta-image`'s `0.92` deliberately: the copy
 here sits in the middle of the frame rather than against an edge, and the
 gradient reaches full strength behind it by 12% down.
+
+**Over the library's placeholder the floor drops to `0.4`**, on a tint of the
+brand colour mixed into `--color-scrim`, so the drawing shows. That ground is
+known, so `ci/check_placeholder_scrim.py` holds the copy to 4.5:1 on it; a real
+photograph, which carries no `[data-hub-placeholder]`, keeps the full floor.
 
 **The ramp starts at 68%, and that number is load-bearing.** Content is
 centred, so on a tall content box - 200% zoom, a long headline, a landscape
@@ -63,18 +67,14 @@ before touching either.
 The section aims to fill exactly one viewport. Where the content is taller than
 the viewport — a long headline, a short window, 200% browser zoom, a phone in
 landscape — **it scrolls rather than clipping.** A squeeze that hides its own
-call to action to keep a promise about scrolling has broken the only thing it
-was for; a fixed height with `overflow: hidden` is how a page in this library's
-own source material became unscrollable at 200% zoom, failing WCAG 1.4.4.
-`svh` not `vh` for the same family of reason: `100vh` is the largest viewport,
-so the control would sit behind the address bar.
+call to action has broken the only thing it was for, and a fixed height with
+`overflow: hidden` fails WCAG 1.4.4 at 200% zoom. `svh`, not `vh`: `100vh` is
+the largest viewport, so the control would sit behind the address bar.
 
 **A viewport minus the furniture at BOTH ends.** A header sits above this
 section and a footer below it, and the platform injects the footer at serve
 time, so no markup here can enclose it: the height is `calc(100svh -
 var(--page-header-height, 9.5rem) - var(--page-footer-height, 12.5rem))`.
-Subtracting only the header leaves the page scrolling by the footer — 177px on
-a 1280×800 laptop, 166 of them the footer. Take both numbers off the rendered
-page, never off `--logo-height`, which came up 11px short of the header that
-rendered; TOKENS.md's *The page's furniture* says how. `--hero-squeeze-above`
-no longer does anything, and `0px` is the value for an end with nothing at it.
+Subtracting only the header leaves the page scrolling by the footer. Take both
+numbers off the rendered page, never off `--logo-height`; TOKENS.md's *The
+page's furniture* says how, and `0px` is the value for an end with nothing at it.

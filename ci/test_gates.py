@@ -2555,6 +2555,23 @@ def check_masthead_without_portrait():
     return failures
 
 
+def check_placeholder_scrim():
+    """Both directions of ci/check_placeholder_scrim.py: the library is clean,
+    and the positive control catches a drawing the scrim hides and copy the
+    scrim no longer carries. A browser-less run skips, as check_phone does."""
+    print("ci/check_placeholder_scrim.py, a placeholder under a photo scrim")
+    failures = []
+    for label, argv in (("the library", []), ("the positive control", ["--broken"])):
+        got = subprocess.run([sys.executable, str(HERE / "check_placeholder_scrim.py"), *argv],
+                             capture_output=True, text=True, cwd=HERE.parent)
+        ok = got.returncode == 0
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}: exit={got.returncode} want=0")
+        if not ok:
+            print(got.stdout[-2000:])
+            failures.append(f"placeholder scrim: {label}")
+    return failures
+
+
 def check_shell_placeholders():
     """A shell shows a placeholder where a build would put one, marked the
     way a build marks it, and leaves a people slot alone."""
@@ -2710,6 +2727,8 @@ def main():
     print()
     failures += check_masthead_without_portrait()
     print()
+    failures += check_placeholder_scrim()
+    print()
     failures += check_shell_placeholders()
     print()
     if failures:
@@ -2734,7 +2753,7 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 4
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 4 + 2
              + PLACEHOLDER_URL_CASE_COUNT)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
