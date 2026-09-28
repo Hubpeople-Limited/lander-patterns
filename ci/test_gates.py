@@ -2504,6 +2504,57 @@ def placeholder_url_cases(good, url):
 PLACEHOLDER_URL_CASE_COUNT = 6
 
 
+def check_masthead_without_portrait():
+    """article-masthead's portrait is optional, so the pattern has to render
+    properly without it: no picture pretending to be the author, and the
+    name and role at the start of the row rather than after a hole."""
+    import lint
+    sys.path.insert(0, str(HERE))
+    import check_phone
+    failures = []
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(label)
+
+    html = (HERE.parent / "patterns" / "article-masthead" / "pattern.html").read_text(encoding="utf-8")
+    meta = lint.parse_header(html, HERE / "article-masthead.html")
+    case("article-masthead needs no photography", meta.get("requires") == "none")
+    case("article-masthead's portrait never takes a placeholder",
+         "placeholder=no" in meta.get("image-slots", ""))
+
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED the render: {why}")
+        return failures
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width in (360, 1280):
+                page_html = check_phone.pattern_page(
+                    "article-masthead", width, check_phone.token_set())
+                page_html, removed = re.subn(
+                    r'<img class="article-masthead-avatar"[^>]*>', "", page_html)
+                out = Path(tmp) / f"masthead-{width}.html"
+                out.write_text(page_html, encoding="utf-8")
+                page = browser.new_page(viewport={"width": width, "height": 900})
+                page.goto(out.as_uri())
+                got = page.evaluate("""() => {
+                    const box = s => document.querySelector(s).getBoundingClientRect();
+                    return {title: box('.article-masthead-title').left,
+                            byline: box('.article-masthead-byline').left,
+                            row: box('.article-masthead-author').height};
+                }""")
+                page.close()
+                case(f"at {width}px with no portrait, the byline starts where the title does",
+                     removed == 1 and abs(got["byline"] - got["title"]) <= 1 and got["row"] > 0)
+        finally:
+            browser.close()
+    return failures
+
+
 def check_shell_placeholders():
     """A shell shows a placeholder where a build would put one, marked the
     way a build marks it, and leaves a people slot alone."""
@@ -2657,6 +2708,8 @@ def main():
     print()
     failures += check_placeholder_urls_gate()
     print()
+    failures += check_masthead_without_portrait()
+    print()
     failures += check_shell_placeholders()
     print()
     if failures:
@@ -2681,7 +2734,7 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 4
              + PLACEHOLDER_URL_CASE_COUNT)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
