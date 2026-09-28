@@ -2504,6 +2504,21 @@ def check_shell_placeholders():
          compose.image_slot_hint("band-image", refused)
          == "real material only - never a placeholder")
 
+    def page_of(*requires):
+        return [{"meta": {"requires": r}} for r in requires]
+    case("no photography note on a shell whose only image is optional",
+         compose.photography_note(page_of("none", "none")) == [])
+    people_only = "".join(compose.photography_note(page_of("none", "consented-people")))
+    case("a people-only shell asks for consented people, not photography",
+         "consented" in people_only and "needs photography" not in people_only)
+    case("a shell with a photography section keeps the placeholder note",
+         "This shell needs photography." in "".join(
+             compose.photography_note(page_of("photography", "consented-people"))))
+    for shell in ("pricing-value@1", "safety-explained@1"):
+        text = (HERE.parent / "shells" / shell / "README.md").read_text(encoding="utf-8")
+        case(f"{shell} README does not say it needs photography",
+             "needs photography" not in text)
+
     body, _ = bp.build_shell(HERE.parent / "shells" / "landing@1")
     avatar_tag = re.search(r'<img\b[^>]*class="testimonial-grid-avatar"[^>]*>', body)
     case("a shell preview keeps the testimonial-grid avatar sample, not a placeholder",

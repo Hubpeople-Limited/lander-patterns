@@ -595,6 +595,31 @@ def compose_one(recipe, library):
     }
 
 
+def photography_note(page):
+    """The Wiring paragraph about pictures, read off each section's
+    `requires`. An optional image - a membership mark, an author's portrait -
+    does not make a shell need photography."""
+    needs = {item["meta"].get("requires", "none") for item in page}
+    if "photography" in needs:
+        return [
+            "This shell needs photography. A photography slot may take the "
+            "shared placeholder named in `lib/placeholders/placeholders.json` "
+            "- referenced by its CDN address, never copied into the brand - "
+            "and the build lists every placeholder it placed. A people slot "
+            "never takes one: only real, consented material fills it. See "
+            "[lib/placeholders/README.md](../../lib/placeholders/README.md).",
+            "",
+        ]
+    if "consented-people" in needs:
+        return [
+            "This shell needs real pictures of people who agreed to appear. "
+            "A people slot never takes a placeholder: only real, consented "
+            "material fills it.",
+            "",
+        ]
+    return []
+
+
 def compose_readme(recipe, name, version, page, chosen, support):
     lines = [
         f"# {name}@{version}",
@@ -625,17 +650,7 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "one.",
         "",
     ]
-    if any("src" in slot["attrs"]
-           for item in page for slot in find_slots(item["body"])):
-        lines += [
-            "This shell needs photography. A photography slot may take the "
-            "shared placeholder named in `lib/placeholders/placeholders.json` "
-            "- referenced by its CDN address, never copied into the brand - "
-            "and the build lists every placeholder it placed. A people slot "
-            "never takes one: only real, consented material fills it. See "
-            "[lib/placeholders/README.md](../../lib/placeholders/README.md).",
-            "",
-        ]
+    lines += photography_note(page)
     lines += [
         "## Sections, in order",
         "",
