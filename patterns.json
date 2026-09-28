@@ -131,7 +131,7 @@
     "crop": "square",
     "focal": "center",
     "min": 176,
-    "placeholder": true,
+    "placeholder": false,
     "slot": "author-portrait",
     "subjects": [
      "person"
@@ -139,7 +139,7 @@
    }
   ],
   "motion": "none",
-  "needs": "a real article title and a real lede of one or two sentences; the category the piece genuinely sits in; an honest read time and a genuine publication date; the name and role of the person who actually wrote it, with their real portrait and real alt text",
+  "needs": "a real article title and a real lede of one or two sentences; the category the piece genuinely sits in; an honest read time and a genuine publication date; the name and role of the person who actually wrote it, and their real portrait with real alt text where the brand has one",
   "one-per-page": true,
   "page-types": [
    "article"
@@ -148,12 +148,12 @@
    "heading-block"
   ],
   "replaced-by": "",
-  "requires": "photography",
+  "requires": "none",
   "status": "active",
   "summary": "The top of a written piece: the title, who wrote it and when.",
   "type": "section",
   "variants": {},
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "article-toc": {
@@ -581,7 +581,7 @@
   "summary": "A closing call to action over one full-width photograph.",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "cta-sticky": {
@@ -939,7 +939,7 @@
   "summary": "The whole page in a single screen: a photograph, one claim, one button.",
   "type": "section",
   "variants": {},
-  "version": "11",
+  "version": "12",
   "whole-page": true
  },
  "hero-stated": {
@@ -2141,7 +2141,18 @@
   "content-shape": "peer set",
   "description": "Hairline-bracketed strip of assurance marks - a membership lockup beside a row of icon-over-label compliance badges, answering whether the brand is legitimate at the point of sign-up.",
   "display-name": "Trust marks",
-  "image-slots": [],
+  "image-slots": [
+   {
+    "crop": "square",
+    "focal": "center",
+    "min": 152,
+    "placeholder": false,
+    "slot": "membership-mark",
+    "subjects": [
+     "object"
+    ]
+   }
+  ],
   "motion": "none",
   "needs": "real, verifiable compliance marks or memberships the brand actually holds and nothing else - the supplied membership logo file with its real alt text, the association's real name, the real membership status, and the real name of each certification or regulation the brand can evidence",
   "one-per-page": true,
