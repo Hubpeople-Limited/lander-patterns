@@ -31,11 +31,15 @@ empty to drop that step. Six can be picked on the second. Each step shows
 eight; any more wait behind a "show more" control in the same step, so a long
 list never pushes the step off a phone.
 
-**Keep every `name` and `value` as they are.** `mt` is who the visitor is: `1` a
-man, `2` a woman, `16` something else, `4` a couple on **Excite brands only**
-(elsewhere it is ignored, so leave it out). `lf` is who they are looking for,
-the same values summed for more than one. `culture` is the join flow's
-language — `en`, `es`, `pt`, `fr` or `de`.
+**The answers are the brand's; the values are the join flow's.** `mt` is who
+the visitor is: `1` a man, `2` a woman, `16` anyone else, `4` a couple on
+**Excite brands only** (elsewhere it is ignored, so leave it out). `lf` is who
+they are looking for, the same values summed for more than one. Drop answers a
+brand does not offer and word the rest its way — several may share a value, so
+a trans brand can offer three answers that all send `16`. Where only one answer
+is possible, as on a single-sex brand, replace the question's fieldset with a
+hidden `mt` or `lf` input carrying that value: nobody is asked, and the value is
+sent. `culture` is the join flow's language — `en`, `es`, `pt`, `fr` or `de`.
 
 **Options on the section**, all `data-hub-signup-*`: `seeking` — `none`, the
 default, leaves "looking for" empty; `opposite` ticks it from "I am" (a woman,

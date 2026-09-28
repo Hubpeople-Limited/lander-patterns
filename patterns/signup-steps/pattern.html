@@ -42,9 +42,10 @@ added: 2026-09-28
 
       <fieldset class="signup-steps-step" data-hub-signup-part="iam">
         <legend class="signup-steps-q"><!-- slot: iam-question --></legend>
-        <!-- COUPLES ON EXCITE BRANDS ONLY. On an Excite brand, duplicate a <li>
-             with value="4" and the brand's word for a couple. On any other brand
-             leave it out: the join flow ignores 4 there without a word. -->
+        <!-- ANSWERS ARE THE BRAND'S: drop any it does not offer, word them
+             its way; several may share a value. Couples (4) on Excite brands
+             only. ONE POSSIBLE ANSWER: replace this fieldset with
+             <input type="hidden" name="mt" value="1"> - the same for lf. -->
         <ul class="signup-steps-opts signup-steps-opts--two" role="list">
           <li class="signup-steps-opt">
             <label><input type="radio" name="mt" value="1" required><span class="signup-steps-opt-face"><span><!-- slot: iam-man --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>

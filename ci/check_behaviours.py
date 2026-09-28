@@ -100,8 +100,8 @@ CONTROL_SUBSTITUTIONS = {
                  "group[index].checked = group[index].checked;"),
     "carousel-scroller": ("scroller.scrollBy({ left: step * stepSize(), behavior });",
                           "void step;"),
-    "signup": (".reduce((sum, r) => sum + Number(r.value), 0);",
-               ".reduce((sum, r) => Number(r.value), 0);"),
+    "signup": (".reduce((sum, r) => sum + Number(r.value), 0)",
+               ".reduce((sum, r) => Number(r.value), 0)"),
 }
 
 # The signup check hands off to this link and never follows it; the GUID in it
@@ -678,6 +678,38 @@ def check_signup(shell, name, tokens):
                       f"a list separated by %3B")
     if "p" in fields:
         faults.append(f"{where}: a password was sent")
+    # A brand with one possible answer to each: the questions are hidden
+    # values, nobody is asked them, and each value is sent once.
+    single = re.sub(r'<fieldset class="signup-steps-step" data-hub-signup-part="(iam|seeking)">.*?</fieldset>',
+                    lambda m: f'<input type="hidden" name="{"mt" if m.group(1) == "iam" else "lf"}" value="1">',
+                    html, flags=re.S)
+    tab = shell.open(single, f"{name}-signup-single", width=PHONE, before=signup_stub(SIGNUP_MEMBERS))
+    try:
+        tab.wait_for_timeout(300)
+        opening = tab.evaluate(SIGNUP_PARTS_JS)
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tap(tab, ".signup-steps-next")
+        tab.wait_for_timeout(500)
+        for chips in ("intent", "enjoy"):
+            if tab.evaluate(SIGNUP_PARTS_JS) == [chips]:
+                tap(tab, f'[data-hub-signup-part="{chips}"] .signup-steps-chip')
+                tap(tab, ".signup-steps-next")
+                tab.wait_for_timeout(500)
+        tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam")
+        tab.fill('input[name="em"]', "sam@example.com")
+        tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+        tap(tab, ".signup-steps-submit")
+        tab.wait_for_timeout(400)
+        single_url = tab.evaluate("() => window.__signupHandoff || ''")
+    finally:
+        tab.close()
+    if opening != ["dob"]:
+        faults.append(f"{where}: with both questions fixed the card opens on {opening!r}, not the date of birth")
+    sent = single_url.split("?", 1)[-1].split("&")
+    if sent.count("mt=1") != 1 or sent.count("lf=1") != 1:
+        faults.append(f"{where}: fixed answers must be sent once each - got "
+                      f"{[x for x in sent if x.startswith(('mt=', 'lf='))]!r}")
     # A failed search leaves nothing behind.
     tab = shell.open(html, f"{name}-signup-failed", width=PHONE, before=signup_stub(None))
     try:
