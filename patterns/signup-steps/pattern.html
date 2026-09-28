@@ -1,0 +1,96 @@
+<!--
+name: signup-steps
+display-name: Sign-up opener
+summary: An opening that asks the first sign-up questions on the page itself.
+version: 1
+type: section
+page-types: homepage, landing
+requires: none
+content-shape: single claim
+description: Conversion opener - a headline beside a short sign-up card that asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled; stacks card-under-headline on phones.
+keywords: sign-up, signup, registration, join, form, hero, opener, conversion
+needs: a headline and one supporting sentence in the brand's own words; the card's title; the brand's wording for each answer; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples
+pairs-with: member-grid, steps-plain, cta-band
+avoid-with: article-masthead, hero-centred, hero-overlay, hero-split, hero-squeeze, hero-stated, picker-chips
+tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-primary-dark, --color-rule, --color-surface, --color-text, --color-text-soft, --container-max, --font-body, --font-heading, --heading-leading, --heading-tracking, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --space-12, --transition-fast, --type-scale, --weight-display
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-09-28
+-->
+<!-- Keep every name= and value= exactly as they are: they are the join
+     flow's own. Never pre-tick or pre-fill anything. -->
+<section class="signup-steps">
+  <div class="signup-steps-inner">
+    <div class="signup-steps-copy">
+      <h1 class="signup-steps-title"><!-- slot: headline --></h1>
+      <p class="signup-steps-sub"><!-- slot: subhead --></p>
+    </div>
+    <form class="signup-steps-card" method="get" action="{{join.url}}">
+      <h2 class="signup-steps-card-title"><!-- slot: card-title --></h2>
+
+      <fieldset class="signup-steps-step">
+        <legend class="signup-steps-q"><!-- slot: iam-question --></legend>
+        <!-- COUPLES ON EXCITE BRANDS ONLY. On an Excite brand, duplicate a <li>
+             with value="4" and the brand's word for a couple. On any other brand
+             leave it out: the join flow ignores 4 there without a word. -->
+        <ul class="signup-steps-opts signup-steps-opts--two" role="list">
+          <li class="signup-steps-opt">
+            <label><input type="radio" name="mt" value="1" required><span class="signup-steps-opt-face"><span><!-- slot: iam-man --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>
+          </li>
+          <li class="signup-steps-opt">
+            <label><input type="radio" name="mt" value="2"><span class="signup-steps-opt-face"><span><!-- slot: iam-woman --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>
+          </li>
+        </ul>
+        <label class="signup-steps-other"><input type="radio" name="mt" value="16"><span><span class="signup-steps-tick" aria-hidden="true"></span><!-- slot: iam-other --></span></label>
+      </fieldset>
+
+      <fieldset class="signup-steps-step">
+        <legend class="signup-steps-q"><!-- slot: seeking-question --></legend>
+        <!-- One <li> per answer. value is who they are looking for: 2 women,
+             1 men, 16 non-binary people, 4 couples (Excite brands only), and the
+             sum for more than one - 3 is men and women. -->
+        <ul class="signup-steps-opts" role="list">
+          <li class="signup-steps-opt">
+            <label><input type="radio" name="lf" value="2" required><span class="signup-steps-opt-face"><span><!-- slot: seeking-women --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>
+          </li>
+          <li class="signup-steps-opt">
+            <label><input type="radio" name="lf" value="1"><span class="signup-steps-opt-face"><span><!-- slot: seeking-men --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>
+          </li>
+          <li class="signup-steps-opt">
+            <label><input type="radio" name="lf" value="3"><span class="signup-steps-opt-face"><span><!-- slot: seeking-both --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>
+          </li>
+          <li class="signup-steps-opt">
+            <label><input type="radio" name="lf" value="16"><span class="signup-steps-opt-face"><span><!-- slot: seeking-nonbinary --></span><span class="signup-steps-tick" aria-hidden="true"></span></span></label>
+          </li>
+        </ul>
+      </fieldset>
+
+      <fieldset class="signup-steps-step">
+        <legend class="signup-steps-q"><!-- slot: birthday-question --></legend>
+        <p class="signup-steps-help"><!-- slot: birthday-help --></p>
+        <div class="signup-steps-dob">
+          <label class="signup-steps-field"><span><!-- slot: birthday-day --></span><input name="dd" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="bday-day" required></label>
+          <label class="signup-steps-field"><span><!-- slot: birthday-month --></span><input name="dm" inputmode="numeric" pattern="[0-9]{1,2}" maxlength="2" autocomplete="bday-month" required></label>
+          <label class="signup-steps-field signup-steps-field--year"><span><!-- slot: birthday-year --></span><input name="dy" inputmode="numeric" pattern="(19|20)[0-9]{2}" maxlength="4" autocomplete="bday-year" required></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="signup-steps-step">
+        <legend class="signup-steps-q"><!-- slot: email-question --></legend>
+        <label class="signup-steps-field"><span><!-- slot: email-label --></span><input type="email" name="em" autocomplete="email" spellcheck="false" required></label>
+        <label class="signup-steps-consent"><input type="checkbox" required><span><!-- slot: consent --></span></label>
+      </fieldset>
+
+      <!-- culture is the join flow's language: en, es, pt, fr or de. -->
+      <input type="hidden" name="culture" value="slot:culture">
+      <input type="hidden" name="reg" value="1">
+
+      <div class="signup-steps-actions">
+        <button class="signup-steps-submit" type="submit">{{join.text}}</button>
+        <p class="signup-steps-note"><!-- slot: password-note --></p>
+      </div>
+      <p class="signup-steps-foot"><!-- slot: login-lead --> <a href="{{login.url}}">{{login.text}}</a></p>
+    </form>
+  </div>
+</section>

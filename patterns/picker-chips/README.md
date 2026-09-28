@@ -41,6 +41,8 @@ keeps the bare token, which always works. The parameters are HubPeople's
 Registration URL API; never invent another, and never swap the token for a
 written-out URL — a wrong URL is a dead sign-up.
 
+**Not on a page with `signup-steps`.** That one asks the opening questions itself; two first questions is none.
+
 **Pairing.** Built for `hero-split`: drop it into the hero's copy column, and
 delete `hero-split`'s own join CTA so there is one action in the viewport
 rather than two competing ones. Do not put a second picker on the same page:

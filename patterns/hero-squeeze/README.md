@@ -33,7 +33,7 @@ runs.
 **Pairing.** `cta-assurance`, `member-strip` and `rating-mark` go inside it; nothing goes after it.
 
 It refuses every other opener — `hero-overlay`, `hero-split`, `hero-centred`,
-`hero-stated`, `article-masthead`. A page opens once, and two of them means two
+`hero-stated`, `signup-steps`, `article-masthead`. A page opens once: two means two
 first impressions and two claims on the `h1`.
 
 **Brand adaptability.** Every ink is `--color-on-scrim` on a `--color-scrim`

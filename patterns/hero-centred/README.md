@@ -40,7 +40,7 @@ delete the attribute.
 
 **Pairing.** `picker-chips` directly under it, which turns the claim into the
 first decision. `stats-band` under that. `steps-plain` where the page then has
-to explain itself. `avoid-with` names the other two heroes and
+to explain itself. `avoid-with` names the other heroes, `signup-steps` and
 `article-masthead`, which is an article's own opener and would give the page two.
 
 **Brand adaptability.** The headline is the one use of `--color-heading`, with
