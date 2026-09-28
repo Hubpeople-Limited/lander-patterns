@@ -810,6 +810,19 @@ def check_signup(shell, name, tokens):
                       f"not its coordinates {avon['Bristol']!r}")
     if not any("city=Bristol" in u and "region=England%3A+Avon" in u and "country=UK" in u for u in searches):
         faults.append(f"{where}: no member search narrowed to Bristol, England: Avon, UK")
+    # Two copies of the bundle on one page - a page's own tag and the
+    # platform's - build the card once.
+    twice = html.replace('<script type="module" src="hub.js"></script>',
+                         '<script type="module" src="hub.js"></script>\n'
+                         '<script type="module" src="hub.js?again"></script>', 1)
+    tab = shell.open(twice, f"{name}-signup-twice", width=PHONE, before=signup_stub(SIGNUP_MEMBERS))
+    try:
+        tab.wait_for_timeout(600)
+        tops = tab.locator(f".{name}-top").count()
+        if tops != 1:
+            faults.append(f"{where}: with the bundle on the page twice the card was built {tops} times")
+    finally:
+        tab.close()
     # A failed search leaves nothing behind.
     tab = shell.open(html, f"{name}-signup-failed", width=PHONE, before=signup_stub(None))
     try:
