@@ -2457,6 +2457,53 @@ def check_placeholder_manifest_gate():
     return failures
 
 
+def check_placeholder_urls_gate():
+    """The online check reports a missing, mistyped or changed CDN copy,
+    and a fetch that raises, without touching the network."""
+    import check_placeholder_urls as cpu
+    folder = HERE.parent / "lib" / "placeholders"
+    manifest = json.loads((folder / "placeholders.json").read_text(encoding="utf-8"))["placeholders"]
+    good = {e["url"]: (200, "image/svg+xml", (folder / e["file"]).read_bytes())
+            for e in manifest.values()}
+    url = manifest[sorted(manifest)[0]]["url"]
+
+    def fetcher(table):
+        def fetch(u):
+            got = table[u]
+            if isinstance(got, Exception):
+                raise got
+            return got
+        return fetch
+
+    failures = []
+    for label, table, want in placeholder_url_cases(good, url):
+        got = len(cpu.faults(folder / "placeholders.json", fetch=fetcher(table)))
+        ok = (got > 0) == bool(want)
+        print(f"  {'ok  ' if ok else 'FAIL'} placeholder urls "
+              f"{'catches' if want else 'quiet on'}: {label}"
+              + ("" if ok else f" (got {got} finding(s))"))
+        if not ok:
+            failures.append(f"placeholder urls: {label}")
+    return failures
+
+
+def placeholder_url_cases(good, url):
+    """(label, what each URL answers, findings wanted: 0 or 1)."""
+    body = good[url][2]
+    return [
+        ("every copy answers and matches", good, 0),
+        ("a copy that is gone", {**good, url: (404, "text/html", b"")}, 1),
+        ("a copy served as the wrong type", {**good, url: (200, "text/plain", body)}, 1),
+        ("a copy whose bytes differ", {**good, url: (200, "image/svg+xml", body + b" ")}, 1),
+        ("a copy served with CRLF endings",
+         {**good, url: (200, "image/svg+xml", body.replace(b"\n", b"\r\n"))}, 0),
+        ("a fetch that raises", {**good, url: OSError("unreachable")}, 1),
+    ]
+
+
+PLACEHOLDER_URL_CASE_COUNT = 6
+
+
 def check_shell_placeholders():
     """A shell shows a placeholder where a build would put one, marked the
     way a build marks it, and leaves a people slot alone."""
@@ -2608,6 +2655,8 @@ def main():
     print()
     failures += check_placeholder_manifest_gate()
     print()
+    failures += check_placeholder_urls_gate()
+    print()
     failures += check_shell_placeholders()
     print()
     if failures:
@@ -2632,7 +2681,8 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 6)
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14
+             + PLACEHOLDER_URL_CASE_COUNT)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

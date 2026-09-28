@@ -1401,9 +1401,13 @@ def check_image_slots(path, meta, markup, css=None):
                  f"<img> slot {name} is matched by {claims} clauses, needs exactly one")
 
 
-def placeholder_digest(path):
+def digest_bytes(data):
     # Over LF bytes, so a checkout that writes CRLF is not a changed file.
-    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+    return hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
+
+
+def placeholder_digest(path):
+    return digest_bytes(path.read_bytes())
 
 
 def check_placeholder_manifest(folder=PLACEHOLDERS):

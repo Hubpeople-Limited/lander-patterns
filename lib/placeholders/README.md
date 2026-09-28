@@ -25,6 +25,10 @@ Each `placeholders.json` entry is keyed `<subject>/<crop>` and holds
 endings normalised to LF, so a checkout that turns LF into CRLF is not read
 as a changed file.
 
+Then run `python ci/check_placeholder_urls.py`. It fetches every recorded
+URL and fails any that does not answer, is not served as `image/svg+xml`, or
+is not the file recorded. It needs the network, so CI does not run it.
+
 ## How a build uses one
 
 - The pattern's `image-slots` line says what a slot needs. A build with no
