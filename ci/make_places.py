@@ -122,6 +122,7 @@ def in_region(region, place):
 def match(regions, index):
     """{region: {town: [lat, long] or None}}, and how each town was placed."""
     placed = {region: {} for region in regions}
+    people = {}
     how = collections.Counter()
     pending = []
     for region, towns in regions.items():
@@ -131,6 +132,7 @@ def match(regions, index):
             if here:
                 best = max(here, key=lambda c: (c["populated"], c["people"]))
                 placed[region][town] = best["at"]
+                people[(region, town)] = best["people"]
                 how["in its region"] += 1
             elif cands:
                 pending.append((region, town, cands))
@@ -144,6 +146,7 @@ def match(regions, index):
         spots = {(round(c["at"][0], 1), round(c["at"][1], 1)) for c in cands}
         if len(spots) == 1:
             placed[region][town] = cands[0]["at"]
+            people[(region, town)] = max(c["people"] for c in cands)
     for region, town, cands in pending:
         if town in placed[region]:
             how["unique in the country"] += 1
@@ -158,12 +161,17 @@ def match(regions, index):
         best = min(cands, key=lambda c: km(c["at"], mid))
         if km(best["at"], mid) <= reach:
             placed[region][town] = best["at"]
+            people[(region, town)] = best["people"]
             how["nearest its region"] += 1
         else:
             how["too far to trust"] += 1
-    out = {region: {town: ([round(placed[region][town][0], 3), round(placed[region][town][1], 3)]
-                           if town in placed[region] else None) for town in towns}
-           for region, towns in regions.items()}
+    # Biggest first, so a visitor typing "Dall" in Texas is offered Dallas
+    # before Dallardsville; a town with no coordinates goes last.
+    out = {}
+    for region, towns in regions.items():
+        order = sorted(towns, key=lambda t: (t not in placed[region], -people.get((region, t), 0)))
+        out[region] = {t: ([round(placed[region][t][0], 3), round(placed[region][t][1], 3)]
+                           if t in placed[region] else None) for t in order}
     return out, how
 
 
