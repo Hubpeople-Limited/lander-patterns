@@ -289,6 +289,13 @@ REGION_NOTES = {
         "band where the page can say why. Every page keeps one visible way",
         "to act, and checks it is visible on a phone.",
     ],
+    "only": [
+        "region: THE PAGE - the only content section, so it is the opening",
+        "and the close at once, and nothing follows it but the footer. The",
+        "recipe's opens: and closes: lines say what this one screen has to",
+        "do; the material decides what fills it. A page that needs a second",
+        "section is a different shell.",
+    ],
 }
 
 
@@ -533,8 +540,9 @@ def compose_one(recipe, library):
     first_content, last_content = (content[0], content[-1]) if content else (None, None)
     for position, (item, mods) in enumerate(zip(page, chosen), start=1):
         index = position - 1
-        role = ("opening" if index == first_content else
-                "closing" if index == last_content and index != first_content else None)
+        role = ("only" if index == first_content == last_content else
+                "opening" if index == first_content else
+                "closing" if index == last_content else None)
         banner, written, copied = section_banner(item, mods, position, total, role)
         banners.append(written)
         copied_texts.append(copied)
@@ -685,6 +693,28 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "the footer, and the responsive behaviour every pattern carries. "
         "What it leaves open, and marks in `page.html`:",
         "",
+    ]
+    if len(content) == 1:
+        # One content section is the opening and the close at once, and has
+        # no middle: the three-region wording below would name a closing
+        # region that does not exist.
+        lines += [
+            f"- **The page** - `{content[0]}` is the only content section, so it "
+            "is the opening and the close at once, and nothing follows it but "
+            "the footer. The recipe's `opens:` and `closes:` lines say what the "
+            "one screen has to do; the material decides what fills it. A page "
+            "that needs a second section is a different shell.",
+            "",
+            "## What is still yours to decide",
+            "",
+            "Copy, imagery, brand. The words in every slot are the brand's own; "
+            "images are real material meeting the pattern's stated needs; the "
+            "look comes from the brand's token values "
+            "([TOKENS.md](../../TOKENS.md)).",
+            "",
+        ]
+        return "\n".join(lines)
+    lines += [
         f"- **The opening** - `{content[0] if content else '?'}` is the shipped "
         "default. A page may open instead on another opener from INDEX.md, on "
         "the content's own first row, on a real member's words, or on nothing "

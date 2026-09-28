@@ -1723,6 +1723,21 @@ def check_shells():
     if not caught:
         failures.append("shell_sections accepted a bannerless body")
 
+    # A shell with one content section has no closing region of its own:
+    # its README says so rather than naming one it does not have.
+    one = HERE.parent / "shells" / "landing-one-screen@1"
+    readme = (one / "README.md").read_text(encoding="utf-8") if one.exists() else ""
+    ok = (bool(readme) and "`?`" not in readme and "**The page** - `hero-squeeze`" in readme
+          and "The closing" not in readme)
+    print(f"  {'ok  ' if ok else 'FAIL'} a one-section shell names its one region, not a closing one")
+    if not ok:
+        failures.append("landing-one-screen README regions")
+    banner = (one / "page.html").read_text(encoding="utf-8") if one.exists() else ""
+    ok = "region: THE PAGE" in banner and "region: CLOSING" not in banner
+    print(f"  {'ok  ' if ok else 'FAIL'} its banner marks the section as the whole page")
+    if not ok:
+        failures.append("landing-one-screen banner region")
+
     # The real assertion, on a real shell: steps-plain and faq-details both
     # carry a `section-title` slot and their sample values differ. Both have to
     # be on the page, in that order. A whole-document fill puts one of them in
@@ -2749,7 +2764,7 @@ def main():
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
-             + 5 + 5
+             + 5 + 5 + 2
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4

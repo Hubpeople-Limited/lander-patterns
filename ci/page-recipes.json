@@ -278,6 +278,19 @@
       "why": "A one-screen landing page. Nothing below the fold, so the fold is the entire page."
     },
     {
+      "page": "landing",
+      "patterns": [
+        "masthead-nav:nav=minimal",
+        "hero-squeeze",
+        "colophon"
+      ],
+      "why": "The one-screen campaign page: a menu-free header, then a photograph, one claim, the join control, the reassurance under it and one piece of real proof, with nothing below it but the footer. For paid traffic where the only question is whether the visitor signs up.",
+      "composition": {
+        "name": "landing-one-screen",
+        "version": 1
+      }
+    },
+    {
       "page": "articles-landing",
       "patterns": [
         "masthead-nav",
