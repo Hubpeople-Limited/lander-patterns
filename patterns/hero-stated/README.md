@@ -40,6 +40,8 @@ The eyebrow is deleted rather than padded. `cta-assurance` goes in the assurance
 slot — a text-only opener has no photograph doing reassurance work, so the line
 under the control matters more here than anywhere else in the library.
 
+**Not on a page with `signup-steps`.** That one opens the page on its own sign-up card; a page opens once.
+
 **Pairing.** `picker-chips` directly under it turns the claim into the first
 decision, which is the shape eharmony opens with. `benefit-tiles` and
 `steps-plain` after it, both of which also need no photography — between them

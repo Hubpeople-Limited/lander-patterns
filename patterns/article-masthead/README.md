@@ -44,6 +44,8 @@ Portrait renders at 44px and is cropped square, so supply at least 88px square.
 
 **Not on a page with `hero-stated`.** An article opens on its masthead, and a hero above one gives the page two claims on the `h1`.
 
+**Not on a page with `signup-steps`.** That one opens a sign-up page, not an article; a page opens once.
+
 **Pairing.** `heading-block` down the article body, for each section within it.
 Nothing else belongs directly beneath the masthead — the article's own first
 paragraph does. Page furniture such as `cta-sticky` is a page-level decision

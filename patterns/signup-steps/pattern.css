@@ -1,0 +1,306 @@
+/* signup-steps v1 - tokens only, selectors prefixed */
+.signup-steps {
+  /* Answer rows: over the 44px floor, sized for a thumb. */
+  --signup-steps-target: 56px;
+  padding-block: var(--space-5) var(--space-8);
+}
+.signup-steps-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  display: grid;
+  gap: var(--space-5);
+}
+.signup-steps-copy {
+  min-width: 0;
+}
+.signup-steps-title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: var(--weight-display, 700);
+  font-size: calc(clamp(1.75rem, 1.3rem + 2.2vw, 3.25rem) * var(--type-scale, 1));
+  line-height: calc(1.1 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
+  color: var(--color-heading);
+  text-wrap: balance;
+}
+.signup-steps-sub {
+  margin: var(--space-3) 0 0;
+  max-width: 34rem;
+  font-size: 1rem;
+  color: var(--color-text-soft);
+}
+
+.signup-steps-card {
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+/* --color-text, not --color-heading: a heading on a card is not on the page ground. */
+.signup-steps-card-title,
+.signup-steps-q {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-heading);
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.005em + var(--heading-tracking, 0) * 1em);
+  color: var(--color-text);
+}
+.signup-steps-card-title {
+  font-size: calc(clamp(1.375rem, 1.2rem + .8vw, 1.75rem) * var(--type-scale, 1));
+}
+.signup-steps-q {
+  margin-bottom: var(--space-3);
+  font-size: calc(1.1875rem * var(--type-scale, 1));
+}
+.signup-steps-step {
+  min-width: 0;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  border: 0;
+}
+.signup-steps-card-title + .signup-steps-step {
+  margin-top: var(--space-4);
+}
+.signup-steps-help {
+  margin: calc(-1 * var(--space-2)) 0 var(--space-3);
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+
+/* Answers: the input is inside its label, so the whole row is the target. */
+.signup-steps-opts {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.signup-steps-opts--two {
+  grid-template-columns: 1fr 1fr;
+}
+.signup-steps-opt {
+  min-width: 0;
+}
+.signup-steps-opt label {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+/* Off-screen but focusable, so the row takes the keyboard and the group is
+   still announced. display: none would remove both. */
+.signup-steps-opt input,
+.signup-steps-other input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.signup-steps-opt-face {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--signup-steps-target);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  /* The border is the only thing marking this as a control. */
+  border: 2px solid color-mix(in srgb, var(--color-text) 22%, var(--color-surface));
+  border-radius: var(--btn-radius);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.signup-steps-opt:hover .signup-steps-opt-face {
+  border-color: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface));
+}
+.signup-steps-opt input:checked + .signup-steps-opt-face {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface));
+}
+.signup-steps-tick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid color-mix(in srgb, var(--color-text) 35%, var(--color-surface));
+  border-radius: 50%;
+}
+.signup-steps-opt input:checked + .signup-steps-opt-face .signup-steps-tick {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.signup-steps-opt input:checked + .signup-steps-opt-face .signup-steps-tick::before,
+.signup-steps-other input:checked + span .signup-steps-tick::before {
+  content: "";
+  width: 5px;
+  height: 10px;
+  margin-top: -2px;
+  border: solid currentColor;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+
+/* The third answer to "who are you": a real choice, drawn small. */
+.signup-steps-other {
+  position: relative;
+  display: inline-flex;
+  margin-top: var(--space-2);
+  cursor: pointer;
+}
+.signup-steps-other > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-1);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.signup-steps-other .signup-steps-tick {
+  display: none;
+}
+.signup-steps-other input:checked + span {
+  text-decoration: none;
+}
+.signup-steps-other input:checked + span .signup-steps-tick {
+  display: grid;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* Fields. 16px text, or iOS zooms the page on focus. */
+.signup-steps-dob {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: var(--space-2);
+  /* A label that wraps must not push its box out of line with the others. */
+  align-items: end;
+}
+.signup-steps-field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.signup-steps-field > span {
+  font-size: .9375rem;
+  font-weight: 700;
+}
+.signup-steps-field input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--space-3);
+  font: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 2px solid color-mix(in srgb, var(--color-text) 30%, var(--color-surface));
+  border-radius: var(--btn-radius);
+}
+.signup-steps-consent {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  margin-top: var(--space-4);
+  font-size: .875rem;
+}
+.signup-steps-consent input {
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  accent-color: var(--color-primary);
+}
+.signup-steps-consent a,
+.signup-steps-foot a {
+  color: var(--color-text);
+  font-weight: 700;
+  text-underline-offset: 2px;
+}
+
+.signup-steps-actions {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.signup-steps-submit {
+  width: 100%;
+  min-height: var(--signup-steps-target);
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.signup-steps-submit:hover {
+  background: var(--color-primary-dark);
+}
+.signup-steps-note {
+  margin: 0;
+  text-align: center;
+  font-size: .875rem;
+  color: var(--color-text-soft);
+}
+.signup-steps-foot {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-rule);
+  text-align: center;
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+
+.signup-steps-opt input:focus-visible + .signup-steps-opt-face,
+.signup-steps-other input:focus-visible + span,
+.signup-steps-field input:focus-visible,
+.signup-steps-consent input:focus-visible,
+.signup-steps-submit:focus-visible,
+.signup-steps-consent a:focus-visible,
+.signup-steps-foot a:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .signup-steps-opt-face,
+  .signup-steps-field input {
+    transition: border-color var(--transition-fast) ease-out, background-color var(--transition-fast) ease-out;
+  }
+}
+
+/* Wide: the headline and its sentence beside the card. */
+@media (min-width: 60rem) {
+  .signup-steps {
+    padding-block: var(--space-8) var(--space-12);
+  }
+  .signup-steps-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 27rem);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .signup-steps-sub {
+    margin-top: var(--space-4);
+    font-size: 1.125rem;
+  }
+  .signup-steps-card {
+    padding: var(--space-5) var(--space-6) var(--space-6);
+  }
+}
