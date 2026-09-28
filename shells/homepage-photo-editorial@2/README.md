@@ -46,7 +46,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `section-title` - text, about 3 word(s). Sample: Sample questions heading
    - `question` - text, about 11 word(s). Sample: A sample question, phrased the way a visitor would ask it?
    - `answer` - markup, about 22 words of copy; its sample shape is printed in page.html's banner
-5. **cta-image** v5 - Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
+5. **cta-image** v6 - Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
    - `cta-image-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `background-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `background-image-srcset` - attribute (srcset): a short label, about 4 word(s)

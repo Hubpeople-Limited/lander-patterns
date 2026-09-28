@@ -123,6 +123,13 @@ jobs:
       # a render on a face the CSS had been tuned to.
       - name: Phone widths on the hostile type fixture
         run: python ci/check_phone.py --require-browser --tokens display
+      # A placeholder under a photo scrim has to show, and the copy over it
+      # has to hold 4.5:1, on all five sample brands. Then the positive
+      # control: faults appended to every pattern, each required to fire.
+      - name: A placeholder shows through a photo scrim
+        run: |
+          python ci/check_placeholder_scrim.py --require-browser
+          python ci/check_placeholder_scrim.py --broken
       # Every display measure, on all five sample brands, required to resolve
       # to the same number of pixels. This is what holds the v57 ch-to-em move
       # true: `ch` is the advance of zero in whichever face the brand chose,

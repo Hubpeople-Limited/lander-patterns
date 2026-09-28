@@ -216,9 +216,9 @@ def image_slot_hint(key, meta):
     """What a builder is told belongs in an image slot, read from the
     pattern's own `image-slots` header line rather than said the same way
     for every slot. A clause naming `placeholder=yes` names the shared
-    stand-in it allows; `placeholder=no` refuses one outright; a slot with no
-    clause at all (a `requires: none` pattern's own image, such as
-    trust-row's membership mark) gets the plain, offer-free wording."""
+    stand-in it allows; `placeholder=no` refuses one outright, and on a
+    `requires: none` pattern the image is optional as well. lint.py holds
+    every image slot to a clause, so the no-clause wording is a fallback."""
     clauses = parse_image_slots(meta.get("image-slots", "")) or []
     clause = next((c for c in clauses if slot_matches(c["slot"], key)), None)
     if clause is None:
@@ -228,7 +228,12 @@ def image_slot_hint(key, meta):
         return (f"real material, or the {subject}/{crop} placeholder from "
                 "lib/placeholders/placeholders.json, referenced by its CDN "
                 "URL and marked data-hub-placeholder")
-    return "real, consented material only - never a placeholder"
+    requires = meta.get("requires", "none")
+    if requires == "none":
+        return "real material, or delete the image - it is optional here; never a placeholder"
+    if requires == "consented-people":
+        return "real, consented material only - never a placeholder"
+    return "real material only - never a placeholder"
 
 
 def slot_guidance(slot, sample, meta):
@@ -283,6 +288,13 @@ REGION_NOTES = {
         "single link, a quiet panel, the last row of its content, or this",
         "band where the page can say why. Every page keeps one visible way",
         "to act, and checks it is visible on a phone.",
+    ],
+    "only": [
+        "region: THE PAGE - the only content section, so it is the opening",
+        "and the close at once, and nothing follows it but the footer. The",
+        "recipe's opens: and closes: lines say what this one screen has to",
+        "do; the material decides what fills it. A page that needs a second",
+        "section is a different shell.",
     ],
 }
 
@@ -528,8 +540,9 @@ def compose_one(recipe, library):
     first_content, last_content = (content[0], content[-1]) if content else (None, None)
     for position, (item, mods) in enumerate(zip(page, chosen), start=1):
         index = position - 1
-        role = ("opening" if index == first_content else
-                "closing" if index == last_content and index != first_content else None)
+        role = ("only" if index == first_content == last_content else
+                "opening" if index == first_content else
+                "closing" if index == last_content else None)
         banner, written, copied = section_banner(item, mods, position, total, role)
         banners.append(written)
         copied_texts.append(copied)
@@ -590,6 +603,31 @@ def compose_one(recipe, library):
     }
 
 
+def photography_note(page):
+    """The Wiring paragraph about pictures, read off each section's
+    `requires`. An optional image - a membership mark, an author's portrait -
+    does not make a shell need photography."""
+    needs = {item["meta"].get("requires", "none") for item in page}
+    if "photography" in needs:
+        return [
+            "This shell needs photography. A photography slot may take the "
+            "shared placeholder named in `lib/placeholders/placeholders.json` "
+            "- referenced by its CDN address, never copied into the brand - "
+            "and the build lists every placeholder it placed. A people slot "
+            "never takes one: only real, consented material fills it. See "
+            "[lib/placeholders/README.md](../../lib/placeholders/README.md).",
+            "",
+        ]
+    if "consented-people" in needs:
+        return [
+            "This shell needs real pictures of people who agreed to appear. "
+            "A people slot never takes a placeholder: only real, consented "
+            "material fills it.",
+            "",
+        ]
+    return []
+
+
 def compose_readme(recipe, name, version, page, chosen, support):
     lines = [
         f"# {name}@{version}",
@@ -620,17 +658,7 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "one.",
         "",
     ]
-    if any("src" in slot["attrs"]
-           for item in page for slot in find_slots(item["body"])):
-        lines += [
-            "This shell needs photography. A photography slot may take the "
-            "shared placeholder named in `lib/placeholders/placeholders.json` "
-            "- referenced by its CDN address, never copied into the brand - "
-            "and the build lists every placeholder it placed. A people slot "
-            "never takes one: only real, consented material fills it. See "
-            "[lib/placeholders/README.md](../../lib/placeholders/README.md).",
-            "",
-        ]
+    lines += photography_note(page)
     lines += [
         "## Sections, in order",
         "",
@@ -665,6 +693,28 @@ def compose_readme(recipe, name, version, page, chosen, support):
         "the footer, and the responsive behaviour every pattern carries. "
         "What it leaves open, and marks in `page.html`:",
         "",
+    ]
+    if len(content) == 1:
+        # One content section is the opening and the close at once, and has
+        # no middle: the three-region wording below would name a closing
+        # region that does not exist.
+        lines += [
+            f"- **The page** - `{content[0]}` is the only content section, so it "
+            "is the opening and the close at once, and nothing follows it but "
+            "the footer. The recipe's `opens:` and `closes:` lines say what the "
+            "one screen has to do; the material decides what fills it. A page "
+            "that needs a second section is a different shell.",
+            "",
+            "## What is still yours to decide",
+            "",
+            "Copy, imagery, brand. The words in every slot are the brand's own; "
+            "images are real material meeting the pattern's stated needs; the "
+            "look comes from the brand's token values "
+            "([TOKENS.md](../../TOKENS.md)).",
+            "",
+        ]
+        return "\n".join(lines)
+    lines += [
         f"- **The opening** - `{content[0] if content else '?'}` is the shipped "
         "default. A page may open instead on another opener from INDEX.md, on "
         "the content's own first row, on a real member's words, or on nothing "

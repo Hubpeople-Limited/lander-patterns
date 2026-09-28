@@ -95,6 +95,10 @@
   margin-top: var(--space-5);
 }
 
+/* Lighter only over a placeholder; a photograph keeps the floor above. */
 .hero-squeeze img[data-hub-placeholder] {
-  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+  background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
+}
+.hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]) {
+  --hero-squeeze-scrim-floor: 0.4;
 }

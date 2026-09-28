@@ -112,6 +112,10 @@
   box-shadow: 0 0 0 7px var(--color-scrim);
 }
 
+/* Lighter only over a placeholder; a photograph keeps the floor above. */
 .cta-image img[data-hub-placeholder] {
-  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+  background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
+}
+.cta-image:has(> .cta-image-img[data-hub-placeholder]) {
+  --cta-image-scrim-floor: 0.4;
 }

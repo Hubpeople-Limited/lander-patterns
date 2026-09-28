@@ -90,7 +90,7 @@
 <main>
 
 <!-- ================================================================
-     section 2 of 8 : article-masthead v10
+     section 2 of 8 : article-masthead v11
      region: OPENING - decided per page, not by this shell. The pattern
      below is the default the shell ships with. The recipe's opens: line
      says what the first screen has to do; the material decides what
@@ -104,8 +104,8 @@
      needs: a real article title and a real lede of one or two
      sentences; the category the piece genuinely sits in; an honest
      read time and a genuine publication date; the name and role of
-     the person who actually wrote it, with their real portrait and
-     real alt text
+     the person who actually wrote it, and their real portrait with
+     real alt text where the brand has one
      slots:
        tag                text, about 2 word(s). Sample: Sample category
        read-time          text, about 4 word(s). Sample: 6 min sample read
@@ -113,7 +113,7 @@
        publish-date       text, about 4 word(s). Sample: 1 January 2026 (sample)
        title              text, about 8 word(s). Sample: A sample article title for the preview render
        lede               text, about 19 word(s). Sample: One or two sentences of sample standfirst, written only...
-       author-portrait    attribute (src): real material, or the person/square placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
+       author-portrait    attribute (src): real material, or delete the image - it is optional here; never a placeholder
        author-portrait-alt attribute (alt): what the image shows, in words
        author-name        text, about 2 word(s). Sample: Sample Author
        author-role        text, about 6 word(s). Sample: Sample role line for the preview
@@ -122,7 +122,11 @@
 <!-- All three eyebrow items are required; the separators between them are
      decorative and go with whatever item they precede. datetime takes the
      machine-readable date (2026-08-22), the slot beside it the words a reader
-     sees. This block carries the page's only h1. -->
+     sees. This block carries the page's only h1.
+
+     The portrait is optional. With none, delete the image and the name and
+     role sit at the start of the row. Never a stand-in: a drawn person
+     beside a named author reads as that author. -->
 <div class="article-masthead">
   <div class="article-masthead-meta">
     <p class="article-masthead-item article-masthead-tag"><!-- slot: tag --></p>

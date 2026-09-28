@@ -25,6 +25,10 @@ Each `placeholders.json` entry is keyed `<subject>/<crop>` and holds
 endings normalised to LF, so a checkout that turns LF into CRLF is not read
 as a changed file.
 
+Then run `python ci/check_placeholder_urls.py`. It fetches every recorded
+URL and fails any that does not answer, is not served as `image/svg+xml`, or
+is not the file recorded. It needs the network, so CI does not run it.
+
 ## How a build uses one
 
 - The pattern's `image-slots` line says what a slot needs. A build with no
@@ -34,14 +38,13 @@ as a changed file.
 - `srcset` and `sizes` are removed from a placeholder image.
 - The pattern paints the brand's colour behind a placeholder, so one file
   reads in every brand's colours.
-- At avatar size - a few dozen pixels - the drawing and its mark are too
-  small to read, and a placeholder there shows as no more than a tinted
-  disc. What marks it at that size is the build's own list of what it
-  placed, not the image.
 - A slot marked `placeholder=no` never takes one. A placeholder never fills
   a slot that shows a member, a testimonial or anyone presented as proof:
   those patterns are `consented-people`, and every slot on them is
   `placeholder=no`.
+- An optional image - on a `requires: none` pattern, such as an article's
+  author portrait - never takes one either. With nothing to put there, the
+  build deletes the `<img>`.
 
 ## What it is not
 

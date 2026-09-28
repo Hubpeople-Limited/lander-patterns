@@ -27,10 +27,14 @@ announce itself as a second site header alongside the chassis's real one.
 - The category the article genuinely sits in, an honest read time, and the real
   publication date. `datetime` takes the machine-readable form (`2026-08-22`),
   the slot beside it the words a reader sees.
-- The name and role of the person who wrote it, and their portrait. The alt
-  is `""` unless the portrait carries something the byline beside it does not
-  describing that portrait. A byline is a claim about a named human being: if
-  nobody is willing to be named, this is the wrong pattern, not a field to fill.
+- The name and role of the person who wrote it. A byline is a claim about a
+  named human being: if nobody is willing to be named, this is the wrong
+  pattern, not a field to fill.
+- Their portrait, where the brand has a real one. It is optional: with none,
+  delete the `<img>` and the name and role sit at the start of the row. It
+  never takes the library's placeholder, because a drawn person beside a
+  named author reads as a picture of that author. The alt is `""` unless the
+  portrait carries something the byline beside it does not.
 
 Portrait renders at 44px and is cropped square, so supply at least 88px square.
 

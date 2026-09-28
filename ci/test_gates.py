@@ -1723,6 +1723,21 @@ def check_shells():
     if not caught:
         failures.append("shell_sections accepted a bannerless body")
 
+    # A shell with one content section has no closing region of its own:
+    # its README says so rather than naming one it does not have.
+    one = HERE.parent / "shells" / "landing-one-screen@1"
+    readme = (one / "README.md").read_text(encoding="utf-8") if one.exists() else ""
+    ok = (bool(readme) and "`?`" not in readme and "**The page** - `hero-squeeze`" in readme
+          and "The closing" not in readme)
+    print(f"  {'ok  ' if ok else 'FAIL'} a one-section shell names its one region, not a closing one")
+    if not ok:
+        failures.append("landing-one-screen README regions")
+    banner = (one / "page.html").read_text(encoding="utf-8") if one.exists() else ""
+    ok = "region: THE PAGE" in banner and "region: CLOSING" not in banner
+    print(f"  {'ok  ' if ok else 'FAIL'} its banner marks the section as the whole page")
+    if not ok:
+        failures.append("landing-one-screen banner region")
+
     # The real assertion, on a real shell: steps-plain and faq-details both
     # carry a `section-title` slot and their sample values differ. Both have to
     # be on the page, in that order. A whole-document fill puts one of them in
@@ -2289,11 +2304,17 @@ def check_placeholder_set():
 
 IMG = '<img src="slot:hero-image" alt="slot:hero-image-alt">'
 OK_CLAUSE = "hero-image subject=couple|person crop=portrait min=1280 focal=center placeholder=yes"
+BAND = '<img src="slot:band-image" alt="">'
+BAND_CLAUSE = "band-image subject=place crop=wide min=1600 focal=center placeholder=yes"
 # (label, image-slots value, requires, needs, markup, findings wanted: 0 or 1)
 IMAGE_SLOT_CASES = [
     ("a valid clause", OK_CLAUSE, "photography", "a photo at least 1280px wide", IMG, 0),
     ("a photography pattern with no line", "", "photography", "", IMG, 1),
-    ("a pattern that needs no pictures and declares none", "", "none", "", IMG, 0),
+    ("a requires: none pattern with an undeclared image", "", "none", "", IMG, 1),
+    ("a requires: none pattern that declares its image",
+     OK_CLAUSE.replace("yes", "no"), "none", "", IMG, 0),
+    ("a requires: none pattern offering a placeholder", OK_CLAUSE, "none", "", IMG, 1),
+    ("a pattern with no image and no line", "", "none", "", "<p>Sample</p>", 0),
     ("a clause missing placeholder=", OK_CLAUSE.replace(" placeholder=yes", ""), "photography", "", IMG, 1),
     ("an unknown subject", OK_CLAUSE.replace("couple|person", "dog"), "photography", "", IMG, 1),
     ("an unknown crop", OK_CLAUSE.replace("portrait", "panorama"), "photography", "", IMG, 1),
@@ -2313,6 +2334,14 @@ IMAGE_SLOT_CASES = [
      '<img src="slot:tile-1" alt="">', 1),
     ("a minimum that contradicts needs", OK_CLAUSE, "photography", "a photo at least 1600px wide", IMG, 1),
     ("needs that states no width", OK_CLAUSE, "photography", "one real photograph", IMG, 0),
+    ("a second width in needs that no slot claims", OK_CLAUSE, "photography",
+     "a photo at least 1280px wide and a band at least 1600px wide", IMG, 1),
+    ("two slots, each matching one of two widths", OK_CLAUSE + "; " + BAND_CLAUSE,
+     "photography", "a portrait at least 1280px wide and a band at least 1600px wide",
+     IMG + BAND, 0),
+    ("a slot whose min matches neither width", OK_CLAUSE + "; " + BAND_CLAUSE.replace("1600", "1280"),
+     "photography", "a portrait at least 1280px wide and a band at least 2000px wide",
+     IMG + BAND, 1),
 ]
 
 # (label, pattern.css text, findings wanted): a placeholder=yes clause held
@@ -2443,6 +2472,121 @@ def check_placeholder_manifest_gate():
     return failures
 
 
+def check_placeholder_urls_gate():
+    """The online check reports a missing, mistyped or changed CDN copy,
+    and a fetch that raises, without touching the network."""
+    import check_placeholder_urls as cpu
+    folder = HERE.parent / "lib" / "placeholders"
+    manifest = json.loads((folder / "placeholders.json").read_text(encoding="utf-8"))["placeholders"]
+    good = {e["url"]: (200, "image/svg+xml", (folder / e["file"]).read_bytes())
+            for e in manifest.values()}
+    url = manifest[sorted(manifest)[0]]["url"]
+
+    def fetcher(table):
+        def fetch(u):
+            got = table[u]
+            if isinstance(got, Exception):
+                raise got
+            return got
+        return fetch
+
+    failures = []
+    for label, table, want in placeholder_url_cases(good, url):
+        got = len(cpu.faults(folder / "placeholders.json", fetch=fetcher(table)))
+        ok = (got > 0) == bool(want)
+        print(f"  {'ok  ' if ok else 'FAIL'} placeholder urls "
+              f"{'catches' if want else 'quiet on'}: {label}"
+              + ("" if ok else f" (got {got} finding(s))"))
+        if not ok:
+            failures.append(f"placeholder urls: {label}")
+    return failures
+
+
+def placeholder_url_cases(good, url):
+    """(label, what each URL answers, findings wanted: 0 or 1)."""
+    body = good[url][2]
+    return [
+        ("every copy answers and matches", good, 0),
+        ("a copy that is gone", {**good, url: (404, "text/html", b"")}, 1),
+        ("a copy served as the wrong type", {**good, url: (200, "text/plain", body)}, 1),
+        ("a copy whose bytes differ", {**good, url: (200, "image/svg+xml", body + b" ")}, 1),
+        ("a copy served with CRLF endings",
+         {**good, url: (200, "image/svg+xml", body.replace(b"\n", b"\r\n"))}, 0),
+        ("a fetch that raises", {**good, url: OSError("unreachable")}, 1),
+    ]
+
+
+PLACEHOLDER_URL_CASE_COUNT = 6
+
+
+def check_masthead_without_portrait():
+    """article-masthead's portrait is optional, so the pattern has to render
+    properly without it: no picture pretending to be the author, and the
+    name and role at the start of the row rather than after a hole."""
+    import lint
+    sys.path.insert(0, str(HERE))
+    import check_phone
+    failures = []
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(label)
+
+    html = (HERE.parent / "patterns" / "article-masthead" / "pattern.html").read_text(encoding="utf-8")
+    meta = lint.parse_header(html, HERE / "article-masthead.html")
+    case("article-masthead needs no photography", meta.get("requires") == "none")
+    case("article-masthead's portrait never takes a placeholder",
+         "placeholder=no" in meta.get("image-slots", ""))
+
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED the render: {why}")
+        return failures
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for width in (360, 1280):
+                page_html = check_phone.pattern_page(
+                    "article-masthead", width, check_phone.token_set())
+                page_html, removed = re.subn(
+                    r'<img class="article-masthead-avatar"[^>]*>', "", page_html)
+                out = Path(tmp) / f"masthead-{width}.html"
+                out.write_text(page_html, encoding="utf-8")
+                page = browser.new_page(viewport={"width": width, "height": 900})
+                page.goto(out.as_uri())
+                got = page.evaluate("""() => {
+                    const box = s => document.querySelector(s).getBoundingClientRect();
+                    return {title: box('.article-masthead-title').left,
+                            byline: box('.article-masthead-byline').left,
+                            row: box('.article-masthead-author').height};
+                }""")
+                page.close()
+                case(f"at {width}px with no portrait, the byline starts where the title does",
+                     removed == 1 and abs(got["byline"] - got["title"]) <= 1 and got["row"] > 0)
+        finally:
+            browser.close()
+    return failures
+
+
+def check_placeholder_scrim():
+    """Both directions of ci/check_placeholder_scrim.py: the library is clean,
+    and the positive control catches a drawing the scrim hides and copy the
+    scrim no longer carries. A browser-less run skips, as check_phone does."""
+    print("ci/check_placeholder_scrim.py, a placeholder under a photo scrim")
+    failures = []
+    for label, argv in (("the library", []), ("the positive control", ["--broken"])):
+        got = subprocess.run([sys.executable, str(HERE / "check_placeholder_scrim.py"), *argv],
+                             capture_output=True, text=True, cwd=HERE.parent)
+        ok = got.returncode == 0
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}: exit={got.returncode} want=0")
+        if not ok:
+            print(got.stdout[-2000:])
+            failures.append(f"placeholder scrim: {label}")
+    return failures
+
+
 def check_shell_placeholders():
     """A shell shows a placeholder where a build would put one, marked the
     way a build marks it, and leaves a people slot alone."""
@@ -2472,6 +2616,38 @@ def check_shell_placeholders():
     avatar = '<img src="slot:avatar" alt="slot:avatar-alt" width="80" height="80">'
     case("a consented-people slot is left for its sample",
          bp.swap_in_placeholders("testimonial-grid", avatar) == avatar)
+
+    import compose
+    optional = {"requires": "none", "image-slots":
+                "membership-mark subject=object crop=square min=152 focal=center placeholder=no"}
+    case("an optional image is offered as optional, never as a placeholder",
+         compose.image_slot_hint("membership-mark", optional)
+         == "real material, or delete the image - it is optional here; never a placeholder")
+    people = {"requires": "consented-people", "image-slots":
+              "avatar subject=person crop=square min=160 focal=center placeholder=no"}
+    case("a people slot keeps its consent wording",
+         compose.image_slot_hint("avatar", people)
+         == "real, consented material only - never a placeholder")
+    refused = {"requires": "photography", "image-slots":
+               "band-image subject=place crop=wide min=1600 focal=center placeholder=no"}
+    case("a photography slot that refuses a placeholder asks for real material",
+         compose.image_slot_hint("band-image", refused)
+         == "real material only - never a placeholder")
+
+    def page_of(*requires):
+        return [{"meta": {"requires": r}} for r in requires]
+    case("no photography note on a shell whose only image is optional",
+         compose.photography_note(page_of("none", "none")) == [])
+    people_only = "".join(compose.photography_note(page_of("none", "consented-people")))
+    case("a people-only shell asks for consented people, not photography",
+         "consented" in people_only and "needs photography" not in people_only)
+    case("a shell with a photography section keeps the placeholder note",
+         "This shell needs photography." in "".join(
+             compose.photography_note(page_of("photography", "consented-people"))))
+    for shell in ("pricing-value@1", "safety-explained@1"):
+        text = (HERE.parent / "shells" / shell / "README.md").read_text(encoding="utf-8")
+        case(f"{shell} README does not say it needs photography",
+             "needs photography" not in text)
 
     body, _ = bp.build_shell(HERE.parent / "shells" / "landing@1")
     avatar_tag = re.search(r'<img\b[^>]*class="testimonial-grid-avatar"[^>]*>', body)
@@ -2562,6 +2738,12 @@ def main():
     print()
     failures += check_placeholder_manifest_gate()
     print()
+    failures += check_placeholder_urls_gate()
+    print()
+    failures += check_masthead_without_portrait()
+    print()
+    failures += check_placeholder_scrim()
+    print()
     failures += check_shell_placeholders()
     print()
     if failures:
@@ -2582,11 +2764,12 @@ def main():
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
-             + 5 + 5
+             + 5 + 5 + 2
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 6)
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 4 + 2
+             + PLACEHOLDER_URL_CASE_COUNT)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

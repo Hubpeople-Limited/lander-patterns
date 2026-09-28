@@ -12,7 +12,7 @@ The brand's stylesheet loads first: link the brand's own `global.css` - its toke
 
 The page carries its own site footer: this shell closes with the `colophon` pattern, and the platform fills its legal links and footer menu at serve time - keep every `{{ }}` token in it exactly as found. A site header is likewise a pattern a page carries (`masthead-nav` in this library); this shell ships without one.
 
-This shell needs photography. A photography slot may take the shared placeholder named in `lib/placeholders/placeholders.json` - referenced by its CDN address, never copied into the brand - and the build lists every placeholder it placed. A people slot never takes one: only real, consented material fills it. See [lib/placeholders/README.md](../../lib/placeholders/README.md).
+This shell needs real pictures of people who agreed to appear. A people slot never takes a placeholder: only real, consented material fills it.
 
 ## Sections, in order
 
