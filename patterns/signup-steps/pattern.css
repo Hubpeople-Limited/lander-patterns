@@ -1,4 +1,4 @@
-/* signup-steps v1 - tokens only, selectors prefixed */
+/* signup-steps v2 - tokens only, selectors prefixed */
 .signup-steps {
   /* Answer rows: over the 44px floor, sized for a thumb. */
   --signup-steps-target: 56px;
@@ -279,10 +279,405 @@
   outline-offset: 2px;
 }
 
+/* Built by the behaviour. Nothing below is in the authored page; the
+   behaviour adds it, and these rules draw it. */
+.signup-steps-card {
+  scroll-margin-top: var(--space-2);
+}
+.signup-steps-top {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+}
+.signup-steps-back {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: calc(-1 * var(--space-2));
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--btn-radius);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.signup-steps-back::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin-left: 4px;
+  border: solid currentColor;
+  border-width: 0 0 2.5px 2.5px;
+  transform: rotate(45deg);
+}
+.signup-steps-bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--space-1);
+}
+.signup-steps-seg {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--chip-radius);
+  background: color-mix(in srgb, var(--color-text) 14%, var(--color-surface));
+}
+.signup-steps-seg::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--color-primary);
+}
+.signup-steps-seg[data-hub-signup-done]::before {
+  width: 100%;
+}
+.signup-steps-seg[data-hub-signup-now]::before {
+  width: 35%;
+}
+.signup-steps-seg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-surface) 70%, transparent), transparent);
+}
+.signup-steps-count {
+  font-size: .875rem;
+  color: var(--color-text-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The members: faces in the card on a phone, a row beside it when wide. */
+.signup-steps-members {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--chip-radius);
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface));
+}
+.signup-steps-faces {
+  display: flex;
+  flex: none;
+  padding-left: var(--space-2);
+}
+.signup-steps-face {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-left: calc(-1 * var(--space-2));
+  overflow: hidden;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-surface-soft);
+}
+.signup-steps-face img,
+.signup-steps-wall img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.signup-steps-members p {
+  margin: 0;
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.signup-steps-wall {
+  margin-top: var(--space-6);
+}
+.signup-steps-wall-title {
+  margin: 0 0 var(--space-3);
+  font-size: calc(.9375rem * var(--type-scale, 1));
+  font-weight: 700;
+}
+.signup-steps-wall ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.signup-steps-wall img {
+  border-radius: var(--card-radius);
+  background: var(--color-surface-soft);
+}
+.signup-steps-wall b {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: .9375rem;
+}
+.signup-steps-wall span {
+  display: block;
+  font-size: .875rem;
+  color: var(--color-text-soft);
+}
+
+/* Several answers to "looking for": a square tick, not a round one. */
+.signup-steps-opt input[type="checkbox"] + .signup-steps-opt-face .signup-steps-tick {
+  border-radius: min(var(--btn-radius), 6px);
+}
+
+/* Interests. */
+.signup-steps-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.signup-steps-chip label {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+.signup-steps-chip input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.signup-steps-chip span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  background: var(--color-surface);
+  border: 2px solid color-mix(in srgb, var(--color-text) 22%, var(--color-surface));
+  border-radius: var(--chip-radius);
+  font-size: .9375rem;
+  font-weight: 600;
+}
+.signup-steps-chip span::before {
+  content: "+";
+  font-weight: 400;
+  color: var(--color-text-soft);
+}
+.signup-steps-chip input:checked + span {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.signup-steps-chip input:checked + span::before {
+  content: "";
+  width: 5px;
+  height: 9px;
+  margin-right: 2px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
+}
+.signup-steps-chip input:disabled + span {
+  cursor: not-allowed;
+  border-style: dashed;
+  color: var(--color-text-soft);
+}
+.signup-steps-tally {
+  margin: var(--space-3) 0 0;
+  font-size: .875rem;
+  color: var(--color-text-soft);
+}
+
+/* The date of birth: the reward, and the wheel where a page asks for one. */
+.signup-steps-reward {
+  display: inline-flex;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--chip-radius);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  font-size: .9375rem;
+  font-weight: 700;
+}
+.signup-steps-wheels {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1.3fr;
+  gap: var(--space-2);
+}
+.signup-steps-wheel-col {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.signup-steps-wheel-label {
+  font-size: .9375rem;
+  font-weight: 700;
+  text-align: center;
+}
+/* The band is the background, so it stays put while the rows scroll. Five
+   44px rows show, two of them spacers above and below: keep the band's 88px
+   and 132px in step with that. */
+.signup-steps-wheel {
+  height: 220px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  list-style: none;
+  border-radius: var(--btn-radius);
+  background: linear-gradient(transparent 88px, color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)) 88px 132px, transparent 132px);
+  mask-image: linear-gradient(to bottom, transparent, var(--color-text) 30%, var(--color-text) 70%, transparent);
+}
+.signup-steps-wheel::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.signup-steps-wheel li {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  scroll-snap-align: center;
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-soft);
+  cursor: pointer;
+}
+.signup-steps-wheel li[aria-selected="true"] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+/* Errors say what is missing; a dashed edge marks where, never colour alone. */
+.signup-steps-error {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: 4px solid var(--color-text);
+  background: var(--color-surface-soft);
+  font-size: .9375rem;
+  font-weight: 600;
+}
+.signup-steps-opt input[aria-invalid] + .signup-steps-opt-face,
+.signup-steps-field input[aria-invalid] {
+  border-style: dashed;
+  border-color: var(--color-text);
+}
+
+.signup-steps-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--signup-steps-target);
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.signup-steps-next::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border: solid currentColor;
+  border-width: 2.5px 2.5px 0 0;
+  transform: rotate(45deg);
+}
+.signup-steps-next:hover {
+  background: var(--color-primary-dark);
+}
+.signup-steps-skip {
+  justify-self: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.signup-steps-finish {
+  padding: var(--space-8) var(--space-2);
+  text-align: center;
+}
+.signup-steps-finish svg {
+  display: block;
+  margin: 0 auto;
+  color: var(--color-primary);
+}
+.signup-steps-finish p {
+  margin: var(--space-4) 0 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.signup-steps-finish small {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+.signup-steps-back:focus-visible,
+.signup-steps-next:focus-visible,
+.signup-steps-skip:focus-visible,
+.signup-steps-wheel:focus-visible,
+.signup-steps-chip input:focus-visible + span {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* A short phone: the same card, tighter, so Next stays in view. */
+@media (max-width: 59.99rem) and (max-height: 760px) {
+  .signup-steps {
+    --signup-steps-target: 48px;
+  }
+  .signup-steps-card {
+    padding-top: var(--space-3);
+  }
+  .signup-steps-step {
+    margin-top: var(--space-4);
+  }
+  .signup-steps-opts {
+    gap: var(--space-2);
+  }
+  .signup-steps-actions {
+    margin-top: var(--space-4);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .signup-steps-opt-face,
-  .signup-steps-field input {
-    transition: border-color var(--transition-fast) ease-out, background-color var(--transition-fast) ease-out;
+  .signup-steps-field input,
+  .signup-steps-chip span {
+    transition: border-color var(--transition-fast) ease-out, background-color var(--transition-fast) ease-out, transform var(--transition-fast) ease-out;
+  }
+  .signup-steps-opt:active .signup-steps-opt-face,
+  .signup-steps-chip:active span {
+    transform: scale(.97);
+  }
+  .signup-steps-opt input:checked + .signup-steps-opt-face .signup-steps-tick,
+  .signup-steps-chip input:checked + span {
+    animation: signup-steps-pop .34s cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .signup-steps-seg::before {
+    transition: width .5s cubic-bezier(.2, .8, .2, 1);
+  }
+  @keyframes signup-steps-pop {
+    from { transform: scale(.6); }
   }
 }
 

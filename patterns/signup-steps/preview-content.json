@@ -21,5 +21,10 @@
   "consent": "A sample consent sentence, with the terms and privacy links.",
   "culture": "sample-en",
   "password-note": "A sample line about choosing a password next.",
-  "login-lead": "Sample: already a member?"
+  "login-lead": "Sample: already a member?",
+  "intent-labels": "Sample one;Sample two;Sample three;Sample four",
+  "enjoy-labels": "Sample five;Sample six;Sample seven;Sample eight;Sample nine;Sample ten",
+  "intent-question": "Sample: what are you looking for?",
+  "enjoy-question": "Sample: what do you enjoy?",
+  "name-label": "Sample first name"
 }
