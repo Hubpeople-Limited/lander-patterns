@@ -2289,6 +2289,8 @@ def check_placeholder_set():
 
 IMG = '<img src="slot:hero-image" alt="slot:hero-image-alt">'
 OK_CLAUSE = "hero-image subject=couple|person crop=portrait min=1280 focal=center placeholder=yes"
+BAND = '<img src="slot:band-image" alt="">'
+BAND_CLAUSE = "band-image subject=place crop=wide min=1600 focal=center placeholder=yes"
 # (label, image-slots value, requires, needs, markup, findings wanted: 0 or 1)
 IMAGE_SLOT_CASES = [
     ("a valid clause", OK_CLAUSE, "photography", "a photo at least 1280px wide", IMG, 0),
@@ -2313,6 +2315,14 @@ IMAGE_SLOT_CASES = [
      '<img src="slot:tile-1" alt="">', 1),
     ("a minimum that contradicts needs", OK_CLAUSE, "photography", "a photo at least 1600px wide", IMG, 1),
     ("needs that states no width", OK_CLAUSE, "photography", "one real photograph", IMG, 0),
+    ("a second width in needs that no slot claims", OK_CLAUSE, "photography",
+     "a photo at least 1280px wide and a band at least 1600px wide", IMG, 1),
+    ("two slots, each matching one of two widths", OK_CLAUSE + "; " + BAND_CLAUSE,
+     "photography", "a portrait at least 1280px wide and a band at least 1600px wide",
+     IMG + BAND, 0),
+    ("a slot whose min matches neither width", OK_CLAUSE + "; " + BAND_CLAUSE.replace("1600", "1280"),
+     "photography", "a portrait at least 1280px wide and a band at least 2000px wide",
+     IMG + BAND, 1),
 ]
 
 # (label, pattern.css text, findings wanted): a placeholder=yes clause held

@@ -1354,7 +1354,9 @@ def check_image_slots(path, meta, markup, css=None):
         css = css_path.read_text(encoding="utf-8") if css_path.is_file() else None
     pattern_name = meta.get("name") or path.parent.name
     tint_rule = f".{pattern_name} img[data-hub-placeholder]"
-    px = re.search(r"(\d{3,4})px", meta.get("needs", ""))
+    # Every width `needs` names, not the first: a pattern with two pictures
+    # names two, and each must be some slot's min.
+    widths = sorted({int(w) for w in re.findall(r"(\d{3,4})px", meta.get("needs", ""))})
     for s in slots:
         unknown = [x for x in s["subjects"] if x not in SUBJECTS]
         if unknown:
@@ -1370,13 +1372,18 @@ def check_image_slots(path, meta, markup, css=None):
                  "- a placeholder never fills a slot that shows a member or a testimonial")
         if not any(slot_matches(s["slot"], name) for name in images):
             find(path, "image-slots", f"{s['slot']}: declared, but no <img src=\"slot:...\"> matches it")
-        if px and s["min"] != int(px.group(1)):
+        if widths and s["min"] not in widths:
             find(path, "image-slots",
-                 f"{s['slot']}: min={s['min']} but needs asks for {px.group(1)}px - one of them is wrong")
+                 f"{s['slot']}: min={s['min']} but needs names "
+                 f"{', '.join(f'{w}px' for w in widths)} - one of them is wrong")
         if s["placeholder"] and css is not None and tint_rule not in css:
             find(path, "image-slots",
                  f"{s['slot']}: placeholder=yes but pattern.css has no `{tint_rule}` "
                  "rule - a placeholder shows on a bare ground without it")
+    for width in widths:
+        if not any(s["min"] == width for s in slots):
+            find(path, "image-slots",
+                 f"needs asks for {width}px but no image-slots clause has min={width}")
     for name in images:
         claims = sum(slot_matches(s["slot"], name) for s in slots)
         if claims != 1:
