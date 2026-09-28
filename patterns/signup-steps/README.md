@@ -35,11 +35,13 @@ list never pushes the step off a phone.
 the visitor is: `1` a man, `2` a woman, `16` anyone else, `4` a couple on
 **Excite brands only** (elsewhere it is ignored, so leave it out). `lf` is who
 they are looking for, the same values summed for more than one. Drop answers a
-brand does not offer and word the rest its way — several may share a value, so
-a trans brand can offer three answers that all send `16`. Where only one answer
-is possible, as on a single-sex brand, replace the question's fieldset with a
-hidden `mt` or `lf` input carrying that value: nobody is asked, and the value is
-sent. `culture` is the join flow's language — `en`, `es`, `pt`, `fr` or `de`.
+brand does not offer and word the rest its way, but only as far as the value
+honestly carries: the join flow keeps the number and later shows its own word
+for it, so an answer it would contradict does not belong here. Where only one
+answer is possible, as on a single-sex brand, replace the question's fieldset
+with a hidden `mt` or `lf` input: nobody is asked it, the value is sent, and with
+`seeking` set a fixed "I am" ticks "looking for" before the visitor arrives.
+`culture` is the join flow's language — `en`, `es`, `pt`, `fr` or `de`.
 
 **Options on the section**, all `data-hub-signup-*`: `seeking` — `none`, the
 default, leaves "looking for" empty; `opposite` ticks it from "I am" (a woman,
