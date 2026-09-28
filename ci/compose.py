@@ -216,9 +216,9 @@ def image_slot_hint(key, meta):
     """What a builder is told belongs in an image slot, read from the
     pattern's own `image-slots` header line rather than said the same way
     for every slot. A clause naming `placeholder=yes` names the shared
-    stand-in it allows; `placeholder=no` refuses one outright; a slot with no
-    clause at all (a `requires: none` pattern's own image, such as
-    trust-row's membership mark) gets the plain, offer-free wording."""
+    stand-in it allows; `placeholder=no` refuses one outright, and on a
+    `requires: none` pattern the image is optional as well. lint.py holds
+    every image slot to a clause, so the no-clause wording is a fallback."""
     clauses = parse_image_slots(meta.get("image-slots", "")) or []
     clause = next((c for c in clauses if slot_matches(c["slot"], key)), None)
     if clause is None:
@@ -228,7 +228,12 @@ def image_slot_hint(key, meta):
         return (f"real material, or the {subject}/{crop} placeholder from "
                 "lib/placeholders/placeholders.json, referenced by its CDN "
                 "URL and marked data-hub-placeholder")
-    return "real, consented material only - never a placeholder"
+    requires = meta.get("requires", "none")
+    if requires == "none":
+        return "real material, or delete the image - it is optional here; never a placeholder"
+    if requires == "consented-people":
+        return "real, consented material only - never a placeholder"
+    return "real material only - never a placeholder"
 
 
 def slot_guidance(slot, sample, meta):

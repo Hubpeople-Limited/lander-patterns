@@ -1338,7 +1338,13 @@ def check_image_slots(path, meta, markup, css=None):
     value = meta.get("image-slots", "")
     images = sorted(set(IMAGE_SRC_SLOT.findall(markup)))
     if not value:
-        if requires in ("photography", "consented-people"):
+        # Any pattern with a picture declares it, whatever `requires` says:
+        # a build places a picture from the clause, and with none it guesses.
+        if images:
+            find(path, "image-slots",
+                 f"<img> slot(s) {', '.join(images)} but no image-slots line - declare "
+                 "every <img src=\"slot:...\"> with subject, crop, min, focal and placeholder")
+        elif requires in ("photography", "consented-people"):
             find(path, "image-slots",
                  f"requires: {requires} but no image-slots line - declare every "
                  "<img src=\"slot:...\"> with subject, crop, min, focal and placeholder")
@@ -1370,6 +1376,10 @@ def check_image_slots(path, meta, markup, css=None):
             find(path, "image-slots",
                  f"{s['slot']}: placeholder=yes on a consented-people pattern "
                  "- a placeholder never fills a slot that shows a member or a testimonial")
+        if requires == "none" and s["placeholder"]:
+            find(path, "image-slots",
+                 f"{s['slot']}: placeholder=yes on a requires: none pattern - the image "
+                 "is optional there, so a build with nothing to put in it deletes it")
         if not any(slot_matches(s["slot"], name) for name in images):
             find(path, "image-slots", f"{s['slot']}: declared, but no <img src=\"slot:...\"> matches it")
         if widths and s["min"] not in widths:

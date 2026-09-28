@@ -2295,7 +2295,11 @@ BAND_CLAUSE = "band-image subject=place crop=wide min=1600 focal=center placehol
 IMAGE_SLOT_CASES = [
     ("a valid clause", OK_CLAUSE, "photography", "a photo at least 1280px wide", IMG, 0),
     ("a photography pattern with no line", "", "photography", "", IMG, 1),
-    ("a pattern that needs no pictures and declares none", "", "none", "", IMG, 0),
+    ("a requires: none pattern with an undeclared image", "", "none", "", IMG, 1),
+    ("a requires: none pattern that declares its image",
+     OK_CLAUSE.replace("yes", "no"), "none", "", IMG, 0),
+    ("a requires: none pattern offering a placeholder", OK_CLAUSE, "none", "", IMG, 1),
+    ("a pattern with no image and no line", "", "none", "", "<p>Sample</p>", 0),
     ("a clause missing placeholder=", OK_CLAUSE.replace(" placeholder=yes", ""), "photography", "", IMG, 1),
     ("an unknown subject", OK_CLAUSE.replace("couple|person", "dog"), "photography", "", IMG, 1),
     ("an unknown crop", OK_CLAUSE.replace("portrait", "panorama"), "photography", "", IMG, 1),
@@ -2482,6 +2486,23 @@ def check_shell_placeholders():
     avatar = '<img src="slot:avatar" alt="slot:avatar-alt" width="80" height="80">'
     case("a consented-people slot is left for its sample",
          bp.swap_in_placeholders("testimonial-grid", avatar) == avatar)
+
+    import compose
+    optional = {"requires": "none", "image-slots":
+                "membership-mark subject=object crop=square min=152 focal=center placeholder=no"}
+    case("an optional image is offered as optional, never as a placeholder",
+         compose.image_slot_hint("membership-mark", optional)
+         == "real material, or delete the image - it is optional here; never a placeholder")
+    people = {"requires": "consented-people", "image-slots":
+              "avatar subject=person crop=square min=160 focal=center placeholder=no"}
+    case("a people slot keeps its consent wording",
+         compose.image_slot_hint("avatar", people)
+         == "real, consented material only - never a placeholder")
+    refused = {"requires": "photography", "image-slots":
+               "band-image subject=place crop=wide min=1600 focal=center placeholder=no"}
+    case("a photography slot that refuses a placeholder asks for real material",
+         compose.image_slot_hint("band-image", refused)
+         == "real material only - never a placeholder")
 
     body, _ = bp.build_shell(HERE.parent / "shells" / "landing@1")
     avatar_tag = re.search(r'<img\b[^>]*class="testimonial-grid-avatar"[^>]*>', body)

@@ -39,7 +39,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `tier-price` - text, about 2 word(s). Sample: 0.00 preview
    - `tier-features` - markup, about 12 words of copy; its sample shape is printed in page.html's banner
 5. **trust-row** v4 - Hairline-bracketed strip of assurance marks - a membership lockup beside a row of icon-over-label compliance badges, answering whether the brand is legitimate at the point of sign-up.
-   - `membership-mark` - attribute (src): a path to real material
+   - `membership-mark` - attribute (src): real material, or delete the image - it is optional here; never a placeholder
    - `membership-mark-alt` - attribute (alt): what the image shows, in words
    - `membership-name` - text, about 3 word(s). Sample: Sample Association Name
    - `membership-status` - text, about 2 word(s). Sample: Sample status
