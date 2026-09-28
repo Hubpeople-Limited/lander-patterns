@@ -24,5 +24,6 @@
   "enjoy-labels": "Sample five;Sample six;Sample seven;Sample eight;Sample nine;Sample ten",
   "intent-question": "Sample: what are you looking for?",
   "enjoy-question": "Sample: what do you enjoy?",
-  "name-label": "Sample first name"
+  "name-label": "Sample first name",
+  "places": "Sample country"
 }

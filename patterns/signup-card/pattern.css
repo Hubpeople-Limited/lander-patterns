@@ -1,4 +1,4 @@
-/* signup-card v1 - tokens only, selectors prefixed */
+/* signup-card v2 - tokens only, selectors prefixed */
 /* The card sits in an opener's call-to-action place: it takes a width of its
    own and leaves the page's layout to the opener. */
 .signup-card {
@@ -179,7 +179,8 @@ still announced. display: none would remove both. */
   font-size: .9375rem;
   font-weight: 700;
 }
-.signup-card-field input {
+.signup-card-field input,
+.signup-card-field select {
   box-sizing: border-box;
   width: 100%;
   min-height: 52px;
@@ -249,6 +250,7 @@ still announced. display: none would remove both. */
 .signup-card-opt input:focus-visible + .signup-card-opt-face,
 .signup-card-other input:focus-visible + span,
 .signup-card-field input:focus-visible,
+.signup-card-field select:focus-visible,
 .signup-card-consent input:focus-visible,
 .signup-card-submit:focus-visible,
 .signup-card-consent a:focus-visible,
@@ -537,7 +539,36 @@ and 132px in step with that. */
   font-weight: 600;
 }
 .signup-card-opt input[aria-invalid] + .signup-card-opt-face,
-.signup-card-field input[aria-invalid] {
+/* Where the visitor lives: a region list, then a town typed and picked. */
+.signup-card-step > .signup-card-field + .signup-card-field {
+  margin-top: var(--space-3);
+}
+/* The towns offered as the visitor types: a raised list under the field,
+   not a second field. */
+.signup-card-places {
+  margin: var(--space-1) 0 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--color-surface);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--card-shadow);
+}
+.signup-card-places li {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+}
+.signup-card-places li:hover,
+.signup-card-places li[aria-selected="true"] {
+  background: var(--color-surface-soft);
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+.signup-card-field input[aria-invalid],
+.signup-card-field select[aria-invalid] {
   border-style: dashed;
   border-color: var(--color-text);
 }

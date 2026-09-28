@@ -34,7 +34,10 @@ page, and holds each behaviour to what its row says:
                summed, spaces as %20, never "+", interests as a %3B list and
                no password, and it carries what every join link carries -
                the page's own parameters and its pn; under reduced motion it
-               still moves on
+               still moves on; a card given places asks where straight after
+               "looking for", offers the region's towns as the visitor types,
+               narrows the members to the town picked and sends its lat and
+               long, and a card whose places will not load simply goes on
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -106,11 +109,15 @@ CONTROL_SUBSTITUTIONS = {
                ".reduce((sum, r) => Number(r.value), 0)"),
     "signup-attribution": ("new URLSearchParams(location.search).forEach((v, k) => first(k, v));",
                            "void first;"),
+    "signup-location": ('if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
+                        "void where;"),
 }
 
 # The signup check hands off to this link and never follows it; the GUID in it
 # is what the member strip searches with, and the search is answered here.
 SIGNUP_JOIN = "https://example.invalid/s/register/00000000-0000-4000-8000-000000000000"
+# The places the location step reads: the library's own, served from here.
+SIGNUP_PLACES = "https://example.invalid/places/"
 SIGNUP_MEMBERS = [{"MemberName": f"Sample {i}", "MemberImage": f"sample-portrait.svg?m={i}",
                    "MemberAge": 28 + i, "Interests": ""} for i in range(6)]
 
@@ -581,10 +588,13 @@ SIGNUP_PARTS_JS = """
 """
 
 
-def signup_stub(members):
-    """Answer the member search, and keep the hand-off instead of following it."""
+def signup_stub(members, searches=None):
+    """Answer the member search, serve the places, and keep the hand-off instead
+    of following it. `searches`, a list, collects every member search made."""
     def before(tab):
         def answer(route):
+            if searches is not None:
+                searches.append(route.request.url)
             if members is None:
                 route.fulfill(status=502, body="")
             else:
@@ -593,6 +603,16 @@ def signup_stub(members):
                               body=json.dumps(members))
         tab.route("**/api/hs/quicksearch**", answer)
         tab.route("https://example.invalid/**", lambda r: r.abort())
+
+        def places(route):
+            f = ROOT / "lib" / "places" / route.request.url.rsplit("/", 1)[-1]
+            if f.is_file():
+                route.fulfill(status=200, content_type="application/json",
+                              headers={"Access-Control-Allow-Origin": "*"}, body=f.read_text(encoding="utf-8"))
+            else:
+                route.fulfill(status=404, body="")
+        # Registered after the abort above, so it is asked first.
+        tab.route(SIGNUP_PLACES + "**", places)
         tab.add_init_script("addEventListener('hub:signup:handoff', "
                             "e => { window.__signupHandoff = e.detail.url })")
         # The platform's record of the page, as its footer script sets it.
@@ -649,6 +669,10 @@ def check_signup(shell, name, tokens):
             faults.append(f"{where}: four members should show once 'looking for' is answered")
         tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
+        # The preview's places are a sample that will not load: the step goes.
+        if tab.evaluate(SIGNUP_PARTS_JS) != ["dob"]:
+            faults.append(f"{where}: places that will not load left the card on "
+                          f"{tab.evaluate(SIGNUP_PARTS_JS)!r}, not the date of birth")
         for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
             tab.fill(f'input[name="{field}"]', value)
         tap(tab, f".{name}-next")
@@ -728,6 +752,64 @@ def check_signup(shell, name, tokens):
     if sent.count("mt=1") != 1 or sent.count("lf=1") != 1:
         faults.append(f"{where}: fixed answers must be sent once each - got "
                       f"{[x for x in sent if x.startswith(('mt=', 'lf='))]!r}")
+    # Where the visitor lives: a county page asks only the town, offers its
+    # towns as they are typed, narrows the members to the one picked, and sends
+    # its coordinates. The keyboard picks it, which a finger cannot miss.
+    placed = re.sub(r'\sdata-hub-signup-places="[^"]*"', "", html, count=1)
+    placed = placed.replace('data-hub-module="signup"',
+                            'data-hub-module="signup" data-hub-signup-places="UK/England: Avon" '
+                            f'data-hub-signup-places-from="{SIGNUP_PLACES}"', 1)
+    searches = []
+    tab = shell.open(placed, f"{name}-signup-places", width=PHONE,
+                     before=signup_stub(SIGNUP_MEMBERS, searches))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(700)
+        asked_where = tab.evaluate(SIGNUP_PARTS_JS)
+        town = f'[data-hub-signup-part="location"] input[role="combobox"]'
+        offered = []
+        if asked_where == ["location"]:
+            tab.locator(town).press_sequentially("brist", delay=40)
+            tab.wait_for_timeout(300)
+            offered = tab.locator(f".{name}-places [role=option]").all_inner_texts()
+            tab.locator(town).press("ArrowDown")
+            tab.locator(town).press("Enter")
+            tab.wait_for_timeout(600)
+            tap(tab, f".{name}-next")
+            tab.wait_for_timeout(500)
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        for chips in ("intent", "enjoy"):
+            if tab.evaluate(SIGNUP_PARTS_JS) == [chips]:
+                tap(tab, f".{name}-skip" if chips == "enjoy" else f'[data-hub-signup-part="{chips}"] .{name}-chip')
+                if chips != "enjoy":
+                    tap(tab, f".{name}-next")
+                tab.wait_for_timeout(500)
+        tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam")
+        tab.fill('input[name="em"]', "sam@example.com")
+        tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+        tap(tab, f".{name}-submit")
+        tab.wait_for_timeout(400)
+        placed_url = tab.evaluate("() => window.__signupHandoff || ''")
+    finally:
+        tab.close()
+    avon = json.loads((ROOT / "lib" / "places" / "uk.json").read_text(encoding="utf-8"))["regions"]["England: Avon"]
+    sent = dict(x.split("=", 1) for x in placed_url.split("?", 1)[-1].split("&") if "=" in x)
+    if asked_where != ["location"]:
+        faults.append(f"{where}: with places the step after 'looking for' was {asked_where!r}, not where they live")
+    elif not offered or offered[0] != "Bristol":
+        faults.append(f"{where}: typing 'brist' offered {offered!r} - the region's towns, Bristol first")
+    elif (sent.get("lat"), sent.get("long")) != (str(avon["Bristol"][0]), str(avon["Bristol"][1])):
+        faults.append(f"{where}: Bristol sent as lat={sent.get('lat')!r} long={sent.get('long')!r}, "
+                      f"not its coordinates {avon['Bristol']!r}")
+    if not any("city=Bristol" in u and "region=England%3A+Avon" in u and "country=UK" in u for u in searches):
+        faults.append(f"{where}: no member search narrowed to Bristol, England: Avon, UK")
     # A failed search leaves nothing behind.
     tab = shell.open(html, f"{name}-signup-failed", width=PHONE, before=signup_stub(None))
     try:
