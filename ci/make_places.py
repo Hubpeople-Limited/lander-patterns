@@ -55,9 +55,23 @@ def slug(country):
     return country.lower().replace(" ", "-")
 
 
+# Spellings that differ only by convention: the reference writes "Mc Rae" and
+# "Saint", GeoNames "McRae" and "St." - so both sides are folded the same way.
+ABBREVIATIONS = {"st": "saint", "ste": "sainte", "mt": "mount", "ft": "fort", "pt": "point"}
+
+
 def norm(text):
     text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().casefold()
-    return " ".join(text.replace("-", " ").replace(".", "").replace("'", "").split())
+    words = text.replace("-", " ").replace(".", " ").replace("'", " ").split()
+    words = [ABBREVIATIONS.get(w, w) for w in words]
+    out = []
+    for w in words:
+        # "Mc Rae", "O Fallon": a prefix written apart is the same name.
+        if out and out[-1] in ("mc", "o"):
+            out[-1] += w
+        else:
+            out.append(w)
+    return " ".join(out)
 
 
 def fetch(url, name):
