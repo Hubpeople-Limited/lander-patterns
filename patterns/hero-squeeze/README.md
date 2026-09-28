@@ -15,22 +15,23 @@ page, and `hero-overlay` is the opener for one of those.
 
 **What it needs.** One landscape photograph at least 1600px wide with real alt
 text; a headline of one line; one supporting sentence; a reassurance line; and
-one piece of real proof.
-
-**Everything needed to decide is in those five things**, because there is
-nowhere else. If the argument does not fit, this brand needs a landing page.
+one piece of real proof. **Everything needed to decide is in those five
+things**, because there is nowhere else. If the argument does not fit, this
+brand needs a landing page.
 
 **The two slots are slots on purpose.** Drop `cta-assurance` into `assurance`
 and `member-strip` or `rating-mark` into `proof` — the proof a brand has
 differs, and hard-coding one would gate the pattern on material half the
 brands do not hold.
 
-**With no proof to put there, delete the proof block rather than filling
-it.** A squeeze with a real claim and no proof still converts; one with
-invented proof puts a fabricated claim on the highest-traffic page the brand
-runs.
+**With no proof to put there, delete the proof block rather than filling it.** A
+squeeze with a real claim and no proof still converts; one with invented proof
+puts a fabricated claim on the highest-traffic page the brand runs.
 
-**Pairing.** `cta-assurance`, `member-strip` and `rating-mark` go inside it; nothing goes after it.
+**Pairing.** `cta-assurance`, `member-strip` and `rating-mark` go inside it;
+nothing goes after it. `signup-card` can take the button's place, assurance left
+empty: words left, card right, and the photograph clipped to a fixed height so
+it holds still while the section grows.
 
 It refuses every other opener — `hero-overlay`, `hero-split`, `hero-centred`,
 `hero-stated`, `signup-steps`, `article-masthead`. A page opens once: two means two
@@ -55,13 +56,12 @@ brand colour mixed into `--color-scrim`, so the drawing shows. That ground is
 known, so `ci/check_placeholder_scrim.py` holds the copy to 4.5:1 on it; a real
 photograph, which carries no `[data-hub-placeholder]`, keeps the full floor.
 
-**The ramp starts at 68%, and that number is load-bearing.** Content is
-centred, so on a tall content box - 200% zoom, a long headline, a landscape
-phone - the headline sits in the *top* of the ramp. The first stop has to
-clear 4.5:1 on its own rather than lean on the block padding. It does on all
-four sample sets, but the closest measures 4.51:1. Darkening an on-scrim ink
-or lightening a scrim breaks that, so re-derive from `preview/tokens-*.css`
-before touching either.
+**The ramp starts at 68%, and that number is load-bearing.** Content is centred,
+so on a tall content box - 200% zoom, a long headline, a landscape phone - the
+headline sits in the *top* of the ramp. The first stop has to clear 4.5:1 on its
+own rather than lean on the block padding. It does on all four sample sets, but
+the closest measures 4.51:1. Darkening an on-scrim ink or lightening a scrim
+breaks that, so re-derive from `preview/tokens-*.css` before touching either.
 
 **It is `min-height: 100svh`, not `height`, and that decides how it fails.**
 The section aims to fill exactly one viewport. Where the content is taller than

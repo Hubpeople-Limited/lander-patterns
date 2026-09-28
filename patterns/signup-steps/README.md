@@ -1,5 +1,10 @@
 # signup-steps
 
+**Deprecated: use `signup-card`.** The same card, set inside an opener in place
+of its join button, so the page keeps a normal opener around it. Pages already
+using this block keep working. It refuses `signup-card`: one sign-up card to a
+page.
+
 **What it is and when to use it.** An opener that starts the sign-up on the
 page: a headline beside a card that asks who the visitor is, who they are
 looking for, their date of birth and their email, then hands everything to the

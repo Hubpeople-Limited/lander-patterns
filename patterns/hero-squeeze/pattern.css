@@ -102,3 +102,48 @@
 .hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]) {
   --hero-squeeze-scrim-floor: 0.4;
 }
+
+/* Holding a signup-card in place of the join button. The photograph holds
+   still while the card changes height from step to step: a fixed height
+   taller than any step, anchored at the top and clipped, so the crop never changes. */
+.hero-squeeze:has(.signup-card) {
+  /* clip, not hidden: a hidden box still scrolls when the card is brought
+     into view, and the photograph would move with it. */
+  overflow: clip;
+}
+.hero-squeeze:has(.signup-card) .hero-squeeze-img {
+  inset: 0 0 auto 0;
+  height: 56rem;
+  object-position: center top;
+}
+.hero-squeeze-cta:has(.signup-card) {
+  width: 100%;
+}
+/* Wide: the words on the left, the card on the right, and the first step
+   above the fold. */
+@media (min-width: 60rem) {
+  .hero-squeeze:has(.signup-card) {
+    min-height: 0;
+    padding-block: var(--space-6) var(--space-8);
+  }
+  .hero-squeeze:has(.signup-card) .hero-squeeze-img {
+    height: max(100%, 56rem);
+  }
+  .hero-squeeze-inner:has(.signup-card) {
+    width: min(100% - 2 * var(--space-4), var(--container-max));
+    max-width: var(--container-max);
+    grid-template-columns: minmax(0, 1fr) 24rem;
+    column-gap: var(--space-8);
+    justify-items: start;
+    align-items: center;
+    text-align: left;
+  }
+  .hero-squeeze-inner:has(.signup-card) > :not(.hero-squeeze-cta) {
+    grid-column: 1;
+  }
+  .hero-squeeze-inner:has(.signup-card) > .hero-squeeze-cta {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    justify-items: stretch;
+  }
+}

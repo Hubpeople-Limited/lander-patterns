@@ -926,7 +926,7 @@
   }
 }
 
-/* ---- hero-stated v4 ---- */
+/* ---- hero-stated v5 ---- */
 /* hero-stated v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink, and every rule below reads the pair rather
    than a token, so nothing here knows which ground it is on. */
@@ -1026,6 +1026,31 @@
 @media (min-width: 48rem) {
   .hero-stated {
     padding-inline: var(--space-8);
+  }
+}
+
+/* Holding a signup-card in place of the join button. */
+.hero-stated--centred .signup-card {
+  margin-inline: auto;
+}
+/* Wide: the words on the left, the card on the right, and the first step
+   above the fold. */
+@media (min-width: 60rem) {
+  .hero-stated:has(.signup-card) {
+    padding-block: var(--space-6) var(--space-8);
+  }
+  .hero-stated-inner:has(.signup-card) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 24rem;
+    column-gap: var(--space-8);
+    align-items: start;
+  }
+  .hero-stated-inner:has(.signup-card) > :not(.hero-stated-cta) {
+    grid-column: 1;
+  }
+  .hero-stated-inner:has(.signup-card) > .hero-stated-cta {
+    grid-column: 2;
+    grid-row: 1 / span 6;
   }
 }
 

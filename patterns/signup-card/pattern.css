@@ -1,36 +1,14 @@
-/* signup-steps v3 - tokens only, selectors prefixed */
-.signup-steps {
+/* signup-card v1 - tokens only, selectors prefixed */
+/* The card sits in an opener's call-to-action place: it takes a width of its
+   own and leaves the page's layout to the opener. */
+.signup-card {
   /* Answer rows: over the 44px floor, sized for a thumb. */
-  --signup-steps-target: 56px;
-  padding-block: var(--space-5) var(--space-8);
+  --signup-card-target: 56px;
+  width: 100%;
+  max-width: 24rem;
+  text-align: left;
 }
-.signup-steps-inner {
-  width: min(100% - 2 * var(--space-4), var(--container-max));
-  margin-inline: auto;
-  display: grid;
-  gap: var(--space-5);
-}
-.signup-steps-copy {
-  min-width: 0;
-}
-.signup-steps-title {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-weight: var(--weight-display, 700);
-  font-size: calc(clamp(1.75rem, 1.3rem + 2.2vw, 3.25rem) * var(--type-scale, 1));
-  line-height: calc(1.1 * var(--heading-leading, 1));
-  letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
-  color: var(--color-heading);
-  text-wrap: balance;
-}
-.signup-steps-sub {
-  margin: var(--space-3) 0 0;
-  max-width: 34rem;
-  font-size: 1rem;
-  color: var(--color-text-soft);
-}
-
-.signup-steps-card {
+.signup-card-form {
   min-width: 0;
   margin: 0;
   padding: var(--space-4) var(--space-4) var(--space-5);
@@ -41,8 +19,8 @@
   box-shadow: var(--card-shadow);
 }
 /* --color-text, not --color-heading: a heading on a card is not on the page ground. */
-.signup-steps-card-title,
-.signup-steps-q {
+.signup-card-title,
+.signup-card-q {
   margin: 0;
   padding: 0;
   font-family: var(--font-heading);
@@ -51,56 +29,55 @@
   letter-spacing: calc(-0.005em + var(--heading-tracking, 0) * 1em);
   color: var(--color-text);
 }
-.signup-steps-card-title {
+.signup-card-title {
   font-size: calc(clamp(1.375rem, 1.2rem + .8vw, 1.75rem) * var(--type-scale, 1));
 }
-.signup-steps-q {
+.signup-card-q {
   margin-bottom: var(--space-3);
   font-size: calc(1.1875rem * var(--type-scale, 1));
 }
 /* A new step's question takes focus for screen readers; it is not a control,
-   so it draws no ring. */
-.signup-steps-q:focus {
+so it draws no ring. */
+.signup-card-q:focus {
   outline: none;
 }
-.signup-steps-step {
+.signup-card-step {
   min-width: 0;
   margin: var(--space-6) 0 0;
   padding: 0;
   border: 0;
 }
-.signup-steps-card-title + .signup-steps-step {
+.signup-card-title + .signup-card-step {
   margin-top: var(--space-4);
 }
-.signup-steps-help {
+.signup-card-help {
   margin: calc(-1 * var(--space-2)) 0 var(--space-3);
   font-size: .9375rem;
   color: var(--color-text-soft);
 }
-
 /* Answers: the input is inside its label, so the whole row is the target. */
-.signup-steps-opts {
+.signup-card-opts {
   display: grid;
   gap: var(--space-3);
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.signup-steps-opts--two {
+.signup-card-opts--two {
   grid-template-columns: 1fr 1fr;
 }
-.signup-steps-opt {
+.signup-card-opt {
   min-width: 0;
 }
-.signup-steps-opt label {
+.signup-card-opt label {
   position: relative;
   display: block;
   cursor: pointer;
 }
 /* Off-screen but focusable, so the row takes the keyboard and the group is
-   still announced. display: none would remove both. */
-.signup-steps-opt input,
-.signup-steps-other input {
+still announced. display: none would remove both. */
+.signup-card-opt input,
+.signup-card-other input {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -111,12 +88,12 @@
   white-space: nowrap;
   clip-path: inset(50%);
 }
-.signup-steps-opt-face {
+.signup-card-opt-face {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  min-height: var(--signup-steps-target);
+  min-height: var(--signup-card-target);
   padding: var(--space-3) var(--space-4);
   background: var(--color-surface);
   /* The border is the only thing marking this as a control. */
@@ -125,14 +102,14 @@
   font-weight: 700;
   line-height: 1.25;
 }
-.signup-steps-opt:hover .signup-steps-opt-face {
+.signup-card-opt:hover .signup-card-opt-face {
   border-color: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface));
 }
-.signup-steps-opt input:checked + .signup-steps-opt-face {
+.signup-card-opt input:checked + .signup-card-opt-face {
   border-color: var(--color-primary);
   background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface));
 }
-.signup-steps-tick {
+.signup-card-tick {
   flex: none;
   display: grid;
   place-items: center;
@@ -141,13 +118,13 @@
   border: 2px solid color-mix(in srgb, var(--color-text) 35%, var(--color-surface));
   border-radius: 50%;
 }
-.signup-steps-opt input:checked + .signup-steps-opt-face .signup-steps-tick {
+.signup-card-opt input:checked + .signup-card-opt-face .signup-card-tick {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-on-primary);
 }
-.signup-steps-opt input:checked + .signup-steps-opt-face .signup-steps-tick::before,
-.signup-steps-other input:checked + span .signup-steps-tick::before {
+.signup-card-opt input:checked + .signup-card-opt-face .signup-card-tick::before,
+.signup-card-other input:checked + span .signup-card-tick::before {
   content: "";
   width: 5px;
   height: 10px;
@@ -156,15 +133,14 @@
   border-width: 0 2.5px 2.5px 0;
   transform: rotate(45deg);
 }
-
 /* The third answer to "who are you": a real choice, drawn small. */
-.signup-steps-other {
+.signup-card-other {
   position: relative;
   display: inline-flex;
   margin-top: var(--space-2);
   cursor: pointer;
 }
-.signup-steps-other > span {
+.signup-card-other > span {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -174,37 +150,36 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.signup-steps-other .signup-steps-tick {
+.signup-card-other .signup-card-tick {
   display: none;
 }
-.signup-steps-other input:checked + span {
+.signup-card-other input:checked + span {
   text-decoration: none;
 }
-.signup-steps-other input:checked + span .signup-steps-tick {
+.signup-card-other input:checked + span .signup-card-tick {
   display: grid;
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-on-primary);
 }
-
 /* Fields. 16px text, or iOS zooms the page on focus. */
-.signup-steps-dob {
+.signup-card-dob {
   display: grid;
   grid-template-columns: 1fr 1fr 1.4fr;
   gap: var(--space-2);
   /* A label that wraps must not push its box out of line with the others. */
   align-items: end;
 }
-.signup-steps-field {
+.signup-card-field {
   display: grid;
   gap: var(--space-1);
   min-width: 0;
 }
-.signup-steps-field > span {
+.signup-card-field > span {
   font-size: .9375rem;
   font-weight: 700;
 }
-.signup-steps-field input {
+.signup-card-field input {
   box-sizing: border-box;
   width: 100%;
   min-height: 52px;
@@ -216,7 +191,7 @@
   border: 2px solid color-mix(in srgb, var(--color-text) 30%, var(--color-surface));
   border-radius: var(--btn-radius);
 }
-.signup-steps-consent {
+.signup-card-consent {
   display: grid;
   grid-template-columns: 24px 1fr;
   gap: var(--space-3);
@@ -224,27 +199,26 @@
   margin-top: var(--space-4);
   font-size: .875rem;
 }
-.signup-steps-consent input {
+.signup-card-consent input {
   width: 22px;
   height: 22px;
   margin: 2px 0 0;
   accent-color: var(--color-primary);
 }
-.signup-steps-consent a,
-.signup-steps-foot a {
+.signup-card-consent a,
+.signup-card-foot a {
   color: var(--color-text);
   font-weight: 700;
   text-underline-offset: 2px;
 }
-
-.signup-steps-actions {
+.signup-card-actions {
   display: grid;
   gap: var(--space-3);
   margin-top: var(--space-6);
 }
-.signup-steps-submit {
+.signup-card-submit {
   width: 100%;
-  min-height: var(--signup-steps-target);
+  min-height: var(--signup-card-target);
   padding: 0 var(--space-5);
   border: 0;
   border-radius: var(--btn-radius);
@@ -255,16 +229,16 @@
   font-weight: 700;
   cursor: pointer;
 }
-.signup-steps-submit:hover {
+.signup-card-submit:hover {
   background: var(--color-primary-dark);
 }
-.signup-steps-note {
+.signup-card-note {
   margin: 0;
   text-align: center;
   font-size: .875rem;
   color: var(--color-text-soft);
 }
-.signup-steps-foot {
+.signup-card-foot {
   margin: var(--space-4) 0 0;
   padding-top: var(--space-4);
   border-top: 1px solid var(--color-rule);
@@ -272,31 +246,29 @@
   font-size: .9375rem;
   color: var(--color-text-soft);
 }
-
-.signup-steps-opt input:focus-visible + .signup-steps-opt-face,
-.signup-steps-other input:focus-visible + span,
-.signup-steps-field input:focus-visible,
-.signup-steps-consent input:focus-visible,
-.signup-steps-submit:focus-visible,
-.signup-steps-consent a:focus-visible,
-.signup-steps-foot a:focus-visible {
+.signup-card-opt input:focus-visible + .signup-card-opt-face,
+.signup-card-other input:focus-visible + span,
+.signup-card-field input:focus-visible,
+.signup-card-consent input:focus-visible,
+.signup-card-submit:focus-visible,
+.signup-card-consent a:focus-visible,
+.signup-card-foot a:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
-
 /* Built by the behaviour. Nothing below is in the authored page; the
-   behaviour adds it, and these rules draw it. */
-.signup-steps-card {
+behaviour adds it, and these rules draw it. */
+.signup-card-form {
   scroll-margin-top: var(--space-2);
 }
-.signup-steps-top {
+.signup-card-top {
   display: grid;
   grid-template-columns: 44px 1fr auto;
   align-items: center;
   gap: var(--space-3);
   min-height: 44px;
 }
-.signup-steps-back {
+.signup-card-back {
   display: grid;
   place-items: center;
   width: 44px;
@@ -309,7 +281,7 @@
   color: var(--color-text);
   cursor: pointer;
 }
-.signup-steps-back::before {
+.signup-card-back::before {
   content: "";
   width: 10px;
   height: 10px;
@@ -318,48 +290,47 @@
   border-width: 0 0 2.5px 2.5px;
   transform: rotate(45deg);
 }
-.signup-steps-bar {
+.signup-card-bar {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
   gap: var(--space-1);
 }
-.signup-steps-seg {
+.signup-card-seg {
   position: relative;
   height: 6px;
   overflow: hidden;
   border-radius: var(--chip-radius);
   background: color-mix(in srgb, var(--color-text) 14%, var(--color-surface));
 }
-.signup-steps-seg::before {
+.signup-card-seg::before {
   content: "";
   position: absolute;
   inset: 0 auto 0 0;
   width: 0;
   background: var(--color-primary);
 }
-.signup-steps-seg[data-hub-signup-done]::before {
+.signup-card-seg[data-hub-signup-done]::before {
   width: 100%;
 }
-.signup-steps-seg[data-hub-signup-now]::before {
+.signup-card-seg[data-hub-signup-now]::before {
   width: 35%;
 }
-.signup-steps-seg::after {
+.signup-card-seg::after {
   content: "";
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-surface) 70%, transparent), transparent);
 }
-.signup-steps-count {
+.signup-card-count {
   font-size: .875rem;
   color: var(--color-text-soft);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-
 /* The members: faces in the card on a phone, a row beside it when wide. */
-.signup-steps-members {
+.signup-card-members {
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -369,12 +340,12 @@
   border-radius: var(--chip-radius);
   background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface));
 }
-.signup-steps-faces {
+.signup-card-faces {
   display: flex;
   flex: none;
   padding-left: var(--space-2);
 }
-.signup-steps-face {
+.signup-card-face {
   width: 2.25rem;
   height: 2.25rem;
   margin-left: calc(-1 * var(--space-2));
@@ -383,52 +354,20 @@
   border-radius: 50%;
   background: var(--color-surface-soft);
 }
-.signup-steps-face img,
-.signup-steps-wall img {
+.signup-card-face img {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 1;
   object-fit: cover;
 }
-.signup-steps-members p {
+.signup-card-members p {
   margin: 0;
   font-size: .875rem;
   font-weight: 700;
   line-height: 1.35;
 }
-.signup-steps-wall {
-  margin-top: var(--space-6);
-}
-.signup-steps-wall-title {
-  margin: 0 0 var(--space-3);
-  font-size: calc(.9375rem * var(--type-scale, 1));
-  font-weight: 700;
-}
-.signup-steps-wall ul {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-3);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.signup-steps-wall img {
-  border-radius: var(--card-radius);
-  background: var(--color-surface-soft);
-}
-.signup-steps-wall b {
-  display: block;
-  margin-top: var(--space-2);
-  font-size: .9375rem;
-}
-.signup-steps-wall span {
-  display: block;
-  font-size: .875rem;
-  color: var(--color-text-soft);
-}
-
-.signup-steps-summary {
+.signup-card-summary {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -436,7 +375,7 @@
   font-size: .875rem;
   color: var(--color-text-soft);
 }
-.signup-steps-summary::before {
+.signup-card-summary::before {
   content: "";
   flex: none;
   width: 5px;
@@ -446,19 +385,12 @@
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
-.signup-steps-wall b {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* Several answers to "looking for": a square tick, not a round one. */
-.signup-steps-opt input[type="checkbox"] + .signup-steps-opt-face .signup-steps-tick {
+.signup-card-opt input[type="checkbox"] + .signup-card-opt-face .signup-card-tick {
   border-radius: min(var(--btn-radius), 6px);
 }
-
 /* Interests. */
-.signup-steps-chips {
+.signup-card-chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
@@ -466,12 +398,12 @@
   padding: 0;
   list-style: none;
 }
-.signup-steps-chip label {
+.signup-card-chip label {
   position: relative;
   display: block;
   cursor: pointer;
 }
-.signup-steps-chip input {
+.signup-card-chip input {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -482,7 +414,7 @@
   white-space: nowrap;
   clip-path: inset(50%);
 }
-.signup-steps-chip span {
+.signup-card-chip span {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -494,17 +426,17 @@
   font-size: .9375rem;
   font-weight: 600;
 }
-.signup-steps-chip span::before {
+.signup-card-chip span::before {
   content: "+";
   font-weight: 400;
   color: var(--color-text-soft);
 }
-.signup-steps-chip input:checked + span {
+.signup-card-chip input:checked + span {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-on-primary);
 }
-.signup-steps-chip input:checked + span::before {
+.signup-card-chip input:checked + span::before {
   content: "";
   width: 5px;
   height: 9px;
@@ -513,12 +445,12 @@
   border-width: 0 2px 2px 0;
   transform: rotate(45deg) translateY(-1px);
 }
-.signup-steps-chip input:disabled + span {
+.signup-card-chip input:disabled + span {
   cursor: not-allowed;
   border-style: dashed;
   color: var(--color-text-soft);
 }
-.signup-steps-more {
+.signup-card-more {
   min-height: 44px;
   margin-top: var(--space-2);
   padding: 0 var(--space-1);
@@ -531,14 +463,13 @@
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.signup-steps-tally {
+.signup-card-tally {
   margin: var(--space-3) 0 0;
   font-size: .875rem;
   color: var(--color-text-soft);
 }
-
 /* The date of birth: the reward, and the wheel where a page asks for one. */
-.signup-steps-reward {
+.signup-card-reward {
   display: inline-flex;
   margin: var(--space-3) 0 0;
   padding: var(--space-1) var(--space-3);
@@ -547,25 +478,25 @@
   font-size: .9375rem;
   font-weight: 700;
 }
-.signup-steps-wheels {
+.signup-card-wheels {
   display: grid;
   grid-template-columns: 1fr 1.4fr 1.3fr;
   gap: var(--space-2);
 }
-.signup-steps-wheel-col {
+.signup-card-wheel-col {
   display: grid;
   gap: var(--space-1);
   min-width: 0;
 }
-.signup-steps-wheel-label {
+.signup-card-wheel-label {
   font-size: .9375rem;
   font-weight: 700;
   text-align: center;
 }
 /* The band is the background, so it stays put while the rows scroll. Five
-   44px rows show, two of them spacers above and below: keep the band's 88px
-   and 132px in step with that. */
-.signup-steps-wheel {
+44px rows show, two of them spacers above and below: keep the band's 88px
+and 132px in step with that. */
+.signup-card-wheel {
   height: 220px;
   margin: 0;
   padding: 0;
@@ -578,11 +509,11 @@
   background: linear-gradient(transparent 88px, color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)) 88px 132px, transparent 132px);
   mask-image: linear-gradient(to bottom, transparent, var(--color-text) 30%, var(--color-text) 70%, transparent);
 }
-.signup-steps-wheel::-webkit-scrollbar {
+.signup-card-wheel::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
-.signup-steps-wheel li {
+.signup-card-wheel li {
   display: grid;
   place-items: center;
   height: 44px;
@@ -592,13 +523,12 @@
   color: var(--color-text-soft);
   cursor: pointer;
 }
-.signup-steps-wheel li[aria-selected="true"] {
+.signup-card-wheel li[aria-selected="true"] {
   color: var(--color-text);
   font-weight: 700;
 }
-
 /* Errors say what is missing; a dashed edge marks where, never colour alone. */
-.signup-steps-error {
+.signup-card-error {
   margin: var(--space-3) 0 0;
   padding: var(--space-2) var(--space-3);
   border-left: 4px solid var(--color-text);
@@ -606,19 +536,18 @@
   font-size: .9375rem;
   font-weight: 600;
 }
-.signup-steps-opt input[aria-invalid] + .signup-steps-opt-face,
-.signup-steps-field input[aria-invalid] {
+.signup-card-opt input[aria-invalid] + .signup-card-opt-face,
+.signup-card-field input[aria-invalid] {
   border-style: dashed;
   border-color: var(--color-text);
 }
-
-.signup-steps-next {
+.signup-card-next {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   width: 100%;
-  min-height: var(--signup-steps-target);
+  min-height: var(--signup-card-target);
   padding: 0 var(--space-5);
   border: 0;
   border-radius: var(--btn-radius);
@@ -629,7 +558,7 @@
   font-weight: 700;
   cursor: pointer;
 }
-.signup-steps-next::after {
+.signup-card-next::after {
   content: "";
   width: 8px;
   height: 8px;
@@ -637,10 +566,10 @@
   border-width: 2.5px 2.5px 0 0;
   transform: rotate(45deg);
 }
-.signup-steps-next:hover {
+.signup-card-next:hover {
   background: var(--color-primary-dark);
 }
-.signup-steps-skip {
+.signup-card-skip {
   justify-self: center;
   min-height: 44px;
   padding: 0 var(--space-3);
@@ -653,92 +582,125 @@
   text-underline-offset: 3px;
   cursor: pointer;
 }
-.signup-steps-finish {
+.signup-card-finish {
   padding: var(--space-8) var(--space-2);
   text-align: center;
 }
-.signup-steps-finish svg {
+.signup-card-finish svg {
   display: block;
   margin: 0 auto;
   color: var(--color-primary);
 }
-.signup-steps-finish p {
+.signup-card-finish p {
   margin: var(--space-4) 0 0;
   font-size: 1.125rem;
   font-weight: 700;
 }
-.signup-steps-finish small {
+.signup-card-finish small {
   display: block;
   margin-top: var(--space-2);
   font-size: .9375rem;
   color: var(--color-text-soft);
 }
-.signup-steps-back:focus-visible,
-.signup-steps-next:focus-visible,
-.signup-steps-skip:focus-visible,
-.signup-steps-more:focus-visible,
-.signup-steps-wheel:focus-visible,
-.signup-steps-chip input:focus-visible + span {
+.signup-card-back:focus-visible,
+.signup-card-next:focus-visible,
+.signup-card-skip:focus-visible,
+.signup-card-more:focus-visible,
+.signup-card-wheel:focus-visible,
+.signup-card-chip input:focus-visible + span {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
-
 /* A short phone: the same card, tighter, so Next stays in view. */
 @media (max-width: 59.99rem) and (max-height: 760px) {
-  .signup-steps {
-    --signup-steps-target: 48px;
+  .signup-card {
+    --signup-card-target: 48px;
   }
-  .signup-steps-card {
+  .signup-card-form {
     padding-top: var(--space-3);
   }
-  .signup-steps-step {
+  .signup-card-step {
     margin-top: var(--space-4);
   }
-  .signup-steps-opts {
+  .signup-card-opts {
     gap: var(--space-2);
   }
-  .signup-steps-actions {
+  .signup-card-actions {
     margin-top: var(--space-4);
   }
 }
-
 @media (prefers-reduced-motion: no-preference) {
-  .signup-steps-opt-face,
-  .signup-steps-field input,
-  .signup-steps-chip span {
+  .signup-card-opt-face,
+  .signup-card-field input,
+  .signup-card-chip span {
     transition: border-color var(--transition-fast) ease-out, background-color var(--transition-fast) ease-out, transform var(--transition-fast) ease-out;
   }
-  .signup-steps-opt:active .signup-steps-opt-face,
-  .signup-steps-chip:active span {
+  .signup-card-opt:active .signup-card-opt-face,
+  .signup-card-chip:active span {
     transform: scale(.97);
   }
-  .signup-steps-opt input:checked + .signup-steps-opt-face .signup-steps-tick,
-  .signup-steps-chip input:checked + span {
-    animation: signup-steps-pop .34s cubic-bezier(.3, 1.6, .5, 1);
+  .signup-card-opt input:checked + .signup-card-opt-face .signup-card-tick,
+  .signup-card-chip input:checked + span {
+    animation: signup-card-pop .34s cubic-bezier(.3, 1.6, .5, 1);
   }
-  .signup-steps-seg::before {
+  .signup-card-seg::before {
     transition: width .5s cubic-bezier(.2, .8, .2, 1);
   }
-  @keyframes signup-steps-pop {
-    from { transform: scale(.6); }
+  @keyframes signup-card-pop {
+    from {
+      transform: scale(.6);
+    }
   }
 }
-
-/* Wide: the headline and its sentence beside the card. */
+/* Wide: a tighter card, so a first step and its button sit above the fold. */
 @media (min-width: 60rem) {
-  .signup-steps {
-    padding-block: var(--space-8) var(--space-12);
+  .signup-card {
+    --signup-card-target: 48px;
   }
-  .signup-steps-inner {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 27rem);
-    gap: var(--space-8);
-    align-items: start;
+  .signup-card-form {
+    padding: var(--space-5);
   }
-  .signup-steps-sub {
+  .signup-card-q {
+    font-size: calc(1.125rem * var(--type-scale, 1));
+  }
+  .signup-card-opts {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+  .signup-card-opt-face {
+    padding: var(--space-2) var(--space-3);
+    font-size: .9375rem;
+  }
+  /* A tighter card beside the words, so a first step and its button sit above
+  the fold on a laptop. */
+  .signup-card-top {
+    min-height: 36px;
+  }
+  .signup-card-members {
+    min-height: 44px;
+    margin-top: var(--space-2);
+    padding-block: var(--space-1);
+  }
+  .signup-card-step {
     margin-top: var(--space-4);
-    font-size: 1.125rem;
   }
-  .signup-steps-card {
-    padding: var(--space-5) var(--space-6) var(--space-6);
+  .signup-card-step[data-hub-signup-part="seeking"] {
+    margin-top: var(--space-4);
+  }
+  .signup-card-q {
+    margin-bottom: var(--space-2);
+  }
+  .signup-card-help {
+    margin-bottom: var(--space-2);
+  }
+  .signup-card-other {
+    margin-top: 0;
+  }
+  .signup-card-actions {
+    margin-top: var(--space-4);
+  }
+  .signup-card-foot {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
   }
 }

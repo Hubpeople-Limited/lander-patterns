@@ -49,13 +49,13 @@ where the photograph cannot be read through or you do not control it;
 no usable photography at all; `signup-steps` where the page opens on its form.
 
 **Pairing.** `stats-band` directly beneath it — the dissolve resolves the hero
-into the page background and the numbers begin with no
-seam. Avoid `gallery-scroll` for the same reason `hero-split` does: a second
-large image set anywhere on the page fights the one that is meant to
-own the screen.
-And avoid `hero-split` outright — a page gets one hero. Not on a page with
+into the page background and the numbers begin with no seam. Avoid
+`gallery-scroll` for the same reason `hero-split` does: a second large image set
+anywhere on the page fights the one that is meant to own the screen. And avoid
+`hero-split` outright — a page gets one hero. Not on a page with
 `article-masthead` either: that opens an article and carries the page's `<h1>`,
-which this pattern also does.
+which this pattern also does. `signup-card` can take both
+controls' place, and the photograph then holds still.
 
 **Brand adaptability.** `--color-bg` does most of the work, because it is both
 the scrim and the page: a dark brand gets the moody cinema look the treatment
@@ -72,9 +72,9 @@ small viewport. Variant: drop the login control and centre the copy
 pattern, so a plain `100svh` puts the foot — where the join control is — one
 header-height below the fold. The height is `calc(100svh -
 var(--page-header-height, 9.5rem))`; take that number off the brand's rendered
-header rather than off `--logo-height`, which came up 11px short on a live
-page, and `0px` where nothing sits above. `9.5rem` is the default: this
-library's own `masthead-nav` renders up to 145px on the sample brands. No footer
-allowance: this opener is not the whole page, so the footer is at the bottom of
-what follows rather than in the first viewport, and `hero-squeeze` is the
-pattern that subtracts one. `--hero-overlay-above` no longer does anything.
+header rather than off `--logo-height`, which came up 11px short on a live page,
+and `0px` where nothing sits above. `9.5rem` is the default: this library's own
+`masthead-nav` renders up to 145px on the sample brands. No footer allowance:
+this opener is not the whole page, so the footer is at the bottom of what
+follows rather than in the first viewport, and `hero-squeeze` is the pattern
+that subtracts one. `--hero-overlay-above` no longer does anything.

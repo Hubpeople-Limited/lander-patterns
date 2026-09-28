@@ -926,7 +926,7 @@
   }
 }
 
-/* ---- hero-split v10 ---- */
+/* ---- hero-split v11 ---- */
 /* hero-split v3 - tokens only, selectors prefixed */
 .hero-split {
   padding-block: var(--space-8);
@@ -1002,6 +1002,56 @@
 
 .hero-split img[data-hub-placeholder] {
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+
+/* Holding a signup-card in place of the join button: on a phone the card
+   follows the headline and the photograph comes after it. */
+@media (width < 48rem) {
+  .hero-split-inner:has(.signup-card) .hero-split-visual {
+    order: 1;
+  }
+}
+/* Wide: the photograph fills its half and the card overlaps its inner edge,
+   so the two read as layered rather than boxed. */
+@media (min-width: 60rem) {
+  .hero-split:has(.signup-card) {
+    padding-block: var(--space-6) var(--space-8);
+  }
+  .hero-split-inner:has(.signup-card) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    grid-template-areas: ". visual" "title visual" "sub visual" ". visual";
+    grid-template-rows: 1fr auto auto 1fr;
+    row-gap: var(--space-3);
+    column-gap: var(--space-8);
+    align-items: stretch;
+  }
+  .hero-split-inner:has(.signup-card) .hero-split-copy {
+    display: contents;
+  }
+  .hero-split-inner:has(.signup-card) .hero-split-title {
+    grid-area: title;
+    max-width: 10em;
+    margin: 0;
+  }
+  .hero-split-inner:has(.signup-card) .hero-split-sub {
+    grid-area: sub;
+    margin: 0;
+  }
+  .hero-split-inner:has(.signup-card) .hero-split-visual {
+    grid-area: visual;
+    min-height: 38rem;
+    margin-left: var(--space-12);
+  }
+  .hero-split-inner:has(.signup-card) .hero-split-visual img {
+    height: 100%;
+  }
+  .hero-split-inner:has(.signup-card) .hero-split-cta {
+    grid-area: visual;
+    z-index: 2;
+    align-self: center;
+    justify-self: start;
+    margin-left: calc(-1 * var(--space-12));
+  }
 }
 
 /* ---- steps-plain v4 ---- */

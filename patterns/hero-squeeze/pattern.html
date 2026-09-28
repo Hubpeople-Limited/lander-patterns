@@ -2,7 +2,7 @@
 name: hero-squeeze
 display-name: One-screen page
 summary: The whole page in a single screen: a photograph, one claim, one button.
-version: 12
+version: 13
 type: section
 page-types: homepage, landing
 requires: photography
@@ -13,7 +13,7 @@ needs: one landscape photograph at least 1600px wide with its own alt text; a he
 keywords: squeeze, hero, one screen, paid traffic, above the fold, conversion
 pairs-with: cta-assurance, member-strip, rating-mark
 avoid-with: article-masthead, hero-centred, hero-overlay, hero-split, hero-stated, signup-steps
-tokens-used: --btn-radius, --color-on-primary, --color-on-scrim, --color-primary, --color-scrim, --font-heading, --page-footer-height, --page-header-height, --space-3, --space-4, --space-5, --space-6, --type-scale, --heading-leading, --heading-tracking, --weight-display
+tokens-used: --btn-radius, --color-on-primary, --color-on-scrim, --color-primary, --color-scrim, --container-max, --font-heading, --heading-leading, --heading-tracking, --page-footer-height, --page-header-height, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --weight-display
 motion: none
 whole-page: yes
 one-per-page: yes
@@ -50,6 +50,8 @@ added: 2026-08-22
   <div class="hero-squeeze-inner">
     <h1 class="hero-squeeze-title"><!-- slot: headline --></h1>
     <p class="hero-squeeze-sub"><!-- slot: subhead --></p>
+    <!-- A SIGN-UP OPENER puts signup-card here in place of the anchor, and
+         the assurance slot stays empty: the card is the one control. -->
     <div class="hero-squeeze-cta">
       <a class="hero-squeeze-btn" href="{{join.url}}">{{join.text}}</a>
       <!-- slot: assurance -->

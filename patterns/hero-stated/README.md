@@ -46,7 +46,9 @@ under the control matters more here than anywhere else in the library.
 decision, which is the shape eharmony opens with. `benefit-tiles` and
 `steps-plain` after it, both of which also need no photography — between them
 those three build a complete page for a brand that has none. `rating-mark`
-inside or beneath, where the brand publishes a score.
+inside or beneath, where the brand publishes a score. `signup-card` can take the
+button's place, with the assurance slot left empty: wide, the words sit left and
+the card right.
 
 It refuses `hero-overlay`, `hero-split`, `hero-centred`, `hero-squeeze` and
 `article-masthead`. A page opens once, and each of those is the opener for a

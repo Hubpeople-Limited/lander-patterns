@@ -208,7 +208,7 @@ def page_for(name, behaviour, tokens, bundle_file, width):
     elif behaviour == "signup":
         # The preview fill writes "#" for the join link; the check needs a
         # real-shaped one, because the member search reads its GUID from it.
-        filled = re.sub(r'(<form class="signup-steps-card"[^>]*action=")[^"]*"',
+        filled = re.sub(r'(<form class="(?:signup-steps-card|signup-card-form)"[^>]*action=")[^"]*"',
                         lambda m: m.group(1) + SIGNUP_JOIN + '"', filled, count=1)
         after = '<section class="behaviour-check-section">' + FILLER + "</section>"
     return SHELL.format(title=f"{name} {behaviour}", tokens=tokens, css=css,
@@ -622,7 +622,7 @@ def check_signup(shell, name, tokens):
     where = f"{name} signup"
     faults = []
     html = page_for(name, "signup", tokens, "hub.js", PHONE)
-    face = 'input[name="{0}"][value="{1}"] + .signup-steps-opt-face'
+    face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
     tab = shell.open(html, f"{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS),
                      query="?utm_source=s&utm_medium=m&cmp=abc&gclid=g&cmp=second")
     try:
@@ -633,10 +633,10 @@ def check_signup(shell, name, tokens):
         parts = tab.evaluate(SIGNUP_PARTS_JS)
         if parts != ["iam"]:
             faults.append(f"{where}: a phone opens on {parts!r} - one question, 'iam', is the step")
-        tap(tab, ".signup-steps-next")
+        tap(tab, f".{name}-next")
         tab.wait_for_timeout(150)
         if tab.evaluate(SIGNUP_PARTS_JS) != ["iam"] or not tab.locator(
-                '[data-hub-signup-part="iam"] .signup-steps-error').is_visible():
+                f'[data-hub-signup-part="iam"] .{name}-error').is_visible():
             faults.append(f"{where}: Next with nothing chosen must stay put and say why")
         tap(tab, face.format("mt", 2))
         tab.wait_for_timeout(900)
@@ -645,18 +645,18 @@ def check_signup(shell, name, tokens):
         tap(tab, face.format("lf", 1))
         tap(tab, face.format("lf", 2))
         tab.wait_for_timeout(600)
-        if tab.locator(".signup-steps-members img").count() != 4:
+        if tab.locator(f".{name}-members img").count() != 4:
             faults.append(f"{where}: four members should show once 'looking for' is answered")
-        tap(tab, ".signup-steps-next")
+        tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
         for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
             tab.fill(f'input[name="{field}"]', value)
-        tap(tab, ".signup-steps-next")
+        tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
         for chips in ("intent", "enjoy"):
             if tab.evaluate(SIGNUP_PARTS_JS) == [chips]:
-                tap(tab, f'[data-hub-signup-part="{chips}"] .signup-steps-chip')
-                tap(tab, ".signup-steps-next")
+                tap(tab, f'[data-hub-signup-part="{chips}"] .{name}-chip')
+                tap(tab, f".{name}-next")
                 tab.wait_for_timeout(500)
         if tab.evaluate(SIGNUP_PARTS_JS) != ["email"]:
             return faults + [f"{where}: the steps never reached the last one "
@@ -664,7 +664,7 @@ def check_signup(shell, name, tokens):
         tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam Lee")
         tab.fill('input[name="em"]', "sam@example.com")
         tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
-        tap(tab, ".signup-steps-submit")
+        tap(tab, f".{name}-submit")
         tab.wait_for_timeout(400)
         url = tab.evaluate("() => window.__signupHandoff || null")
     finally:
@@ -698,7 +698,7 @@ def check_signup(shell, name, tokens):
                       f"as the platform writes it on every join link")
     # A brand with one possible answer to each: the questions are hidden
     # values, nobody is asked them, and each value is sent once.
-    single = re.sub(r'<fieldset class="signup-steps-step" data-hub-signup-part="(iam|seeking)">.*?</fieldset>',
+    single = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="(iam|seeking)">.*?</fieldset>',
                     lambda m: f'<input type="hidden" name="{"mt" if m.group(1) == "iam" else "lf"}" value="1">',
                     html, flags=re.S)
     tab = shell.open(single, f"{name}-signup-single", width=PHONE, before=signup_stub(SIGNUP_MEMBERS))
@@ -707,17 +707,17 @@ def check_signup(shell, name, tokens):
         opening = tab.evaluate(SIGNUP_PARTS_JS)
         for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
             tab.fill(f'input[name="{field}"]', value)
-        tap(tab, ".signup-steps-next")
+        tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
         for chips in ("intent", "enjoy"):
             if tab.evaluate(SIGNUP_PARTS_JS) == [chips]:
-                tap(tab, f'[data-hub-signup-part="{chips}"] .signup-steps-chip')
-                tap(tab, ".signup-steps-next")
+                tap(tab, f'[data-hub-signup-part="{chips}"] .{name}-chip')
+                tap(tab, f".{name}-next")
                 tab.wait_for_timeout(500)
         tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam")
         tab.fill('input[name="em"]', "sam@example.com")
         tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
-        tap(tab, ".signup-steps-submit")
+        tap(tab, f".{name}-submit")
         tab.wait_for_timeout(400)
         single_url = tab.evaluate("() => window.__signupHandoff || ''")
     finally:
@@ -736,7 +736,7 @@ def check_signup(shell, name, tokens):
         tab.wait_for_timeout(900)
         tap(tab, face.format("lf", 1))
         tab.wait_for_timeout(600)
-        if tab.locator(".signup-steps-members").is_visible():
+        if tab.locator(f".{name}-members").is_visible():
             faults.append(f"{where}: a failed member search left the strip showing")
     finally:
         tab.close()
