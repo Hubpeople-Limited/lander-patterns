@@ -32,7 +32,10 @@ asked for reduced motion. The items ship `width="480" height="360"` as a
 stand-in ratio — **set both attributes to each real image's intrinsic
 dimensions** when filling the slots.
 
-**With the library, `carousel` builds a previous and a next control** inside the
-scroller, sticky to its start edge so they stay in view; each moves the rail by one
-item and disables at the ends. Without it the rail is the rail: swipe, scroll or
-keyboard, exactly as authored.
+**The rail shows no scroll bar**, which on a desktop reads as a broken page rather
+than a gallery. **With the library, `carousel` builds a previous and a next
+control** inside the scroller, sticky to its start edge so they stay in view; each
+moves the rail by one item and disables at the ends. Without the library the rail
+still swipes and takes the keyboard. With scripting off nothing can build the
+controls and a mouse would have no way along it, so the photographs wrap into
+centred rows instead.

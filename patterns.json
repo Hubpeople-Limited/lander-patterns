@@ -735,7 +735,7 @@
    "carousel"
   ],
   "content-shape": "peer set",
-  "description": "User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances, and gains previous and next controls when the behaviour library is on the page.",
+  "description": "User-driven horizontal gallery with CSS scroll-snap and no scroll bar; never auto-advances, gains previous and next controls when the behaviour library is on the page, and wraps into rows with scripting off.",
   "display-name": "Photo gallery",
   "image-slots": [
    {
@@ -773,7 +773,7 @@
   "summary": "A row of photographs you swipe sideways through.",
   "type": "component",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "heading-block": {

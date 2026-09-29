@@ -6,6 +6,10 @@
   padding-block: var(--space-3);
   /* room for the focus ring, so it is not clipped by the overflow */
   scroll-padding-inline: var(--space-4);
+  scrollbar-width: none;
+}
+.gallery-scroll::-webkit-scrollbar {
+  display: none;
 }
 .gallery-scroll-track {
   display: flex;
@@ -39,6 +43,19 @@
 @media (prefers-reduced-motion: no-preference) {
   .gallery-scroll {
     scroll-behavior: smooth;
+  }
+}
+
+/* With scripting off nothing builds the previous and next controls, and the
+   hidden scroll bar would leave a mouse no way along the row, so it wraps. */
+@media (scripting: none) {
+  .gallery-scroll {
+    overflow-x: visible;
+  }
+  .gallery-scroll-track {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
   }
 }
 
