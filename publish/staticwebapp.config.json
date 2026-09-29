@@ -31,7 +31,8 @@
   ],
   "mimeTypes": {
     ".js": "text/javascript",
-    ".map": "application/json"
+    ".map": "application/json",
+    ".json": "application/json"
   },
   "navigationFallback": {
     "rewrite": "/404.html",
