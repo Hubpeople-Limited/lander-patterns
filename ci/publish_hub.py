@@ -23,7 +23,9 @@ The places files (lib/places/, made by ci/make_places.py) go beside them in a
 folder named for their edition, /hub-behaviours/places/<edition>/, immutable
 like a pinned version: the bundle names the edition it was built for, so a
 page never pairs a bundle with places it did not expect, and the folder is
-new only when the places are.
+new only when the places are. The sign-up card's encouraging lines
+(lib/messages/, held to their rule by ci/make_messages.py) go out the same
+way, under /hub-behaviours/messages/<edition>/.
 
 `publish/` only ever grows, and it is committed. The host replaces its whole
 contents on each deploy, so the accumulated tree in the repository is both the
@@ -73,6 +75,8 @@ SHARED_HEADERS = {
 SEMVER = re.compile(r"\d+\.\d+\.\d+")
 PLACES = ROOT / "lib" / "places"
 EDITION = re.compile(r'SIGNUP_PLACES_EDITION\s*=\s*"([^"]+)"')
+MESSAGES = ROOT / "lib" / "messages"
+MESSAGES_EDITION = re.compile(r'SIGNUP_MESSAGES_EDITION\s*=\s*"([^"]+)"')
 VERSION = re.compile(r"window\.HubBehaviours\s*=\s*\{[^}]*?version\s*:\s*"
                      r"[\"']([^\"']+)[\"']", re.S)
 
@@ -300,6 +304,10 @@ def build(source_path, out, minified_path=None):
     if why:
         return None, why
     tree.update(places)
+    messages, why = messages_tree(source.decode("utf-8"), out)
+    if why:
+        return None, why
+    tree.update(messages)
     for directory in (f"{BASE}/{version}", f"{BASE}/v{major}"):
         for name, data in files.items():
             tree[f"{directory}/{name}"] = data
@@ -342,6 +350,34 @@ def places_tree(source, out):
             return None, (f"places edition {edition} is already published and "
                           f"{path.name} has changed - a published edition never "
                           f"changes: bump MATCHER in ci/make_places.py and rerun it")
+        tree[rel] = data
+    return tree, None
+
+
+def messages_tree(source, out):
+    """The encouraging lines under their edition, or why they cannot be published.
+
+    The same promise as the places: an edition, once published, never changes,
+    so new or changed lines take a new edition in lib/messages/steps.json.
+    """
+    steps_path = MESSAGES / "steps.json"
+    if not steps_path.is_file():
+        return {}, None
+    edition = json.loads(steps_path.read_text(encoding="utf-8"))["edition"]
+    named = MESSAGES_EDITION.search(source)
+    if named and named.group(1) != edition:
+        return None, (f"the bundle names messages edition {named.group(1)} and "
+                      f"lib/messages/ is {edition} - set SIGNUP_MESSAGES_EDITION "
+                      f"to match")
+    tree = {}
+    for path in sorted(MESSAGES.glob("*.json")):
+        rel = f"{BASE}/messages/{edition}/{path.name}"
+        data = path.read_bytes()
+        served = out / rel
+        if served.is_file() and served.read_bytes() != data:
+            return None, (f"messages edition {edition} is already published and "
+                          f"{path.name} has changed - a published edition never "
+                          f"changes: give lib/messages/ a new edition")
         tree[rel] = data
     return tree, None
 

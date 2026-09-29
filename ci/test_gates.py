@@ -2237,6 +2237,14 @@ def check_hub_publish():
             failures.append("places published under their edition")
         case("a bundle naming another places edition",
              run_publish(_hub("1.4.2") + '\nconst SIGNUP_PLACES_EDITION = "0000-00-00.0";\n', "//d", out), 1)
+        steps = json.loads((HERE.parent / "lib" / "messages" / "steps.json").read_text(encoding="utf-8"))
+        said = out / "hub-behaviours" / "messages" / steps["edition"] / "steps.json"
+        print(f"  {'ok  ' if said.is_file() else 'FAIL'} "
+              f"{'the messages are published under their edition':<46} want=True")
+        if not said.is_file():
+            failures.append("messages published under their edition")
+        case("a bundle naming another messages edition",
+             run_publish(_hub("1.4.2") + '\nconst SIGNUP_MESSAGES_EDITION = "0000-00-00.0";\n', "//d", out), 1)
 
         # A rehearsal must leave nothing behind, or the check a pull request
         # runs would itself be a publication.

@@ -26,5 +26,14 @@
   "enjoy-question": "Sample: what do you enjoy?",
   "name-label": "Sample first name",
   "places": "Sample country",
-  "postal": "sample-first"
+  "postal": "sample-first",
+  "platform": "sample-platform",
+  "say-iam": "Sample line after the first answer.",
+  "say-seeking": "Sample line playing back {who}.",
+  "say-location": "Sample line about {place}.",
+  "say-interest": "Sample line about {interest}.",
+  "say-labels": "Sample one: Sample line for this interest.",
+  "say-last": "Sample line on the last step.",
+  "say-mode": "sample-add",
+  "messages": "sample-on"
 }

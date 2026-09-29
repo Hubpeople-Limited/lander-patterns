@@ -113,6 +113,8 @@ CONTROL_SUBSTITUTIONS = {
     "signup-location": ('else if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
                         "else void where;"),
     "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
+    "signup-messages": ("const fresh = pool.filter((l) => !saidLines.has(l));",
+                        "const fresh = pool;"),
 }
 
 # The signup check hands off to this link and never follows it; the GUID in it
@@ -120,6 +122,8 @@ CONTROL_SUBSTITUTIONS = {
 SIGNUP_JOIN = "https://example.invalid/s/register/00000000-0000-4000-8000-000000000000"
 # The places the location step reads: the library's own, served from here.
 SIGNUP_PLACES = "https://example.invalid/places/"
+# The encouraging lines, served from here the same way.
+SIGNUP_MESSAGES = "https://example.invalid/messages/"
 SIGNUP_MEMBERS = [{"MemberName": f"Sample {i}", "MemberImage": f"sample-portrait.svg?m={i}",
                    "MemberAge": 28 + i, "Interests": ""} for i in range(12)]
 
@@ -963,6 +967,217 @@ def check_signup(shell, name, tokens):
             faults.append(f"{where}: under reduced motion a tapped answer did not move on")
     finally:
         tab.close()
+    # The lines after an answer are the card's; the older block has none.
+    return faults + (check_signup_messages(shell, name, tokens) if name == "signup-card" else [])
+
+
+def messages_stub(members, platform_file):
+    """signup_stub, and the message files: the library's own step lines, and
+    `platform_file` served as affinity.json, standing in for a platform's."""
+    base = signup_stub(members)
+
+    def before(tab):
+        base(tab)
+
+        def lines(route):
+            file = route.request.url.rsplit("/", 1)[-1]
+            if file == "steps.json":
+                body = (ROOT / "lib" / "messages" / "steps.json").read_text(encoding="utf-8")
+            elif file == "affinity.json" and platform_file is not None:
+                body = json.dumps(platform_file)
+            else:
+                route.fulfill(status=404, body="")
+                return
+            route.fulfill(status=200, content_type="application/json",
+                          headers={"Access-Control-Allow-Origin": "*"}, body=body)
+        tab.route(SIGNUP_MESSAGES + "**", lines)
+    return before
+
+
+def check_signup_messages(shell, name, tokens):
+    """The encouraging line: one after each answer, from the library's lines,
+    the page's own and its platform's, never the same twice in a visit. Off is
+    off, and a platform file that says it is another platform's is never read,
+    because one platform's lines are written for adults."""
+    where = f"{name} signup messages"
+    faults = []
+    steps = json.loads((ROOT / "lib" / "messages" / "steps.json").read_text(encoding="utf-8"))["steps"]
+    html = re.sub(r'\sdata-hub-signup-(platform|say-[a-z]+|messages[a-z-]*)="[^"]*"', "",
+                  page_for(name, "signup", tokens, "hub.js", PHONE))
+    face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
+    chip = '[data-hub-signup-part="intent"] .' + name + '-chip:nth-child({0}) label'
+    platform = {"platform": "affinity", "interests": {
+        "Sample one": ["Affinity line for sample one."], "Sample two": ["Affinity line for sample two."]}}
+
+    def filled(lines, key, value):
+        out = set()
+        for line in lines:
+            line = line.replace("{" + key + "}", value)
+            out.add(line.replace("{" + key.capitalize() + "}", value[:1].upper() + value[1:]))
+        return out
+
+    def page(attrs):
+        return html.replace('data-hub-module="signup"', f'data-hub-module="signup" '
+                            f'data-hub-signup-messages-from="{SIGNUP_MESSAGES}" {attrs}', 1)
+
+    def said(tab):
+        tab.wait_for_timeout(300)
+        box = tab.locator(f".{name}-cheer")
+        return box.inner_text().strip() if box.count() and box.is_visible() else None
+
+    def to_intent(tab):
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        return tab.evaluate(SIGNUP_PARTS_JS) == ["intent"]
+
+    # The library's lines, the page's own for one label, and the platform's.
+    tab = shell.open(page('data-hub-signup-platform="affinity" '
+                          'data-hub-signup-say-labels="Sample two: Page line for sample two."'),
+                     f"{name}-signup-messages", width=PHONE, before=messages_stub(SIGNUP_MEMBERS, platform))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        first = said(tab)
+        tab.wait_for_timeout(600)
+        tap(tab, face.format("lf", 1))
+        seeking = said(tab)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        ticked = []
+        for n in (1, 2, 3):
+            tap(tab, chip.format(n))
+            ticked.append(said(tab))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        if tab.evaluate(SIGNUP_PARTS_JS) == ["enjoy"]:
+            tap(tab, f".{name}-skip")
+            tab.wait_for_timeout(500)
+        last = said(tab)
+    finally:
+        tab.close()
+    if first not in steps["iam"]:
+        faults.append(f"{where}: after 'I am' the card said {first!r}, not one of the library's lines")
+    if seeking not in filled(steps["seeking"], "who", "sample: men"):
+        faults.append(f"{where}: after 'looking for' the card said {seeking!r}, not a line playing "
+                      f"the answer back")
+    if ticked[0] != "Affinity line for sample one.":
+        faults.append(f"{where}: an interest the platform has a line for said {ticked[0]!r}")
+    if ticked[1] not in ("Page line for sample two.", "Affinity line for sample two."):
+        faults.append(f"{where}: an interest with the page's own line and the platform's said {ticked[1]!r}")
+    if ticked[2] not in filled(steps["interest"], "interest", "Sample three"):
+        faults.append(f"{where}: an interest with no line of its own said {ticked[2]!r}, not a general one")
+    if last not in steps["last"]:
+        faults.append(f"{where}: the last step said {last!r}, not one of the library's lines")
+
+    # A file that says it is the other platform's is not read.
+    wrong = dict(platform, platform="excite")
+    tab = shell.open(page('data-hub-signup-platform="affinity"'), f"{name}-signup-messages-wrong",
+                     width=PHONE, before=messages_stub(SIGNUP_MEMBERS, wrong))
+    try:
+        tab.wait_for_timeout(300)
+        reached = to_intent(tab)
+        tap(tab, chip.format(1))
+        line = said(tab)
+    finally:
+        tab.close()
+    if not reached or line not in filled(steps["interest"], "interest", "Sample one"):
+        faults.append(f"{where}: an interest file saying it is another platform's was read ({line!r})")
+
+    # The page's own lines only, and never the same one twice.
+    mine = ["One of the page's lines.", "Another of the page's lines.", "A third of the page's lines."]
+    tab = shell.open(page('data-hub-signup-say-mode="replace" data-hub-signup-say-iam="Hello from the page." '
+                          f'data-hub-signup-say-interest="{";".join(mine)}"'),
+                     f"{name}-signup-messages-own", width=PHONE, before=messages_stub(SIGNUP_MEMBERS, None))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        hello = said(tab)
+        tab.wait_for_timeout(600)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        again = []
+        for _ in range(3):
+            tap(tab, chip.format(1))
+            again.append(said(tab))
+            tap(tab, chip.format(1))
+    finally:
+        tab.close()
+    if hello != "Hello from the page.":
+        faults.append(f"{where}: say-mode=replace said {hello!r} after 'I am', not the page's own line")
+    if sorted(again) != sorted(mine):
+        faults.append(f"{where}: three ticks of one interest said {again!r} - each of the page's three "
+                      f"lines once, none repeated")
+
+    # A page in another language speaks only its own lines.
+    tab = shell.open(page('lang="de" data-hub-signup-say-iam="Guter Anfang."'), f"{name}-signup-messages-de",
+                     width=PHONE, before=messages_stub(SIGNUP_MEMBERS, platform))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        german = said(tab)
+        tab.wait_for_timeout(600)
+        tap(tab, face.format("lf", 1))
+        unsaid = said(tab)
+    finally:
+        tab.close()
+    if german != "Guter Anfang." or unsaid != german:
+        faults.append(f"{where}: a German page said {german!r} then {unsaid!r} - only its own line, "
+                      f"and nothing where it has none")
+
+    # A town typed in full is settled without the list, and said all the same.
+    placed = re.sub(r'\sdata-hub-signup-places(-from)?="[^"]*"', "", page(
+        'data-hub-signup-say-mode="replace" data-hub-signup-say-location="{Place} it is."'))
+    placed = placed.replace('data-hub-module="signup"', 'data-hub-module="signup" data-hub-signup-places='
+                            f'"UK/England: Greater London" data-hub-signup-places-from="{SIGNUP_PLACES}"', 1)
+    tab = shell.open(placed, f"{name}-signup-messages-place", width=PHONE,
+                     before=messages_stub(SIGNUP_MEMBERS, platform))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(700)
+        town = tab.locator('[data-hub-signup-part="location"] input[role="combobox"]')
+        typed = None
+        if town.count():
+            town.focus()
+            town.press_sequentially("Islington", delay=30)
+            typed = said(tab)
+    finally:
+        tab.close()
+    if typed != "Islington it is.":
+        faults.append(f"{where}: a town typed in full said {typed!r}, not the page's line for it")
+
+    # Off is off, and the card still works.
+    tab = shell.open(page('data-hub-signup-messages="off"'), f"{name}-signup-messages-off",
+                     width=PHONE, before=messages_stub(SIGNUP_MEMBERS, platform))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        quiet = said(tab)
+        tab.wait_for_timeout(600)
+        moved = tab.evaluate(SIGNUP_PARTS_JS) == ["seeking"]
+    finally:
+        tab.close()
+    if quiet is not None or not moved:
+        faults.append(f"{where}: messages=off said {quiet!r}{'' if moved else ' and did not move on'}")
     return faults
 
 

@@ -43,6 +43,8 @@ jobs:
           rm -f pr-text.tmp
       - name: Places files hang together
         run: python ci/make_places.py --check
+      - name: Sign-up lines hold to their rule
+        run: python ci/make_messages.py --check
       - name: Lint patterns (regenerates INDEX.md)
         env:
           # The strings that must never reach a public file are not in this

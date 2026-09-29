@@ -2,7 +2,7 @@
 name: signup-card
 display-name: Sign-up card
 summary: A short sign-up card that sits in an opener in place of its join button.
-version: 5
+version: 6
 type: component
 page-types: homepage, landing
 requires: none
@@ -30,7 +30,16 @@ added: 2026-09-28
      data-hub-signup-enjoy-question="slot:enjoy-question"
      data-hub-signup-name-label="slot:name-label"
      data-hub-signup-places="slot:places"
-     data-hub-signup-postal="slot:postal">
+     data-hub-signup-postal="slot:postal"
+     data-hub-signup-platform="slot:platform"
+     data-hub-signup-say-iam="slot:say-iam"
+     data-hub-signup-say-seeking="slot:say-seeking"
+     data-hub-signup-say-location="slot:say-location"
+     data-hub-signup-say-interest="slot:say-interest"
+     data-hub-signup-say-labels="slot:say-labels"
+     data-hub-signup-say-last="slot:say-last"
+     data-hub-signup-say-mode="slot:say-mode"
+     data-hub-signup-messages="slot:messages">
   <form class="signup-card-form" method="get" action="{{join.url}}">
     <h2 class="signup-card-title"><!-- slot: card-title --></h2>
 
