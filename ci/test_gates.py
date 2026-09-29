@@ -1176,6 +1176,21 @@ PHONE_FIRES = [
     ("a full-width box whose padding sits outside it",
      ".t-panel { width: 100%; padding: 24px; border: 1px solid #ddd; }",
      "<div class='t-panel'>Sample panel copy.</div>", "scrolls sideways"),
+    # A numeral drawn by ::before has no text node, so the gate stands a real
+    # span in for it. This is a stacked step numeral whose line box is shorter
+    # than its glyphs, pulled onto the title under it.
+    ("a counter numeral drawn over the heading below it",
+     ".t-steps { counter-reset: t-step; list-style: none; margin: 0; padding: 16px; }"
+     " .t-steps li { counter-increment: t-step; }"
+     " .t-steps li::before { content: counter(t-step); display: block;"
+     " font-size: 64px; line-height: 1; margin-bottom: -40px; }"
+     " .t-steps h3 { margin: 0; font-size: 20px; }",
+     "<ol class='t-steps'><li><h3>Sample step title</h3></li></ol>", "lands on text"),
+    ("two captions positioned onto each other",
+     ".t-fig { position: relative; height: 120px; }"
+     " .t-cap { position: absolute; left: 16px; top: 40px; margin: 0; font-size: 18px; }",
+     "<div class='t-fig'><p class='t-cap'>Sample caption one</p>"
+     "<p class='t-cap'>Sample caption two</p></div>", "lands on text"),
 ]
 
 # Valid work the gate must not complain about. Half of these are the exact
@@ -1221,6 +1236,51 @@ PHONE_QUIET = {
          " width: 100%; }",
          "<label for='e2'>Sample email</label>"
          "<input class='t-field' id='e2' type='email'>"),
+    # The overlaps the library makes on purpose. Words on a picture are the
+    # whole of several openers; none of them is text on text.
+    "words over a photograph":
+        (".t-hero { position: relative; }"
+         " .t-hero img { display: block; width: 100%; height: 240px; object-fit: cover; }"
+         " .t-hero h1 { position: absolute; left: 16px; bottom: 16px; margin: 0;"
+         " font-size: 32px; }",
+         "<div class='t-hero'><img src='sample-wide.svg' alt='Sample'>"
+         "<h1>Sample headline</h1></div>"),
+    "words on a scrim":
+        (".t-scrim { position: relative; min-height: 200px; background: #333; }"
+         " .t-scrim::after { content: ''; position: absolute; inset: 0;"
+         " background: rgba(0, 0, 0, .5); }"
+         " .t-scrim p { position: relative; z-index: 1; color: #fff; margin: 0;"
+         " padding: 16px; }",
+         "<div class='t-scrim'><p>Sample copy on a scrim.</p></div>"),
+    "a badge on a card's photograph":
+        (".t-card { position: relative; }"
+         " .t-card img { display: block; width: 100%; height: 160px; }"
+         " .t-badge { position: absolute; top: 8px; left: 8px; padding: 4px 8px;"
+         " background: #fff; font-size: 14px; }"
+         " .t-card h3 { margin: 8px 0 0; }",
+         "<div class='t-card'><img src='sample-portrait.svg' alt='Sample'>"
+         "<span class='t-badge'>Sample new</span><h3>Sample name</h3></div>"),
+    "cards in a sideways rail":
+        (".t-rail { display: flex; overflow-x: auto; }"
+         " .t-rail p { flex: 0 0 200px; margin: 0 -60px 0 0; font-size: 18px; }",
+         "<div class='t-rail'><p>Sample card one</p><p>Sample card two</p>"
+         "<p>Sample card three</p></div>"),
+    "a headline set tighter than its face":
+        (".t-tight { font-size: 40px; line-height: 0.9; width: 200px; margin: 0; }",
+         "<h2 class='t-tight'>Sample headline that wraps</h2>"),
+    "the answer inside a closed question":
+        (".t-faq summary { min-height: 48px; padding: 12px 0; }"
+         " .t-faq p { margin: -40px 0 0; }",
+         "<details class='t-faq'><summary>Sample question</summary>"
+         "<p>Sample answer.</p></details>"),
+    "a label hidden for screen readers over a heading":
+        (".t-box { position: relative; padding: 16px; }"
+         " .t-sr { position: absolute; top: 16px; left: 16px; width: 1px; height: 1px;"
+         " margin: -1px; padding: 0; border: 0; overflow: hidden; white-space: nowrap;"
+         " clip-path: inset(50%); }"
+         " .t-box h2 { margin: 0; font-size: 24px; }",
+         "<div class='t-box'><span class='t-sr'>Sample label for a screen reader</span>"
+         "<h2>Sample heading</h2></div>"),
 }
 
 

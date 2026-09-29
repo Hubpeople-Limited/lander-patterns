@@ -281,8 +281,9 @@ On every pull request, CI:
   `pattern-previews` artifact, so you see all five before anyone merges;
   on merge they publish to the repo's Pages site;
 - lays every pattern out in a headless browser at 320 and 360 and measures
-  what came out — sideways scroll, tap-target size, text size, on `brand` and
-  again on `display`. See [At a phone width](#at-a-phone-width);
+  what came out — sideways scroll, tap-target size, text size, text landing
+  on text, on `brand` and again on `display`. See
+  [At a phone width](#at-a-phone-width);
 - renders every display measure on all five sample brands and requires the
   resolved widths to be the same number, then re-renders them in the pre-v57
   `ch` form and requires that check to fire. See
@@ -482,6 +483,7 @@ Your pattern must, at both widths:
 | **Give every control a thumb-sized target** — `button`, `summary`, `input`, `select`, and any `<a>` drawn *as a control* rather than set as text | 44px in the smaller dimension |
 | **Keep text readable** | 12px |
 | **Keep form fields at a size iOS will not zoom into** | 16px |
+| **Keep text off other text.** No run of words, and no numeral or label drawn by `::before` or `::after`, may land on another's ink | more than 2px each way |
 
 Three of those carve out the cases that would otherwise make the gate
 unusable, and it is worth knowing which, because they are also the shapes you
@@ -501,6 +503,15 @@ are allowed to ship:
 - **A small control inside a big label is a big control**, because the label
   activates it. A 16px checkbox in a 48px label passes.
 
+Text on text is measured on the ink, not the line box: each run's box is cut
+to what its own glyphs reach above and below the baseline, and to any
+ancestor that clips it. A generated numeral or label is measured through a
+stand-in span carrying its computed style. So these are allowed, and are
+shapes the library uses on purpose: words over a photograph or a scrim, a
+badge on a card's picture, a headline set tighter than its face (lines of
+one block are never compared), text inside a sideways rail, a closed
+question's answer and a label hidden for screen readers.
+
 **What it deliberately does not check.** A rule that cannot be made reliable is
 worse than none, because the first false positive teaches everyone to stop
 reading the output — and this repo has learnt that once already.
@@ -515,10 +526,15 @@ reading the output — and this repo has learnt that once already.
   library set `overflow-wrap` at all. A rule failing four fifths of the
   library on the day it lands is a rule that gets switched off. The defence
   belongs once in the brand's base stylesheet, not forty-five times here.
-- **Overlap between elements.** The header-logo-over-the-menu-link defect is
-  exactly this and it is the obvious next check to build. Rect intersection
-  alone is far too noisy — every deliberate overlap in the library trips it —
-  so it needs a narrower rule than anyone has written yet.
+- **Anything landing on text that is not itself text.** The header logo
+  painting over the first menu link is a picture on words, and it is caught
+  by the header gate rather than here: a picture under words is what every
+  photo opener in the library does on purpose.
+- **Text against text inside anything that scrolls**, a sideways rail or a
+  tray that scrolls down, which moves under the reader's thumb; **list
+  markers** drawn by `::marker`; and a pseudo-element whose text comes
+  from `counters()`, `url()` or quotes. Nothing in the library draws text
+  those ways.
 
 **`ci/check_phone.py` carries a baseline** in `ACCEPTED`: four faults the
 library has today, each with the reason it is not failing the build. A fault
@@ -529,8 +545,9 @@ than hidden by an exclusion nobody can see. **Fixing a pattern means deleting
 its entry** — a run whose baseline matches nothing reports `STALE` and fails,
 because a baseline that has outlived its defect is how a gate goes quiet.
 
-`ci/test_gates.py` proves both halves against synthetic fixtures — seven faults
-it must catch, ten valid shapes it must ignore — and then sweeps the library.
+`ci/test_gates.py` proves both halves against synthetic fixtures — ten faults
+it must catch, seventeen valid shapes it must ignore — and then sweeps the
+library.
 Proving it against the real patterns alone would prove nothing about the half
 that matters: a check that never fires passes a clean library perfectly.
 
