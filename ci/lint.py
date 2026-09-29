@@ -58,6 +58,18 @@ SHAPES = {"narrative", "peer set", "comparison", "progression", "single claim",
 MOTION = {"none", "subtle", "expressive"}
 STATUS = {"active", "deprecated"}
 ONE_PER_PAGE = {"yes", "no"}
+# How a pattern lays out a page, in the building skill's own words: it tells
+# two built options apart by these and says them to a partner, so this is
+# ITS list. A new value goes into the skill's words first and then here; a
+# value only this library knows is a difference nobody can describe.
+LAYOUT_ROLES = {
+    "opener": ("beside", "over", "above", "words"),
+    "people": ("members", "portraits", "stories", "testimonials"),
+    "rhythm": ("bands", "cards", "column"),
+    "close": ("band", "photo"),
+    "reading": ("picture", "quote", "contents", "summary"),
+}
+LAYOUT_CLAUSE = re.compile(r"[a-z]+=[a-z]+")
 README_MAX_LINES = 80
 # 80 lines of this library's prose runs about 5.5kB; the ceiling is set
 # above that so it binds only on a README that is long by any measure.
@@ -227,6 +239,44 @@ def parse_variants(value):
         axis, _, values = clause.partition("=")
         out[axis] = values.split("|")
     return out or None
+
+
+def layout_faults(value):
+    """What is wrong with a `layout:` value, as sentences; [] when sound.
+
+    `none`, or `role=value` clauses joined by `; `, each role at most once.
+    Strict on purpose: the building skill reads the same line, and a
+    spelling this accepts and that one does not is a pattern described as
+    something it is not."""
+    if value == "none":
+        return []
+    if not value.strip():
+        return ["empty - a pattern that takes no layout role says `none`"]
+    faults, seen = [], set()
+    for clause in value.split("; "):
+        if not LAYOUT_CLAUSE.fullmatch(clause):
+            faults.append(f"{clause!r} is not role=value - clauses are lowercase "
+                          "and joined by '; ', and `none` stands alone")
+            continue
+        role, _, word = clause.partition("=")
+        if role not in LAYOUT_ROLES:
+            faults.append(f"{role!r} is not a layout role - one of "
+                          f"{', '.join(LAYOUT_ROLES)}")
+        elif word not in LAYOUT_ROLES[role]:
+            faults.append(f"{role}={word}: not one of {'|'.join(LAYOUT_ROLES[role])}"
+                          " - a new value goes into the building skill's words first")
+        if role in seen:
+            faults.append(f"{role!r} is given twice - a pattern takes each role once")
+        seen.add(role)
+    return faults
+
+
+def parse_layout(value):
+    """`people=members; rhythm=cards` -> {"people": "members", "rhythm":
+    "cards"}; `none` -> {}; None when layout_faults finds anything."""
+    if layout_faults(value):
+        return None
+    return {} if value == "none" else dict(c.split("=") for c in value.split("; "))
 
 
 def check_variants(html_path, css_path, meta, folder_name):
@@ -415,6 +465,9 @@ def check_html(path, meta, folder_name):
              "this library uses is a match that never happens")
     if meta.get("motion") and meta["motion"] not in MOTION:
         find(path, "header", f"motion '{meta['motion']}' not in {sorted(MOTION)}")
+    if meta.get("layout"):
+        for fault in layout_faults(meta["layout"]):
+            find(path, "layout-labels", fault)
     if meta.get("one-per-page") and meta["one-per-page"] not in ONE_PER_PAGE:
         find(path, "header",
              f"one-per-page '{meta['one-per-page']}' not in {sorted(ONE_PER_PAGE)}")
