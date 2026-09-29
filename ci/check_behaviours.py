@@ -1140,6 +1140,31 @@ def check_signup_messages(shell, name, tokens):
         faults.append(f"{where}: a German page said {german!r} then {unsaid!r} - only its own line, "
                       f"and nothing where it has none")
 
+    # A town typed in full is settled without the list, and said all the same.
+    placed = re.sub(r'\sdata-hub-signup-places(-from)?="[^"]*"', "", page(
+        'data-hub-signup-say-mode="replace" data-hub-signup-say-location="{Place} it is."'))
+    placed = placed.replace('data-hub-module="signup"', 'data-hub-module="signup" data-hub-signup-places='
+                            f'"UK/England: Greater London" data-hub-signup-places-from="{SIGNUP_PLACES}"', 1)
+    tab = shell.open(placed, f"{name}-signup-messages-place", width=PHONE,
+                     before=messages_stub(SIGNUP_MEMBERS, platform))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(700)
+        town = tab.locator('[data-hub-signup-part="location"] input[role="combobox"]')
+        typed = None
+        if town.count():
+            town.focus()
+            town.press_sequentially("Islington", delay=30)
+            typed = said(tab)
+    finally:
+        tab.close()
+    if typed != "Islington it is.":
+        faults.append(f"{where}: a town typed in full said {typed!r}, not the page's line for it")
+
     # Off is off, and the card still works.
     tab = shell.open(page('data-hub-signup-messages="off"'), f"{name}-signup-messages-off",
                      width=PHONE, before=messages_stub(SIGNUP_MEMBERS, platform))
