@@ -25,6 +25,7 @@ its "generated" date is part of the edition.
 
 import argparse
 import collections
+import difflib
 import io
 import json
 import math
@@ -105,7 +106,7 @@ def gazetteer(iso, admin1, admin2):
             if f[6] not in ("P", "A"):
                 continue
             place = {"at": (float(f[4]), float(f[5])), "populated": f[6] == "P",
-                     "people": int(f[14] or 0),
+                     "people": int(f[14] or 0), "names": {norm(f[1]), norm(f[2])},
                      "areas": {admin1.get(f"{iso}.{f[10]}", ""),
                                admin2.get(f"{iso}.{f[10]}.{f[11]}", "")} - {""}}
             for n in {norm(f[1]), norm(f[2])} | {norm(a) for a in f[3].split(",") if a}:
@@ -120,9 +121,11 @@ def in_region(region, place):
 
 
 def match(regions, index):
-    """{region: {town: [lat, long] or None}}, and how each town was placed."""
+    """({region: {town: [lat, long] or None}}, {region: {alias: town}}, and how
+    each town was placed)."""
     placed = {region: {} for region in regions}
     people = {}
+    chosen = {}
     how = collections.Counter()
     pending = []
     for region, towns in regions.items():
@@ -133,6 +136,7 @@ def match(regions, index):
                 best = max(here, key=lambda c: (c["populated"], c["people"]))
                 placed[region][town] = best["at"]
                 people[(region, town)] = best["people"]
+                chosen[(region, town)] = best
                 how["in its region"] += 1
             elif cands:
                 pending.append((region, town, cands))
@@ -147,6 +151,7 @@ def match(regions, index):
         if len(spots) == 1:
             placed[region][town] = cands[0]["at"]
             people[(region, town)] = max(c["people"] for c in cands)
+            chosen[(region, town)] = cands[0]
     for region, town, cands in pending:
         if town in placed[region]:
             how["unique in the country"] += 1
@@ -162,17 +167,40 @@ def match(regions, index):
         if km(best["at"], mid) <= reach:
             placed[region][town] = best["at"]
             people[(region, town)] = best["people"]
+            chosen[(region, town)] = best
             how["nearest its region"] += 1
         else:
             how["too far to trust"] += 1
+    # Several of the reference's names for one place in one region - Peterborough,
+    # Peterbrough, Petersborough - are one town to a visitor: the one GeoNames
+    # spells is shown, and the others are kept as its aliases.
+    groups = collections.defaultdict(list)
+    for (region, town), place in chosen.items():
+        groups[(region, id(place))].append(town)
+    aliases = {}
+    for (region, _), towns in groups.items():
+        if len(towns) < 2:
+            continue
+        place = chosen[(region, towns[0])]
+        proper = [t for t in towns if norm(t) in place["names"]]
+        keep = proper[0] if proper else max(
+            towns, key=lambda t: max(difflib.SequenceMatcher(None, norm(t), n).ratio() for n in place["names"]))
+        for t in towns:
+            if t != keep:
+                aliases.setdefault(region, {})[t] = keep
+                how["an alias of another name"] += 1
     # Biggest first, so a visitor typing "Dall" in Texas is offered Dallas
     # before Dallardsville; a town with no coordinates goes last.
     out = {}
     for region, towns in regions.items():
-        order = sorted(towns, key=lambda t: (t not in placed[region], -people.get((region, t), 0)))
+        shown = [t for t in towns if t not in aliases.get(region, {})]
+        order = sorted(shown, key=lambda t: (t not in placed[region], -people.get((region, t), 0)))
         out[region] = {t: ([round(placed[region][t][0], 3), round(placed[region][t][1], 3)]
                            if t in placed[region] else None) for t in order}
-    return out, how
+    # How many people each region's towns hold, rounded: the card offers the
+    # largest regions first.
+    sizes = {region: round(sum(people.get((region, t), 0) for t in out[region]), -3) for region in out}
+    return out, aliases, sizes, how
 
 
 def build():
@@ -190,11 +218,11 @@ def build():
         if data.get("generated") != generated:
             raise SystemExit(f"{country}: its town list is from {data.get('generated')} and the "
                              f"region list from {generated} - fetch both again")
-        regions, how = match(data["regions"], gazetteer(ISO[country], admin1, admin2))
+        regions, aliases, sizes, how = match(data["regions"], gazetteer(ISO[country], admin1, admin2))
         towns = sum(len(t) for t in regions.values())
         with_place = sum(1 for t in regions.values() for v in t.values() if v)
         files[f"{slug(country)}.json"] = {"edition": edition, "country": country, "source": SOURCE,
-                                          "regions": regions}
+                                          "regions": regions, "aliases": aliases, "sizes": sizes}
         index["countries"][country] = {"file": f"{slug(country)}.json",
                                        "regions": list(regions), "towns": towns, "placed": with_place}
         print(f"  {country:13s} {towns:6d} towns in {len(regions):3d} regions, "
@@ -228,6 +256,10 @@ def check():
                           f"the index says {edition} / {country}")
         if list(data["regions"]) != row["regions"]:
             faults.append(f"{path.name}: its regions are not the index's")
+        for region, names in (data.get("aliases") or {}).items():
+            for alias, town in names.items():
+                if town not in data["regions"].get(region, {}):
+                    faults.append(f"{path.name}: {region} / {alias} is an alias of {town!r}, which is not listed")
         for region, towns in data["regions"].items():
             for town, at in towns.items():
                 if at is not None and not (isinstance(at, list) and len(at) == 2
