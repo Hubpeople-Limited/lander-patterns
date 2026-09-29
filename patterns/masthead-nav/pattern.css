@@ -512,6 +512,10 @@
     align-items: center;
     gap: var(--space-4);
     overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .masthead-nav--row .masthead-nav-links > ul::-webkit-scrollbar {
+    display: none;
   }
   .masthead-nav--row .masthead-nav-links > ul > li {
     flex: 0 0 auto;
