@@ -43,7 +43,7 @@ REFERENCE = "https://help.hubpeople.ai/data"
 GEONAMES = "https://download.geonames.org/export/dump"
 # Bumped when the matching changes, so a new match of the same reference is a
 # new edition and a published one never changes.
-MATCHER = 1
+MATCHER = 2
 # The platform's country names, as its reference spells them, to ISO codes.
 ISO = {"Argentina": "AR", "Australia": "AU", "Brazil": "BR", "Canada": "CA",
        "Ireland": "IE", "New Zealand": "NZ", "South Africa": "ZA", "Spain": "ES",
