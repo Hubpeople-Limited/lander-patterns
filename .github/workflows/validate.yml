@@ -41,6 +41,8 @@ jobs:
           { echo "$PR_TITLE"; echo; echo "$PR_BODY"; } > pr-text.tmp
           python ci/check_prose.py --file pr-text.tmp
           rm -f pr-text.tmp
+      - name: Places files hang together
+        run: python ci/make_places.py --check
       - name: Lint patterns (regenerates INDEX.md)
         env:
           # The strings that must never reach a public file are not in this

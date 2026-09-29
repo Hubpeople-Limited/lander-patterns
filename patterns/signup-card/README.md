@@ -14,14 +14,10 @@ card follows the headline. Anything else that was beside the button — a second
 link, a reassurance line — comes out: the card is the one control.
 
 With the behaviour library the card asks **one question at a time** — two side
-by side from `60rem` — adds two interest steps and a first name, shows live
-members of the brand, and draws a tick before handing off. Without it the card
-is a short plain form that still submits correctly. For a homepage or landing
-page whose job is sign-ups; not for a page for members.
-
-**It sends only what the visitor gave.** Nothing is pre-ticked or pre-filled: a
-default nobody changed would be sent as their answer and end up on their
-profile. There is no password field; the join flow asks for it itself.
+by side from `60rem` — adds interest steps and a first name, shows live members,
+and draws a tick before handing off; without it, it is a plain form that still
+submits. **It sends only what the visitor gave**: nothing is pre-ticked or
+pre-filled, and the join flow asks for the password itself.
 
 **What it needs.** An opener to sit in; the card's title; the brand's wording
 for every answer; a line on the age limit; a line saying the password comes
@@ -55,26 +51,30 @@ visitor's own tick always wins. `dob` — `boxes`, the default, or `wheel`;
 `reward` for a complete date — `sign` (age and star sign, the default), `age`
 or `none`; `settle="off"` stops the card scrolling into view at a step; `guid`
 where the join link carries no site GUID, without which there are no members.
-Every visible word has an English default and an option of its own — `next`,
-`back`, `skip`, `step`, `seeking-help`, `intent-help`, `enjoy-help`, `tally`,
-`tally-none`, `tally-full`, `more`, the five `error-*`, `members`, `who`,
-`summary-seeking`, `summary-interests`, `signs`, `done`, `going` — so a page in
-another language sets them all. The interest labels are the exception: they
-stay as the join flow spells them.
+Every visible word has an English default and an option of its own, named in
+`lib/hub.js`'s `SIGNUP_WORDS`, so a page in another language sets them all. The
+interest labels and place names are the exception: they stay as the join flow
+spells them.
+
+**Where the visitor lives.** `data-hub-signup-places` says where the page's
+visitors are, in the platform's own location names: `world`, a country (`UK`),
+a region (`UK/England: Avon`) or a town (`UK/England: Avon/Bristol`). Straight
+after "looking for" the card asks whatever that leaves open — country, region,
+then the town, offered as it is typed — narrows the members to the answer and
+sends the join flow the town's latitude and longitude, from the places files
+published beside the behaviour. A town given in full is not asked. Leave it off
+and there is no location step; if the places cannot be reached, the step goes
+and the join flow asks.
 
 **The members are the brand's own, fetched live**, never stored: a strip of
 faces in the card from the moment the page arrives, narrowed to who the visitor
 is looking for once they say. Nothing shows when there are none or the search
-fails. Under the progress bar a line gathers the answers so far.
-
-**Pairing.** `member-grid` below the opener, `steps-plain` for how joining
-works. It refuses `signup-steps`, the block it replaces, and `picker-chips`.
+fails. Under the progress bar a line gathers the answers so far. **Pairing.**
+`member-grid` below the opener, `steps-plain` for how joining works. It refuses
+`signup-steps`, the block it replaces, and `picker-chips`.
 
 **Brand adaptability.** `--btn-radius` shapes the answer rows, fields and
-buttons together; `--chip-radius` the interest pills, the progress bar and the
-member strip. `--color-primary` marks every chosen answer and the progress.
-Every ink on the card is `--color-text` on `--color-surface`, whatever the
-opener's ground.
-
-The date of birth is three number boxes, not dropdowns: a list of years goes
-stale every January, and a phone brings up the number keypad.
+buttons; `--chip-radius` the pills, the progress bar and the member strip.
+`--color-primary` marks every chosen answer. Every ink on the card is
+`--color-text` on `--color-surface`, whatever the opener's ground. The date of
+birth is number boxes, not dropdowns: a list of years goes stale every January.

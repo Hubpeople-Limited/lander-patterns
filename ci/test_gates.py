@@ -2227,6 +2227,17 @@ def check_hub_publish():
         if not ok:
             failures.append("floating URL follows the release")
 
+        # The places go out beside the bundle under their edition, and a
+        # bundle naming any other edition would read places nobody published.
+        index = json.loads((HERE.parent / "lib" / "places" / "index.json").read_text(encoding="utf-8"))
+        placed = out / "hub-behaviours" / "places" / index["edition"] / "index.json"
+        print(f"  {'ok  ' if placed.is_file() else 'FAIL'} "
+              f"{'the places are published under their edition':<46} want=True")
+        if not placed.is_file():
+            failures.append("places published under their edition")
+        case("a bundle naming another places edition",
+             run_publish(_hub("1.4.2") + '\nconst SIGNUP_PLACES_EDITION = "0000-00-00.0";\n', "//d", out), 1)
+
         # A rehearsal must leave nothing behind, or the check a pull request
         # runs would itself be a publication.
         before = sorted(p.name for p in (out / "hub-behaviours").iterdir())

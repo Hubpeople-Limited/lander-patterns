@@ -19,6 +19,12 @@ already published, and that is deliberate - the bundle reports its own version
 at runtime, so a floating URL serving bytes that call themselves something
 else would leave nobody able to say what a page is running.
 
+The places files (lib/places/, made by ci/make_places.py) go beside them in a
+folder named for their edition, /hub-behaviours/places/<edition>/, immutable
+like a pinned version: the bundle names the edition it was built for, so a
+page never pairs a bundle with places it did not expect, and the folder is
+new only when the places are.
+
 `publish/` only ever grows, and it is committed. The host replaces its whole
 contents on each deploy, so the accumulated tree in the repository is both the
 record of every version ever served and the thing that stops a deploy quietly
@@ -65,6 +71,8 @@ SHARED_HEADERS = {
 }
 
 SEMVER = re.compile(r"\d+\.\d+\.\d+")
+PLACES = ROOT / "lib" / "places"
+EDITION = re.compile(r'SIGNUP_PLACES_EDITION\s*=\s*"([^"]+)"')
 VERSION = re.compile(r"window\.HubBehaviours\s*=\s*\{[^}]*?version\s*:\s*"
                      r"[\"']([^\"']+)[\"']", re.S)
 
@@ -152,7 +160,8 @@ def config(majors):
     return {
         "trailingSlash": "never",
         "routes": routes,
-        "mimeTypes": {".js": "text/javascript", ".map": "application/json"},
+        "mimeTypes": {".js": "text/javascript", ".map": "application/json",
+                      ".json": "application/json"},
         # A host that serves one page for anything it does not recognise would
         # answer a mistyped version URL with HTML and a 200, and a module
         # script would try to parse it. Everything under the prefix is excluded
@@ -287,6 +296,10 @@ def build(source_path, out, minified_path=None):
                             for m in majors}
 
     tree = {}
+    places, why = places_tree(source.decode("utf-8"), out)
+    if why:
+        return None, why
+    tree.update(places)
     for directory in (f"{BASE}/{version}", f"{BASE}/v{major}"):
         for name, data in files.items():
             tree[f"{directory}/{name}"] = data
@@ -301,6 +314,36 @@ def build(source_path, out, minified_path=None):
     return {"version": version, "files": tree, "minified": len(minified),
             "source": len(source),
             "integrity": manifest["versions"][version]["integrity"]}, None
+
+
+def places_tree(source, out):
+    """The places files under their edition, or why they cannot be published.
+
+    Like a pinned version, a published edition never changes: new places are
+    a new edition, which make_places.py names from the reference's date and
+    its own matcher version.
+    """
+    index_path = PLACES / "index.json"
+    if not index_path.is_file():
+        return {}, None
+    edition = json.loads(index_path.read_text(encoding="utf-8"))["edition"]
+    # A bundle that reads the places must read these ones.
+    named = EDITION.search(source)
+    if named and named.group(1) != edition:
+        return None, (f"the bundle names places edition {named.group(1)} and "
+                      f"lib/places/ is {edition} - set SIGNUP_PLACES_EDITION "
+                      f"to match")
+    tree = {}
+    for path in sorted(PLACES.glob("*.json")):
+        rel = f"{BASE}/places/{edition}/{path.name}"
+        data = path.read_bytes()
+        served = out / rel
+        if served.is_file() and served.read_bytes() != data:
+            return None, (f"places edition {edition} is already published and "
+                          f"{path.name} has changed - a published edition never "
+                          f"changes: bump MATCHER in ci/make_places.py and rerun it")
+        tree[rel] = data
+    return tree, None
 
 
 def write(tree, out):
