@@ -130,6 +130,17 @@ COMBOS = [
     {"overflow": "more", "submenu": "dropdown", "layout": "inline", "sticky": "compact"},
 ]
 
+# The menu button's rungs, crossed, at the phone widths where the button is
+# drawn: every one has to stay thumb-sized and clear of the mark, shut and
+# open. Every other axis at its default.
+PHONE_COMBOS = [
+    {"overflow": "more", "submenu": "dropdown", "layout": "inline",
+     "toggle": t, "burger": b}
+    for t in ("icon", "labelled")
+    for b in ("three", "two", "bold", "boxed")
+]
+PHONE_WIDTHS = (320, 360, 390)
+
 FILLER = "  <p>More sample copy, so the page is tall enough to scroll.</p>\n" * 30
 
 SHELL = """<!DOCTYPE html>
@@ -270,6 +281,18 @@ MEASURE = r"""
                                     .textContent.trim().slice(0, 30) }))
       : [],
   };
+}
+"""
+
+# The open button against the mark. The rest of an open drawer may lie over
+# the mark by design, so only the button that shuts it is held to this.
+TOGGLE_ON_MARK = r"""
+() => {
+  const logo = document.querySelector('.masthead-nav-logo');
+  const toggle = document.querySelector('.masthead-nav-toggle');
+  if (!logo || !toggle) return false;
+  const a = logo.getBoundingClientRect(), b = toggle.getBoundingClientRect();
+  return a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1;
 }
 """
 
@@ -485,6 +508,8 @@ def measure_render(tab, combo, script):
                 faults.append("with the drawer open the join control is not reachable"
                               + (f" - behind {j['blockedBy']}" if j.get("blockedBy") else ""))
             got["small"] = sorted(set(got["small"]) | set(opened["small"]))
+            if tab.evaluate(TOGGLE_ON_MARK):
+                faults.append("with the menu open the button sits on the brand mark")
         for s in got["small"]:
             faults.append(f"a control under {TAP_MIN}px: {s}")
     return got, faults
@@ -584,6 +609,11 @@ def main():
             return 1
         faults, count = sweep(shell, tokens, COMBOS, list(MENUS), LOGO_FIXTURES,
                               args.widths, [False, True])
+        phone_widths = [w for w in args.widths if w in PHONE_WIDTHS]
+        more, extra = sweep(shell, tokens, PHONE_COMBOS, list(MENUS), LOGO_FIXTURES,
+                            phone_widths, [False, True])
+        faults += more
+        count += extra
 
     for k in known:
         print("  known " + k)
@@ -595,7 +625,8 @@ def main():
         return 1
     print(f"check_header ({args.tokens}): clean - {count} renders, "
           f"{len(COMBOS)} rung sets x {len(MENUS)} menus x {len(LOGO_FIXTURES)} marks "
-          f"x {len(args.widths)} widths, library on and off"
+          f"x {len(args.widths)} widths, and {len(PHONE_COMBOS)} menu button rung sets "
+          f"at {len(PHONE_WIDTHS)} phone widths, library on and off"
           + (f"; {len(known)} known" if known else ""))
     return 0
 

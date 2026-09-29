@@ -140,8 +140,8 @@
 .masthead-nav-toggle-icon {
   position: relative;
   flex: 0 0 auto;
-  width: 1rem;
-  height: 2px;
+  width: var(--masthead-nav-bar-width, 1rem);
+  height: var(--masthead-nav-bar, 2px);
   background: currentColor;
 }
 .masthead-nav-toggle-icon::before,
@@ -149,14 +149,14 @@
   content: "";
   position: absolute;
   inset-inline: 0;
-  height: 2px;
+  height: var(--masthead-nav-bar, 2px);
   background: currentColor;
 }
 .masthead-nav-toggle-icon::before {
-  top: -5px;
+  top: calc(-1 * var(--masthead-nav-bar-gap, 5px));
 }
 .masthead-nav-toggle-icon::after {
-  top: 5px;
+  top: var(--masthead-nav-bar-gap, 5px);
 }
 .masthead-nav-disclosure[open] .masthead-nav-toggle-icon {
   background: transparent;
@@ -169,11 +169,62 @@
   top: 0;
   transform: rotate(-45deg);
 }
+/* burger: how the bars are drawn. Every rung folds into the same cross. */
+.masthead-nav--three {
+  --masthead-nav-bar: 2px;
+  --masthead-nav-bar-gap: 5px;
+}
+.masthead-nav--two {
+  --masthead-nav-bar-gap: 4px;
+}
+.masthead-nav--two .masthead-nav-toggle-icon {
+  background: transparent;
+}
+.masthead-nav--bold {
+  --masthead-nav-bar: 3px;
+  --masthead-nav-bar-gap: 6px;
+  --masthead-nav-bar-width: 1.25rem;
+}
+/* boxed: the element is the shape, a tap target square in the join
+   control's own pair, and draws the middle bar as a centred gradient. */
+.masthead-nav--boxed .masthead-nav-toggle {
+  border: 0;
+}
+.masthead-nav--boxed.masthead-nav--icon .masthead-nav-toggle {
+  padding-inline: 0;
+}
+.masthead-nav--boxed .masthead-nav-toggle-icon {
+  width: var(--masthead-nav-tap);
+  height: var(--masthead-nav-tap);
+  border-radius: var(--btn-radius);
+  color: var(--masthead-nav-cta-ink);
+  background: linear-gradient(currentColor, currentColor) center / 1rem 2px no-repeat,
+              var(--masthead-nav-cta-face);
+}
+.masthead-nav--boxed .masthead-nav-toggle-icon::before,
+.masthead-nav--boxed .masthead-nav-toggle-icon::after {
+  inset-inline: calc(50% - 0.5rem);
+}
+.masthead-nav--boxed .masthead-nav-toggle-icon::before {
+  top: calc(50% - 6px);
+}
+.masthead-nav--boxed .masthead-nav-toggle-icon::after {
+  top: calc(50% + 4px);
+}
+.masthead-nav--boxed .masthead-nav-disclosure[open] .masthead-nav-toggle-icon {
+  background: var(--masthead-nav-cta-face);
+}
+.masthead-nav--boxed .masthead-nav-disclosure[open] .masthead-nav-toggle-icon::before,
+.masthead-nav--boxed .masthead-nav-disclosure[open] .masthead-nav-toggle-icon::after {
+  top: calc(50% - 1px);
+}
 /* toggle=icon: the word leaves the box, never the accessibility tree - never
-   display: none. With no word in it the box needs a square floor. */
+   display: none. With no word in it the box needs a square floor, and the
+   bars stand bare: no frame, the tap area and the focus ring kept. */
 .masthead-nav--icon .masthead-nav-toggle {
   justify-content: center;
   min-width: var(--masthead-nav-tap);
+  border: 0;
 }
 .masthead-nav--icon .masthead-nav-toggle-text {
   position: absolute;

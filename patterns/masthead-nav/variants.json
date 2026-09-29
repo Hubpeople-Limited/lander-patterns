@@ -177,6 +177,28 @@
       }
     }
   },
+  "burger": {
+    "label": "Menu icon",
+    "note": "How the bars on the mobile menu button are drawn. Whichever you pick, they turn into a cross while the menu is open.",
+    "rungs": {
+      "three": {
+        "label": "Three bars",
+        "note": "Three thin bars, the icon most people know. The default."
+      },
+      "two": {
+        "label": "Two bars",
+        "note": "Two thin bars, a little lighter and more modern looking. Suits a clean, minimal site."
+      },
+      "bold": {
+        "label": "Bold bars",
+        "note": "Three heavier, slightly wider bars. Easier to spot, and suits a brand with a strong, confident look."
+      },
+      "boxed": {
+        "label": "Bars in a shape",
+        "note": "The bars sit in a filled shape in the same colours as your join button, rounded the way your buttons are. The most noticeable choice."
+      }
+    }
+  },
   "edge": {
     "label": "Bottom edge",
     "note": "How the header is separated from whatever sits under it. The header is exactly the same height whichever you pick.",
