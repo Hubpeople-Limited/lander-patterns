@@ -885,7 +885,7 @@ def check_signup(shell, name, tokens):
         if zip_first:
             code.fill("00000")
             tab.wait_for_timeout(600)
-            unknown_said = tab.locator(f".{name}-postal .{name}-help").is_visible()
+            unknown_said = tab.locator(f".{name}-postal .{name}-place-note[data-hub-signup-warn]").is_visible()
             tap(tab, f".{name}-next")
             tab.wait_for_timeout(400)
             stayed = tab.evaluate(SIGNUP_PARTS_JS) == ["location"]
