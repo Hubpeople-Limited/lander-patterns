@@ -1,4 +1,4 @@
-/* signup-card v2 - tokens only, selectors prefixed */
+/* signup-card v3 - tokens only, selectors prefixed */
 /* The card sits in an opener's call-to-action place: it takes a width of its
    own and leaves the page's layout to the opener. */
 .signup-card {
@@ -543,16 +543,42 @@ and 132px in step with that. */
 .signup-card-step > .signup-card-field + .signup-card-field {
   margin-top: var(--space-3);
 }
-/* The towns offered as the visitor types: a raised list under the field,
-   not a second field. */
+/* The towns offered as the visitor types: a raised list over the card, under
+   the field, so the card keeps its height. */
+.signup-card-place {
+  position: relative;
+}
+.signup-card-step > .signup-card-field + .signup-card-place {
+  margin-top: var(--space-3);
+}
 .signup-card-places {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 3;
   margin: var(--space-1) 0 0;
   padding: var(--space-1);
-  list-style: none;
   background: var(--color-surface);
   border: 1px solid var(--color-rule);
   border-radius: var(--btn-radius);
   box-shadow: var(--card-shadow);
+}
+/* How many towns there are, and that the list goes on. */
+.signup-card-places-count {
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  font-size: .8125rem;
+  color: var(--color-text-soft);
+}
+/* Four and a half rows: the cut row says the list scrolls. */
+.signup-card-places-list {
+  max-height: calc(4.5 * 44px);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
 }
 .signup-card-places li {
   display: flex;
