@@ -41,7 +41,7 @@ REQUIRED_FIELDS = [
     # "opener-split" is this library talking to itself, and neither belongs in
     # a tool where somebody is choosing what to put on a page.
     "name", "display-name", "summary",
-    "version", "type", "page-types", "content-shape", "description",
+    "version", "type", "page-types", "content-shape", "layout", "description",
     "keywords", "needs", "tokens-used", "motion", "status", "added",
     "one-per-page",
 ]
@@ -2010,6 +2010,9 @@ def main():
             # What each image slot needs, so a build can place the right
             # placeholder without opening the pattern.
             "image-slots": parse_image_slots(meta.get("image-slots", "")) or [],
+            # How the pattern lays out a page, in the building skill's words,
+            # so a planner can tell two shapes apart without opening either.
+            "layout": parse_layout(meta.get("layout", "")) or {},
             "avoid-with": [s.strip() for s in meta.get("avoid-with", "").split(",")
                            if s.strip() and s.strip() != "none"],
             "pairs-with": [s.strip() for s in meta.get("pairs-with", "").split(",")

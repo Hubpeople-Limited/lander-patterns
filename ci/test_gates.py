@@ -571,7 +571,8 @@ def check_disclosure():
 
 
 def check_header():
-    """The two header gates added with the variation work, both directions."""
+    """The header vocabulary gates - content-shape, the ground ladder and
+    the layout line - both directions, and that the layout line is required."""
     import lint
     failures = []
 
@@ -612,6 +613,28 @@ def check_header():
     run("content-shape", SHAPE_CASES, shape)
     run("ground ladder", VARIANT_CASES, variants)
     run("layout labels", LAYOUT_CASES, layout)
+
+    # Required: a pattern with no line would be described by whatever the
+    # building skill guesses, which for an opener is "words only".
+    root = Path(tempfile.mkdtemp())
+    held = lint.ROOT
+    lint.ROOT = root
+    try:
+        demo = root / "demo" / "pattern.html"
+        demo.parent.mkdir()
+        demo.write_text("<!--\nname: demo\n-->\n<section class=\"demo\"></section>\n",
+                        encoding="utf-8")
+        before = len(lint.findings)
+        lint.check_html(demo, lint.parse_header(demo.read_text(encoding="utf-8"), demo),
+                        "demo")
+        missing = any("'layout'" in f for f in lint.findings[before:])
+        del lint.findings[before:]
+    finally:
+        lint.ROOT = held
+        shutil.rmtree(root, ignore_errors=True)
+    print(f"  {'ok  ' if missing else 'FAIL'} layout labels catches: a header with no layout line")
+    if not missing:
+        failures.append("layout labels: a header with no layout line")
     return failures
 
 
@@ -2799,7 +2822,7 @@ def main():
     total = (len(CASES) + 1 + len(LOST_PHRASES) + len(LOST_ABSENT)
              + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
-             + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES) + len(LAYOUT_CASES)
+             + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES) + len(LAYOUT_CASES) + 1
              + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
              + len(MODIFIER_CASES) + 1 + 6 + len(NOTE_CASES) + 2
              + len(PAIRING_CASES) + 1
