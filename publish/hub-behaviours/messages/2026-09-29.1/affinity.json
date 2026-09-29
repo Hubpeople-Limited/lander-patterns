@@ -1,0 +1,2496 @@
+{
+ "edition": "2026-09-29.1",
+ "platform": "affinity",
+ "source": "Rewritten from the registration-flow skill's interest tips.",
+ "interests": {
+  "25+": [
+   "Sets the starting point for who you'd like your matches to be.",
+   "Setting a range means the people you meet are at a similar stage of life."
+  ],
+  "30+": [
+   "Narrows things to a slightly later starting point, plain and simple.",
+   "A later starting point suits anyone with a clearer idea of what they want."
+  ],
+  "420 - Friendly Travel": [
+   "Travelling with someone who shares your habits makes planning trips easier.",
+   "A trip where you don't have to explain yourself is a relaxed trip."
+  ],
+  "50+": [
+   "Knowing what you want by now makes for more honest first conversations.",
+   "Life experience brings good stories, and good stories make easy first dates."
+  ],
+  "60+": [
+   "Knowing your own mind makes it easier to say what you're looking for.",
+   "Company and conversation are worth making time for at any stage of life."
+  ],
+  "70+": [
+   "A lifetime of stories makes for easy conversation over coffee.",
+   "It's never too late to enjoy meeting someone new."
+  ],
+  "99% Sober AF": [
+   "Near enough sober with the occasional exception, stated as it is."
+  ],
+  "A Relationship": [
+   "Being upfront about wanting a relationship saves everyone time.",
+   "Saying you want something real from the start draws people who want the same."
+  ],
+  "A Steady Partner": [
+   "Wanting something steady is worth saying upfront, before any guesswork starts.",
+   "Steady is underrated, and the right person will see it as a strength."
+  ],
+  "Abstract": [
+   "Board-only strategy is a pure test of thinking, and a good match makes it fun.",
+   "No theme and no luck, just two minds across a table, is a good way to meet one."
+  ],
+  "AcroYoga": [
+   "Balance and trust with a partner, more playful than serious, makes a memorable date.",
+   "Letting someone hold you up is a fast, fun lesson in trust."
+  ],
+  "Action / Adventure": [
+   "An adventure game played side by side gives you a story to share.",
+   "A game that takes you somewhere new shows how someone likes to explore."
+  ],
+  "Actions over Words": [
+   "Actions over words is a preference worth saying in words, once.",
+   "Naming this early saves everyone some guesswork.",
+   "A small thing done without being asked says more than any message."
+  ],
+  "Adventure Bikes": [
+   "Rating gravel roads as highly as motorways is a good thing to share.",
+   "An adventure bike says you'd rather see where the road goes than know already."
+  ],
+  "Adventure Racing": [
+   "Someone who races over hills and rivers knows how to keep going when it's hard.",
+   "Training together gives you time with each other every week."
+  ],
+  "Adventure Riding": [
+   "Riders who would rather find the road than stick to it make good company.",
+   "Mixed-surface routes make for a ride out with a story at the end of it."
+  ],
+  "Adventurous": [
+   "Spontaneity like this tends to shape fun, unplanned first dates.",
+   "Saying yes to a new plan is a good way to find someone who says yes too."
+  ],
+  "Aerial Yoga": [
+   "Hanging in a silk hammock together is a first date nobody forgets.",
+   "Trying something upside down shows you're up for a bit of adventure."
+  ],
+  "Aerobics": [
+   "A class together helps a fitness habit stick, and makes it more fun.",
+   "Someone who loves a class brings good energy to a first date."
+  ],
+  "Air Steward": [
+   "Job or type, it's a clear and easy thing to mention.",
+   "If you fly for work, saying so explains the odd hours before they come up."
+  ],
+  "Aliens": [
+   "Speculating about what's out there makes an easy conversation with someone new.",
+   "Believer or sceptic, it's a fun thing to argue about over a drink."
+  ],
+  "Aliens & UFOs": [
+   "Sightings, theories and documentaries make for a curious first conversation.",
+   "A clear night and a sky to watch makes a first date with a difference."
+  ],
+  "Allergic to alcohol": [
+   "A physical reason rather than a choice, and worth knowing before anyone suggests a drink."
+  ],
+  "Allowed on furniture": [
+   "Furniture rules are an early thing a couple settles about a dog.",
+   "Someone else who shares the sofa with their dog will feel right at home."
+  ],
+  "Allowed on the table": [
+   "Table manners for a cat vary from house to house, so stating yours saves a surprise.",
+   "Someone relaxed about paws on the table will fit right in."
+  ],
+  "Alternative ideas": [
+   "Broad on purpose, and a decent opening for a conversation that goes somewhere.",
+   "It leaves room for someone to ask what it means to you."
+  ],
+  "Alternative Medicine": [
+   "Herbal remedies and acupuncture come up naturally once wellbeing enters the conversation.",
+   "Comparing what helps you feel well is a thoughtful thing to share early."
+  ],
+  "Ambition": [
+   "Naming this outright tends to attract exactly the kind of match who values the same drive.",
+   "Ambition works best alongside someone who cheers on your plans."
+  ],
+  "Amputation": [
+   "Stated upfront, rather than discovered."
+  ],
+  "Ancient aliens tv show": [
+   "Binge-worthy enough to fill a first date's worth of conversation on its own.",
+   "Whether you watch it for the theories or the laughs says something about you."
+  ],
+  "Ancient aliens Tv shows": [
+   "Ancient Aliens gives you theories to debate long after the credits roll.",
+   "A favourite show is an easy first thing to bond over."
+  ],
+  "Animal Showing 🐩": [
+   "Show days are long, and someone who understands that is worth finding.",
+   "Ring tips and road-trip stories give a first conversation somewhere to start."
+  ],
+  "Animal Training 🏁": [
+   "Training talk makes an easy first message, from recall to agility to clicker work.",
+   "Patience with an animal tends to say something about patience with people."
+  ],
+  "Animal Welfare 😻": [
+   "Rescue and welfare work says a great deal about what someone values.",
+   "A shift at a shelter together is a first date that does some good."
+  ],
+  "Animated Series": [
+   "Animated Trek fans are just as passionate as the live-action ones.",
+   "Knowing the cartoon series marks you out as a fan who's seen it all."
+  ],
+  "Anxiety/Stress Relief": [
+   "A steady practice is a good way to keep stress in check.",
+   "Saying why you practise helps someone understand what matters to you."
+  ],
+  "Apache Nation": [
+   "Naming Apache roots upfront puts heritage at the heart of things, not in a footnote.",
+   "Shared heritage means fewer things you'd otherwise need to explain."
+  ],
+  "Arcade": [
+   "Short, high-score sessions make an easy first game with someone new.",
+   "A night at a retro arcade is a first date with built-in rivalry."
+  ],
+  "Archery": [
+   "Steady hands and quiet focus make archery a calm, unusual first date.",
+   "Taking turns at the target keeps conversation easy between shots."
+  ],
+  "ARPG": [
+   "Loot-and-level games reward the patient, and comparing builds is half the fun.",
+   "Someone who'll grind a dungeon with you is showing real staying power."
+  ],
+  "Art & Design": [
+   "A gallery visit makes a low-key first date that doesn't rely on conversation alone.",
+   "What someone stops to look at tells you what catches their eye."
+  ],
+  "Arts & Crafts": [
+   "Handmade projects give a date somewhere to start, so show what you've been making.",
+   "A craft afternoon together keeps hands busy and conversation easy."
+  ],
+  "Arts & Culture": [
+   "Gallery afternoons make a relaxed first date that doesn't rely on filling silences.",
+   "What someone lingers in front of in a gallery tells you something about them."
+  ],
+  "Ashtanga Yoga": [
+   "A structured, disciplined practice shows how someone turns up for things.",
+   "Someone who gets the early starts will understand your routine without asking."
+  ],
+  "Astrology": [
+   "Star signs and birth charts make an easy, playful first question.",
+   "Serious or just for fun, knowing where someone stands saves a debate later."
+  ],
+  "Athleticism": [
+   "Fitness and an active lifestyle show up naturally in conversation, not just on a run.",
+   "A first date that moves, a hike or a climb, suits anyone who'd rather not sit still."
+  ],
+  "Attractive": [
+   "People mean different things by this, so it can start a good conversation.",
+   "Worth adding, and worth explaining in your own words on your profile."
+  ],
+  "Authenticity": [
+   "Wanting the real version of someone, not a performance, makes dating more honest.",
+   "Being yourself from the first message saves you both from surprises later."
+  ],
+  "Autism Spectrum Disorder": [
+   "Stated so communication preferences are clear from the start."
+  ],
+  "Aviation Enthusiasts": [
+   "An airshow or a morning plane-spotting makes an unusual and easy first date.",
+   "Someone who knows their aircraft will happily talk wings and engines for hours."
+  ],
+  "Ayurveda": [
+   "Ayurvedic living shapes how you eat and rest, which is good to know from the start.",
+   "Swapping routines and recipes is an easy way into a first conversation."
+  ],
+  "Backpacking": [
+   "Travelling light together shows you quickly how well you get along.",
+   "Backpacking stories make some of the best first-date conversations."
+  ],
+  "Badminton": [
+   "A weekly game of badminton makes an easy, sociable standing date.",
+   "A friendly rally is a light way to find out if you're competitive."
+  ],
+  "Baking": [
+   "Weekend baking sessions are a simple, low-pressure thing to plan a date around.",
+   "Turning up with something home-baked makes a lovely first impression."
+  ],
+  "Balcony & Container Gardening": [
+   "Growing in a small space proves you don't need a garden to love one.",
+   "A balcony of pots is an easy, cosy place to share a drink with someone."
+  ],
+  "Ball Sports": [
+   "Meeting through a game can feel easier than meeting over a drink.",
+   "A kickabout in the park makes a relaxed, active first date."
+  ],
+  "Banter & Wit": [
+   "Quick humour is one of the fastest ways to make messaging feel easy rather than like work.",
+   "A running joke from the first chat is a lovely thing to carry into a date."
+  ],
+  "Baseball": [
+   "Watching a game together gives you innings of easy conversation.",
+   "Fan or player, baseball gives you a team to argue about."
+  ],
+  "Basketball": [
+   "Shooting hoops makes an easier first meet than sitting across a table.",
+   "Watching a game together gives you something to cheer about side by side."
+  ],
+  "Battle Royale": [
+   "Dropping into the same match is a quick way to spend an hour with someone new.",
+   "Nothing builds trust like someone who revives you under fire."
+  ],
+  "BBBW": [
+   "A specific description in its own right, not folded into a catch-all.",
+   "Naming it clearly tells people what to expect before the first hello."
+  ],
+  "BBW": [
+   "A long-established term, and saying it plainly draws people looking for exactly that.",
+   "Being clear from the start saves guesswork on both sides."
+  ],
+  "Beadwork & craft": [
+   "Beadwork makes an easy show-and-tell early on, with real skill worth asking about.",
+   "Work made by hand carries stories, and sharing them is a good way in."
+  ],
+  "Beekeeping": [
+   "Beekeeping takes patience and care, which is a good sign in anyone.",
+   "A jar of your own honey is a first-meet gift that's hard to beat."
+  ],
+  "Belly Dancing": [
+   "A skilled, expressive art form, and a great story to tell on a first date.",
+   "A dance class together is a fun first date, even for two left feet."
+  ],
+  "Beyond Belief Tv show": [
+   "Old-school paranormal storytelling makes for a good evening in together.",
+   "Guessing which stories were true is a fun game to play with someone new."
+  ],
+  "BHM": [
+   "Big and handsome, said plainly, draws people who like exactly that.",
+   "Being upfront about it means nobody has to guess."
+  ],
+  "Bigfoot": [
+   "Cryptid hunting is a proper hobby, not a punchline.",
+   "A forest walk with an eye out for footprints makes a first date with a story."
+  ],
+  "Bike Shows": [
+   "Walking the rows at a show makes for an easy, unhurried first meet.",
+   "Picking a favourite bike on the stand tells you something about someone's taste."
+  ],
+  "Biking": [
+   "Biking together is a ready-made weekend plan, with no need to overthink the date.",
+   "A route you love is a lovely thing to share with someone new."
+  ],
+  "Birds": [
+   "Talking species and setups is an easy, specific thing to bond over.",
+   "Someone who keeps birds already knows about routine, noise and early mornings."
+  ],
+  "Birds of a Feather": [
+   "Great for trivia and a laugh over old episodes with someone who remembers them too.",
+   "Laughing at the same old jokes is a good sign you'll get on."
+  ],
+  "Blind": [
+   "Stated early, since it shapes where you meet and how you message."
+  ],
+  "Bluegrass": [
+   "Pickers' circles and bluegrass nights make a warm, easy first date.",
+   "Live music gives you something to share without having to fill every silence."
+  ],
+  "BMX": [
+   "Trading tricks at the skatepark makes a fun, relaxed first meet.",
+   "Someone who rides BMX knows how to get back up after a fall."
+  ],
+  "Board Game": [
+   "A game night makes a relaxed first date with something to do between conversations.",
+   "How someone plays, win or lose, tells you a fair bit about them."
+  ],
+  "Boating": [
+   "A slow afternoon on the water is a low-pressure way to spend real time with someone new.",
+   "Knowing ropes and tides is a skill worth sharing with the right person."
+  ],
+  "Body Implants": [
+   "Subdermal work like this is a serious body-art commitment, not just decoration.",
+   "Someone who appreciates the craft will want to hear how it was done."
+  ],
+  "Bodybuilding": [
+   "Comparing routines is an easy first conversation for anyone who trains seriously.",
+   "A partner who understands meal prep and early sessions makes life simpler."
+  ],
+  "Book Clubs": [
+   "Book clubs give you an easy, natural topic before you've even met.",
+   "Recommending your club's last pick is a gentle way to share your taste."
+  ],
+  "Books": [
+   "What you're reading is a gentle way into a first conversation.",
+   "Swapping book recommendations tells you something about someone, fast."
+  ],
+  "Bowling": [
+   "Bowling is an easy, low-stakes first date, with conversation between frames.",
+   "Nobody minds a gutter ball on a first date, which takes the pressure off."
+  ],
+  "Boxing": [
+   "Boxing takes discipline, and that tends to show up in the rest of life too.",
+   "A training partner who pushes you is a good start to something more."
+  ],
+  "Britain's Got Talent": [
+   "Sunday-night viewing is an easy thing to share, voting included.",
+   "A favourite act from past series is a fun way to break the ice."
+  ],
+  "Broadchurch": [
+   "A great one to compare theories on before you even meet.",
+   "Talking over the ending is a good test of how someone argues their case."
+  ],
+  "Bus Driver": [
+   "Easy to bring up, as a role or simply a preference.",
+   "If it's your job, you've probably got a funny story or two to open with."
+  ],
+  "Business & Networking": [
+   "Building a network abroad is easier with someone who gets the business side.",
+   "Swapping notes on work in a new country is a practical first conversation."
+  ],
+  "Café Racer Culture": [
+   "Clip-ons, humped seats and the ton-up look come with history worth talking about.",
+   "A café stop is the natural first date for anyone into café racers."
+  ],
+  "Campaigner": [
+   "Caring about a cause is worth saying upfront, not something to downplay.",
+   "Someone who campaigns tends to act on what they believe."
+  ],
+  "Campaigning": [
+   "Campaign events are full of conversation starters, from canvassing to election nights.",
+   "Knocking on doors together is a first date with a cause attached."
+  ],
+  "Campaing / Legacy": [
+   "A campaign takes weeks to finish together, and that shared history carries a long way.",
+   "Choosing someone to play a whole campaign with is its own kind of commitment."
+  ],
+  "Camping": [
+   "A weekend under canvas shows you how someone copes when things get muddy.",
+   "Campfire conversations go deeper than anything said over dinner in town."
+  ],
+  "Camping & Bikepacking": [
+   "Packing light and camping en route to nowhere is a shared language between riders.",
+   "A night under canvas after a long ride is when the best talking happens."
+  ],
+  "Cannabis & Creativity": [
+   "Talking about what inspires your work is a good way past small talk.",
+   "Sharing something you've made is a warm way into a first conversation."
+  ],
+  "Cannabis & Fitness": [
+   "An active lifestyle that includes this is worth saying upfront.",
+   "A hike followed by a relaxed evening makes an easy plan with the right person."
+  ],
+  "Cannabis & Spirituality": [
+   "Mindfulness and this pair up naturally for some, and saying so draws them to you.",
+   "Talking about what brings you calm is a good way into a real conversation."
+  ],
+  "Canyoneering": [
+   "Canyoneering asks for trust and teamwork, both good signs in a partner.",
+   "A shared taste for adventure makes planning trips together easy."
+  ],
+  "Card games": [
+   "A deck travels anywhere, so it can turn a first date into a relaxed hour.",
+   "Teaching each other a favourite game is a nice way to share something personal."
+  ],
+  "Caring": [
+   "Kindness like this tends to come through fast once messages start.",
+   "Small acts of care say more than any opening line."
+  ],
+  "Casual Dating": [
+   "Naming it as casual from the start heads off crossed wires before they happen.",
+   "Keeping it light is easier when both of you have said so at the start."
+  ],
+  "Cat hater": [
+   "Knowing a dog isn't keen on cats early saves everyone an awkward introduction later.",
+   "A dog that chases cats is worth knowing about before two households meet."
+  ],
+  "Cats": [
+   "A cat in your profile tells people something warm about your home life.",
+   "Anyone who can win over a cat has already shown some patience."
+  ],
+  "CBD & Wellness": [
+   "Easy to bring up early, a relaxed, low-pressure detail.",
+   "Swapping what helps you unwind is a gentle way to get to know someone."
+  ],
+  "Centrist": [
+   "Sitting deliberately in the middle is a position worth saying out loud.",
+   "Someone who weighs both sides tends to be good at a calm disagreement."
+  ],
+  "Chakra Healing": [
+   "Energy work draws curious, open-minded people who like to talk about it.",
+   "Sharing what a practice means to you is an easy way to be understood early."
+  ],
+  "Champagne": [
+   "A taste for marking small occasions properly is an easy thing to plan a date around.",
+   "Someone who celebrates the little wins is lovely company."
+  ],
+  "Charity Rides": [
+   "A fundraising ride gives you a shared cause to start from.",
+   "Riding for a good cause says something about you before you've said a word."
+  ],
+  "Chat Only": [
+   "Setting this expectation early means nobody waits for a date that isn't coming.",
+   "Saying you'd rather chat draws people who enjoy conversation for its own sake."
+  ],
+  "Cheerleading": [
+   "Cheerleading takes teamwork and energy, both good things to bring to dating.",
+   "Routines and competitions make easy stories to swap on a first date."
+  ],
+  "Chef": [
+   "Whether you cook for a living or love those who do, it's an easy opener.",
+   "If it's your job, cooking a first dinner for someone is quite a gesture."
+  ],
+  "Cherokee Nation": [
+   "Saying your Cherokee heritage matters helps you meet people who value the same.",
+   "Heritage gives you history and family to talk about from the start."
+  ],
+  "Children Left Home": [
+   "An empty house after the kids move out is a good time to think about what you want.",
+   "Free evenings make room for dinners, trips and someone new to share them with."
+  ],
+  "Chippewa / Ojibwe": [
+   "Naming Ojibwe heritage helps you meet someone for whom it's part of daily life too.",
+   "Language, family and ceremony are good things to share from the outset."
+  ],
+  "Choctaw Nation": [
+   "Choctaw ties that are present and ongoing deserve to be known from the start.",
+   "Someone with Choctaw roots of their own will understand what you carry with you."
+  ],
+  "Chronic Fatigue Syndrome": [
+   "Stated upfront, so pacing is understood without explaining it twice."
+  ],
+  "Church Activities": [
+   "Faith at the centre of your week helps the right person understand you from the start.",
+   "Sharing church life gives a relationship a steady rhythm of its own."
+  ],
+  "Classic Liberal": [
+   "Being upfront about where you sit politically saves a few mismatched conversations.",
+   "A shared belief in personal freedom makes for a good debate over dinner."
+  ],
+  "Classic Motorcycles": [
+   "Old iron takes patience and spares-hunting, qualities worth having in a partner too.",
+   "Someone who'd rather talk points and carbs will happily lose an evening to it."
+  ],
+  "Climate": [
+   "Caring about climate gives you real ground to share with someone equally serious.",
+   "Small choices, from travel to food, show how someone lives their values."
+  ],
+  "Coast Insider": [
+   "Late-night radio's deepest paranormal rabbit hole is a great source of stories to swap.",
+   "A fellow night owl will understand your hours without asking."
+  ],
+  "Coastal Paths": [
+   "A coastal path and a café at the end make a simple, lovely first date.",
+   "Sea air and a long stretch of cliff give you room to talk."
+  ],
+  "Colitis": [
+   "Named early, so a cancelled plan or a careful menu choice needs no explaining later."
+  ],
+  "Comanche Nation": [
+   "Comanche heritage carried day to day is worth sharing from the first hello.",
+   "Family stories and tradition make for a conversation with real depth."
+  ],
+  "Commitment": [
+   "Saying you want commitment upfront saves both of you from guessing.",
+   "Commitment is a clear aim, and clear aims are easy to match."
+  ],
+  "Communication": [
+   "Saying how you like to communicate heads off early misunderstandings.",
+   "Good communication makes even a difficult conversation feel manageable."
+  ],
+  "Competitive powwow sport": [
+   "Judged rounds and competition dancing take real dedication, worth talking about.",
+   "Someone who follows the circuit will understand the travel and the practice."
+  ],
+  "Completionist": [
+   "Chasing every achievement shows a patience that carries over into other things.",
+   "Someone who finishes what they start is worth knowing about early."
+  ],
+  "Concerts & Festivals": [
+   "Live shows make a first date where the music carries the conversation.",
+   "Your festival history is an easy, fun thing to compare."
+  ],
+  "Conservation 🦍": [
+   "Caring about wild places gives you shared causes to talk about from the start.",
+   "A volunteer day outdoors makes a first meet with a purpose."
+  ],
+  "Conservative": [
+   "Sharing your values upfront draws people who hold the same ones.",
+   "Agreeing on the things that matter makes the small things easier."
+  ],
+  "Consistency": [
+   "Following through on plans is a quality people notice fast.",
+   "Consistency is what turns a good first date into a second and a third."
+  ],
+  "Conspiracy Theories": [
+   "Digging into theories together makes for a long first conversation.",
+   "A good debate shows how someone thinks, and whether they can disagree kindly."
+  ],
+  "Conventions": [
+   "Convention season makes for meetups with badges, panels and all.",
+   "Walking a convention floor together is a first date with no awkward silences."
+  ],
+  "Cooking": [
+   "Cooking together hands you real time with someone new, no elaborate plan required.",
+   "What someone cooks for you says something about them."
+  ],
+  "Cooperative": [
+   "Beating a game together builds rapport faster than an icebreaker.",
+   "Winning or losing as a team shows how someone handles both."
+  ],
+  "Coronation Street": [
+   "Decades of cobbles storylines give you endless things to talk about.",
+   "Watching together after a long day is a cosy habit to share."
+  ],
+  "Cosplay": [
+   "Building a costume takes real skill, and the right person will appreciate it.",
+   "Planning a joint costume is a creative way to spend time together."
+  ],
+  "Country & Western": [
+   "Line dances and weekends built around gigs make for good dates.",
+   "Loving country and western says something about the kind of evenings you enjoy."
+  ],
+  "Country Gospel": [
+   "Harmony-heavy gospel is music with meaning, and sharing it can mean a great deal.",
+   "Singing the same songs on a Sunday is a gentle kind of connection."
+  ],
+  "Country Pop": [
+   "Arguing whether crossover belongs on a country playlist makes a fun first debate.",
+   "A shared playlist is an easy way to find out if you'll get on in the car."
+  ],
+  "Country Rock": [
+   "Guitars turned up over a country backbone make a great gig to share.",
+   "Swapping favourite live albums is an easy way to start talking."
+  ],
+  "Crime Documentaries": [
+   "Real cases told well make an easy first night in together.",
+   "Recommending a documentary is a quick way to show what grips you."
+  ],
+  "Crime Fiction": [
+   "Plot twists give you an easy way to find shared taste early in a conversation.",
+   "Your favourite detective hints at what you admire in someone."
+  ],
+  "Criminal Psychology": [
+   "Digging into what makes people tick makes a strong conversation starter.",
+   "Curiosity about why people do things carries over well into getting to know someone."
+  ],
+  "Crohn's": [
+   "Said upfront, so eating out and last-minute changes are understood from the start."
+  ],
+  "Cross-platform": [
+   "Playing across systems opens up who you can team up with, whatever you own.",
+   "Nobody has to buy a new console just to play together."
+  ],
+  "Cross-trainning": [
+   "A gym partner makes the early sessions easier to turn up for.",
+   "Mixing up your training suggests someone who likes trying new things."
+  ],
+  "Crossfit": [
+   "Training alongside someone helps a routine stick, and gives you someone to cheer.",
+   "A love of a hard workout makes for spirited conversation."
+  ],
+  "Cruises": [
+   "A cruise makes a shared trip to look forward to once you know each other.",
+   "Talking about places you'd sail to is an easy way to dream a little together."
+  ],
+  "Cryptozoology": [
+   "Hidden and undiscovered creatures go well beyond Bigfoot, with always a new theory.",
+   "Swapping your favourite sighting is a good way to test someone's curiosity."
+  ],
+  "Cults": [
+   "Documentaries on this spark long, thoughtful conversations.",
+   "Comparing the ones you've watched is an easy first thing to talk about."
+  ],
+  "Culture & Media": [
+   "Culture and media opinions can spark a real conversation before you've even met.",
+   "Your take on what's worth watching tells someone about your taste, fast."
+  ],
+  "Curiosity": [
+   "Wanting to keep learning about someone rather than assuming is a lovely way to date.",
+   "Curious people ask good questions, which makes for easy first conversations."
+  ],
+  "Curling": [
+   "Curling makes a distinctive icebreaker, quite literally.",
+   "A curling session needs teamwork, a good way to see how you work together."
+  ],
+  "Curvy": [
+   "Simple, comfortable and a clear way to describe yourself.",
+   "Saying it upfront draws people who are glad you did."
+  ],
+  "Custom Builds": [
+   "Bobbers, one-off paint and garage builds are a project as much as a machine.",
+   "Showing someone your build is showing them your patience and your taste."
+  ],
+  "Cybercrime": [
+   "Scams and digital cons make for surprisingly good conversation fuel.",
+   "Knowing how cons work says you're hard to fool, which is no bad thing."
+  ],
+  "Cycling": [
+   "A ride out with a café stop halfway is a relaxed kind of first date.",
+   "Keeping pace with someone on a bike is a gentle way to see if you fit."
+  ],
+  "Dabbing & Concentrates": [
+   "Specific enough to make a great opener with the right match.",
+   "Saying so upfront means nobody's surprised later."
+  ],
+  "Dancing": [
+   "It takes two, which is half the reason dancing works as a date.",
+   "A class together gets you laughing before you've had time to be nervous."
+  ],
+  "Day Hikes": [
+   "Day hikes are an easy full day together without the commitment of a big trip.",
+   "Sharing snacks at the top is a small but reliable way to bond."
+  ],
+  "Deaf": [
+   "Stated early, so how you communicate can be settled before you meet."
+  ],
+  "Debating": [
+   "Enjoying a proper argument makes for a lively start to a conversation.",
+   "Someone who can disagree well is someone worth getting to know."
+  ],
+  "Deckbuilder": [
+   "Building a deck from scratch appeals to planners, and it shows how someone thinks.",
+   "Comparing strategies after a game is an easy way to keep talking."
+  ],
+  "Decking": [
+   "A practical shared interest for anyone planning their own outdoor space.",
+   "A deck built with your own hands is a lovely place to share a summer evening."
+  ],
+  "Deduction": [
+   "Working out who did it together gets two strangers talking fast.",
+   "Watching how someone reasons through a puzzle shows you how their mind works."
+  ],
+  "Deep Conversations": [
+   "Skipping small talk for something real sets the tone from the first message.",
+   "The question you'd love to be asked is a good place to begin."
+  ],
+  "Deep Space 9": [
+   "Comparing favourite Deep Space Nine arcs fills a first conversation with ease.",
+   "A fellow fan will have strong views on the Dominion War."
+  ],
+  "Defense": [
+   "An interest in defence and military affairs is worth bringing up early.",
+   "Military history and current affairs both make for a meaty first conversation."
+  ],
+  "Desert Landscapes": [
+   "Wide open space suits someone who likes quiet and room to think.",
+   "A desert trip is the kind of adventure best planned with someone who loves it too."
+  ],
+  "Dexterity": [
+   "Wobbly towers and steady hands make for a laugh on a first meetup, not a serious contest.",
+   "Nobody stays nervous for long when the tower is about to fall."
+  ],
+  "Dice Games": [
+   "Quick, low-stakes rounds are an easy way to relax with someone new.",
+   "A handful of dice fits in a pocket and turns any café table into a game."
+  ],
+  "Diet": [
+   "Sharing how you eat day to day is an easy, practical thing to compare notes on early.",
+   "Knowing how someone eats makes cooking for them far easier."
+  ],
+  "Direct Action": [
+   "Protest and organising mean showing up, and a partner who shows up matters.",
+   "Putting your beliefs into action says plainly what matters to you."
+  ],
+  "Disc": [
+   "Worth adding, since the particular interests are the ones that start a conversation.",
+   "Say a little more about it on your profile so the right person knows what you mean."
+  ],
+  "Discovery": [
+   "Newer Trek gives you fresh ground to talk over, alongside the classics.",
+   "Liking the new series says you're open to things changing."
+  ],
+  "Diving": [
+   "Diving trips make a memorable early date.",
+   "Diving runs on trust in your buddy, which says something good about someone."
+  ],
+  "Divorced": [
+   "Divorce is plainly acknowledged, with nothing to add beyond that.",
+   "Saying it upfront means it's out of the way before the first date."
+  ],
+  "DIY": [
+   "Hands-on interests like this can turn into a shared weekend project.",
+   "Someone who can put up a shelf and laugh when it's wonky is worth meeting."
+  ],
+  "Documentaries": [
+   "Easy to suggest for a low-key night in with a new match.",
+   "The last documentary that changed your mind is a great first question."
+  ],
+  "Dog walking": [
+   "Dog walking is the easiest activity to share with someone new.",
+   "A walk with the dogs gives nervous first dates something to focus on."
+  ],
+  "Dog-friendly": [
+   "A joint walk with a dog is one of the easiest ways to meet someone.",
+   "Being dog-friendly means a date's four-legged friend is welcome too."
+  ],
+  "Dogs": [
+   "A daily walk has a way of turning into a conversation.",
+   "A dog walk makes an easy first date with a built-in reason to keep moving."
+  ],
+  "Don't Have a cat...yet!": [
+   "Wanting a cat one day counts as much as owning one already.",
+   "Picking a future cat's name together is a sweet thing to talk about."
+  ],
+  "Don't Have a dog...yet!": [
+   "Planning for a dog one day is a nice thing to share with someone.",
+   "Talking about the dog you'd like is a fun way into a first conversation."
+  ],
+  "Downton Abbey": [
+   "Upstairs or downstairs, your favourite character says something about you.",
+   "A country-house day out makes a first date fit for the Crawleys."
+  ],
+  "Dr": [
+   "Job or type, it's a straightforward thing to put on the table.",
+   "If it's your work, saying so early makes the odd hours easier to explain."
+  ],
+  "Drafting": [
+   "Passing cards round the table keeps everyone talking.",
+   "Seeing what someone keeps and what they pass on is quietly revealing."
+  ],
+  "Drinking": [
+   "A drink and a good chat is one of the oldest icebreakers going, and it still works.",
+   "A favourite pub is a good thing to share early."
+  ],
+  "Drive": [
+   "A good one to bring up if you want to find someone who remembers the underrated shows too.",
+   "Swapping shows that deserved more attention is a good way to start talking."
+  ],
+  "Driveways": [
+   "A practical interest like this says you like getting a job done properly.",
+   "Weighing up block paving against gravel shows someone who likes a plan."
+  ],
+  "Drooler": [
+   "Drool is a package-deal detail to mention with a laugh, not a complaint.",
+   "Someone who keeps a towel handy is already halfway to your dog's heart."
+  ],
+  "Dry since forever": [
+   "Never drank, rather than stopped, which is a different thing."
+  ],
+  "Dull": [
+   "Choosing quiet and predictable over constant excitement is a perfectly good way to live.",
+   "A calm night in is an underrated first date."
+  ],
+  "Dungeon-Crowler": [
+   "Clearing a dungeon side by side is a shared win that sticks in a first impression.",
+   "Facing a shared enemy puts two people on the same side fast."
+  ],
+  "Dwarfism": [
+   "Stated upfront, rather than discovered."
+  ],
+  "Early Nights": [
+   "An early night by choice is an easy thing to admit, and the right person will match it.",
+   "Morning people make brilliant breakfast dates."
+  ],
+  "Eating Out": [
+   "Trying new places together is a low-pressure way to get to know someone.",
+   "Picking the restaurant for a second date is a nice thing to look forward to."
+  ],
+  "Eco-living": [
+   "Sharing how sustainability shapes your day makes for an honest early conversation.",
+   "Living lightly works best with someone who wants to do the same."
+  ],
+  "Economical": [
+   "Building an economy from nothing rewards patient thinkers.",
+   "A slow, thoughtful game suits two people who like to take their time."
+  ],
+  "Economy": [
+   "Talking economics head-on tends to make for a sharper, more honest early conversation.",
+   "How someone thinks about money and markets shows how they weigh things up."
+  ],
+  "Edibles": [
+   "Low-key and easy to bring up in an early message.",
+   "Knowing where someone stands on this avoids an awkward moment later."
+  ],
+  "Education": [
+   "Strong opinions on education give you something to dig into once the messages start.",
+   "What someone thinks schools are for says a great deal about them."
+  ],
+  "Emmerdale": [
+   "Dales drama gives you decades of storylines to talk over.",
+   "Catching up on the village together is an easy evening in."
+  ],
+  "Emotional Intelligence": [
+   "Reading a room well rarely gets top billing, but it makes every conversation easier.",
+   "Someone who notices how you feel before you say it is worth finding."
+  ],
+  "Emotional intimacy": [
+   "Naming this upfront makes it easier to find someone looking for the same depth.",
+   "Being able to say how you feel is a good foundation for everything that follows."
+  ],
+  "Emotional support": [
+   "An emotional support cat is a normal thing to mention, and worth knowing early.",
+   "Someone who understands the bond will respect it from the start."
+  ],
+  "Energy & Crystals": [
+   "Crystals and energy work are a real shared practice, not a passing novelty.",
+   "Swapping the stones you carry and why is a gentle first conversation."
+  ],
+  "Engine-builder": [
+   "An engine clicking into gear is even better with someone across the table who gets it.",
+   "Engine-builders reward planning ahead, which is not a bad trait in a partner."
+  ],
+  "Enterprise": [
+   "Prequel-era fans are enthusiastic, and happy to make the case for it.",
+   "Liking the underdog series says you give things a fair chance."
+  ],
+  "Epilepsy": [
+   "Stated so anyone matching already knows, and it need not come up again."
+  ],
+  "Equestrian": [
+   "Stables and shows give you easy things to talk about from the start.",
+   "Someone who rides understands early mornings and muddy boots."
+  ],
+  "Equestrian/Horseriding": [
+   "Riding isn't a spectator interest, and someone who rides knows the commitment.",
+   "A hack out together makes a first date with a bit of adventure."
+  ],
+  "Esports": [
+   "Watching a big match together gives a first date something to cheer about.",
+   "Playing or spectating, it shows how you like to spend an evening."
+  ],
+  "Europhile": [
+   "Saying where you stand on Europe draws people who see it your way.",
+   "A city break is an easy plan with someone who loves the continent."
+  ],
+  "Eurosceptic": [
+   "Being clear on your view of Europe saves a surprise halfway through dinner.",
+   "Shared politics make the news easier to watch together."
+  ],
+  "Ex-Player": [
+   "Having played at any level gives you an easy story to share, win, loss or otherwise.",
+   "Old team stories are a good way to show someone what shaped you."
+  ],
+  "Expat Meetups": [
+   "A meetup is a relaxed first date with no pressure to fill every silence.",
+   "Meeting people who've made the same move makes a new place feel smaller."
+  ],
+  "Exploration /Adventure": [
+   "Charting unknown territory together is one of the oldest ways to bond over a table.",
+   "Discovering the map as you go keeps both of you curious to the end."
+  ],
+  "Family life": [
+   "Saying family life matters draws people building towards the same thing.",
+   "Knowing early that family comes first makes later conversations easier."
+  ],
+  "Fan": [
+   "Matchday together is a first date with a built-in atmosphere.",
+   "Who you support is an easy, lively opener with a new match."
+  ],
+  "Fantasy": [
+   "Fantasy worlds give you something to talk about before the board is even set up.",
+   "Which faction someone picks tells you a little about their imagination."
+  ],
+  "Farm Animals": [
+   "Farm animals mean early starts, and it helps to meet someone who understands that.",
+   "Comparing notes on flocks and feed is a very specific way to hit it off."
+  ],
+  "Farmer": [
+   "Farm life has its own rhythm, and someone who shares it will understand the hours.",
+   "An appreciation for the land says something steady about someone."
+  ],
+  "Farming": [
+   "Farming games reward patient planners, and comparing harvests is half the fun.",
+   "A calm, steady game suits a relaxed evening with someone new."
+  ],
+  "Fashion": [
+   "An easy compliment to give and receive early on, and small talk that goes somewhere.",
+   "Browsing a market or a vintage shop together makes a fun first date."
+  ],
+  "Fencing": [
+   "Fencing is unusual enough to make an instant conversation starter.",
+   "A sport of quick thinking and good manners says a fair bit about someone."
+  ],
+  "Fencing & Trellis": [
+   "Putting up a fence is a two-person job, and a good test of teamwork.",
+   "A trellis covered in climbers is a nice thing to show someone around."
+  ],
+  "Fibromyalgia": [
+   "Stated so plans can allow for flare days."
+  ],
+  "Field Hockey": [
+   "Someone who plays field hockey will get why match day comes first.",
+   "A team sport shows someone who turns up for other people."
+  ],
+  "Fighting": [
+   "A head-to-head bout is a fast, friendly way to size someone up before the small talk.",
+   "Losing gracefully in a best of three says more than any profile."
+  ],
+  "Film": [
+   "Picking a film together is a gentle first test of compromise.",
+   "Talking over a film afterwards is where a first date finds its feet."
+  ],
+  "Firefighter": [
+   "Dependable conversation material, either way round.",
+   "If it's your job, the stories alone make a first conversation easy."
+  ],
+  "Fish": [
+   "A tank has a quiet, calming way about it, and it makes for an easy topic.",
+   "Keeping fish takes patience and routine, both good things to bring to a relationship."
+  ],
+  "Fishing": [
+   "Fishing trips make an easy, low-pressure first date, comfortable quiet included.",
+   "Someone content to sit patiently by the water tends to be good company."
+  ],
+  "Flexibility": [
+   "A goal that's easy to talk about early, and progress gives you something to share.",
+   "Stretching together after a walk is a low-key way to spend time."
+  ],
+  "Flight Attendants": [
+   "Whether it's your career or your type, saying so draws the right attention.",
+   "Odd hours and time zones are easier with someone who understands them."
+  ],
+  "Flirting": [
+   "Naming it upfront makes the first messages easier, with no guessing games needed.",
+   "A bit of playful back and forth is a good way to see if the spark is there."
+  ],
+  "Flowers & Plants": [
+   "Knowing a flower by name is a small, lovely thing to share on a walk.",
+   "Someone who keeps things growing is used to patience and a bit of care."
+  ],
+  "Flying Trapeze": [
+   "Anyone who flies on a trapeze knows about trust, which is a good start.",
+   "Trapeze stories make a memorable first conversation."
+  ],
+  "Food & Drink": [
+   "Restaurant recommendations make one of the easiest opening messages there is.",
+   "A shared favourite dish is a good excuse for a second date."
+  ],
+  "Food Allergies": [
+   "Mentioning it early means a first dinner can be planned safely.",
+   "Someone who remembers your allergy is showing they care."
+  ],
+  "Food obsessed": [
+   "A food-obsessed dog makes an easy, funny opener.",
+   "Every owner of a greedy dog has a stolen sandwich story worth telling."
+  ],
+  "Football": [
+   "Whether you watch or play, football gives you an instant topic of conversation.",
+   "Watching a match together is a relaxed first date with talking points built in.",
+   "Five-a-side on a weeknight says someone likes to keep active and sociable."
+  ],
+  "Forensic Science": [
+   "Evidence-chasing detail makes a great topic to dig into once messages get going.",
+   "A love of forensic detail says you notice things others miss."
+  ],
+  "Forest Trails": [
+   "Forest trails are quiet enough to actually hear each other talk.",
+   "Spotting wildlife together gives a first walk a gentle focus."
+  ],
+  "FPS": [
+   "Queuing up for a match together is an easy first session with someone new.",
+   "Good teamwork in a match is a decent sign of teamwork elsewhere."
+  ],
+  "Friendships": [
+   "Wanting friendship first, romance later or not at all, is a fair place to start.",
+   "Friendship first takes the pressure off meeting someone new."
+  ],
+  "Funny": [
+   "Humour like this tends to show itself in the first few messages, not just in person.",
+   "Someone who makes you laugh on a first date is hard to forget."
+  ],
+  "Gamebooks": [
+   "Comparing the endings you reached makes a gamebook a surprisingly good opener.",
+   "The choices you'd make at each turn of the page show someone how you think."
+  ],
+  "Gaming": [
+   "Playing together shows you how someone handles a loss, a win and a tricky level.",
+   "A co-op game gives a first chat something to do besides small talk."
+  ],
+  "Garden Buildings": [
+   "A shed or summerhouse built together makes a great shared plan.",
+   "Someone who dreams of a summerhouse knows how they'd like to spend a slow Sunday."
+  ],
+  "Garden Furniture": [
+   "Furnishing an outdoor space is a practical, everyday interest to share.",
+   "A comfortable garden chair is where the best long conversations happen."
+  ],
+  "Garden Paths & Paving": [
+   "Laying a path together is a project with something to show for it at the end.",
+   "Getting a path level takes patience, a quality worth having in a partner."
+  ],
+  "Generosity": [
+   "Small generous gestures land better early on than grand ones.",
+   "Generosity with your time says more than any gift."
+  ],
+  "George Noory": [
+   "Late-night paranormal radio makes for stories worth swapping.",
+   "Sharing a favourite broadcast is an easy way into a late-night conversation."
+  ],
+  "Ghosts": [
+   "A ghost story is a good test of whether someone scares easily.",
+   "A haunted walk or an old pub makes a first date with atmosphere."
+  ],
+  "Ghosts & Hauntings": [
+   "Haunted-house stories make for some of the best first conversations.",
+   "A ghost walk makes a first date that's memorable for all the right reasons."
+  ],
+  "Glamping": [
+   "Glamping is an easy sell for a first trip away together, with comfort included.",
+   "Proper beds with the outdoors on the doorstep suit someone who likes both."
+  ],
+  "Gluten Free": [
+   "Easy to work around once it's known early.",
+   "Mentioning it upfront means the first dinner can be planned without fuss."
+  ],
+  "Going Out": [
+   "Evenings out are a reliable way to turn messages into an actual date.",
+   "A good bar or a live band gives a first meet a bit of energy."
+  ],
+  "Golf": [
+   "A round of golf gives you four hours to actually get to know someone.",
+   "A friendly round shows you how someone handles a bad hole."
+  ],
+  "Good Morning Britain": [
+   "Breakfast telly opinions make for lively sofa debates.",
+   "Agreeing, or not, with the morning headlines is a quick way to get talking."
+  ],
+  "Grandchildren": [
+   "Talking proudly about grandchildren is completely normal, no need to downplay it.",
+   "Days out with the grandchildren are a warm thing to share with someone new."
+  ],
+  "Grandparent": [
+   "Grandparenting is simply part of life, nothing that needs justifying.",
+   "Someone who understands family time will fit around it easily."
+  ],
+  "Green Environment": [
+   "Caring about this is easy to raise early, and it shapes how someone plans a date.",
+   "A shared care for the planet makes daily choices easier to agree on."
+  ],
+  "Growing & Cultivation": [
+   "Hands in soil and time around plants make for a calm, grounding hobby.",
+   "Comparing grow notes is an easy, friendly way to get talking."
+  ],
+  "Grown Children": [
+   "Kids who've grown and moved on shape where you are now.",
+   "Your family is part of your story, and the right person will want to hear it."
+  ],
+  "Grown Up Children": [
+   "Having raised kids to adulthood means no need to explain why you're not starting over.",
+   "Your time is more your own now, and that shapes what you want from dating."
+  ],
+  "Guinea Pigs": [
+   "Guinea pigs are a specific, easy opener for a first message.",
+   "Small pets with big personalities give you stories to swap straight away."
+  ],
+  "Gymnastics": [
+   "Former competitor or weekend fan, gymnastics makes a good story to share.",
+   "Flexibility and focus are good qualities in and out of the gym."
+  ],
+  "Hairless": [
+   "A hairless cat is a guaranteed conversation starter.",
+   "Anyone who loves the breed's quirks will want to hear all about yours."
+  ],
+  "Hamsters": [
+   "A hamster is a small pet with a big personality, and a gentle way to start chatting.",
+   "Looking after a small pet well says something about how you look after people."
+  ],
+  "Handball": [
+   "Handball makes a fresh topic if you're tired of the same small talk.",
+   "A fast team game shows someone who likes being part of something."
+  ],
+  "Handicrafts": [
+   "Something made by hand is a lovely thing to show someone early on.",
+   "Crafting side by side is a quiet, easy way to spend time together."
+  ],
+  "Hanggliding": [
+   "Someone who flies for fun is likely up for adventure on the ground too.",
+   "The story of a first flight is a great way into a conversation."
+  ],
+  "Hard Left": [
+   "Stating strong left views early saves time for everyone.",
+   "Shared convictions give you something real to talk about from the first message."
+  ],
+  "Hard of Hearing": [
+   "Stated before a first meet, so a quieter venue can be chosen."
+  ],
+  "Hard Right": [
+   "Stating strong right views early means nobody is surprised later.",
+   "Shared convictions make a solid footing for everything else you talk about."
+  ],
+  "Hatha Yoga": [
+   "Slow and foundational, it's a comfortable style to suggest for a first class together.",
+   "A gentle class leaves you with energy to spare for a coffee afterwards."
+  ],
+  "Have a Cat": [
+   "Cat owners understand each other's routines without explanation.",
+   "A cat photo is one of the easiest openers going."
+  ],
+  "Have a Dog": [
+   "Mentioning a dog gives a first message an easy place to start.",
+   "A walk with the dog makes an easy, relaxed first date."
+  ],
+  "Health & Fitness": [
+   "Training goals give you something concrete to check in on together, not just talk about.",
+   "A walk, a run or a class makes a first meet that isn't just sitting across a table."
+  ],
+  "Healthcare": [
+   "Healthcare touches everyone, so views on it tend to run deep and honest.",
+   "Talking healthcare early shows what someone thinks we owe each other."
+  ],
+  "Heists and Robberies": [
+   "Elaborate plans and daring jobs make for a genuinely fun topic to swap theories on.",
+   "Planning the perfect imaginary heist is a very good second-date game."
+  ],
+  "Hiking": [
+   "A long walk gives two people time to talk without staring across a table.",
+   "A shared trail and a flask of tea make a good early date."
+  ],
+  "Hiking with Dogs": [
+   "Hiking with a dog in tow is a relaxed way to meet, and the dog does half the icebreaking.",
+   "Someone happy with muddy paws in the car is worth knowing about early."
+  ],
+  "Hiking/Hillwalking": [
+   "Time on the hills is a good way to clear your head, and better shared.",
+   "A hillwalk gives you hours to talk with a view to take in."
+  ],
+  "Historical": [
+   "A game set in a period you love is a natural way into talking history.",
+   "Which era someone would choose to play in says something about their curiosity."
+  ],
+  "Historical Crimes": [
+   "Old cases with new context make a great rabbit hole to fall down together.",
+   "A walking tour of old crime scenes makes an unusual first date."
+  ],
+  "Home & Garden": [
+   "Weekend projects around the house make for good shared plans.",
+   "A garden to show off is a lovely excuse for a second meeting."
+  ],
+  "Home Comforts": [
+   "A night in with good food and a blanket is a fine idea of a date.",
+   "Loving home comforts says you know how to make a place feel warm."
+  ],
+  "Homebody": [
+   "A homebody dog suits a quiet night in on the sofa.",
+   "A dog that loves staying in makes a night in feel like a proper plan."
+  ],
+  "Honest": [
+   "Straightforwardness like this tends to make early conversations simpler, not harder.",
+   "Saying what you mean from the start leaves less room for guesswork later."
+  ],
+  "Honky-Tonk": [
+   "A honky-tonk dance floor is a lively, easy place to meet someone new.",
+   "Two-stepping together gets past the nerves quicker than conversation."
+  ],
+  "Horror / Mystery": [
+   "Getting spooked together tends to bond people faster than a calm game ever would.",
+   "Solving a mystery side by side shows how someone thinks under pressure."
+  ],
+  "Horror / Thriller": [
+   "Screaming at the same jump scare is a fast, friendly way to bond on a first meetup.",
+   "A tense game is a good excuse to sit a little closer."
+  ],
+  "Horseback Riding": [
+   "Time in the saddle, actual horse this time, makes for a memorable first outing.",
+   "A ride together lets you enjoy the view without needing to fill the silence."
+  ],
+  "Horses": [
+   "Horses take time and early mornings, and a partner who gets that is worth having.",
+   "A stable visit or a hack out makes a first meet feel like a proper day."
+  ],
+  "Horseshoes": [
+   "Horseshoes is an unusual pick, which makes it an easy conversation starter.",
+   "A game in the garden makes a relaxed, unfussy first date."
+  ],
+  "Hot Yoga": [
+   "Sweating it out in a hot room together is a quick way past first-date nerves.",
+   "Someone who loves the heat is probably up for a challenge elsewhere too."
+  ],
+  "Houseplants": [
+   "Houseplants are a nice window into someone's routines, and easy to compliment.",
+   "Swapping cuttings is a sweet excuse to meet again."
+  ],
+  "Housing": [
+   "Where and how people live is a subject with real stakes and real stories.",
+   "Someone who has thought hard about housing will have views worth hearing."
+  ],
+  "Howler": [
+   "A dog that howls makes for a good story, fast.",
+   "Someone who laughs at the howling instead of wincing is a keeper."
+  ],
+  "Humorous": [
+   "A game that's built to make you laugh works just as well as any icebreaker script.",
+   "Laughing at the same moment is a good sign you'll get on."
+  ],
+  "Hunter": [
+   "Hunting is just instinct at work, and cat owners know it well.",
+   "A cat that brings home gifts makes a funny first story."
+  ],
+  "Hunting": [
+   "Early starts in the field leave time for long, quiet conversation.",
+   "Someone who hunts too will understand the early mornings and the season."
+  ],
+  "Hunting & fishing": [
+   "Hunting and fishing trips make for a natural, low-pressure first outing.",
+   "Patience and early starts are good things to share with someone."
+  ],
+  "Hypoallergenic": [
+   "A hypoallergenic breed means someone with allergies can still visit comfortably.",
+   "It's a practical detail that opens the door to dating someone with allergies."
+  ],
+  "I'm A Celebrity...Get Me Out Of Here!": [
+   "Jungle trial season gives you something to talk about every night, votes and all.",
+   "Guessing who'll be crowned is a fun, light first conversation."
+  ],
+  "IBS & IBD": [
+   "Naming it takes the awkwardness out of deciding where to eat."
+  ],
+  "Ice Skating": [
+   "Ice skating makes a fun first date, and you're allowed to be bad at it together.",
+   "Holding hands to stay upright is an easy way to break the ice."
+  ],
+  "Ice/Roller Hockey": [
+   "Leagues and pickup games make an easy weekly plan to share.",
+   "A fast game to watch together gives a first date some energy."
+  ],
+  "In Recovery": [
+   "Listed so that plans are built around it from the start rather than adjusted later."
+  ],
+  "Indigenous rights & activism": [
+   "Caring about Indigenous rights shows clearly what you stand for.",
+   "Someone who shares that commitment will understand why it shapes your time."
+  ],
+  "Indoor": [
+   "A cat that stays in is a home-loving detail worth sharing early.",
+   "An indoor cat is worth knowing about when you plan evenings at home."
+  ],
+  "Industry & Advocacy": [
+   "Working in or campaigning for this is worth being clear about from the start.",
+   "Someone who shares your cause will want to hear what you're working on."
+  ],
+  "Influencer": [
+   "A cat with a following makes an easy, funny opener.",
+   "Screenshots of your cat practically write the first message for you."
+  ],
+  "Insects": [
+   "Keeping insects is a niche one, but it stands out in a message and tends to get noticed.",
+   "Curiosity about the small things tends to show up in how someone listens."
+  ],
+  "Intelligent": [
+   "Conversations with real depth tend to follow when this is part of who you are.",
+   "A good question on a first date says more than any list of qualifications."
+  ],
+  "Intercultural Friendships": [
+   "Friendships across cultures are a fine way to feel at home somewhere new.",
+   "Curiosity about other people's backgrounds is a good trait to lead with."
+  ],
+  "Intercultural Love": [
+   "Being open to love across cultures and borders draws people who feel the same.",
+   "Two backgrounds in one relationship means twice the food, festivals and stories."
+  ],
+  "International Affairs": [
+   "Following world events closely gives you a wide-open subject to start on.",
+   "Someone who reads the foreign pages tends to be curious about the wider world."
+  ],
+  "International Cuisine": [
+   "Trying food from another culture makes for a relaxed, no-stakes first date.",
+   "Your favourite dish from abroad tells someone where you've been."
+  ],
+  "International Treks": [
+   "Big trips abroad leave you with stories worth swapping on a first date.",
+   "Someone who has trekked far from home tends to be easy about the unexpected."
+  ],
+  "Intolerance to drinking": [
+   "Physical rather than preference, and much easier said now than at a bar."
+  ],
+  "Irezumi": [
+   "Traditional Japanese work like this takes years of artistry to complete.",
+   "Someone who knows the tradition will understand what a full piece means."
+  ],
+  "Justice": [
+   "Caring about fairness in the justice system says something about your values.",
+   "Justice issues make for a conversation with real substance from the start."
+  ],
+  "Kayak/Cannoing": [
+   "Kayaking makes a good first date, since you're doing something together.",
+   "A quiet stretch of river gives you room to talk at an easy pace."
+  ],
+  "Kayaking/Canoeing": [
+   "Sharing a canoe tests your teamwork within a few strokes, in the best way.",
+   "Being on the water gives you calm, open time to talk without an audience."
+  ],
+  "Kickboxing": [
+   "A training partner who shows up for you is a good sign for more.",
+   "Kickboxing builds confidence, and confidence is attractive in anyone."
+  ],
+  "Kids Away": [
+   "Time when the kids are elsewhere is a normal part of the routine.",
+   "Evenings to yourself make room for someone new."
+  ],
+  "Kids Full Time": [
+   "Full-time care shapes your week, and saying so means your time is understood.",
+   "Being clear about it means plans get made around it, not against it."
+  ],
+  "Kids Part Time": [
+   "Saying so upfront means shared custody weeks need no explaining later.",
+   "Child-free days make a natural time to plan a date."
+  ],
+  "Kindness": [
+   "Basic kindness matters more than anything flashier.",
+   "Kindness shows in small moments, like how someone treats the waiter."
+  ],
+  "Kite Surfing": [
+   "Someone who knows the best spots and the right wind is worth meeting.",
+   "A windy day at the coast makes an easy first plan."
+  ],
+  "Kundalini Yoga": [
+   "Chanting, breathwork and a meditative pace suit someone open to something different.",
+   "A practice this distinctive draws people who are curious rather than wary."
+  ],
+  "Lacrosse": [
+   "Lacrosse is unusual enough to make a strong first talking point.",
+   "Someone who plays will get why training nights are fixed in the diary."
+  ],
+  "Landscaping": [
+   "Landscaping know-how is useful to share, and easy to talk shop about.",
+   "Picturing how a space could look is a creative streak worth showing."
+  ],
+  "Language Disorder": [
+   "Stated so messaging and speaking can happen in the way that works."
+  ],
+  "Language Exchange": [
+   "Trading languages is a fast, friendly way into someone else's world.",
+   "Laughing at each other's mistakes breaks the ice better than any opener."
+  ],
+  "Lap Kitty": [
+   "Time with an animal is a good way to unwind, and a lap cat does it on demand.",
+   "Someone who loves a lap cat probably enjoys a quiet, cosy evening too."
+  ],
+  "Large": [
+   "A big dog means long walks, and long walks make easy early dates.",
+   "Someone who loves a big dog won't mind a bit of hair on the sofa."
+  ],
+  "Lawncare": [
+   "Lawncare is a surprisingly good conversation starter.",
+   "A well-kept lawn says you take pride in the small, steady jobs."
+  ],
+  "Layover / Stopover Meets": [
+   "Handy for travellers timing a meet-up between flights.",
+   "A few hours in a new city can be a surprisingly good time for a first coffee."
+  ],
+  "Learning": [
+   "Curiosity travels well into a first conversation.",
+   "Picking up something new together, a class or a language, makes a good shared project."
+  ],
+  "Learning Something New": [
+   "Trying something unfamiliar together makes a memorable, low-stakes first date.",
+   "Being a beginner alongside someone takes the pressure off being impressive."
+  ],
+  "Legal Drama": [
+   "Courtroom twists make for an easy conversation starter, well before the verdict.",
+   "Whether you'd be the defence or the prosecution is a telling question."
+  ],
+  "Liberal": [
+   "Stating your outlook outright beats leaving it to be guessed at.",
+   "Shared values tend to make the harder conversations easier later on."
+  ],
+  "Libertarian": [
+   "Stating your politics early helps you find someone who won't argue every point.",
+   "A shared view on liberty makes for lively, friendly conversation."
+  ],
+  "Life after death": [
+   "Big questions about what comes after deserve to be taken seriously.",
+   "Talking about what you believe is a meaningful way to get to know someone."
+  ],
+  "Lifeguard": [
+   "Whether it's the job or the look, it's a sunny thing to mention.",
+   "If you're on the beach all summer, saying so helps plan dates around it."
+  ],
+  "Likes other animals": [
+   "A cat that gets along with other animals makes merging two households simpler.",
+   "It's good news for anyone who already has a pet of their own."
+  ],
+  "Limited Mobility": [
+   "Stated upfront, so distance and access are part of the plan."
+  ],
+  "Line Dancing": [
+   "Moving in step with a room full of people is hard to beat for meeting someone.",
+   "No partner is needed to start, which makes a line dance a relaxed first meet."
+  ],
+  "Literature": [
+   "A favourite novel says a fair bit about someone, and it's easy to ask about.",
+   "A bookshop wander makes a quiet, easy first date."
+  ],
+  "Live Music & Concerts": [
+   "Live music gives you an easy plan for a first meet-up, no pressure to talk the whole time.",
+   "Swapping gig stories shows you what you'd go and see together."
+  ],
+  "Local Customs & Traditions": [
+   "Genuine curiosity about local customs makes you easy company in a new place.",
+   "Learning traditions together turns a festival into a shared memory."
+  ],
+  "Local Festivals & Events": [
+   "Festival season gives you a built-in first date, no planning required.",
+   "Finding the best stall at a local fair is a good test of shared taste."
+  ],
+  "Long conversations": [
+   "Good sign for anyone who'd rather talk for hours than trade one-liners.",
+   "Someone who loves a long conversation makes a first date feel like it has no clock."
+  ],
+  "Long Distance Touring": [
+   "Riders who measure a good weekend in miles, not minutes, share a certain patience.",
+   "Planning fuel stops together is a good first test of how you'd travel as a pair."
+  ],
+  "Lorraine": [
+   "Morning sofa opinions are easy small talk to open with.",
+   "A shared morning routine suggests you'd get on over breakfast."
+  ],
+  "Low Vision": [
+   "Stated so venues and photos can be arranged to suit."
+  ],
+  "Low-Pressure Friendships": [
+   "Saying friendship is the goal, not a fallback, keeps things clear from the start.",
+   "No pressure means you can simply enjoy someone's company and see."
+  ],
+  "Loyal": [
+   "Loyalty is worth naming, because it tells people what you value.",
+   "Someone who sticks by you is worth waiting for."
+  ],
+  "Loyalty": [
+   "Sticking by someone through the boring stretches is what loyalty really means.",
+   "Loyalty is a quiet quality that proves itself over time."
+  ],
+  "Martial Arts": [
+   "Martial arts teach respect and discipline, which carry over well into dating.",
+   "Comparing styles and belts gives you an easy first thing to talk about."
+  ],
+  "Meat Lovers": [
+   "A good steak or a slow Sunday roast makes a solid first-date plan.",
+   "Sharing a taste for meat makes planning meals together simple."
+  ],
+  "Medical Assistants": [
+   "As your role or as a preference, it's a clear detail to share.",
+   "If it's your job, it says you stay calm and kind on a busy day."
+  ],
+  "Medicinal Use": [
+   "Practical to mention, and it saves explaining later.",
+   "Being upfront about medicinal use means nobody jumps to conclusions."
+  ],
+  "Meditation": [
+   "A daily sit says you make time for stillness, which is worth knowing early.",
+   "Sitting quietly together can feel closer than a long conversation."
+  ],
+  "Meditation & mindfulness": [
+   "A calm mind makes for patient, attentive company on a first date.",
+   "Someone who meditates will understand why you guard your quiet time."
+  ],
+  "Medium": [
+   "A medium-sized dog is up for a long walk or a quiet evening, whichever you prefer.",
+   "Your dog's size is one less thing to guess about when you meet."
+  ],
+  "Mehndi": [
+   "Henna artistry carries both the design work and the occasion behind it.",
+   "The celebration behind a design makes a warm first thing to talk about."
+  ],
+  "Memory": [
+   "Matching pairs takes the pressure off, since the game keeps the conversation going.",
+   "A simple game is a gentle way to spend time together without trying too hard."
+  ],
+  "Metaverse": [
+   "Exploring virtual spaces together is still new enough to feel like discovery.",
+   "Meeting as avatars first can take the edge off a nervous hello."
+  ],
+  "Military": [
+   "Active service or simply an admirer, it's worth saying from the start.",
+   "If you're posted away at times, being upfront about it saves confusion later."
+  ],
+  "Mindful Walking": [
+   "Mindful walking suits someone who would rather slow down than rush a first meeting.",
+   "A slow walk leaves room for the kind of conversation a busy café never does."
+  ],
+  "Miniature": [
+   "Painting miniatures takes patience, and the right person will notice the care.",
+   "A finished army gives you something to show off, and something to talk about."
+  ],
+  "MMO RPG": [
+   "Long-running worlds mean there's always a new quest to team up on.",
+   "Questing together gives you shared stories before you've even met."
+  ],
+  "MOBA": [
+   "Team-based matches reward good communication, a decent early read on someone.",
+   "Staying calm when the match turns tells you something about a person."
+  ],
+  "Mobile Game": [
+   "A quick round between messages is an easy way to keep things going.",
+   "A friendly rivalry on the same game gives you a reason to message tomorrow."
+  ],
+  "Motocross": [
+   "Motocross takes nerve and skill, and it makes for a great first story.",
+   "A day at the track makes a first date that's anything but dull."
+  ],
+  "Motor bike riding/quad biking": [
+   "Weekend rides make an easy, ready-made plan for two.",
+   "Someone who rides knows the pleasure of an open road and a good café stop."
+  ],
+  "Motorbike Rider": [
+   "Riding yourself rather than riding pillion is worth stating plainly from the start.",
+   "Two riders can plan a ride out together before they've even met."
+  ],
+  "Motorbike Rides": [
+   "A ride out together is one of the simplest first dates going, with no awkward silences.",
+   "Where you'd ride on a free Sunday is a good question to start with."
+  ],
+  "Motorcycle Club Memberships": [
+   "Belonging to a club says you like riding with people you know well.",
+   "Club rides give a new partner an easy way into your world."
+  ],
+  "Mountain Biking": [
+   "Mountain biking makes an active first date if a quiet coffee isn't your style.",
+   "Someone who laughs off a muddy fall is good company on and off the trail."
+  ],
+  "Mountain Peaks": [
+   "Someone else planning their next summit makes a very good walking partner.",
+   "Reaching a summit together is a memorable way to spend a first day out."
+  ],
+  "Mountaineering": [
+   "Mountaineering takes patience, planning and trust in the person on the rope.",
+   "Planning a route together is a good early test of how well you work as a pair."
+  ],
+  "Movies": [
+   "A shared watchlist makes for an easy second date.",
+   "The film someone quotes without meaning to tells you something about them.",
+   "A cinema trip gives a first date a clear start, middle and end."
+  ],
+  "Mr Selfridge": [
+   "Department-store drama still has its fans, even years after it aired.",
+   "A love of period drama is a gentle first thing to share."
+  ],
+  "Multi-Day Treks": [
+   "Multi-day treks are a serious undertaking, and someone who gets that saves explaining.",
+   "Planning a route together shows how well you'd cope on a long trip side by side."
+  ],
+  "Multiple Sclerosis": [
+   "Stated so it is known rather than explained later, including days that vary."
+  ],
+  "Murder Mysteries": [
+   "Puzzling out whodunnit together makes for a genuinely good first conversation.",
+   "A murder mystery dinner makes a first date with a built-in plot."
+  ],
+  "Murder Mystery": [
+   "Solving a case side by side leaves you something to talk over once the culprit's revealed.",
+   "Playing a character for an evening lets you both relax into it."
+  ],
+  "Music": [
+   "Asking what someone's listening to right now is a natural first question.",
+   "A gig makes a first date with a soundtrack and something to talk about after."
+  ],
+  "Mutual values": [
+   "Sharing this early saves time for both sides of a match.",
+   "Values you share hold steady long after the first date nerves have gone."
+  ],
+  "Naked Bikes": [
+   "Streetfighter or stripped-down, someone who shares the love will happily argue the case.",
+   "A ride out makes a first meet with something to talk about."
+  ],
+  "Native foods & cooking": [
+   "Cooking traditional foods for someone is a memorable way to start things off.",
+   "Sharing a family recipe tells someone where you come from."
+  ],
+  "Native language learning": [
+   "Keeping up a Native language gives you a meaningful topic with others doing the same.",
+   "Practising a language together is a lovely way to get to know someone."
+  ],
+  "Nature": [
+   "Loving the outdoors is one of the easiest things to build a first date around.",
+   "Time outside slows things down and lets a conversation find its own pace."
+  ],
+  "Nature Walks": [
+   "A walk outdoors is about as easy and calm a first date as it gets.",
+   "Side by side on a path, conversation comes more easily than across a table."
+  ],
+  "Navajo Nation": [
+   "Navajo identity carried with pride is a strong thing to lead with.",
+   "Someone with Navajo roots will understand what home means to you."
+  ],
+  "News": [
+   "Staying on top of current events gives you easy things to message about.",
+   "Someone curious about the world makes a thoughtful conversation partner."
+  ],
+  "Next Generation": [
+   "Picard or Riker is a good first question for a fellow fan.",
+   "Your favourite TNG episode says something about you."
+  ],
+  "Nintendo": [
+   "A shared favourite Nintendo game is a cheerful place to start a conversation.",
+   "Couch co-op makes a relaxed night in, and a fair test of how someone handles losing."
+  ],
+  "No children": [
+   "Not having children yourself is a clear, simple starting point.",
+   "Saying so upfront draws people whose plans fit with yours."
+  ],
+  "Not political": [
+   "Keeping politics out of it is a clear stance, and worth stating.",
+   "Some people would rather talk about anything but politics, and that's fine."
+  ],
+  "Nurse": [
+   "Whether you wear the uniform or admire it, saying so gets things started.",
+   "If you work shifts, mentioning it early makes planning dates simpler."
+  ],
+  "Off Road Riding": [
+   "Mud, ruts and picking the wrong line together is oddly good for a first outing.",
+   "Someone happy to get filthy on a dirt ride is unlikely to be precious about much else."
+  ],
+  "Online Chat": [
+   "Easing in through chat before meeting works well around a full schedule.",
+   "Getting to know someone in writing first lets the conversation set the pace."
+  ],
+  "Open World": [
+   "Wandering an open map together suits an easy, low-pressure first session.",
+   "Getting sidetracked by every side quest is a habit worth finding in someone else."
+  ],
+  "Original Series": [
+   "The original crew is a classic starting point for a first conversation.",
+   "Kirk or Spock is a debate worth having early."
+  ],
+  "Other Disability": [
+   "For anything the list does not cover, with the specifics in your own words."
+  ],
+  "Outdoor": [
+   "An outdoor cat suits someone who likes a pet with its own schedule.",
+   "A cat that comes and goes brings a good story now and then."
+  ],
+  "Outdoor dining & BBQ’s": [
+   "An outdoor dinner is a relaxed, unpretentious first date once the weather's on side.",
+   "Whoever runs the barbecue gets an easy way to show they can look after people."
+  ],
+  "Outdoor Lighting & Heating": [
+   "A warm, lit garden makes an evening together last well after sunset.",
+   "Kitting out a space for evenings says you like to host and linger."
+  ],
+  "Outgoing": [
+   "An outgoing streak makes sending the first message that much easier.",
+   "Someone outgoing makes a first meet in a busy place feel easy."
+  ],
+  "Paddleboarding": [
+   "Paddleboarding is an easy date to share, equal parts wobbly and fun for beginners.",
+   "Falling in first is a quick way to stop taking yourself too seriously."
+  ],
+  "Paganism & Wicca": [
+   "Sharing practice and belief openly from the start saves awkward conversations later.",
+   "Marking the seasons together gives a relationship its own rhythm."
+  ],
+  "Paramedic": [
+   "As a career or a type, it's a straightforward thing to share.",
+   "If you're the one answering calls, someone who understands the hours matters."
+  ],
+  "Partners": [
+   "Moving abroad for a partner is a story worth telling from the start.",
+   "Someone who's made the same move will understand without it being explained."
+  ],
+  "Party Affiliated": [
+   "Party membership says rather more than a label does.",
+   "Naming your party upfront lets someone know where you stand straight away."
+  ],
+  "Party Games": [
+   "Party games are made for laughing, which takes the edge off meeting someone new.",
+   "A group game night lets you meet someone with friends around and no pressure."
+  ],
+  "Patient": [
+   "Patience like this tends to take the pressure off the early messaging stage.",
+   "Taking your time shows you'd rather get to know someone properly."
+  ],
+  "Patios": [
+   "A finished patio is the perfect spot for a slow evening with someone new.",
+   "Planning a patio together shows how well you share a project."
+  ],
+  "Pc Games": [
+   "PC setups vary wildly, and comparing rigs is its own easy conversation starter.",
+   "Swapping favourite titles is a quick way to see if your tastes line up."
+  ],
+  "Peaky Blinders": [
+   "Shelby quotes make an easy opener with someone who knows the show.",
+   "Birmingham, the Shelbys and that soundtrack give you something to talk about."
+  ],
+  "People pleaser": [
+   "An eager-to-please dog makes an easy, cheerful introduction.",
+   "A dog that loves everyone makes meeting new people that bit easier."
+  ],
+  "Pescatarian": [
+   "Saying so early makes picking a first-date restaurant much simpler.",
+   "A seafood place by the water makes a good first date for a pescatarian."
+  ],
+  "Pet Grooming ✂": [
+   "Grooming know-how is a specific thing to bond over, whether it's your trade or your hobby.",
+   "Anyone who notices a well-kept coat is paying attention to the details."
+  ],
+  "Pet-Friendly Venues ☑": [
+   "Knowing where to go with a pet in tow makes planning an actual date much simpler.",
+   "A dog-friendly pub means nobody has to choose between the date and the dog."
+  ],
+  "Pets": [
+   "Pets give you an easy, low-stakes first thing to bond over.",
+   "Anyone who asks your dog's name first is off to a good start."
+  ],
+  "Philosophy": [
+   "Yoga philosophy gives you a way into deeper conversation beyond the poses.",
+   "Why you practise tells someone far more than how you practise."
+  ],
+  "Photography": [
+   "Swapping photos from your last outing is a natural way to keep a conversation moving.",
+   "A photo walk makes a relaxed first date with something to look at."
+  ],
+  "Photography & Moto Vlogging": [
+   "Editing a ride down to the good bits is a skill another rider will appreciate.",
+   "Your footage gives someone a feel for how you ride before you've met."
+  ],
+  "pickleball": [
+   "A quick game of pickleball gives a first meet something to do besides talk.",
+   "It's easy to learn and easier to laugh at, which suits two people just starting out."
+  ],
+  "Picnicking": [
+   "A picnic is about as easy a shared date as it gets, and nobody minds a long lunch.",
+   "What someone packs for a picnic tells you a little about how they look after people."
+  ],
+  "Piercings": [
+   "Swapping stories about your first one makes an easy opener.",
+   "A piercing says something about your style before you've said a word."
+  ],
+  "Pilates": [
+   "Booking a class together gives a first date a shared plan and a shared ache.",
+   "Pilates shows a steady kind of discipline that's nice to find in someone."
+  ],
+  "Pillion Rider": [
+   "Being happy on the back rather than in the saddle is a useful detail to share early.",
+   "A rider looking for company on the back will be glad to know you enjoy it."
+  ],
+  "Pilot": [
+   "Whether you fly or simply admire those who do, it's a good opener.",
+   "If it's your job, the time zones are easier to explain from the start."
+  ],
+  "Pilots": [
+   "Worn as a uniform or simply admired, it's a clear place to start.",
+   "A love of flying makes for easy talk about where you've been and where next."
+  ],
+  "Plant-Based Lifestyle": [
+   "Sharing how you eat makes choosing a first-date restaurant much easier.",
+   "Swapping favourite plant-based recipes is a friendly way to start talking."
+  ],
+  "Platformers": [
+   "Jump-and-run games are quick to pick up, a relaxed choice for a first session together.",
+   "A classic platformer brings back good memories worth sharing."
+  ],
+  "Player": [
+   "Playing on a team says you know how to pull together and share a win.",
+   "Your match days give someone an easy way to come and cheer you on."
+  ],
+  "Playful": [
+   "A playful cat keeps things lively, and the scratched furniture proves it.",
+   "A cat that loves to play gives you good stories to share early on."
+  ],
+  "Playing Music": [
+   "Playing an instrument is an easy, ready-made topic before you've said much else.",
+   "Making music with someone shows whether you listen well together."
+  ],
+  "Playstation": [
+   "Console loyalty runs deep, so it's good to know you'll be on the same side.",
+   "A favourite game is an easy first thing to compare notes on."
+  ],
+  "Plus Sized": [
+   "Straightforward, and simply part of who you are.",
+   "Being clear about it from the start means no surprises for anyone."
+  ],
+  "Point & Click": [
+   "Puzzling out an adventure game together rewards patience more than reflexes.",
+   "Arguing over which item to combine next is a surprisingly good way to bond."
+  ],
+  "Pokemon": [
+   "Comparing teams and trading tips fills a first conversation without much trying.",
+   "Your first choice of starter says more about you than you might think."
+  ],
+  "Police Officer": [
+   "Whether it's the job or the uniform, it's an easy detail to be upfront about.",
+   "If you work shifts, saying so early helps someone plan around them."
+  ],
+  "Politics": [
+   "Getting this out early saves both people time, with no need to dance around it later.",
+   "Knowing where someone stands makes for more honest conversations."
+  ],
+  "Politics Amateur": [
+   "You don't need all the answers to enjoy a good political chat.",
+   "Following the news casually still gives you something to talk about over coffee."
+  ],
+  "Politics Professional": [
+   "Working in politics means long hours, and a partner who understands that helps.",
+   "Someone in the same line of work won't need the late nights explained."
+  ],
+  "Postal Worker": [
+   "Familiar territory, job or preference alike.",
+   "Early starts mean free afternoons, which suit a relaxed first date."
+  ],
+  "Power Yoga": [
+   "A high-energy class together is a first date with no awkward silences.",
+   "Power yoga suits someone who likes a challenge, on the mat and off it."
+  ],
+  "Powwow & dance": [
+   "Powwow season is a joyful thing to share with someone who understands it.",
+   "Drumming and dance give a first meeting colour, rhythm and meaning."
+  ],
+  "Pranayama (Breathwork)": [
+   "Breathwork is a calm, simple practice to share with someone new.",
+   "Knowing how to slow your breathing is a handy skill before any first date."
+  ],
+  "Pregnancy": [
+   "Saying so upfront means anyone who replies already knows where you are in life.",
+   "Prenatal yoga is a normal, healthy thing to be open about from the start."
+  ],
+  "Pregnant": [
+   "Right now, pregnancy is simply where things stand, and nothing more made of it.",
+   "Saying so upfront means everyone knows where they stand from the start."
+  ],
+  "Print & Play": [
+   "Printing and building your own copy at home shows real enthusiasm for the hobby.",
+   "A home-made game is a thoughtful thing to bring to a second date."
+  ],
+  "Psychis & Divination": [
+   "Tarot, pendulums and the rest make for an easy, open conversation topic.",
+   "Someone who's open to a reading is likely open to a good conversation too."
+  ],
+  "Purebred": [
+   "Breed quirks give you an easy, specific thing to talk about.",
+   "Someone who knows their breed will enjoy comparing notes on care."
+  ],
+  "Push-your-luck": [
+   "Knowing when to stop is half the fun, and it makes for an easy, competitive first session.",
+   "How someone handles risk at the table can be surprisingly telling."
+  ],
+  "Puzzle": [
+   "Working through a puzzle together is a low-pressure first hour with someone new.",
+   "Solving something together shows how well you think side by side."
+  ],
+  "Quiet": [
+   "Being quiet by nature suits a slow, thoughtful start.",
+   "A quiet evening and a proper conversation is worth saying you prefer."
+  ],
+  "Quiet Pubs & Cafes": [
+   "A quiet corner and good conversation beats a loud bar for a first date.",
+   "Knowing a good quiet pub is a gift worth sharing with someone."
+  ],
+  "Rabbits": [
+   "Rabbits have strong opinions and quiet habits, which gives you stories to compare.",
+   "Someone who knows rabbits well knows the value of patience."
+  ],
+  "Racing": [
+   "A short race format keeps the pace up, which suits a first meetup that shouldn't drag.",
+   "A friendly rivalry on the track makes an easy start."
+  ],
+  "Racket Sports": [
+   "Racket sports make an easy standing date, with a rematch built in every week.",
+   "A friendly game shows you how someone wins, and how they lose."
+  ],
+  "Radical": [
+   "Strong convictions deserve someone who takes them seriously.",
+   "Saying so upfront means nobody has to tone themselves down later."
+  ],
+  "Rallies Meets & Shows": [
+   "Tents, bad coffee and good company make a rally weekend easy to share.",
+   "A bike show gives you something to point at while you get to know each other."
+  ],
+  "Rallies, Meets & Shows": [
+   "Local meets and car park catch-ups make easy, low-key places to meet someone.",
+   "A rally weekend gives you tents, bad coffee and hours to get to know someone."
+  ],
+  "Ranching": [
+   "Early mornings and real land to look after shape a certain kind of life.",
+   "A partner who loves the land as much as you do makes the long days lighter."
+  ],
+  "Real Chemistry": [
+   "Wanting real chemistry over ticking boxes is honest, and worth saying outright.",
+   "Chemistry shows up in person, so meeting soon after chatting is a good idea."
+  ],
+  "Reliability": [
+   "Showing up when you say you will is what people want from a partner.",
+   "Reliability makes it easy for someone to relax and trust you."
+  ],
+  "Remote Work": [
+   "Working remotely from abroad makes for an easy first thing to talk about.",
+   "A flexible schedule makes a weekday coffee date easy to fit in."
+  ],
+  "Reptiles": [
+   "Enclosures, species and feeding days are a specific way into a first conversation.",
+   "Keeping reptiles takes real care, and the right person will see that."
+  ],
+  "Rescue": [
+   "Adoption stories make a warm, easy first conversation.",
+   "Choosing a rescue says something kind about the person who did it."
+  ],
+  "Restorative Yoga": [
+   "Restorative practice suits someone who values rest as much as effort.",
+   "A calm class together is a gentle way to spend time with no pressure to perform."
+  ],
+  "Retro": [
+   "Older games bring nostalgia, and swapping favourites is an easy start.",
+   "Blowing into a cartridge is a memory worth bonding over."
+  ],
+  "Retro Consoles": [
+   "Original hardware and a stack of cartridges give a first meet a built-in activity.",
+   "Which console you grew up on says a surprising amount about someone."
+  ],
+  "Rheumatoid Arthritis": [
+   "Stated so plans can allow for the good days and the harder ones."
+  ],
+  "Ride Outs": [
+   "A group ride out makes a relaxed first meet, with company on hand and no pressure.",
+   "Sharing the road with someone shows you how they look out for others."
+  ],
+  "Riverside & Lake Hikes": [
+   "An easy pace and water to look at make a lakeside walk a gentle first date.",
+   "Knowing a favourite stretch of river is a nice thing to share with someone new."
+  ],
+  "Road Trips": [
+   "A road trip shows you how someone handles a wrong turn and a long silence.",
+   "Choosing the music for a drive is a surprisingly revealing first conversation."
+  ],
+  "Road Trips & Adventure Travel": [
+   "Road trips make a great low-key way to see if you actually travel well together.",
+   "Who controls the music on a long drive is an important early question."
+  ],
+  "Roadside Mechanics / Maintenance": [
+   "Knowing your way round a roadside toolkit is a handy thing to bring to a ride.",
+   "Fixing a chain in a lay-by together is a story you'll both tell later."
+  ],
+  "Rock Climbing": [
+   "Belaying for someone is its own kind of icebreaker, built on trust from the first rope.",
+   "A climbing wall makes a first date where you cheer each other on."
+  ],
+  "Rodeo": [
+   "Rodeo weekends, arena dust and all, make a first date to remember.",
+   "Cheering on the same rider is an easy way to feel on the same side."
+  ],
+  "Roll-and-write": [
+   "Everyone fills in their own sheet, which keeps a first game relaxed, not cut-throat.",
+   "It's quick to teach, so the conversation doesn't wait for the rules."
+  ],
+  "Romance": [
+   "Grand gestures or small ones, saying you value romance draws people who do too.",
+   "A handwritten note or a planned evening says more than a quick message."
+  ],
+  "Romance & dating again": [
+   "Starting again takes courage, and saying so sets a kind, honest tone.",
+   "Someone else starting over will understand the pace you want to go at."
+  ],
+  "RPG": [
+   "Sitting down to build a character together gets people talking fast.",
+   "The choices someone makes in a story say something about who they are."
+  ],
+  "RTS": [
+   "Building and battling in real time makes for a genuinely competitive first match.",
+   "Planning a strategy together is a good test of how you work as a pair."
+  ],
+  "Rugby": [
+   "Rugby's clubhouse culture is all about looking after your own, on and off the pitch.",
+   "A match and a pint afterwards is an easy, unfussy first date."
+  ],
+  "Rugby League": [
+   "Naming the code you follow makes an easy, specific opener with another rugby fan.",
+   "A league match together gives a first date noise, drama and something to talk about."
+  ],
+  "Rugby Union": [
+   "Naming union gets you straight to the fans who already know the difference.",
+   "An international weekend at the pub is a lively way to spend time with someone new."
+  ],
+  "Running": [
+   "A running partner gives you a reason to see each other every week.",
+   "A morning run followed by breakfast makes a relaxed first date."
+  ],
+  "Sandbox": [
+   "Building whatever you like, together, takes the pressure off making conversation.",
+   "What someone builds with no rules tells you about their imagination."
+  ],
+  "Saturday Night Takeaway": [
+   "Saturday-night viewing makes an easy 'watched last night' opener.",
+   "A shared Saturday-night habit is a cosy thing to find in someone."
+  ],
+  "Scarification": [
+   "Scarification takes real commitment, and the right person will respect that.",
+   "The story behind the work is one worth telling to someone who asks."
+  ],
+  "Sci-Fi": [
+   "Sci-fi settings are as fun to debate as the rules themselves.",
+   "Swapping the books and films behind the game is an easy next step."
+  ],
+  "Science & Tech": [
+   "Science and tech chat travels well from a first message straight into a real conversation.",
+   "A shared curiosity about how things work keeps a conversation going."
+  ],
+  "Scooter Culture": [
+   "Scooter culture comes with its own music, style and history to share.",
+   "A scooter ride to the coast is a first date with character."
+  ],
+  "Secret Yoga": [
+   "Worth naming, if only because it invites the obvious question.",
+   "Something to explain in your own words, when you're ready."
+  ],
+  "Security Guard": [
+   "Whether it's your role or what draws you, it's a simple detail to share.",
+   "Night shifts are easier to plan around when they're mentioned early."
+  ],
+  "Sense of Humour": [
+   "A shared sense of humour does more for early messages than almost anything else.",
+   "Laughing at the same things is a good sign you'll enjoy the ordinary days too."
+  ],
+  "Separated": [
+   "Not yet divorced but no longer together, said plainly so nobody has to guess.",
+   "Being clear about where things stand is a fair start for both of you."
+  ],
+  "Serial Killers": [
+   "Case histories like these spark long, thoughtful conversations, not quick chat.",
+   "It's a dark interest, and someone who shares it won't need it explained."
+  ],
+  "Settling Down": [
+   "Saying this plainly tends to filter for people looking at the same horizon as you.",
+   "Knowing you want to build a life with someone makes the early questions simpler."
+  ],
+  "Shared Routines": [
+   "Shared everyday routines are the quiet backbone of a relationship that lasts.",
+   "Morning coffee together can mean more than any grand night out."
+  ],
+  "Sidecar Enthusiasts": [
+   "Three wheels takes some explaining, and someone who shares the fondness will listen.",
+   "A sidecar makes a first date where you're both along for the ride."
+  ],
+  "Simulators": [
+   "Running a virtual farm, city or cockpit shows a calm, patient kind of focus.",
+   "Talking someone through your best-run town is a charming first conversation."
+  ],
+  "Sioux (Lakota/Dakota)": [
+   "Lakota and Dakota heritage named upfront draws people who share and respect it.",
+   "Shared roots make it easier to talk about family, place and tradition."
+  ],
+  "Skateboarding": [
+   "A trip to the skatepark together is a good excuse for a relaxed first meet.",
+   "Skating at any age says you're happy to fall down and get back up."
+  ],
+  "Skiing": [
+   "A ski trip gives you days on the slopes and long evenings to talk.",
+   "Matching pace on the piste is a fun way to find out how well you get on."
+  ],
+  "Sleeps in my bed": [
+   "Sharing a bed with a cat is a detail worth being upfront about, not a footnote.",
+   "Saying so now means nobody is surprised by who takes the pillow."
+  ],
+  "Slow Dating": [
+   "Taking things slowly gives you room to know someone before deciding.",
+   "Saying you want to go slow draws people who are happy to do the same."
+  ],
+  "Small": [
+   "A small dog comes along to the pub easily, which makes an easy first meet.",
+   "Big personalities in a small package make for good stories."
+  ],
+  "Snorer": [
+   "Snoring is the kind of dog detail that becomes a fond story fast, not a dealbreaker.",
+   "A snoring dog is the kind of detail that makes people smile before they meet."
+  ],
+  "Snow Sports": [
+   "A day on the slopes, then a warm drink after, makes a very easy date.",
+   "Falling over together on a beginner run breaks the ice fast.",
+   "Someone who loves the snow brings energy to the colder months."
+  ],
+  "Snowboarding": [
+   "A shared love of snow is a good excuse to plan a trip together each winter.",
+   "Someone who'll wait for you at the bottom of the run is worth finding."
+  ],
+  "Sober AF": [
+   "Fully sober, and looking for dates that do not revolve around a drink."
+  ],
+  "Sober Curious": [
+   "Cutting back rather than stopping, and stated plainly."
+  ],
+  "Sober-ish": [
+   "Mostly not drinking, without committing to the label."
+  ],
+  "Social & Recreational Use": [
+   "Evenings built around this suit people who like to unwind together.",
+   "Being upfront about it means your plans suit you both from the start."
+  ],
+  "Social Welfare": [
+   "Caring how society looks after people is a good sign in a partner.",
+   "It's a subject that turns small talk into a conversation that matters."
+  ],
+  "Socialist": [
+   "Saying where you stand draws people who share your values.",
+   "Shared politics make it easier to agree on how you want to live."
+  ],
+  "Sofa Time": [
+   "An evening on the sofa together is where comfort turns into closeness.",
+   "Choosing the film is an easy early test of give and take."
+  ],
+  "Soil & Cultivation": [
+   "Caring about soil means caring about the unglamorous work that keeps things growing.",
+   "Someone who knows their compost is patient with things that take time."
+  ],
+  "Someone to do nothing with": [
+   "Comfortable silence with someone is its own kind of compatibility.",
+   "Doing nothing together well is a sign of real ease with someone."
+  ],
+  "Sound Healing": [
+   "A sound bath is a calm, unusual first date with no pressure to talk.",
+   "Lying still and listening together is a gentle way to share an evening."
+  ],
+  "Southern Cooking": [
+   "Cooking for someone, or getting cooked for, is a strong second-date move.",
+   "Family recipes carry stories, and sharing one is a warm way to open up."
+  ],
+  "Speech Impairment": [
+   "Stated upfront, so messaging or calls can be chosen to suit."
+  ],
+  "Speedrun": [
+   "Shaving seconds off a run takes dedication, and it makes a great story to tell.",
+   "Hearing someone explain a skip they spent weeks on is oddly charming."
+  ],
+  "Spiritual connection": [
+   "Worth naming upfront for anyone hoping to match on more than surface interests.",
+   "Sharing what gives your life meaning is a good way into a deeper conversation."
+  ],
+  "Spirituality": [
+   "Naming this openly draws the right kind of person early, and saves you both time.",
+   "Talking about what gives life meaning gets past small talk quickly."
+  ],
+  "Spoiled": [
+   "Being spoiled rotten is half the fun of having a dog.",
+   "A spoiled dog says you're generous with the ones you love."
+  ],
+  "Sport": [
+   "Playing or watching sport together gives you a shared weekend plan.",
+   "A team to support gives you an instant topic of conversation."
+  ],
+  "Sportbike": [
+   "Fairings, track-bred looks and a taste for corners make an easy opener with a rider.",
+   "Talking lines through a favourite bend is a first chat that runs itself."
+  ],
+  "Sports": [
+   "A match to watch or play fills a first date with something to talk about.",
+   "Whether you play or shout at the telly, a team gives you something to share."
+  ],
+  "Sports & Local Teams": [
+   "Following the local team is a fast way to feel part of a new place.",
+   "A match day makes an easy first date with something to shout about."
+  ],
+  "SSBBW": [
+   "A specific term, and using it means the right people find you rather than guess.",
+   "Knowing what you are and saying so is a confident way to begin."
+  ],
+  "Stage": [
+   "Theatre makes an easy, ready-made date: a show, then dinner.",
+   "A love of live performance means evenings out are always easy to plan."
+  ],
+  "Stargazing": [
+   "Stargazing is a quiet, low-effort date with hours of easy conversation in the dark.",
+   "Knowing a few constellations is a small, charming thing to share with someone."
+  ],
+  "Storytelling": [
+   "Building a story together tends to reveal more about someone than small talk ever does.",
+   "Making up a world together is a good test of whether your humour matches."
+  ],
+  "Strain Connoisseur": [
+   "Particular tastes make for an easy icebreaker with the right person.",
+   "Knowing what you like and why says you pay attention to detail."
+  ],
+  "Strategy": [
+   "Someone who enjoys thinking a few moves ahead tends to make good conversation.",
+   "A board game evening makes a low-key date with a topic built in.",
+   "How someone plays a long game says a fair bit about their patience."
+  ],
+  "Streaming": [
+   "Whether you stream or watch, it's an easy window into how someone plays.",
+   "Sharing a channel you love is a low-key way to show your sense of humour."
+  ],
+  "Street Food": [
+   "Wandering between street food stalls makes a relaxed, easy first date.",
+   "Arguing over the best stall in town is a good-natured way to get talking."
+  ],
+  "Strength": [
+   "Training progress is an easy, natural thing to compare notes on early.",
+   "A training partner who spots you is a good start to trusting each other."
+  ],
+  "Studying Abroad": [
+   "Time spent studying abroad gives you an instant shared reference point.",
+   "Stories from your time away are an easy way into a first conversation."
+  ],
+  "SUP": [
+   "A paddle is an easy, low-pressure way to spend an afternoon together, wobbles included.",
+   "Being on the water side by side makes conversation come easily."
+  ],
+  "Surfing": [
+   "Early mornings and cold water are easier to share with someone who gets it.",
+   "A day at the beach gives a first date a tide to plan around."
+  ],
+  "Survivors": [
+   "Part of the picture, stated once and left there."
+  ],
+  "Tantra": [
+   "The philosophy and breathing side of this tradition makes for thoughtful conversation.",
+   "Being clear about what it means to you avoids any misunderstanding early on."
+  ],
+  "Tattoos": [
+   "The story behind a tattoo is a ready-made first conversation.",
+   "Someone who asks about your ink rather than stares at it is off to a good start."
+  ],
+  "Technology": [
+   "Talking gadgets and tech is a reliably easy, low-pressure way to fill early messages.",
+   "Talking about what you're building or tinkering with shows real enthusiasm."
+  ],
+  "Teenagers": [
+   "Parenting teenagers is its own chapter, and saying so explains your schedule.",
+   "Someone who's been there will understand the lifts, the moods and the late nights."
+  ],
+  "Territory  building": [
+   "Claiming ground on the board is a friendly rivalry that tends to break the ice quickly.",
+   "A rivalry over the same patch of board is one you can laugh about afterwards."
+  ],
+  "The Countryside": [
+   "Country walks and village pubs make an easy, unhurried first date.",
+   "Weekend escape or full-time home, saying so draws people who want the same pace."
+  ],
+  "The Outdoors": [
+   "Fresh air and no phone signal make for a surprisingly good early date.",
+   "A day out gives you something to talk about besides yourselves."
+  ],
+  "The paranormal": [
+   "A brush with something you can't explain makes a story worth telling.",
+   "Open-minded talk about the strange side of life is a good test of curiosity."
+  ],
+  "The Quiet Life": [
+   "Choosing calm over chaos is a clear, honest thing to say about yourself.",
+   "A quiet life suits someone who'd rather skip the drama too."
+  ],
+  "The Secret": [
+   "A lesser-known one, and good to talk plot with someone who's seen it.",
+   "Finding someone who remembers it too is a nice surprise."
+  ],
+  "The unexplained": [
+   "Strange, unresolved stories make good listening on a first date.",
+   "Wondering about the unexplained together keeps a conversation open."
+  ],
+  "Tongue Splitting": [
+   "Serious and deliberate, not a passing whim, and worth saying upfront.",
+   "Someone who's curious rather than squeamish is worth talking to."
+  ],
+  "Tools & Accessories": [
+   "Talking tools and kit is a good sign for anyone who likes things done properly.",
+   "Lending someone the right tool is a small, practical kindness."
+  ],
+  "Touring": [
+   "Riders who go out whatever the forecast make steady, easy company.",
+   "A touring weekend gives you hours of road and evenings full of stories."
+  ],
+  "Track Days": [
+   "Track time together shows how someone handles nerves, speed and a bit of risk.",
+   "Comparing lap times over a cuppa makes an easy end to a first date."
+  ],
+  "Traditional Country": [
+   "The older, steel-guitar end of the genre is worth loving out loud.",
+   "Swapping favourite old records says a great deal about someone's taste."
+  ],
+  "Traditional storytelling": [
+   "Stories passed down show where you come from and what you carry.",
+   "Someone who values storytelling tends to be a good listener too."
+  ],
+  "Trail Running": [
+   "Trail running suits someone who likes their fresh air at a bit of pace.",
+   "A run followed by breakfast is an easy, unfussy way to meet."
+  ],
+  "Train Driver": [
+   "Specific enough to work either as an occupation or a type.",
+   "If you drive, there's always a good story about the route to share."
+  ],
+  "Transportation": [
+   "Building networks and routes rewards planners who enjoy thinking ahead.",
+   "Watching a network come together is satisfying to share with someone."
+  ],
+  "Travel": [
+   "Swapping travel stories is one of the easiest ways to get a conversation moving.",
+   "Where you'd go next says as much about you as where you've been."
+  ],
+  "Travelling": [
+   "A short trip together tells you more about someone than months of messages.",
+   "Swapping the best place you've ever been is an easy way into a first conversation."
+  ],
+  "Travelling With Pets": [
+   "Bringing a pet along on the move says you take your commitments seriously.",
+   "A walk with your dog in a new city makes a relaxed first meet."
+  ],
+  "Trivia": [
+   "Shared facts and half-remembered answers make trivia an easy conversation starter.",
+   "Teaming up at a quiz is a first date where you're on the same side."
+  ],
+  "True Crime": [
+   "Swapping favourite cases is a surprisingly easy way to start a conversation.",
+   "A shared taste for true crime makes picking the next thing to watch easy."
+  ],
+  "True Crime Podcasts": [
+   "A great niche to bond over. There's always a new case to recommend.",
+   "Listening to the same episode gives you something to talk about the next day."
+  ],
+  "Tunnel Piercings": [
+   "A committed, specific style, worth naming in its own right.",
+   "Stretching takes patience, and anyone who's done it will understand."
+  ],
+  "TV & Radio": [
+   "Swapping recommendations for what to watch keeps a conversation ticking along.",
+   "A favourite show you both love makes an easy night in."
+  ],
+  "Two-Up Riding": [
+   "Riding two-up changes the whole trip, so it helps to find someone who wants that seat.",
+   "Sharing a bike means trusting each other, which is a good start for anything."
+  ],
+  "Ufo’s": [
+   "Footage and sightings are a reliable source of debate and conversation.",
+   "Stargazing together makes a first date with a chance of something unexpected."
+  ],
+  "Under Five Foot Tall": [
+   "Simply a fact worth mentioning early, so there are no surprises when you meet.",
+   "Saying it upfront means the people who reply already like what they see."
+  ],
+  "Understanding": [
+   "Talking things through easily tends to smooth out the early messages no end.",
+   "Someone who listens properly makes a first date feel less like an interview.",
+   "Being understood is what makes the harder days easier to share."
+  ],
+  "Unsolved / Cold Cases": [
+   "Nobody's cracked these yet, which gives you something to theorise about together.",
+   "Hearing someone's pet theory is a good way to see how their mind works."
+  ],
+  "Urban Native community": [
+   "City life and Native identity go together, and saying so draws people who understand.",
+   "Someone who knows both worlds won't need either one explained."
+  ],
+  "Vegan": [
+   "Sharing a plant-based kitchen makes cooking together simple from day one.",
+   "Knowing you're vegan upfront makes choosing a first-date restaurant easy.",
+   "Swapping favourite vegan recipes is a warm way into a first conversation."
+  ],
+  "Vegetables & Herbs": [
+   "Cooking with herbs you grew yourself makes a memorable meal for someone new.",
+   "A veg patch teaches patience, which is useful for new relationships too."
+  ],
+  "Vegetarian": [
+   "Eating together is a near-daily thing, so shared food habits make life simpler.",
+   "Being clear about how you eat makes planning a first dinner easy."
+  ],
+  "Vinyasa Flow": [
+   "Moving with the breath is a nice rhythm to share with someone new.",
+   "A flow class followed by breakfast makes a relaxed morning date."
+  ],
+  "Volunteering": [
+   "Giving your time to a cause shows what you value without having to say it.",
+   "Volunteering together makes a first date that does some good as well."
+  ],
+  "Voyager": [
+   "Knowing the show inside out makes for an easy, detailed first conversation.",
+   "Debating Janeway's toughest calls is a lively first conversation."
+  ],
+  "VR": [
+   "Strapping in together is still novel enough to end in a laugh, win or lose.",
+   "A VR arcade gives a first date something to do besides talk."
+  ],
+  "Waiter": [
+   "On the job or as the appeal, it's an easy detail to mention.",
+   "Anyone who's worked a busy service knows how to keep a conversation going."
+  ],
+  "Waitress": [
+   "Works either way, role or preference.",
+   "Someone used to a busy floor knows how to read a room."
+  ],
+  "Wakeboarding": [
+   "A day at the lake makes a first date with laughs, spills and something to talk about.",
+   "Someone who'll drive the boat while you ride is worth holding on to."
+  ],
+  "Walking": [
+   "Walking together removes the awkward silences a sit-down first date can bring.",
+   "A favourite walk is a generous thing to share with someone new."
+  ],
+  "Walking / Hiking": [
+   "Shared walks make an easy, low-pressure way to get past small talk on a first date.",
+   "Walking side by side takes the pressure off eye contact and lets the talk flow."
+  ],
+  "Want to date sober people only": [
+   "A preference about the other person rather than yourself, and stated directly."
+  ],
+  "Wargames": [
+   "Tactics and all, wargaming shows how someone thinks under pressure.",
+   "Talking through a battle afterwards is half the pleasure of the hobby."
+  ],
+  "Warmth & Affection": [
+   "Small, consistent affection matters more in the long run than grand gestures.",
+   "Warmth is easy to feel in a message and even easier in person."
+  ],
+  "Water Features & Ponds": [
+   "The sound of water makes any garden a calm place to sit and talk.",
+   "Watching a pond come to life is a quiet pleasure worth sharing with someone."
+  ],
+  "Water Sports": [
+   "A day on the water makes a first date neither of you will forget quickly.",
+   "Loving the water tends to go with being up for a trip somewhere new."
+  ],
+  "Western Fashion": [
+   "Boots, hats and the whole look say you take the style seriously.",
+   "A good pair of boots is an easy compliment and an easier opener."
+  ],
+  "Western Film and TV": [
+   "Talking favourite westerns can go on as long as you both like.",
+   "A classic western and a sofa make a relaxed night in together."
+  ],
+  "Wheelchair User": [
+   "Stated upfront, so access can be planned from the first meet."
+  ],
+  "Widow(ed)/(er)": [
+   "Widowhood is a fact, stated once and left alone.",
+   "Saying it upfront means you can talk about it when you're ready, not before."
+  ],
+  "Wild Camping": [
+   "Wild camping suits anyone who'd test a match with no phone signal and no easy exit.",
+   "Pitching a tent together in the dark shows you how someone handles a small crisis."
+  ],
+  "Wild Gardening": [
+   "Letting things grow a little looser says something about how you like to live.",
+   "A wild garden full of bees makes a lovely backdrop for a slow afternoon together."
+  ],
+  "Wilderness/Bushcraft": [
+   "Lighting a fire from scratch together is a first date nobody forgets.",
+   "Bushcraft shows patience and practical sense, both good things in a partner."
+  ],
+  "Wildlife": [
+   "Spotting wildlife together turns a quiet walk into a shared moment.",
+   "An interest in wildlife pairs well with travel, photography and early mornings."
+  ],
+  "Windsurfing": [
+   "Checking the forecast for the same reason is a good sign you'll get on.",
+   "A breezy day on the water makes a first date with a bit of adventure."
+  ],
+  "With Partner": [
+   "Practising together turns a class into shared time, not just exercise.",
+   "Wanting a partner on the mat draws people who like to do things together."
+  ],
+  "Work Placement": [
+   "Placing workers well is a quiet kind of competition that suits a relaxed first game.",
+   "Planning your turns around someone else's makes you pay attention to them."
+  ],
+  "Working Abroad": [
+   "Building a career on foreign soil takes nerve, and it makes for a good story.",
+   "Someone who's done the same will get the highs and lows without explanation."
+  ],
+  "X Factor": [
+   "Talent-show Saturdays bring people together, votes and all.",
+   "Arguing over who should have won is a fun first conversation."
+  ],
+  "Xbox": [
+   "An evening of co-op on the Xbox makes a relaxed night in.",
+   "Trading gamertags is a light, easy step after a first chat."
+  ],
+  "Yin Yoga": [
+   "Long, quiet holds suit someone happy to slow down and stay with something.",
+   "Sharing a quiet practice says you're comfortable with calm company."
+  ],
+  "Yoga Travel": [
+   "A yoga retreat abroad is the kind of trip that's better shared.",
+   "Swapping retreat stories is an easy way to find where you'd both go next."
+  ],
+  "Yoga with Animals": [
+   "Goat yoga and similar sessions make a lighthearted date that starts with a laugh.",
+   "Anyone happy to be climbed on by a goat is probably easy company."
+  ],
+  "Young Children": [
+   "Young children at home shape your time, and saying so sets the right expectations.",
+   "Someone who understands bedtimes and school runs is worth finding."
+  ]
+ }
+}

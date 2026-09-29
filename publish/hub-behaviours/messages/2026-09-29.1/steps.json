@@ -1,0 +1,34 @@
+{
+  "edition": "2026-09-29.1",
+  "steps": {
+    "iam": [
+      "Good start.",
+      "Nice to meet you. A couple of quick ones to go.",
+      "That's the first one done.",
+      "Off to a good start."
+    ],
+    "seeking": [
+      "{Who} it is.",
+      "Got it: {who}.",
+      "{Who}, noted. We'll keep that in mind.",
+      "Looking for {who}. Good to know."
+    ],
+    "location": [
+      "{Place} it is.",
+      "{Place}, noted. Local makes a first date easy.",
+      "The closer to {place}, the easier a first date.",
+      "{Place}. Good to know where to start."
+    ],
+    "interest": [
+      "Good pick. It gives people something to start a conversation with.",
+      "Shared interests make first messages easier.",
+      "That's one to talk about.",
+      "{Interest} makes a good opening line."
+    ],
+    "last": [
+      "Last one, then you're in.",
+      "Almost there.",
+      "One more and you're done."
+    ]
+  }
+}
