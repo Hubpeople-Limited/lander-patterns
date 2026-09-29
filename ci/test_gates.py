@@ -1742,9 +1742,10 @@ def check_shells():
     # carry a `section-title` slot and their sample values differ. Both have to
     # be on the page, in that order. A whole-document fill puts one of them in
     # both places, and the page still renders.
-    conversion = HERE.parent / "shells" / "homepage-conversion@2"
+    conversion = HERE.parent / "shells" / "homepage-conversion@3"
     if not conversion.exists():
-        print("  ok   skipped: homepage-conversion@2 is not in this tree")
+        print("  FAIL homepage-conversion@3 is not in this tree")
+        failures.append("the conversion shell this case fills is missing")
         return failures
 
     rendered, patterns = bp.build_shell(conversion)
@@ -1760,8 +1761,8 @@ def check_shells():
     if not ok:
         failures.append("build_shell left a slot or a comment in the output")
 
-    ok = patterns == ["hero-split", "steps-plain", "faq-details", "cta-band",
-                      "colophon"]
+    ok = patterns == ["masthead-nav", "hero-split", "steps-plain", "faq-details",
+                      "cta-band", "colophon"]
     print(f"  {'ok  ' if ok else 'FAIL'} reports the patterns it placed, in page order")
     if not ok:
         failures.append(f"build_shell reported {patterns}")
