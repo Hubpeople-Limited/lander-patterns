@@ -124,6 +124,13 @@ SIGNUP_JOIN = "https://example.invalid/s/register/00000000-0000-4000-8000-000000
 SIGNUP_PLACES = "https://example.invalid/places/"
 # The encouraging lines, served from here the same way.
 SIGNUP_MESSAGES = "https://example.invalid/messages/"
+# A pattern whose default rung does not scroll carries the carousel for another
+# rung, and is measured on that one: the class to swap, and the element to
+# repeat until the row is wider than a wide screen.
+CAROUSEL_RUNGS = {
+    "member-grid": ("member-grid--grid", "member-grid--rail", "mem-card", 12),
+}
+CAROUSEL_HOOK = re.compile(r'data-hub-module="[^"]*\bcarousel\b[^"]*"')
 SIGNUP_MEMBERS = [{"MemberName": f"Sample {i}", "MemberImage": f"sample-portrait.svg?m={i}",
                    "MemberAge": 28 + i, "Interests": ""} for i in range(12)]
 
@@ -217,6 +224,12 @@ def page_for(name, behaviour, tokens, bundle_file, width):
             f'<section class="behaviour-check-section"><h2 id="hub-s{k}">Section {k}</h2>'
             + FILLER + "</section>" for k in range(1, 5))
     elif behaviour == "carousel":
+        if name in CAROUSEL_RUNGS:
+            default, rung, item, count = CAROUSEL_RUNGS[name]
+            if default not in filled:
+                raise SystemExit(f"carousel: {name} no longer ships {default!r} - "
+                                 f"re-pick the rung CAROUSEL_RUNGS measures it on")
+            filled = repeat_block(filled.replace(default, rung, 1), item, count)
         after = '<section class="behaviour-check-section">' + FILLER + "</section>"
     elif behaviour == "signup":
         # The preview fill writes "#" for the join link; the check needs a
@@ -490,9 +503,8 @@ def check_carousel(shell, name, tokens):
     # can ship: "none" has to build nothing at all, and anything else has to
     # record what it resolved to and still hold its controls still.
     for asked in ("none", "edges"):
-        marked = html.replace('data-hub-module="carousel"',
-                              f'data-hub-module="carousel" '
-                              f'data-hub-carousel-controls="{asked}"', 1)
+        marked = CAROUSEL_HOOK.sub(
+            lambda m: f'{m.group(0)} data-hub-carousel-controls="{asked}"', html, count=1)
         tab = shell.open(marked, f"{name}-carousel-controls-{asked}", width=PHONE)
         try:
             tab.wait_for_timeout(100)

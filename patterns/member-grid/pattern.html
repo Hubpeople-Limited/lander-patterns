@@ -2,7 +2,7 @@
 name: member-grid
 display-name: Live member grid
 summary: Real members from your own site, filled in by the platform when the page is built.
-version: 4
+version: 5
 type: component
 page-types: homepage, landing, location
 requires: none
@@ -15,7 +15,7 @@ pairs-with: heading-block, member-filter, cta-band
 avoid-with: none
 tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --transition-fast, --type-scale
 variants: card=plain|framed|portrait; flow=grid|rail|marquee
-behaviours: reveal
+behaviours: reveal, carousel
 motion: subtle
 one-per-page: no
 status: active
@@ -36,10 +36,14 @@ added: 2026-09-02
      location reference before shipping.
 
      The marquee rung is the one variant that is not a class on its own: swap
-     data-hub-module="reveal" for "marquee" as well. Without the behaviour
-     library the block is then the rail, which is what it should be. -->
+     "reveal" for "marquee" in data-hub-module and keep "carousel". Without
+     the behaviour library the block is then the rail, which is what it
+     should be. Keep "carousel" on every rung: it builds previous and next
+     controls for the rail, and for the marquee once it is stopped. -->
 <section class="member-grid member-grid--plain member-grid--grid"
-         data-hub-module="reveal"
+         data-hub-module="reveal carousel"
+         data-hub-carousel-prev-label="slot:previous-label"
+         data-hub-carousel-next-label="slot:next-label"
          data-members
          data-members-styles="none"
          data-members-country="slot:members-country"
