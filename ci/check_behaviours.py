@@ -120,7 +120,7 @@ SIGNUP_JOIN = "https://example.invalid/s/register/00000000-0000-4000-8000-000000
 # The places the location step reads: the library's own, served from here.
 SIGNUP_PLACES = "https://example.invalid/places/"
 SIGNUP_MEMBERS = [{"MemberName": f"Sample {i}", "MemberImage": f"sample-portrait.svg?m={i}",
-                   "MemberAge": 28 + i, "Interests": ""} for i in range(6)]
+                   "MemberAge": 28 + i, "Interests": ""} for i in range(12)]
 
 SHELL = """<!DOCTYPE html>
 <html lang="en">
@@ -663,11 +663,16 @@ def check_signup(shell, name, tokens):
         tab.wait_for_timeout(900)
         if tab.evaluate(SIGNUP_PARTS_JS) != ["seeking"]:
             faults.append(f"{where}: a tapped single answer did not move on by itself")
+        before = tab.locator(f".{name}-members img").evaluate_all("els => els.map(e => e.src)")
         tap(tab, face.format("lf", 1))
         tap(tab, face.format("lf", 2))
         tab.wait_for_timeout(600)
-        if tab.locator(f".{name}-members img").count() != 4:
+        after = tab.locator(f".{name}-members img").evaluate_all("els => els.map(e => e.src)")
+        if len(after) != 4:
             faults.append(f"{where}: four members should show once 'looking for' is answered")
+        elif before and not set(after) - set(before):
+            faults.append(f"{where}: answering 'looking for' showed the same four faces again, with "
+                          f"unseen members in the results")
         tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
         # The preview's places are a sample that will not load: the step goes.
@@ -790,6 +795,8 @@ def check_signup(shell, name, tokens):
             tab.wait_for_timeout(500)
         for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
             tab.fill(f'input[name="{field}"]', value)
+        tab.wait_for_timeout(700)
+        dob_searched = any("ageMin=" in u for u in searches)
         tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
         for chips in ("intent", "enjoy"):
@@ -819,6 +826,8 @@ def check_signup(shell, name, tokens):
     elif (sent.get("lat"), sent.get("long")) != (str(london[0]), str(london[1])):
         faults.append(f"{where}: London sent as lat={sent.get('lat')!r} long={sent.get('long')!r}, "
                       f"not its coordinates {london!r}")
+    if not dob_searched:
+        faults.append(f"{where}: a full date of birth brought no members of that age before the next step")
     if not any("city=London" in u and "region=England%3A+Greater+London" in u and "country=UK" in u
                for u in searches):
         faults.append(f"{where}: no member search narrowed to London, England: Greater London, UK")
