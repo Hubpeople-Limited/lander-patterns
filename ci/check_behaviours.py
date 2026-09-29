@@ -110,8 +110,9 @@ CONTROL_SUBSTITUTIONS = {
                ".reduce((sum, r) => Number(r.value), 0)"),
     "signup-attribution": ("new URLSearchParams(location.search).forEach((v, k) => first(k, v));",
                            "void first;"),
-    "signup-location": ('if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
-                        "void where;"),
+    "signup-location": ('else if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
+                        "else void where;"),
+    "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
 }
 
 # The signup check hands off to this link and never follows it; the GUID in it
@@ -865,6 +866,80 @@ def check_signup(shell, name, tokens):
             faults.append(f"{where}: with the bundle on the page twice the first step shows the join button")
     finally:
         tab.close()
+    # A US card asks the ZIP code first: a known code hands the join flow the
+    # code itself and narrows the members to its town; an unknown one says so
+    # and does not move on. Asked for the lists first, the code is a tap away.
+    zipped = with_places("USA")
+    zip_searches = []
+    tab = shell.open(zipped, f"{name}-signup-zip", width=PHONE, before=signup_stub(SIGNUP_MEMBERS, zip_searches))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(900)
+        code = tab.locator('[data-hub-signup-part="location"] input[autocomplete="postal-code"]')
+        zip_first = code.count() == 1 and code.is_visible()
+        unknown_said = stayed = False
+        if zip_first:
+            code.fill("00000")
+            tab.wait_for_timeout(600)
+            unknown_said = tab.locator(f".{name}-postal .{name}-help").is_visible()
+            tap(tab, f".{name}-next")
+            tab.wait_for_timeout(400)
+            stayed = tab.evaluate(SIGNUP_PARTS_JS) == ["location"]
+            code.fill("10001")
+            tab.wait_for_timeout(900)
+            tap(tab, f".{name}-next")
+            tab.wait_for_timeout(500)
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        for chips in ("intent", "enjoy"):
+            if tab.evaluate(SIGNUP_PARTS_JS) == [chips]:
+                tap(tab, f".{name}-skip" if chips == "enjoy" else f'[data-hub-signup-part="{chips}"] .{name}-chip')
+                if chips != "enjoy":
+                    tap(tab, f".{name}-next")
+                tab.wait_for_timeout(500)
+        tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam")
+        tab.fill('input[name="em"]', "sam@example.com")
+        tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+        tap(tab, f".{name}-submit")
+        tab.wait_for_timeout(400)
+        zip_url = tab.evaluate("() => window.__signupHandoff || ''")
+    finally:
+        tab.close()
+    zip_sent = dict(x.split("=", 1) for x in zip_url.split("?", 1)[-1].split("&") if "=" in x)
+    if not zip_first:
+        faults.append(f"{where}: a US card should ask the ZIP code first")
+    else:
+        if not unknown_said or not stayed:
+            faults.append(f"{where}: an unknown ZIP code should say so and stay on the step "
+                          f"(said {unknown_said}, stayed {stayed})")
+        if zip_sent.get("zipCode") != "10001" or "lat" in zip_sent:
+            faults.append(f"{where}: ZIP 10001 handed off as zipCode={zip_sent.get('zipCode')!r}"
+                          f"{' with lat/long' if 'lat' in zip_sent else ''} - the code itself, and no coordinates")
+        if not any("region=New+York" in u and "city=New+York" in u for u in zip_searches):
+            faults.append(f"{where}: ZIP 10001 did not narrow the members to New York, New York")
+    tab = shell.open(zipped.replace('data-hub-signup-places="USA"', 'data-hub-signup-places="USA" data-hub-signup-postal="lists"', 1),
+                     f"{name}-signup-zip-lists", width=PHONE, before=signup_stub(SIGNUP_MEMBERS))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(900)
+        lists_first = tab.locator('[data-hub-signup-part="location"] select').first.is_visible()
+        switch = tab.locator(f".{name}-switch", has_text="ZIP")
+        offered = switch.count() > 0 and switch.first.is_visible()
+    finally:
+        tab.close()
+    if not lists_first or not offered:
+        faults.append(f"{where}: postal=lists should show the state list with the ZIP code a tap away "
+                      f"(list {lists_first}, link {offered})")
     # A failed search leaves nothing behind.
     tab = shell.open(html, f"{name}-signup-failed", width=PHONE, before=signup_stub(None))
     try:

@@ -41,9 +41,14 @@ OUT = ROOT / "lib" / "places"
 CACHE = ROOT / ".cache" / "places"
 REFERENCE = "https://help.hubpeople.ai/data"
 GEONAMES = "https://download.geonames.org/export/dump"
+GEONAMES_ZIP = "https://download.geonames.org/export/zip"
+# Countries whose visitors can give a postal code the join flow reads, and
+# GeoNames' code for its postal file. The codes are split by first character, so
+# a card loads only the file for the code being typed.
+POSTAL = {"USA": "US"}
 # Bumped when the matching changes, so a new match of the same reference is a
 # new edition and a published one never changes.
-MATCHER = 2
+MATCHER = 3
 # The platform's country names, as its reference spells them, to ISO codes.
 ISO = {"Argentina": "AR", "Australia": "AU", "Brazil": "BR", "Canada": "CA",
        "Ireland": "IE", "New Zealand": "NZ", "South Africa": "ZA", "Spain": "ES",
@@ -203,6 +208,30 @@ def match(regions, index):
     return out, aliases, sizes, how
 
 
+def postal(country, iso, regions, aliases):
+    """{first digit: {code: [region index, town or ""]}} in the platform's own
+    names: the region the code is in, and its town where the reference lists it."""
+    names = list(regions)
+    by_norm = {norm(r.split(":")[-1]): i for i, r in enumerate(names)}
+    towns = [{norm(t): t for t in regions[r]} for r in names]
+    for i, r in enumerate(names):
+        for alias, town in (aliases.get(r) or {}).items():
+            towns[i].setdefault(norm(alias), town)
+    out = collections.defaultdict(dict)
+    placed = unplaced = 0
+    with zipfile.ZipFile(fetch(f"{GEONAMES_ZIP}/{iso}.zip", f"{iso}-postal.zip")) as z:
+        for line in io.TextIOWrapper(z.open(f"{iso}.txt"), encoding="utf-8"):
+            f = line.rstrip("\n").split("\t")
+            code, place, state = f[1], f[2], f[3]
+            i = by_norm.get(norm(state))
+            if i is None:
+                unplaced += 1
+                continue
+            out[code[0]][code] = [i, towns[i].get(norm(place), "")]
+            placed += 1
+    return out, names, placed, unplaced
+
+
 def build():
     admin1, admin2 = admin_names("admin1CodesASCII.txt"), admin_names("admin2Codes.txt")
     reference = json.loads(fetch(f"{REFERENCE}/countries-regions.json", "countries-regions.json")
@@ -223,6 +252,16 @@ def build():
         with_place = sum(1 for t in regions.values() for v in t.values() if v)
         files[f"{slug(country)}.json"] = {"edition": edition, "country": country, "source": SOURCE,
                                           "regions": regions, "aliases": aliases, "sizes": sizes}
+        if country in POSTAL:
+            codes, names, placed, unplaced = postal(country, POSTAL[country], regions, aliases)
+            pattern = f"{slug(country)}-postal-{{}}.json"
+            files[f"{slug(country)}.json"]["postal"] = pattern
+            for digit, entries in sorted(codes.items()):
+                files[pattern.format(digit)] = {"edition": edition, "country": country, "source": SOURCE,
+                                                "regions": names, "codes": entries}
+            with_town = sum(1 for e in codes.values() for v in e.values() if v[1])
+            print(f"  {country:13s} {placed} postal codes in {len(codes)} files, {with_town / placed:.1%} "
+                  f"with a town the reference lists, {unplaced} in no region it holds")
         index["countries"][country] = {"file": f"{slug(country)}.json",
                                        "regions": list(regions), "towns": towns, "placed": with_place}
         print(f"  {country:13s} {towns:6d} towns in {len(regions):3d} regions, "
@@ -244,6 +283,7 @@ def check():
     except (OSError, ValueError) as e:
         return [f"lib/places/index.json: {e}"]
     edition = index.get("edition")
+    known = set()
     for country, row in index.get("countries", {}).items():
         path = OUT / row["file"]
         try:
@@ -265,7 +305,18 @@ def check():
                 if at is not None and not (isinstance(at, list) and len(at) == 2
                                            and -90 <= at[0] <= 90 and -180 <= at[1] <= 180):
                     faults.append(f"{path.name}: {region} / {town} has {at!r}")
-    stray = {p.name for p in OUT.glob("*.json")} - {"index.json"} - \
+        pattern = data.get("postal")
+        postal_files = sorted(OUT.glob(pattern.replace("{}", "*"))) if pattern else []
+        for pf in postal_files:
+            codes = json.loads(pf.read_text(encoding="utf-8"))
+            if codes.get("edition") != edition or codes.get("regions") != list(data["regions"]):
+                faults.append(f"{pf.name}: not the edition or regions of {path.name}")
+            bad = [c for c, v in codes.get("codes", {}).items()
+                   if not (isinstance(v, list) and len(v) == 2 and 0 <= v[0] < len(codes["regions"])
+                           and (not v[1] or v[1] in data["regions"][codes["regions"][v[0]]]))]
+            faults += [f"{pf.name}: {c} names no listed region and town" for c in bad[:5]]
+        known.update(p.name for p in postal_files)
+    stray = {p.name for p in OUT.glob("*.json")} - {"index.json"} - known - \
         {r["file"] for r in index.get("countries", {}).values()}
     faults += [f"{name}: not in the index" for name in sorted(stray)]
     return faults
