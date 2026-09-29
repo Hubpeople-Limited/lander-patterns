@@ -2,7 +2,7 @@
   "composition": "safety-explained",
   "version": 1,
   "page": "safety",
-  "library": "v188",
+  "library": "v189",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
