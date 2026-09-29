@@ -2571,19 +2571,33 @@ def check_masthead_without_portrait():
                     "article-masthead", width, check_phone.token_set())
                 page_html, removed = re.subn(
                     r'<img class="article-masthead-avatar"[^>]*>', "", page_html)
-                out = Path(tmp) / f"masthead-{width}.html"
-                out.write_text(page_html, encoding="utf-8")
-                page = browser.new_page(viewport={"width": width, "height": 900})
-                page.goto(out.as_uri())
-                got = page.evaluate("""() => {
-                    const box = s => document.querySelector(s).getBoundingClientRect();
-                    return {title: box('.article-masthead-title').left,
-                            byline: box('.article-masthead-byline').left,
-                            row: box('.article-masthead-author').height};
-                }""")
-                page.close()
+                # No author at all: the portrait gone and both lines left empty.
+                empty_html, emptied = re.subn(
+                    r'(<p class="article-masthead-(?:byline|role)">)[^<]*(</p>)',
+                    r"\1\2", page_html)
+                got = {}
+                for label, html_text in (("no portrait", page_html),
+                                         ("no author", empty_html)):
+                    out = Path(tmp) / f"masthead-{width}.html"
+                    out.write_text(html_text, encoding="utf-8")
+                    page = browser.new_page(viewport={"width": width, "height": 900})
+                    page.goto(out.as_uri())
+                    got[label] = page.evaluate("""() => {
+                        const box = s => document.querySelector(s).getBoundingClientRect();
+                        const row = document.querySelector('.article-masthead-author');
+                        return {title: box('.article-masthead-title').left,
+                                byline: box('.article-masthead-byline').left,
+                                row: row.getBoundingClientRect().height,
+                                rule: getComputedStyle(row).borderTopWidth};
+                    }""")
+                    page.close()
+                shown = got["no portrait"]
                 case(f"at {width}px with no portrait, the byline starts where the title does",
-                     removed == 1 and abs(got["byline"] - got["title"]) <= 1 and got["row"] > 0)
+                     removed == 1 and abs(shown["byline"] - shown["title"]) <= 1
+                     and shown["row"] > 0)
+                bare = got["no author"]
+                case(f"at {width}px with no author at all, the author row and its rule close up",
+                     emptied == 2 and bare["row"] == 0 and bare["rule"] == "0px")
         finally:
             browser.close()
     return failures
@@ -2787,7 +2801,7 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 4 + 2
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
              + PLACEHOLDER_URL_CASE_COUNT)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
