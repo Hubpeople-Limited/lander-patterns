@@ -1,4 +1,4 @@
-/* signup-card v3 - tokens only, selectors prefixed */
+/* signup-card v5 - tokens only, selectors prefixed */
 /* The card sits in an opener's call-to-action place: it takes a width of its
    own and leaves the page's layout to the opener. */
 .signup-card {
@@ -539,17 +539,22 @@ and 132px in step with that. */
   font-weight: 600;
 }
 .signup-card-opt input[aria-invalid] + .signup-card-opt-face,
-/* Where the visitor lives: a region list, then a town typed and picked. */
-.signup-card-step > .signup-card-field + .signup-card-field {
-  margin-top: var(--space-3);
+/* Where the visitor lives: country, postal code or region, town. One rhythm
+   between them, wide enough that a focus ring never meets the next label. */
+.signup-card-lists {
+  display: grid;
+  gap: var(--space-4);
+}
+.signup-card-step > .signup-card-field + .signup-card-field,
+.signup-card-step > .signup-card-field + .signup-card-postal,
+.signup-card-step > .signup-card-field + .signup-card-lists,
+.signup-card-step > .signup-card-postal + .signup-card-lists {
+  margin-top: var(--space-4);
 }
 /* The towns offered as the visitor types: a raised list over the card, under
    the field, so the card keeps its height. */
 .signup-card-place {
   position: relative;
-}
-.signup-card-step > .signup-card-field + .signup-card-place {
-  margin-top: var(--space-3);
 }
 .signup-card-places {
   position: absolute;
@@ -626,6 +631,35 @@ and 132px in step with that. */
 .signup-card-next:hover {
   background: var(--color-primary-dark);
 }
+/* A line under a location field: the place a postal code was read as, or a
+   warning, set apart from the field rather than tucked under it. */
+.signup-card-place-note {
+  margin: var(--space-2) 0 0;
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+.signup-card-lists > .signup-card-place-note {
+  margin-top: calc(-1 * var(--space-2));
+}
+.signup-card-place-note[data-hub-signup-warn] {
+  color: var(--color-text);
+  font-weight: 600;
+}
+/* The link between a postal code and the region and town lists. */
+.signup-card-switch {
+  display: block;
+  min-height: 44px;
+  margin-top: var(--space-2);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font: inherit;
+  font-size: .9375rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
 .signup-card-skip {
   justify-self: center;
   min-height: 44px;
@@ -662,6 +696,7 @@ and 132px in step with that. */
 .signup-card-back:focus-visible,
 .signup-card-next:focus-visible,
 .signup-card-skip:focus-visible,
+.signup-card-switch:focus-visible,
 .signup-card-more:focus-visible,
 .signup-card-wheel:focus-visible,
 .signup-card-chip input:focus-visible + span {

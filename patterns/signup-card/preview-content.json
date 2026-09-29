@@ -25,5 +25,6 @@
   "intent-question": "Sample: what are you looking for?",
   "enjoy-question": "Sample: what do you enjoy?",
   "name-label": "Sample first name",
-  "places": "Sample country"
+  "places": "Sample country",
+  "postal": "sample-first"
 }

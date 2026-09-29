@@ -1913,7 +1913,7 @@
   "summary": "A short sign-up card that sits in an opener in place of its join button.",
   "type": "component",
   "variants": {},
-  "version": "3",
+  "version": "5",
   "whole-page": false
  },
  "signup-steps": {
