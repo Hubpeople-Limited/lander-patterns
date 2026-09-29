@@ -49,7 +49,7 @@ arrangement; above it the menu is a row in the bar.
 | `mark` | `direct`, `plate`, `mono` | above |
 | `menu-align` | `menu-start`, `menu-centre`, `menu-end` | which edge the items in the sheet are set against; inert on `--row` |
 | `menu-side` | `side-start`, `side-end` | the side the button sits on and the drawer slides in from; inert on `--row` |
-| `toggle` | `labelled`, `icon` | the word beside the bars, or the bars alone (the word clipped, still announced); on `--icon` the mark takes the row up to the button below `60rem` |
+| `toggle` | `icon`, `labelled` | the bars alone (the word clipped, still announced), the mark taking the row up to the button below `60rem`; or the word beside the bars |
 | `edge` | `rule`, `shadow`, `flush` | a hairline, `--card-shadow`, or neither; the bar is the same height on all three |
 
 **Choose `overflow` from the menu.** Up to four short items fit beside any mark. Five or more, a long
@@ -60,8 +60,8 @@ submenus that wants every item in view. `--wrap` is chosen knowingly, and measur
 to six is `--dropdown`, ten or more is `--mega`; `--mega` cannot combine with `--scroll`.
 
 No rung hides the menu behind a button at desktop width: a hidden menu is missed
-almost twice as often. **Prefer `labelled`**: a word beside
-the bars is found faster than bars alone. **`edge` costs no height.**
+almost twice as often. **`icon` is the default**: on a phone the bars alone are the convention
+visitors expect. **`edge` costs no height.**
 
 **No script, at any width.** The menu is a native `<details>`/`<summary>`; a shut drawer is
 `visibility: hidden`. Submenus open on hover and `:focus-within`; the bar clips sideways, so a

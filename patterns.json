@@ -1276,8 +1276,8 @@
     "mega"
    ],
    "toggle": [
-    "labelled",
-    "icon"
+    "icon",
+    "labelled"
    ]
   },
   "version": "11",
