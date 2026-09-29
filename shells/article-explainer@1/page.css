@@ -926,7 +926,7 @@
   }
 }
 
-/* ---- article-masthead v11 ---- */
+/* ---- article-masthead v12 ---- */
 /* article-masthead v2 - tokens only, selectors prefixed */
 .article-masthead {
   display: flex;
@@ -999,6 +999,12 @@
   margin-block-start: var(--space-2);
   padding-block-start: var(--space-5);
   border-block-start: 1px solid var(--color-rule);
+}
+/* Nothing to show, nothing to frame: the row's rule and padding go with it. */
+.article-masthead-author:not(:has(img, .article-masthead-byline:not(:empty), .article-masthead-role:not(:empty))) {
+  margin-block-start: 0;
+  padding-block-start: 0;
+  border-block-start: 0;
 }
 .article-masthead-avatar {
   flex: 0 0 auto;

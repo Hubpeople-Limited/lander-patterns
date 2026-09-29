@@ -1127,7 +1127,7 @@
   }
 }
 
-/* ---- steps-numbered v11 ---- */
+/* ---- steps-numbered v12 ---- */
 /* steps-numbered v3 - tokens only, selectors prefixed */
 .steps-numbered {
   /* Contrast floor. The words sit on a photograph, so the scrim carries the
@@ -1237,6 +1237,8 @@
   }
   .steps-numbered-content::before {
     font-size: calc(clamp(48px, 14vw, 64px) * var(--type-scale, 1));
+    /* Stacked, the line box holds the numeral's glyphs in any face. */
+    line-height: normal;
   }
   .steps-numbered-scrim {
     padding: var(--space-5);
