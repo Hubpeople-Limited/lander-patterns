@@ -35,7 +35,8 @@ page, and holds each behaviour to what its row says:
                no password, and it carries what every join link carries -
                the page's own parameters and its pn; under reduced motion it
                still moves on; a card given places asks where straight after
-               "looking for", offers the region's towns as the visitor types,
+               "looking for", offers a big region's towns as the visitor types
+               (its biggest from the first tap) and a small region's as a list,
                narrows the members to the town picked and sends its lat and
                long, and a card whose places will not load simply goes on
 
@@ -753,12 +754,15 @@ def check_signup(shell, name, tokens):
         faults.append(f"{where}: fixed answers must be sent once each - got "
                       f"{[x for x in sent if x.startswith(('mt=', 'lf='))]!r}")
     # Where the visitor lives: a county page asks only the town, offers its
-    # towns as they are typed, narrows the members to the one picked, and sends
-    # its coordinates. The keyboard picks it, which a finger cannot miss.
-    placed = re.sub(r'\sdata-hub-signup-places="[^"]*"', "", html, count=1)
-    placed = placed.replace('data-hub-module="signup"',
-                            'data-hub-module="signup" data-hub-signup-places="UK/England: Avon" '
+    # biggest towns from the first tap and the rest as they are typed, narrows
+    # the members to the one picked, and sends its coordinates. The keyboard
+    # picks it, which a finger cannot miss.
+    def with_places(scope):
+        page = re.sub(r'\sdata-hub-signup-places="[^"]*"', "", html, count=1)
+        return page.replace('data-hub-module="signup"',
+                            f'data-hub-module="signup" data-hub-signup-places="{scope}" '
                             f'data-hub-signup-places-from="{SIGNUP_PLACES}"', 1)
+    placed = with_places("UK/England: Greater London")
     searches = []
     tab = shell.open(placed, f"{name}-signup-places", width=PHONE,
                      before=signup_stub(SIGNUP_MEMBERS, searches))
@@ -771,9 +775,12 @@ def check_signup(shell, name, tokens):
         tab.wait_for_timeout(700)
         asked_where = tab.evaluate(SIGNUP_PARTS_JS)
         town = f'[data-hub-signup-part="location"] input[role="combobox"]'
-        offered = []
+        offered, first_tap = [], []
         if asked_where == ["location"]:
-            tab.locator(town).press_sequentially("brist", delay=40)
+            tab.locator(town).focus()
+            tab.wait_for_timeout(300)
+            first_tap = tab.locator(f".{name}-places [role=option]").all_inner_texts()
+            tab.locator(town).press_sequentially("lond", delay=40)
             tab.wait_for_timeout(300)
             offered = tab.locator(f".{name}-places [role=option]").all_inner_texts()
             tab.locator(town).press("ArrowDown")
@@ -799,17 +806,41 @@ def check_signup(shell, name, tokens):
         placed_url = tab.evaluate("() => window.__signupHandoff || ''")
     finally:
         tab.close()
-    avon = json.loads((ROOT / "lib" / "places" / "uk.json").read_text(encoding="utf-8"))["regions"]["England: Avon"]
+    uk = json.loads((ROOT / "lib" / "places" / "uk.json").read_text(encoding="utf-8"))["regions"]
+    london = uk["England: Greater London"]["London"]
     sent = dict(x.split("=", 1) for x in placed_url.split("?", 1)[-1].split("&") if "=" in x)
     if asked_where != ["location"]:
         faults.append(f"{where}: with places the step after 'looking for' was {asked_where!r}, not where they live")
-    elif not offered or offered[0] != "Bristol":
-        faults.append(f"{where}: typing 'brist' offered {offered!r} - the region's towns, Bristol first")
-    elif (sent.get("lat"), sent.get("long")) != (str(avon["Bristol"][0]), str(avon["Bristol"][1])):
-        faults.append(f"{where}: Bristol sent as lat={sent.get('lat')!r} long={sent.get('long')!r}, "
-                      f"not its coordinates {avon['Bristol']!r}")
-    if not any("city=Bristol" in u and "region=England%3A+Avon" in u and "country=UK" in u for u in searches):
-        faults.append(f"{where}: no member search narrowed to Bristol, England: Avon, UK")
+    elif not first_tap or first_tap[0] != "London":
+        faults.append(f"{where}: the first tap on the town field offered {first_tap!r} - the region's "
+                      f"biggest towns, London first")
+    elif not offered or offered[0] != "London":
+        faults.append(f"{where}: typing 'lond' offered {offered!r} - the region's towns, London first")
+    elif (sent.get("lat"), sent.get("long")) != (str(london[0]), str(london[1])):
+        faults.append(f"{where}: London sent as lat={sent.get('lat')!r} long={sent.get('long')!r}, "
+                      f"not its coordinates {london!r}")
+    if not any("city=London" in u and "region=England%3A+Greater+London" in u and "country=UK" in u
+               for u in searches):
+        faults.append(f"{where}: no member search narrowed to London, England: Greater London, UK")
+    # A small county offers its few towns as a list to pick from, not a field.
+    tab = shell.open(with_places("UK/England: Avon"), f"{name}-signup-places-few", width=PHONE,
+                     before=signup_stub(SIGNUP_MEMBERS))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(700)
+        pick = tab.locator(f'[data-hub-signup-part="location"] select')
+        few = pick.count() == 1 and pick.is_visible() and \
+            not tab.locator('[data-hub-signup-part="location"] input[role="combobox"]').is_visible()
+        towns = pick.locator("option").all_inner_texts() if pick.count() else []
+    finally:
+        tab.close()
+    if not few or "Bristol" not in towns:
+        faults.append(f"{where}: a county of {len(uk['England: Avon'])} towns should offer them as a list "
+                      f"to pick from (got {towns!r})")
     # Two copies of the bundle on one page - a page's own tag and the
     # platform's - build the card once.
     twice = html.replace('<script type="module" src="hub.js"></script>',

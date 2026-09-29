@@ -110,7 +110,10 @@
   }
   .hero-split-inner:has(.signup-card) .hero-split-visual {
     grid-area: visual;
-    min-height: 38rem;
+    /* A height, not a minimum, anchored at the top: a taller step must not
+       stretch the picture or move it. */
+    height: 38rem;
+    align-self: start;
     margin-left: var(--space-12);
   }
   .hero-split-inner:has(.signup-card) .hero-split-visual img {

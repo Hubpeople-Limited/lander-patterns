@@ -896,7 +896,7 @@
   "summary": "The opening claim on one side, a strong photograph on the other.",
   "type": "section",
   "variants": {},
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -1913,7 +1913,7 @@
   "summary": "A short sign-up card that sits in an opener in place of its join button.",
   "type": "component",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "signup-steps": {

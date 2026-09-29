@@ -60,11 +60,11 @@ spells them.
 visitors are, in the platform's own location names: `world`, a country (`UK`),
 a region (`UK/England: Avon`) or a town (`UK/England: Avon/Bristol`). Straight
 after "looking for" the card asks whatever that leaves open — country, region,
-then the town, offered as it is typed — narrows the members to the answer and
+then the town: a list in a small region, typed in a big one, its biggest towns
+offered from the first tap — narrows the members to the answer and
 sends the join flow the town's latitude and longitude, from the places files
-published beside the behaviour. A town given in full is not asked. Leave it off
-and there is no location step; if the places cannot be reached, the step goes
-and the join flow asks.
+beside the behaviour. A town given in full is not asked; without the option, or
+if the places cannot be reached, there is no location step.
 
 **The members are the brand's own, fetched live**, never stored: a strip of
 faces in the card from the moment the page arrives, narrowed to who the visitor
