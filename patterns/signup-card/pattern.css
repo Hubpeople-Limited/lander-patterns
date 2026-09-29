@@ -1,4 +1,4 @@
-/* signup-card v5 - tokens only, selectors prefixed */
+/* signup-card v6 - tokens only, selectors prefixed */
 /* The card sits in an opener's call-to-action place: it takes a width of its
    own and leaves the page's layout to the opener. */
 .signup-card {
@@ -630,6 +630,13 @@ and 132px in step with that. */
 }
 .signup-card-next:hover {
   background: var(--color-primary-dark);
+}
+/* The encouraging line after an answer, under the summary of answers so far. */
+.signup-card-cheer {
+  margin: var(--space-2) 0 0;
+  font-size: .9375rem;
+  font-weight: 600;
+  color: var(--color-text);
 }
 /* A line under a location field: the place a postal code was read as, or a
    warning, set apart from the field rather than tucked under it. */

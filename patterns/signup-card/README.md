@@ -7,30 +7,24 @@ join flow, which skips every step those answers settle. The opener keeps its
 own headline, sentence and picture.
 
 It goes in `hero-overlay`, `hero-split`, `hero-stated` or `hero-squeeze`,
-inside the element that held the join button. Each of those openers makes room
-for it: on a wide screen the words sit on one side and the card on the other,
-with the first step and its button above the fold on a laptop; on a phone the
-card follows the headline. Anything else that was beside the button — a second
-link, a reassurance line — comes out: the card is the one control.
+inside the element that held the join button: words one side and card the
+other on a wide screen, the first step above a laptop's fold; on a phone the
+card follows the headline. Whatever else was beside the button comes out.
 
-With the behaviour library the card asks **one question at a time** — two side
-by side from `60rem` — adds interest steps and a first name, shows live members,
-and draws a tick before handing off; without it, it is a plain form that still
-submits. **It sends only what the visitor gave**: nothing is pre-ticked or
-pre-filled, and the join flow asks for the password itself.
+With the behaviour library it asks **one question at a time** (two from
+`60rem`), adds interest steps and a first name, shows live members; without it,
+it is a plain form that still submits. **It sends only what the visitor gave**,
+and the join flow asks for the password itself.
 
-**What it needs.** An opener to sit in; the card's title; the brand's wording
-for every answer; a line on the age limit; a line saying the password comes
-next; the consent sentence HubPeople supplies, with the brand's terms and
-privacy links; and for the steps, the brand's interest labels, the two interest
-questions and the first-name label.
+**What it needs.** An opener; the card's title; the brand's wording for every
+answer; the age-limit and password-next lines; HubPeople's consent sentence
+with the brand's terms and privacy links; the brand's interest labels, the two
+interest questions and the first-name label.
 
 **The interest labels are the join flow's own.** `data-hub-signup-intent` and
-`-enjoy` take them `;`-separated, spelled exactly as the brand's join flow
-spells them: a label it does not know is dropped without a word. Leave one
-empty to drop that step. Six can be picked on the second. Each step shows
-eight; any more wait behind a "show more" control in the same step, so a long
-list never pushes the step off a phone.
+`-enjoy` take them `;`-separated, spelled as the join flow spells them (it drops
+one it does not know). Empty drops the step; six can be picked on the second;
+past eight the rest wait behind "show more".
 
 **The answers are the brand's; the values are the join flow's.** `mt` is who
 the visitor is: `1` a man, `2` a woman, `16` anyone else, `4` a couple on
@@ -66,15 +60,21 @@ in the USA the ZIP code first, the lists a tap away (`-postal`: `first`, `lists`
 coordinates. A town given in full is not asked; without the option, or if the
 places cannot be reached, there is no location step.
 
-**The members are the brand's own, fetched live**, never stored: a strip of
-faces in the card from the moment the page arrives, narrowed to who the visitor
-is looking for once they say. Nothing shows when there are none or the search
-fails. Under the progress bar a line gathers the answers so far. **Pairing.**
+**The members are the brand's own, fetched live**, never stored: faces from
+arrival, narrowed as the visitor answers; none when there are none. Under the
+progress bar a line gathers the answers so far. **Pairing.**
 `member-grid` below the opener, `steps-plain` for how joining works. It refuses
 `signup-steps`, the block it replaces, and `picker-chips`.
 
-**Brand adaptability.** `--btn-radius` shapes the answer rows, fields and
-buttons; `--chip-radius` the pills, the progress bar and the member strip.
-`--color-primary` marks every chosen answer. Every ink on the card is
-`--color-text` on `--color-surface`, whatever the opener's ground. The date of
-birth is number boxes, not dropdowns: a list of years goes stale every January.
+**A line after each answer**, under the answers so far, drawn at random and
+never repeated in a visit: the library's (`lib/messages/`, English, true on a
+brand with no members yet) and the page's own: `-say-iam`, `-say-seeking`,
+`-say-location`, `-say-interest`, `-say-last` (`;`-separated; `{who}`,
+`{place}`, `{interest}` fill from the answers), `-say-labels` (`Label: line |
+line; Label: line`). `-say-mode="replace"`: only the page's where it has some.
+`-platform` (`excite`, `affinity`) adds that platform's lines per interest. A
+page in another language uses only its own; `-messages="off"` stops them.
+
+**Brand adaptability.** `--btn-radius` shapes rows, fields and buttons;
+`--chip-radius` the pills, progress bar and member strip; `--color-primary`
+marks chosen answers; every ink is `--color-text` on `--color-surface`.
