@@ -177,3 +177,7 @@
     height: calc(clamp(38rem, 66vw, 50rem) + 2 * var(--space-8));
   }
 }
+
+.hero-portrait:not(.hero-portrait--moving) {
+  --hub-motion: none;
+}
