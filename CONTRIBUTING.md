@@ -498,6 +498,7 @@ Your pattern must, at both widths:
 | **Keep text readable** | 12px |
 | **Keep form fields at a size iOS will not zoom into** | 16px |
 | **Keep text off other text.** No run of words, and no numeral or label drawn by `::before` or `::after`, may land on another's ink | more than 2px each way |
+| **Keep the lines of a block apart.** No descender on one line may reach into an ascender on the next | more than 1px each way |
 
 Three of those carve out the cases that would otherwise make the gate
 unusable, and it is worth knowing which, because they are also the shapes you
@@ -522,9 +523,19 @@ to what its own glyphs reach above and below the baseline, and to any
 ancestor that clips it. A generated numeral or label is measured through a
 stand-in span carrying its computed style. So these are allowed, and are
 shapes the library uses on purpose: words over a photograph or a scrim, a
-badge on a card's picture, a headline set tighter than its face (lines of
-one block are never compared), text inside a sideways rail, a closed
-question's answer and a label hidden for screen readers.
+badge on a card's picture, text inside a sideways rail, a closed question's
+answer and a label hidden for screen readers.
+
+**The lines of one block are measured the same way, against each other.**
+Each line's box is cut to what the words on that line reach, so a heading
+whose lines carry no descenders can sit tighter than one whose do, and a
+numeral on one line whose glyph is taller than its line box is not a fault.
+The allowance is 1px, not 2: the two lines are one face at one size, and
+canvas reports a glyph's ink to the whole pixel, so one pixel of overlap can
+be rounding on each edge, or the anti-aliased fringe of a descender brushing
+an ascender. More than that is one letter's solid stroke painted inside
+another's. The fault names the block and its leading as a ratio of its type
+size, which is the same number at every width.
 
 **What it deliberately does not check.** A rule that cannot be made reliable is
 worse than none, because the first false positive teaches everyone to stop
@@ -559,8 +570,8 @@ than hidden by an exclusion nobody can see. **Fixing a pattern means deleting
 its entry** — a run whose baseline matches nothing reports `STALE` and fails,
 because a baseline that has outlived its defect is how a gate goes quiet.
 
-`ci/test_gates.py` proves both halves against synthetic fixtures — ten faults
-it must catch, seventeen valid shapes it must ignore — and then sweeps the
+`ci/test_gates.py` proves both halves against synthetic fixtures — eleven
+faults it must catch, twenty valid shapes it must ignore — and then sweeps the
 library.
 Proving it against the real patterns alone would prove nothing about the half
 that matters: a check that never fires passes a clean library perfectly.
