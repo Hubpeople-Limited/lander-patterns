@@ -2948,6 +2948,48 @@ def check_hero_band():
     return failures
 
 
+def check_member_grid_motion():
+    """member-grid's Moving row is itself a choice to move, so it glides
+    whatever the Movement rung says; every other layout is still unless
+    moving is chosen."""
+    import check_phone
+    failures = []
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED member-grid motion: {why}")
+        return failures
+    css = (HERE.parent / "patterns" / "member-grid" / "pattern.css").read_text(encoding="utf-8")
+    cases = [
+        ("member-grid member-grid--plain member-grid--grid", "none", "the grid, left still"),
+        ("member-grid member-grid--plain member-grid--rail", "none", "the swipe row, left still"),
+        ("member-grid member-grid--plain member-grid--grid member-grid--moving", "",
+         "the grid, moving"),
+        ("member-grid member-grid--plain member-grid--marquee", "",
+         "the Moving row with Movement left at still"),
+    ]
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        browser = p.chromium.launch()
+        try:
+            for classes, want, label in cases:
+                out = Path(tmp) / "member-grid.html"
+                out.write_text(f"<!doctype html><style>{css}</style>"
+                               f"<section class=\"{classes}\"></section>", encoding="utf-8")
+                page = browser.new_page()
+                page.goto(out.as_uri())
+                got = page.evaluate("() => getComputedStyle(document.querySelector('section'))"
+                                    ".getPropertyValue('--hub-motion').trim()")
+                page.close()
+                ok = got == want
+                print(f"  {'ok  ' if ok else 'FAIL'} member-grid: {label} "
+                      f"(--hub-motion {got or 'unset'})")
+                if not ok:
+                    failures.append(f"member-grid motion: {label}")
+        finally:
+            browser.close()
+    return failures
+
+
 def check_placeholder_scrim():
     """Both directions of ci/check_placeholder_scrim.py: the library is clean,
     and the positive control catches a drawing the scrim hides and copy the
@@ -3209,6 +3251,8 @@ def main():
     print()
     failures += check_masthead_without_portrait()
     print()
+    failures += check_member_grid_motion()
+    print()
     failures += check_placeholder_scrim()
     print()
     failures += check_shell_placeholders()
@@ -3239,7 +3283,7 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2 + 4
              + PLACEHOLDER_URL_CASE_COUNT
              + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")

@@ -104,3 +104,6 @@
       calc(var(--stat-rows-row-index, 0) * 60ms + 160ms);
   }
 }
+.stat-rows:not(.stat-rows--moving) {
+  --hub-motion: none;
+}

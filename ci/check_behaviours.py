@@ -13,6 +13,9 @@ a page with the bundle, launched with file access allowed so the module
 script actually runs, proves the bundle ran by reading its version off the
 page, and holds each behaviour to what its row says:
 
+    reveal     still on a pattern's default rung and easing in on its moving
+               rung; the markup and styles of the last release before the
+               switch ease in as they always did
     counter    a figure ends on the authored text, byte for byte, with its
                prefix, separators, decimals and suffix; it moved on the way
                there; under reduced motion it never moves; with no bundle the
@@ -56,8 +59,8 @@ A substitution that no longer matches is itself a failure, so the control
 cannot go quietly stale when a behaviour is reworded.
 
 WHICH PATTERNS. Discovered from the `behaviours:` header of every pattern:
-anything declaring `counter`, `scrollspy` or `carousel`. A new pattern taking
-one of them is measured the day it lands.
+anything declaring `reveal`, `counter`, `scrollspy` or `carousel`. A new
+pattern taking one of them is measured the day it lands.
 
 Exit codes: 0 clean, or skipped because no browser is available; 1 at least
 one behaviour does not do what its row says; 2 the request itself is unusable.
@@ -79,10 +82,11 @@ PREVIEW = ROOT / "preview"
 BUNDLE = ROOT / "lib" / "hub.js"
 
 from build_preview import fill, repeat_block            # noqa: E402
+from check_page import apply_variants                   # noqa: E402
 from check_phone import browser_unavailable             # noqa: E402
 import lint                                             # noqa: E402
 
-BEHAVIOURS = ("counter", "scrollspy", "carousel", "signup")
+BEHAVIOURS = ("counter", "scrollspy", "carousel", "signup", "reveal")
 # The last release before motion became a switch. Pages built from it keep
 # that markup and those styles and load the bundle from the floating URL,
 # so the bundle is held to moving them exactly as it did.
@@ -214,6 +218,10 @@ def declared(name):
     return {b.strip() for b in pattern_meta(name).get("behaviours", "").split(",") if b.strip()}
 
 
+def has_switch(meta):
+    return "moving" in (lint.parse_variants(meta.get("variants", "")) or {}).get("motion", [])
+
+
 def discover():
     out = {}
     for folder in sorted(p for p in PATTERNS.iterdir() if p.is_dir()):
@@ -223,11 +231,13 @@ def discover():
     return out
 
 
-def filled_markup(name):
+def filled_markup(name, source=None):
+    """The pattern filled with its sample. `source` is (pattern.html,
+    pattern.css) from another release; by default the files in the tree."""
     folder = PATTERNS / name
-    markup = re.sub(r"\s*<!--\n.*?\n-->", "",
-                    (folder / "pattern.html").read_text(encoding="utf-8"),
-                    count=1, flags=re.S)
+    html, css = source or ((folder / "pattern.html").read_text(encoding="utf-8"),
+                           (folder / "pattern.css").read_text(encoding="utf-8"))
+    markup = re.sub(r"\s*<!--\n.*?\n-->", "", html, count=1, flags=re.S)
     sample_path = folder / "preview-content.json"
     sample = (json.loads(sample_path.read_text(encoding="utf-8"))
               if sample_path.exists() else {})
@@ -235,7 +245,6 @@ def filled_markup(name):
     repeat = sample.get("_repeat")
     if repeat:
         filled = repeat_block(filled, repeat["class"], int(repeat["count"]))
-    css = (folder / "pattern.css").read_text(encoding="utf-8")
     return filled, css
 
 
@@ -250,9 +259,15 @@ def with_figures(filled):
     return re.sub(r"(<dt\b[^>]*>)(.*?)(</dt>)", swap, filled, flags=re.S)
 
 
-def page_for(name, behaviour, tokens, bundle_file, width):
+def page_for(name, behaviour, tokens, bundle_file, width, rung="moving", source=None):
     """The pattern in a page shaped so the behaviour has something to do."""
-    filled, css = filled_markup(name)
+    filled, css = filled_markup(name, source)
+    meta = pattern_meta(name)
+    # Every check measures a pattern that offers the switch on its moving
+    # rung unless it asks for another; a release's own markup is taken as
+    # it shipped.
+    if source is None and rung and has_switch(meta):
+        filled = apply_variants(name, meta, filled, {"motion": rung})
     before = after = ""
     if behaviour == "counter":
         filled = with_figures(filled)
@@ -404,6 +419,7 @@ def check_counter(shell, name, tokens):
     if still != expected:
         faults.append(f"{where}: under reduced motion the figures read {still!r} - "
                       f"the authored figure is the only one allowed")
+    faults += motion_faults(shell, name, tokens, "counter")
     return faults
 
 
@@ -430,6 +446,41 @@ def moved(behaviour, got):
     if behaviour == "counter":
         return got["figures"] != [FIGURES[i % len(FIGURES)] for i in range(len(got["figures"]))]
     return got["marquee"] > 0
+
+
+def motion_faults(shell, name, tokens, behaviour):
+    """Still on the default rung, moving on its moving rung, and moving on
+    the markup and styles LIVE_REF shipped."""
+    runs = []
+    if has_switch(pattern_meta(name)):
+        runs += [("motion=default", page_for(name, behaviour, tokens, "hub.js", WIDTH,
+                                             rung="default"), False),
+                 ("motion=moving", page_for(name, behaviour, tokens, "hub.js", WIDTH,
+                                            rung="moving"), True)]
+    else:
+        runs.append(("as shipped", page_for(name, behaviour, tokens, "hub.js", WIDTH), True))
+    source = shipped(name)
+    if source is not None:
+        was = lint.parse_header(source[0], PATTERNS / name / "pattern.html")
+        if behaviour in {b.strip() for b in was.get("behaviours", "").split(",")}:
+            runs.append((f"as {LIVE_REF} shipped it",
+                         page_for(name, behaviour, tokens, "hub.js", WIDTH,
+                                  source=source[:2]),
+                         True))
+    faults = []
+    for i, (label, html, want) in enumerate(runs):
+        got = movement(shell, html, f"{name}-{behaviour}-motion-{i}")
+        if got is None:
+            return [f"{name} {behaviour}: the bundle did not run"]
+        if moved(behaviour, got) != want:
+            faults.append(f"{name} {behaviour}: {label} " + (
+                "stayed still - it has to move" if want
+                else "moved - still means nothing moves"))
+    return faults
+
+
+def check_reveal(shell, name, tokens):
+    return motion_faults(shell, name, tokens, "reveal")
 
 
 def check_still_means_still(shell, tokens):
@@ -1621,7 +1672,7 @@ def check_motion_compat(shell, tokens, version, bundle):
 
 
 CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel,
-          "signup": check_signup}
+          "signup": check_signup, "reveal": check_reveal}
 
 
 def main():

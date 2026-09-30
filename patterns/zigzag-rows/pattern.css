@@ -136,3 +136,6 @@
 .zigzag-rows img[data-hub-placeholder] {
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 }
+.zigzag-rows:not(.zigzag-rows--moving) {
+  --hub-motion: none;
+}

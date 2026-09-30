@@ -144,3 +144,6 @@
     margin-top: auto;
   }
 }
+.steps-plain:not(.steps-plain--moving) {
+  --hub-motion: none;
+}
