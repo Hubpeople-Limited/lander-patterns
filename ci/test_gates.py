@@ -461,6 +461,27 @@ VARIANT_CASES = [
     ("ground=", 1, "an axis with an empty value list"),
 ]
 
+# The layout line is read by the building skill as well as by this library,
+# so it is held to one spelling: a line this accepts and that one reads
+# differently is a pattern described as something it is not.
+LAYOUT_CASES = [
+    ("none", 0, "a pattern that takes no layout role"),
+    ("opener=beside", 0, "one role"),
+    ("people=members; rhythm=cards", 0, "two roles, the way a people grid is both"),
+    ("rhythm=column; reading=picture", 0, "a written piece's two roles"),
+    ("", 1, "an empty line"),
+    ("opener=photo", 1, "a value the building skill has no words for"),
+    ("mood=calm", 1, "a role nobody defined"),
+    ("rhythm=cards; rhythm=bands", 1, "a role given twice"),
+    ("people=none", 1, "the word for no people section, which no pattern is"),
+    ("close=sticky", 1, "the close a page falls back to, which no pattern is"),
+    ("Opener=Beside", 1, "the right words in capitals"),
+    ("opener=beside, rhythm=cards", 1, "commas where the form takes '; '"),
+    ("people=members;rhythm=cards", 1, "no space after the semicolon"),
+    ("people=members;", 1, "a trailing semicolon"),
+    ("none; opener=beside", 1, "none beside a role"),
+]
+
 
 # A header whose menu is a <details> and whose join control is outside it puts
 # the primary call to action behind the scrim for as long as the menu is
@@ -550,7 +571,8 @@ def check_disclosure():
 
 
 def check_header():
-    """The two header gates added with the variation work, both directions."""
+    """The header vocabulary gates - content-shape, the ground ladder and
+    the layout line - both directions, and that the layout line is required."""
     import lint
     failures = []
 
@@ -584,8 +606,35 @@ def check_header():
             if rung not in lint.GROUND_RUNGS:
                 lint.find(here, "variants", f"ground={rung}")
 
+    def layout(value):
+        for fault in lint.layout_faults(value):
+            lint.find(here, "layout-labels", fault)
+
     run("content-shape", SHAPE_CASES, shape)
     run("ground ladder", VARIANT_CASES, variants)
+    run("layout labels", LAYOUT_CASES, layout)
+
+    # Required: a pattern with no line would be described by whatever the
+    # building skill guesses, which for an opener is "words only".
+    root = Path(tempfile.mkdtemp())
+    held = lint.ROOT
+    lint.ROOT = root
+    try:
+        demo = root / "demo" / "pattern.html"
+        demo.parent.mkdir()
+        demo.write_text("<!--\nname: demo\n-->\n<section class=\"demo\"></section>\n",
+                        encoding="utf-8")
+        before = len(lint.findings)
+        lint.check_html(demo, lint.parse_header(demo.read_text(encoding="utf-8"), demo),
+                        "demo")
+        missing = any("'layout'" in f for f in lint.findings[before:])
+        del lint.findings[before:]
+    finally:
+        lint.ROOT = held
+        shutil.rmtree(root, ignore_errors=True)
+    print(f"  {'ok  ' if missing else 'FAIL'} layout labels catches: a header with no layout line")
+    if not missing:
+        failures.append("layout labels: a header with no layout line")
     return failures
 
 
@@ -2848,7 +2897,7 @@ def main():
     total = (len(CASES) + 1 + len(LOST_PHRASES) + len(LOST_ABSENT)
              + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
-             + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES)
+             + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES) + len(LAYOUT_CASES) + 1
              + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
              + len(MODIFIER_CASES) + 1 + 6 + len(NOTE_CASES) + 2
              + len(PAIRING_CASES) + 1
