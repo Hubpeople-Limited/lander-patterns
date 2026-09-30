@@ -16,11 +16,11 @@ require one per card, `zigzag-rows` a picture and a paragraph per row. A brand
 with words and no imagery had a card grid or nothing, and a card grid of forty
 text-only boxes is the sameness this library exists to avoid.
 
-Do **not** use it below five items. Three or four rows read as a stub of a list
-rather than a list, and at that size the honest answers are a short run of cards
-or a sentence naming them. Do not use it where the items are not peers — an
-index states that everything on it is the same kind of thing. And do not use it
-as a menu: the site chassis carries navigation, and this belongs where a reader
+It reads best with five items or more. Three or four rows read as a stub of a
+list rather than a list, and at that size a short run of cards or a sentence
+naming them serves better. Items that are not peers suit something else — an
+index states that everything on it is the same kind of thing. And it is not a
+menu: the site chassis carries navigation, and this belongs where a reader
 has finished reading.
 
 **What it needs.** Five or more real entries of one kind, each with the brand's

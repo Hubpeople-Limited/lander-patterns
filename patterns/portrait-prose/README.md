@@ -10,14 +10,13 @@ trust a person, and the prose gets a measure, because it is a story and not a
 list.
 
 Use it on an about page, on a homepage whose brand is one person's, and in an
-article that is an interview or a profile. Not for a team: one person, one
-portrait. Not for a testimonial - that is somebody else's words about the
-brand, and `quote-feature` is for those. Not for a person who has not agreed
-to be here: `requires: consented-people` is the strong reading on purpose,
-because a portrait on a public page is marketing whether or not it was meant
-as one.
+article that is an interview or a profile. It is built for one
+person and one portrait, so a team suits another pattern. A testimonial -
+somebody else's words about the brand - fits `quote-feature` better. And it
+goes with the person's OK: `requires: consented-people` is there because a
+portrait on a public page is marketing whether or not it was meant as one.
 
-**What it needs.** One real portrait of a real person who has agreed to
+**What it needs.** One real portrait of a real person, with their OK to
 appear on a public page anyone can reach, at least 800px wide and taller than
 it is wide - a landscape photograph is cropped to a portrait by the column and
 loses whatever was at its sides. Their name and one line of standing for the

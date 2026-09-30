@@ -7,12 +7,12 @@ title and a line or two of copy; the last one carries the join control.
 
 Use it where a brand has a small number of genuinely strong photographs and
 something ordered to say over them — a sequence, a progression, a case built in
-stages. It is the most attention-taking section in the library and should be the
+stages. It is the most attention-taking section in the library and reads best as the
 only such section on the page.
 
-Do **not** use it for a peer set: the stacking says *and then*, so equal things
-stacked this way tell a reader there is an order they have missed —
-`media-card-grid` is the pattern for those. Fewer than two cards is a hero with
+A peer set fits `media-card-grid` better: the stacking says *and then*, so
+equal things stacked this way tell a reader there is an order they have
+missed. Fewer than two cards is a hero with
 extra scrolling; more than four stops being a hand and becomes a slideshow the
 reader cannot skip.
 

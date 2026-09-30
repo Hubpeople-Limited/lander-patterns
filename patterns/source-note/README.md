@@ -18,7 +18,7 @@ The market leaders all do this. The ones that carry a footnote under every
 figure read as careful; the ones that assert a number and move on read as
 marketing. That difference costs a line of 12px type.
 
-Do **not** use it as a disclaimer, a legal line or a general footnote. It
+It is not a disclaimer, a legal line or a general footnote. It
 belongs to one claim and sits under that claim. Site-wide legal text is footer
 furniture.
 

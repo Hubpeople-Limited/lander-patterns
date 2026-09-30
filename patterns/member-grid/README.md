@@ -12,10 +12,10 @@ thing Google's spam policy names as doorway abuse; a page carrying real members
 who are only on *that* page is unique first-party data no competitor holds.
 
 Use it where the members are the argument: a location page, a community page,
-or a homepage that opens on who is already here. Do **not** use it as
-decoration on a page that has nothing to do with who the members are, and do
-not put two on one page unless they are showing genuinely different sets —
-`member-filter` is the pattern for that.
+or a homepage that opens on who is already here. It works best where
+the page is about who the members are, and two on one page earn their place
+only when they show genuinely different sets — `member-filter` is the pattern
+for that.
 
 **Set `data-members-min` and mean it.** Below that many members the platform
 renders the empty state instead of a thin grid. A location page with four faces

@@ -7,10 +7,10 @@ screen so a reader picks the one they came for. Use it where a brand has three
 to five genuinely different stories that a reader self-selects between —
 monetisation, safety, infrastructure — and where each one earns a photograph.
 
-Do not use it for a sequence (`steps-numbered`), for questions and answers
-(`faq-details`), or for one story dressed as several. Do not use it where the
-reader needs all of it: everything off the open panel is one interaction away,
-and most readers never take it.
+A sequence fits `steps-numbered` better, questions and answers `faq-details`,
+and one story reads better told once than dressed as several. Where the reader
+needs all of it, lay it out in full: everything off the open panel is one
+interaction away, and most readers never take it.
 
 **What a reader sees without the behaviour library.** Every panel, stacked,
 each led by its own `<h3>` — a complete, readable section, just longer. There

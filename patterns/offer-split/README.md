@@ -15,9 +15,9 @@ designer had nothing to reach for.
 It is also, with `benefit-tiles` and `steps-plain`, one of the three sections a
 brand with no usable photography can actually build a page out of.
 
-Do **not** use it as a section opener. The panel makes a specific offer and
-takes the eye immediately; put it at the top of a page and the argument beside
-it never gets read. It belongs where a reader has been given enough to be
+It works best mid-page rather than as a section opener. The panel makes a
+specific offer and takes the eye immediately; at the top of a page the
+argument beside it never gets read. It belongs where a reader has been given enough to be
 deciding.
 
 **What it needs.** Two or three short paragraphs making **one** argument, and a

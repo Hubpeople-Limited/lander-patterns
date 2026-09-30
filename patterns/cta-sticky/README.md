@@ -4,10 +4,10 @@
 viewport carrying one join button, so the primary action stays in the thumb
 zone however far the visitor scrolls. One of the best-evidenced mobile
 conversion patterns. Use it on any conversion page longer than about two
-mobile screens. Do **not** use it on short pages where the hero CTA is already
-visible (it duplicates), on pages whose job is not conversion (an article a
-reader is studying can carry it, a support page should not), or twice on one
-page.
+mobile screens. On a short page where the hero CTA is already
+visible it duplicates, and a page whose job is not conversion usually reads
+better without it (an article a reader is studying can carry it; a support
+page rarely needs it). One per page.
 
 **What it needs.** Nothing content-wise — the button is the platform's join
 placeholder. The one obligation is mechanical: the page-bottom clearance rule

@@ -19,9 +19,9 @@ them*, after. An article may carry both, and normally should — but not if all
 this block can offer is the name and the role again, in which case drop it and
 keep the byline. A safety page has no masthead, so nothing can be repeated.
 
-Do **not** use it for a house account, an editorial team, or a name nobody
-will stand behind — a block asserting expertise on behalf of nobody in
-particular makes a claim the page cannot support. And it is not an "about us";
+It works best for one named person. For a house account, an editorial team,
+or a name nobody will stand behind, a block asserting expertise on behalf of
+nobody in particular makes a claim the page cannot support. And it is not an "about us";
 that is a page of its own, not the end of an article.
 
 **It opens at `h2`,** and the heading names the block rather than the person;
@@ -36,7 +36,7 @@ the contentinfo landmark `colophon` owns.
 something most brands do not hold for their writers. The weight comes from the
 panel instead: a fill, a card edge, and a brand-coloured rule across the top.
 
-**What it needs.** All of it real, and it gates use:
+**What it needs.** All of it real:
 
 - **The name of the person who wrote the piece**, who is willing to be named.
 - **What they do that bears on this subject** — the job, the qualification, the

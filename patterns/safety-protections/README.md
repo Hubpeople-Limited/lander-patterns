@@ -13,9 +13,8 @@ read as a boast; process alone reads as a policy document. The third line is
 what a scanning reader leaves with, which is why it is the darkest text in the
 card and sits under its own rule at the card's floor.
 
-Do **not** use it as a general feature grid (`benefit-tiles`), or for
-compliance marks and memberships, which are a different claim with their own
-evidence (`trust-row`). Furniture the material cannot fill is how a trust page
+A general feature grid fits `benefit-tiles` better, and compliance marks and
+memberships, a different claim with their own evidence, fit `trust-row`. Furniture the material cannot fill is how a trust page
 starts lying by layout.
 
 **What it needs.** Real protections the brand genuinely operates, drawn from

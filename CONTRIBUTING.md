@@ -66,7 +66,7 @@ agent parses and the README is what a person reads. What each field means:
 | `image-slots` | Required on every pattern with an `<img src="slot:...">`, whatever `requires` says. One clause per `<img src="slot:...">`, separated by `;`: `<slot> subject=<subjects> crop=<crop> min=<px> focal=<side> placeholder=yes\|no`. Subjects are `couple`, `person`, `group`, `place`, `object`, most likely first. Crops are `wide`, `landscape`, `portrait`, `square`. `min` is the width `needs` asks for. `focal` is where the subject sits so the copy stays clear: `left`, `right`, `center` or `top` - it is advice for choosing and cropping a photograph, and pattern CSS does not apply it. `*` in a slot name stands for a run of digits (`row-*-image`). A slot on a `consented-people` pattern is always `placeholder=no`. On a `requires: none` pattern the image is optional - a build with nothing to put there deletes the `<img>` - so its slot is always `placeholder=no` too. A pattern with a `placeholder=yes` slot carries `.<pattern> img[data-hub-placeholder]` painting the tint, which CI checks too. CI checks every clause against the markup |
 | `whole-page` | `yes` if this pattern IS the page and nothing follows it. One pattern carries it today. Omit it otherwise. It is not only a label: a full-viewport section carrying it must subtract `--page-footer-height` as well as `--page-header-height`, because the site footer is inside a promise about the page |
 | `behaviours` | Names from `lib/REGISTRY.md`, where the pattern carries `data-hub-module` hooks. Omit it if there are none. The header, the markup and the registry must all agree, and CI checks all three |
-| `needs` | The real content this consumes. It gates use: no material, wrong pattern. Say "real" and mean it |
+| `needs` | The real content this consumes. With no material, another pattern fits better. Say "real" and mean it |
 | `pairs-with` | Patterns that read well after this one. Not page furniture — `cta-sticky` belongs to the page, decided once |
 | `avoid-with` | Patterns that must not both appear on one page, or `none` — two image-led card runs, a full-screen finale and a fixed bar. It is the strong reading on purpose: follow it and the weaker adjacency problems cannot arise either. Mutual by nature, so CI checks both sides name each other. A constraint that is only ever about *neighbours* ("not directly above this") is prose in the README, not an edge here |
 | `one-per-page` | `yes` if a page may hold at most one. Two heroes or two sticky bars are a mistake, not a layout choice. This is where cardinality lives, not in `avoid-with`; where two patterns are **alternatives**, set it on both and say which to pick when in both READMEs |
@@ -220,10 +220,17 @@ nothing because it never reaches the page.
 
 ## README.md — the four sections, in this order
 
-1. **What it is and when to use it** — and, just as important, when *not* to.
+1. **What it is and when to use it** — and, just as important, when another
+   pattern fits better.
 2. **What it needs** — the real content it consumes, matching `needs`.
 3. **Pairing** — what it sits well next to, what it fights with.
 4. **Brand adaptability** — which tokens change its feel most, and any variants.
+
+**Suggest and remind; do not prohibit.** A partner decides what goes on their
+own page, so a pattern's words say what it works best with and why ("works
+best with a photograph of the couple, with their OK"), not what a partner may
+not use. Rules against inventing people, words or figures, and rules that keep
+markup whole, stay rules.
 
 Aim for about 50 lines and treat 80 as the ceiling, which CI enforces. Agents fetch these at build time, so length is a running cost - put the decision first and the reasoning behind it, never the reverse. A builder reads this before the markup.
 

@@ -4,10 +4,10 @@
 one per statistic: the figure large on the left, a hairline across the middle,
 one supporting sentence right-aligned. It is proof, not decoration — use it
 where the brand has two to four numbers it genuinely publishes and can stand
-behind. Do **not** use it as a filler band under a hero, do **not** stretch
-three real numbers into four rows, and do **not** use it for numbers that are
-really features (a list of what is included is a list, not a statistic). One
-strip per page; a second one reads as padding.
+behind. It is proof rather than a filler band under a hero, three real numbers
+are never stretched into four rows, and numbers that are really features read
+better as a list (a list of what is included is not a statistic). One strip
+per page; a second one reads as padding.
 
 **What it needs.** Each figure exactly as the brand states it — same rounding,
 same unit, same currency — and one sentence per figure saying what it is. Both

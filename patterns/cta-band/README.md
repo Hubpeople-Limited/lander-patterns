@@ -10,8 +10,8 @@ Reach for it when the page has made its case and needs to ask. Reach for
 `cta-image` instead when a photograph is doing the asking, and for `cta-curtain`
 only when the uncovering is genuinely the point rather than a way of ending.
 
-Do **not** use it as a mid-page break. It paints a full-width ground, which
-reads as an ending wherever it is put; a band in the middle of a page tells a
+It works best at the end of a page rather than as a mid-page break. It paints
+a full-width ground, which reads as an ending wherever it is put; a band in the middle of a page tells a
 reader they have reached the bottom when they have not. That holds on every
 rung — `--plain` is quieter, not less final.
 

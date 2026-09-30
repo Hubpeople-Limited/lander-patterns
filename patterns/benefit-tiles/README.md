@@ -6,12 +6,12 @@ the floor of the tile, so tiles holding unequal amounts of copy still read as
 one set. Use it for a benefit or feature set the brand has **no photography
 for** — that is the gap it fills, and the only reason to reach for it over
 `media-card-grid` or `steps-numbered`, both of which *are* the photograph and
-are the better choice the moment real images exist. Do **not** use it for an
-ordered process (the tiles are peers and nothing in them says first or last —
-that is `steps-numbered`), for pricing tiers, or for a set of more than six,
-which is two sets rather than one. Do not use it for more than a couple of
-sentences a tile either; the tall proportion is there to give short copy air,
-not to hold a paragraph.
+are the better choice the moment real images exist. An ordered
+process fits `steps-numbered` better (the tiles are peers and nothing in them
+says first or last), pricing tiers fit `pricing-tiers`, and more than six is
+two sets rather than one. A tile reads best with a couple of sentences at
+most; the tall proportion is there to give short copy air, not to hold a
+paragraph.
 
 **What it needs.** Two to six real benefits or features, each with a short
 title and one or two sentences the brand can stand behind. One real icon image

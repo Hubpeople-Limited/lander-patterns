@@ -5,10 +5,11 @@ have: a horizontal strip of images the visitor scrolls or swipes, with
 scroll-snap making each stop land cleanly. Nothing auto-advances — auto-play
 needs a pause control, a pause control needs JavaScript, and the evidence is
 against auto-advancing carousels anyway. Use it for a genuine peer set of
-images: venue shots, app screens, real event photos. Do **not** use it for
-member photos presented as endorsements (that is testimonial territory with
-its own rules), for a single image, or as a way to hide content that matters —
-anything the visitor must see belongs in the page flow, not off-screen.
+images: venue shots, app screens, real event photos. Member photos
+presented as endorsements sit better in a testimonial pattern, where a name
+and the person's OK go with the picture; a single image has patterns of its
+own; and anything the visitor must see reads better in the page flow than
+off-screen.
 
 **What it needs.** Three or more real images of the same kind, each with real
 alt text, each sized for the slot through the CDN (roughly 480px wide at 2×).

@@ -9,9 +9,9 @@ screen under the reader's own scrolling, and the shadow is the cue that says
 so, which is why it flattens under `prefers-reduced-motion` exactly as the
 source did. Use it once, as the last block on a long page,
 where the visitor has already read the case and the only thing left is to act.
-Do **not** use it on a short page (there is no scroll to spend), do not use two
-on one page, and do not put anything after it — content below the spacer looks
-like a mistake.
+A short page has no scroll to spend, so it suits a long one; it is one per
+page, and the last thing on it — content below the spacer looks like a
+mistake.
 
 **What it needs.** A closing headline and one supporting line, both real copy,
 plus the platform's join control, which the markup already carries as

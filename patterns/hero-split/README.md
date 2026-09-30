@@ -3,9 +3,10 @@
 **What it is and when to use it.** The conversion opener for a homepage or
 campaign lander: the value proposition on one side, one strong image on the
 other, a single join CTA. Use it when the brand has a genuinely good hero image
-and one clear offer to state. Do **not** use it with a weak or placeholder
-image — a split hero with a filler panel reads as broken; use a text-led
-opener instead. One hero per page, always at the top.
+and one clear offer to state. It works best with a strong
+image: a split hero with a weak one reads as a filler panel, and a text-led
+opener can serve better until a good photograph arrives. A placeholder holds
+the place meanwhile. One hero per page, always at the top.
 
 **What it needs.** A headline and one-sentence subhead stating the real offer
 (message-matched to whatever brought the visitor), and one image at least

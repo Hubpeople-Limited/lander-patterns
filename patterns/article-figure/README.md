@@ -17,7 +17,7 @@ is the only pattern here where the words under the image are the point.
 It carries no heading, so it fits at any depth in a page without touching the
 heading order.
 
-**A decorative picture does not get this pattern.** A figure with a caption is
+**A decorative picture suits another pattern better.** A figure with a caption is
 by definition carrying information: the caption says what the reader is
 looking at. An image that is there to break up the page belongs in a pattern
 whose job is the page's rhythm, and its `alt` belongs empty. Here `alt` is a
@@ -25,8 +25,8 @@ slot, it is filled, and it describes the picture rather than repeating the
 caption — a reader who cannot see the image gets both, one after the other, so
 two copies of the same sentence is a worse result than one.
 
-**What it needs.** Four real things, and the absence of any one of them is a
-reason not to place it:
+**What it needs.** Four real things, and it reads best with all four in
+place:
 
 1. **A photograph that shows what the writing refers to.** Sized for the slot
    through the CDN, not a full-resolution original.

@@ -6,9 +6,9 @@ row. Use it for three to five *peer* things — features, audiences, promises �
 each with a real photograph and about two sentences. Two rows is not a rhythm;
 eight is a slog nobody scrolls to the end of. It is **not** a page opener:
 `hero-split` is the split-column hero, and one of these at the top of a page
-reads as a hero that forgot its CTA. Do not use it for an ordered process
-(`steps-numbered`), without photography, or for copy that runs past a short
-paragraph — long copy in a half-width column leaves a hole under the square
+reads as a hero that forgot its CTA. An ordered process fits
+`steps-numbered` better, it is built for photography, and it holds a short
+paragraph at most — long copy in a half-width column leaves a hole under the square
 image on every second row.
 
 **What it needs.** One real photograph per row, at least 1000px on the short

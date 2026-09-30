@@ -7,7 +7,7 @@ list with the numeral in its own left gutter; from the tablet band up it becomes
 one bordered box whose cells are separated by the grid gap showing the ground
 through.
 
-It exists because `steps-numbered` cannot be used without pictures. That pattern
+It exists because `steps-numbered` is built around pictures. That pattern
 requires a real photograph per step — portrait-crop, at least 1020px wide, with
 its own alt text — which is the right bar for what it is and leaves a brand with
 no photography holding nothing at all for the commonest section on a landing
@@ -15,11 +15,11 @@ page.
 
 Choose between the two on one question: **does the brand have a real photograph
 for every step?** If it does, use `steps-numbered` — the pictures do work no
-lattice can. If it does not, use this, and do not go looking for stock to
-qualify for the other one.
+lattice can. If it does not, this one reads better than stock bought to
+fill the other.
 
-Do **not** use it for a peer set: numbering things with no order is decoration
-pretending to be structure, and `benefit-tiles` is the pattern for those.
+A peer set fits `benefit-tiles` better: numbering things with no order is
+decoration pretending to be structure.
 
 **What it needs.** Three to five real steps in the order they actually happen,
 each with a short title and one or two sentences. Two is a list rather than a

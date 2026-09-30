@@ -6,11 +6,11 @@ moves the first sign-up decision above the fold and makes it one tap instead
 of a form. That is the whole of its value: it is a **conversion device, not a
 filter** — nothing on the page changes when a pill is tapped, the visitor
 simply arrives at sign-up already committed to an answer. Use it inside or
-directly beneath the hero, where it is the page's first action. Do **not** use
-it further down a page (the commitment is worth nothing once the visitor has
-already scrolled past the decision), do not use it to filter or sort anything
-on the page, and do not use it where the honest option count is one — a single
-pill is a button, and `hero-split` already has one.
+directly beneath the hero, where it is the page's first action. It works best
+at the top: further down a page the commitment is worth nothing once the
+visitor has already scrolled past the decision. It does not filter or sort
+anything on the page, and with one honest option it is a button — `hero-split`
+already has one.
 
 Two structural fixes over the hand-built version this came from: the pills are
 a real `<ul role="list">` inside a `role="group"` named by its heading, so the

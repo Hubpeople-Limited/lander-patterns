@@ -3,11 +3,10 @@
 **What it is and when to use it.** A full-bleed inverted band carrying a
 lattice of figures — three across on desktop, two on tablet, one on a phone.
 It is the proof block: the place a page states what the brand can actually
-count. Use it once, below the hero or above pricing. Do **not** use it twice
-on one page, do **not** use it as a feature list with numbers bolted on, and
-do **not** reach for it when the brand has fewer than three countable facts —
-two lonely figures in a six-cell frame read as a gap where the evidence
-should be.
+count. Use it once, below the hero or above pricing. It is not a feature
+list with numbers bolted on, and it reads best with three countable facts or
+more — two lonely figures in a six-cell frame read as a gap where the
+evidence should be.
 
 **What it needs.** An eyebrow, a short band title, and the figures
 themselves: for each one a `stat-figure` and a `stat-label`. **Every figure

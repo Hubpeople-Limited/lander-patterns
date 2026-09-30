@@ -9,9 +9,9 @@ page has two runs of argument in a row and the reader needs a moment between
 them; use it on an about page, where a picture of the place or the people says
 more than another paragraph would.
 
-Not for the first thing on a page, where an opener belongs, and not for the
-last, where the ask belongs. Not for a photograph that needs explaining: a
-picture that wants a caption is `article-figure`. Not twice in a row.
+It reads best between two sections: the first thing on a page is the
+opener's place and the last is the ask's. A photograph that needs explaining
+suits `article-figure`, which carries a caption. Two in a row read as a gallery.
 
 **What it needs.** One real photograph at least 1600px wide that is worth
 looking at on its own - a place, a crowd, a table, weather. It is cover-cropped

@@ -5,7 +5,7 @@ set large between two runs of body copy. It breaks a long column, gives the
 eye somewhere to land, and carries a single idea from the piece into a reader
 who is skimming it.
 
-Use it in the middle of a long read, and only there. Two or three across a
+It works best in the middle of a long read. Two or three across a
 long article is normal; the pattern is not `one-per-page`.
 
 **It is not `quote-feature`.** That one is a full-width testimonial stage, it
@@ -16,8 +16,8 @@ adding one is the signal that the wrong pattern is in use:** a quote with a
 name beside it goes in the body, as `prose-column`'s `<blockquote>` and its
 `<cite>` — neither testimonial pattern serves an `article` or a `safety` page.
 
-Do **not** open a piece with one — the lede has that job — and never put a
-line here that is not already in the body. A sentence that appears only in the
+A piece opens better on its lede than on one of these, and never put a line
+here that is not already in the body. A sentence that appears only in the
 pull quote is a claim the article never makes.
 
 It carries no heading, so it fits at any depth in a page without touching the

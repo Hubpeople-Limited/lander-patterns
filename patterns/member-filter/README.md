@@ -10,15 +10,15 @@ page that carries none, and it works before, during and after hydration because
 there is nothing to hydrate.
 
 Use it where a visitor genuinely arrives wanting one slice of the members and
-the page can honestly offer it. Do **not** use it to pad a thin set: three pills
-over the same twelve people is three controls that do nothing, and a visitor
+the page can honestly offer it. It works best with sets that genuinely differ: three
+pills over the same twelve people is three controls that do nothing, and a visitor
 finds that out in one tap. Where there is only one set worth showing, use
 `member-grid` on its own — that is the normal case, not the fallback.
 
 Not to be confused with `picker-chips`, which looks similar and does the
 opposite: those pills leave the page for the join flow, these change what is on
-it. One page should not carry both — two rows of pills that behave differently
-is a page teaching the visitor that its controls are unpredictable.
+it. A page reads better with one of the two — two rows of pills that behave
+differently teach the visitor that its controls are unpredictable.
 
 **What it needs.** Two or three **genuinely different** member sets, the
 brand's own word for each pill, and one word for what the pills do. Nothing

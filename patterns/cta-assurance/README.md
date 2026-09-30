@@ -18,7 +18,7 @@ one place the visitor is deciding.
 Use it under any control that asks someone to sign up. It is not a section and
 has no heading; it belongs inside whatever wraps the button.
 
-Do **not** use it as a feature list. Three benefits under a button is a
+It is not a feature list. Three benefits under a button is a
 different thing and reads as one — `benefit-tiles` is the pattern for what the
 product does. This is only about what signing up costs and commits you to.
 
