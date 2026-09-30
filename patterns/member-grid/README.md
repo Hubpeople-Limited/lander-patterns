@@ -54,18 +54,19 @@ carry the whole feel — hairline-and-square reads as a directory, rounded-and-
 shadowed as a product. `--color-primary` tints the initial tile that stands in
 for a member with no photograph, and colours the verified badge.
 
-Two axes. **Card style** — `plain` (square photo, no furniture), `framed`
+Four axes. **Card style** — `plain` (square photo, no furniture), `framed`
 (bordered card on your surface colour), `portrait` (a taller photo, cropping
 faces less). All three are deliberately quiet: member photographs are a real,
 mixed set, and furniture that flatters a shoot makes a mixed set look worse.
 **Layout** — `grid` wraps onto as many rows as it needs, `rail` is one row the
 visitor swipes through snapping to each member, and `marquee` is that row moving
-along by itself.
+along by itself. **Arrows** — `top`, a round pair above the row (under it on a
+phone), or `edges`, over its sides on a solid circle. **Arrows on a phone** —
+`arrows`, or `swipe` to leave them off there.
 
 **`rail` never moves on its own**, the same bargain `gallery-scroll` makes, and
-shows no scroll bar: `carousel` builds a previous and a next control under it,
-and with scripting off both rows wrap like `grid`, because a mouse has no other
-way along a row with no bar. **`marquee` is the only rung needing a markup
+shows no scroll bar: `carousel` builds the arrows, none while every member fits,
+and with scripting off both rows wrap like `grid`: a mouse has no other way along. **`marquee` is the only rung needing a markup
 change as well as the class**: swap `"reveal"` for `"marquee"` in
 `data-hub-module` and keep `"carousel"`. With no library it is simply the rail.
 
@@ -73,7 +74,7 @@ Everything the marquee needs is built rather than authored: it clones the run fo
 a seamless loop, keeps the copies out of the tab order and hidden from assistive
 technology, and **makes its own pause control**. That control is not decoration —
 content that moves by itself needs a way to stop it, and pause-on-hover is not
-one, doing nothing for a visitor on a phone or a keyboard. It also halts on
-hover, on focus, while dragged, and off screen. Under reduced motion nothing
-moves and no stop control appears. Previous and next show once the stop control
-is pressed, and whenever the row never starts. `reveal` fades the block in.
+one, doing nothing for a visitor on a phone or a keyboard; it is a round pause or
+play icon beside the arrows. It also halts on hover, on focus, while dragged, and
+off screen. Under reduced motion nothing moves and no stop control appears. The
+arrows show once it is stopped, or when it never starts.

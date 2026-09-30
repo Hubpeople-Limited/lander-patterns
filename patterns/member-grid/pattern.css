@@ -193,6 +193,57 @@
   display: none;
 }
 
+/* controls: where the previous and next arrows sit, read by the behaviour
+   library from these properties. phone: whether a phone shows them. */
+.member-grid--top {
+  --hub-carousel-controls: top;
+  --hub-carousel-look: round;
+}
+.member-grid--edges {
+  --hub-carousel-controls: edges;
+  --hub-carousel-look: round;
+}
+.member-grid--arrows {
+  --hub-carousel-phone: show;
+}
+.member-grid--swipe {
+  --hub-carousel-phone: hide;
+}
+.member-grid--marquee {
+  --hub-marquee-look: round;
+}
+/* The pair keeps to the column the heading above it sits in. */
+.member-grid .hub-carousel-controls--top {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+/* Over a photograph the arrows need a ground of their own. */
+.member-grid .hub-carousel-controls--edges .hub-carousel-control {
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--card-shadow);
+}
+/* The marquee's stop control shares the arrows' row, at its end. */
+.member-grid--marquee {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+.member-grid--marquee .lp-grid,
+.member-grid--marquee .lp-members__empty {
+  flex: 0 0 100%;
+}
+.member-grid--marquee .hub-carousel-controls--top {
+  margin-inline: 0;
+  padding-inline: 0 var(--space-2);
+}
+.member-grid--marquee .hub-marquee-control {
+  margin: 0 var(--space-4) var(--space-3) 0;
+}
+
 @media (min-width: 48rem) {
   .member-grid .lp-grid {
     gap: var(--space-5);

@@ -13,8 +13,8 @@ keywords: members, live, loop, profiles, grid, carousel, location, proof
 needs: nothing from the partner, which is what makes this different from every other people pattern here - the platform supplies the members. What it does need is the location the block is scoped to, written exactly as the platform spells it, and the brand's own words for the two links and the empty state
 pairs-with: heading-block, member-filter, cta-band
 avoid-with: none
-tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --transition-fast, --type-scale
-variants: card=plain|framed|portrait; flow=grid|rail|marquee
+tokens-used: --card-border, --card-radius, --card-shadow, --chip-radius, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --color-text-soft, --container-max, --font-heading, --space-1, --space-2, --space-3, --space-4, --space-5, --transition-fast, --type-scale
+variants: card=plain|framed|portrait; flow=grid|rail|marquee; controls=top|edges; phone=arrows|swipe
 behaviours: reveal, carousel
 motion: subtle
 one-per-page: no
@@ -40,7 +40,7 @@ added: 2026-09-02
      the behaviour library the block is then the rail, which is what it
      should be. Keep "carousel" on every rung: it builds previous and next
      controls for the rail, and for the marquee once it is stopped. -->
-<section class="member-grid member-grid--plain member-grid--grid"
+<section class="member-grid member-grid--plain member-grid--grid member-grid--top member-grid--arrows"
          data-hub-module="reveal carousel"
          data-hub-carousel-prev-label="slot:previous-label"
          data-hub-carousel-next-label="slot:next-label"

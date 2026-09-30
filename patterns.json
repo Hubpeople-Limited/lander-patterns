@@ -1408,10 +1408,18 @@
     "framed",
     "portrait"
    ],
+   "controls": [
+    "top",
+    "edges"
+   ],
    "flow": [
     "grid",
     "rail",
     "marquee"
+   ],
+   "phone": [
+    "arrows",
+    "swipe"
    ]
   },
   "version": "5",
