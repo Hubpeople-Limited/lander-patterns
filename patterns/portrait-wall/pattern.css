@@ -3,7 +3,7 @@
   padding-block: var(--space-8);
 }
 .portrait-wall-grid {
-  --portrait-wall-offset: -1;
+  --portrait-wall-mid: 2;
   --portrait-wall-gap: clamp(var(--space-2), 3vw, var(--space-6));
   --portrait-wall-ratio: 3 / 4;
   display: grid;
@@ -15,7 +15,7 @@
 }
 /* Each layer is one ring of tiles laid on the wall's own tracks, which is what
    lets the rules below address a whole ring by position. Take subgrid away and
-   all three rings collapse into a single column. */
+   every ring collapses into a single column. */
 .portrait-wall-grid > .portrait-wall-layer {
   display: grid;
   grid-column: 1 / -1;
@@ -23,29 +23,34 @@
   grid-template-columns: subgrid;
   grid-template-rows: subgrid;
 }
-/* --portrait-wall-offset re-points every centre-column reference when the wall
-   drops from five columns to three. Change the column count and change this. */
-.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile:nth-of-type(odd) {
-  grid-column: 1;
-}
-.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile:nth-of-type(even) {
-  grid-column: -2;
-}
-.portrait-wall-layer:nth-of-type(2) > .portrait-wall-tile:nth-of-type(odd) {
-  grid-column: calc(2 + var(--portrait-wall-offset));
-}
-.portrait-wall-layer:nth-of-type(2) > .portrait-wall-tile:nth-of-type(even) {
-  grid-column: calc(-3 - var(--portrait-wall-offset));
-}
-.portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile:first-of-type {
-  grid-column: calc(3 + var(--portrait-wall-offset));
-  grid-row: 1;
-}
+/* Columns count from --portrait-wall-mid; the focal cell stays last. */
 /* -2 / -1 is the last row, not `-1`: a bare -1 is a start line, and outside a
    subgrid it opens a fourth row instead of filling the third. */
-.portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile:last-of-type {
-  grid-column: calc(3 + var(--portrait-wall-offset));
+.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile:first-of-type {
+  grid-column: var(--portrait-wall-mid);
+  grid-row: 1;
+}
+.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile:last-of-type {
+  grid-column: var(--portrait-wall-mid);
   grid-row: -2 / -1;
+}
+.portrait-wall-layer:nth-of-type(2) > .portrait-wall-tile:nth-of-type(odd) {
+  grid-column: calc(var(--portrait-wall-mid) - 1);
+}
+.portrait-wall-layer:nth-of-type(2) > .portrait-wall-tile:nth-of-type(even) {
+  grid-column: calc(var(--portrait-wall-mid) + 1);
+}
+.portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile:nth-of-type(odd) {
+  grid-column: calc(var(--portrait-wall-mid) - 2);
+}
+.portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile:nth-of-type(even) {
+  grid-column: calc(var(--portrait-wall-mid) + 2);
+}
+.portrait-wall-layer:nth-of-type(4) > .portrait-wall-tile:nth-of-type(odd) {
+  grid-column: calc(var(--portrait-wall-mid) - 3);
+}
+.portrait-wall-layer:nth-of-type(4) > .portrait-wall-tile:nth-of-type(even) {
+  grid-column: calc(var(--portrait-wall-mid) + 3);
 }
 .portrait-wall-tile,
 .portrait-wall-focal {
@@ -66,7 +71,7 @@
 .portrait-wall-focal {
   position: relative;
   z-index: 1;
-  grid-area: 2 / calc(3 + var(--portrait-wall-offset));
+  grid-area: 2 / var(--portrait-wall-mid);
 }
 .portrait-wall-focal-img {
   position: absolute;
@@ -76,15 +81,30 @@
   height: 100%;
   object-fit: cover;
 }
-.portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile {
+/* A ring shows only once the wall has columns for it. */
+.portrait-wall-layer:nth-of-type(n + 3) > .portrait-wall-tile {
   display: none;
 }
 @media (min-width: 48rem) {
+  /* Three columns keep the tile size five would have. */
   .portrait-wall-grid {
-    --portrait-wall-offset: 0;
-    grid-template-columns: repeat(5, 1fr);
+    width: min(100% - 2 * var(--space-4), var(--container-max) * 0.6);
   }
-  .portrait-wall-layer:nth-of-type(1) > .portrait-wall-tile {
+  .portrait-wall-grid:has(> .portrait-wall-layer:nth-of-type(3)) {
+    --portrait-wall-mid: 3;
+    grid-template-columns: repeat(5, 1fr);
+    width: min(100% - 2 * var(--space-4), var(--container-max));
+  }
+  .portrait-wall-grid:has(> .portrait-wall-layer:nth-of-type(3)) > .portrait-wall-layer:nth-of-type(3) > .portrait-wall-tile {
+    display: block;
+  }
+}
+@media (min-width: 64rem) {
+  .portrait-wall-grid:has(> .portrait-wall-layer:nth-of-type(4)) {
+    --portrait-wall-mid: 4;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  .portrait-wall-grid:has(> .portrait-wall-layer:nth-of-type(4)) > .portrait-wall-layer:nth-of-type(4) > .portrait-wall-tile {
     display: block;
   }
 }

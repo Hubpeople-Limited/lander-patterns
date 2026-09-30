@@ -77,4 +77,4 @@ and `0px` where nothing sits above. `9.5rem` is the default: this library's own
 `masthead-nav` renders up to 145px on the sample brands. No footer allowance:
 this opener is not the whole page, so the footer is at the bottom of what
 follows rather than in the first viewport, and `hero-squeeze` is the pattern
-that subtracts one. `--hero-overlay-above` no longer does anything.
+that subtracts one.
