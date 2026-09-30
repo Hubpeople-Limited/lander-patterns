@@ -522,6 +522,39 @@
         "name": "about-quote",
         "version": 1
       }
+    },
+    {
+      "page": "homepage",
+      "patterns": [
+        "masthead-nav",
+        "hero-overlay",
+        "scene-cards",
+        "steps-plain",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The photo-led homepage that shows what the brand is about before how it works: a full photograph opener, three big photo cards, how joining works, the questions, the ask. The cards carry places, events or ideas; for a brand with couples' stories on record the building skill sets the same cards as story-cards.",
+      "composition": {
+        "name": "homepage-scenes",
+        "version": 1
+      }
+    },
+    {
+      "page": "about",
+      "patterns": [
+        "masthead-nav",
+        "hero-band:ground=soft",
+        "prose-column",
+        "story-cards",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The about page whose proof is its couples: a band of photograph over the title, the brand's own account, three couples who met through it, the ask. For a brand with no stories on record the building skill sets the same cards as scene-cards.",
+      "composition": {
+        "name": "about-stories",
+        "version": 1
+      }
     }
   ]
 }
