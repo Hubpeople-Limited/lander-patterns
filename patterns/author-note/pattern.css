@@ -27,6 +27,11 @@
   color: var(--color-text);
   text-transform: uppercase;
 }
+@supports (line-height: 1cap) {
+  .author-note-heading {
+    line-height: calc(max(1.3em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .author-note-name {
   margin: 0;
   font-family: var(--font-heading);
@@ -35,6 +40,11 @@
   letter-spacing: calc(-0.015em + var(--heading-tracking, 0) * 1em);
   line-height: calc(1.2 * var(--heading-leading, 1));
   color: var(--color-text);
+}
+@supports (line-height: 1cap) {
+  .author-note-name {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .author-note-role {
   margin: var(--space-1) 0 0;

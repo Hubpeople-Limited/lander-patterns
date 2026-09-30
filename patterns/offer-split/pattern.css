@@ -22,6 +22,11 @@
   margin: 0 0 var(--space-5);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .offer-split-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .offer-split-body {
   color: var(--color-text-soft);
   font-size: 1rem;
@@ -54,6 +59,11 @@
   line-height: calc(1.2 * var(--heading-leading, 1));
   margin: 0 0 var(--space-3);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .offer-split-panel-title {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .offer-split-panel-body {
   font-size: 1rem;

@@ -24,6 +24,12 @@
   line-height: calc(1.2 * var(--heading-leading, 1));
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .prose-column h2,
+  .prose-column h3 {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 /* --color-heading on an h2 only: the clamp floor is 28px, above the size the
    token is promised at, and the column paints no ground of its own. */
 .prose-column h2 {

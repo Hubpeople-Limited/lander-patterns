@@ -46,6 +46,11 @@
   max-width: 11.25em;
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .anchored-split-title {
+    line-height: calc(max(1.12em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .anchored-split-lede {
   color: var(--anchored-split-quiet);
   font-size: 1.0625rem;
@@ -68,6 +73,11 @@
   font-weight: var(--weight-display, 700);
   line-height: calc(1.25 * var(--heading-leading, 1));
   margin: 0 0 var(--space-3);
+}
+@supports (line-height: 1cap) {
+  .anchored-split-entry-title {
+    line-height: calc(max(1.25em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .anchored-split-entry-body {
   color: var(--anchored-split-ink);

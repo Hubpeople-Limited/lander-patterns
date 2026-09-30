@@ -21,6 +21,11 @@
   margin: 0;
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .zigzag-rows-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 /* Phones: one column and no order property - source order already puts the
    image first, so there is nothing to undo. */
 .zigzag-rows-row {
@@ -49,6 +54,11 @@
   letter-spacing: calc(-0.015em + var(--heading-tracking, 0) * 1em);
   margin: 0 0 var(--space-3);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .zigzag-rows-heading {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 /* Body copy is body copy: it starts at 16px and grows. The source this came
    from set it clamp(13px, 0.9vw, 14px), which is caption size. */

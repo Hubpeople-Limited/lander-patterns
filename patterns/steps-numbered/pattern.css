@@ -18,6 +18,11 @@
   margin: 0 0 var(--space-6);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .steps-numbered-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .steps-numbered-list {
   counter-reset: steps-numbered-count;
   list-style: none;
@@ -89,6 +94,11 @@
   letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
   margin: 0;
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .steps-numbered-heading {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .steps-numbered-body {
   font-size: clamp(0.875rem, 0.8rem + 0.3vw, 1rem);

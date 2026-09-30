@@ -19,6 +19,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .safety-protections-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .safety-protections-intro {
   color: var(--color-text-soft);
   font-size: 1rem;
@@ -52,6 +57,11 @@
   line-height: calc(1.3 * var(--heading-leading, 1));
   margin: 0 0 var(--space-3);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .safety-protections-name {
+    line-height: calc(max(1.3em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .safety-protections-what {
   color: var(--color-text-soft);
