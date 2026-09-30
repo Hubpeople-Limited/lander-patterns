@@ -489,6 +489,39 @@
         "name": "homepage-portrait",
         "version": 1
       }
+    },
+    {
+      "page": "homepage",
+      "patterns": [
+        "masthead-nav",
+        "hero-split",
+        "steps-plain",
+        "quote-image",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The conversion homepage with a member's voice in it: the opener, how joining works, one real quote over a photograph, the questions, the ask. The quote sits after the steps, where the page has said how it works and a voice earns a pause.",
+      "composition": {
+        "name": "homepage-quote",
+        "version": 1
+      }
+    },
+    {
+      "page": "about",
+      "patterns": [
+        "masthead-nav",
+        "hero-band:ground=plain",
+        "prose-column",
+        "quote-image",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The about page told in the brand's words and then a member's: a band of photograph over the title, the brand's own account, one real quote over a photograph, the ask. For a brand with no founder to put forward and one quote that says what it is like to belong.",
+      "composition": {
+        "name": "about-quote",
+        "version": 1
+      }
     }
   ]
 }
