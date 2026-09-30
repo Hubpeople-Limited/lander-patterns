@@ -69,6 +69,15 @@
   .hero-split-visual {
     order: 0;
   }
+  .hero-split--end .hero-split-visual {
+    order: 1;
+  }
+  .hero-split--start .hero-split-inner {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+  .hero-split--start .hero-split-visual {
+    order: -1;
+  }
 }
 
 .hero-split img[data-hub-placeholder] {
@@ -114,7 +123,7 @@
        stretch the picture or move it. */
     height: 38rem;
     align-self: start;
-    margin-left: var(--space-12);
+    margin-inline-start: var(--space-12);
   }
   .hero-split-inner:has(.signup-card) .hero-split-visual img {
     height: 100%;
@@ -124,6 +133,21 @@
     z-index: 2;
     align-self: center;
     justify-self: start;
-    margin-left: calc(-1 * var(--space-12));
+    margin-inline-start: calc(-1 * var(--space-12));
+  }
+  /* The same layering mirrored. The card reaches past the photograph by
+     --space-12, and here that reach points at the start of the headline, so
+     the gap has to clear it. */
+  .hero-split--start .hero-split-inner:has(.signup-card) {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-areas: "visual ." "visual title" "visual sub" "visual .";
+    column-gap: calc(var(--space-12) + var(--space-6));
+  }
+  .hero-split--start .hero-split-inner:has(.signup-card) .hero-split-visual {
+    margin-inline: 0 var(--space-12);
+  }
+  .hero-split--start .hero-split-inner:has(.signup-card) .hero-split-cta {
+    justify-self: end;
+    margin-inline: 0 calc(-1 * var(--space-12));
   }
 }

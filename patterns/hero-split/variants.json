@@ -1,0 +1,16 @@
+{
+  "side": {
+    "label": "Photo side",
+    "note": "Which side the photograph sits on when there is room for two columns. On a phone it comes first, above the headline.",
+    "rungs": {
+      "end": {
+        "label": "Photo on the right",
+        "note": "The headline first, then the photograph. The default: the visitor reads the offer before the picture."
+      },
+      "start": {
+        "label": "Photo on the left",
+        "note": "The photograph first, then the headline. Use it when the person in the photograph faces into the page from the left, or to swap sides with a section below that also has a photograph on the right."
+      }
+    }
+  }
+}

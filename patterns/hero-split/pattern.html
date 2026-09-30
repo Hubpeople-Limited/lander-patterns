@@ -2,25 +2,29 @@
 name: hero-split
 display-name: Split opener
 summary: The opening claim on one side, a strong photograph on the other.
-version: 12
+version: 13
 type: section
 page-types: homepage, landing
 requires: photography
 image-slots: hero-image subject=couple|person|group crop=portrait min=1280 focal=center placeholder=yes
 content-shape: single claim
 layout: opener=beside
-description: Conversion opener - value proposition left, one strong image right, single join CTA; stacks image-first on phones.
+description: Conversion opener - value proposition on one side, one strong image on the other, single join CTA; stacks image-first on phones.
 keywords: hero, split, homepage, above-the-fold, cta
-needs: one hero image at least 1280px wide from real material; a headline and one-sentence subhead that state the actual offer
+needs: one hero image at least 1280px wide from real material, with its own alt text and a CDN srcset ladder; a headline and one-sentence subhead that state the actual offer
 pairs-with: pricing-tiers
 avoid-with: article-masthead, gallery-scroll, hero-centred, hero-overlay, hero-squeeze, hero-stated, signup-steps, zigzag-rows
 tokens-used: --btn-radius, --card-radius, --card-shadow, --color-focus, --color-heading, --color-on-primary, --color-primary, --color-primary-dark, --color-surface, --color-text-soft, --container-max, --font-heading, --space-12, --space-3, --space-4, --space-6, --space-8, --type-scale, --heading-leading
+variants: side=end|start
 motion: none
 one-per-page: yes
 status: active
 added: 2026-08-21
 -->
-<section class="hero-split">
+<!-- Take one side modifier:
+     --end puts the photograph on the end side, --start on the start side.
+     Below 48rem the photograph comes first whichever side is chosen. -->
+<section class="hero-split hero-split--end">
   <div class="hero-split-inner">
     <div class="hero-split-copy">
       <h1 class="hero-split-title"><!-- slot: headline --></h1>
@@ -30,8 +34,18 @@ added: 2026-08-21
         <a class="hero-split-btn" href="{{join.url}}">{{join.text}}</a>
       </div>
     </div>
+    <!-- The page's LCP element: never lazy, high fetch priority, and
+         width/height set to the real file's intrinsic pixels. Fill srcset
+         with a CDN ladder; sizes matches the column the photograph takes. -->
     <div class="hero-split-visual">
-      <img src="slot:hero-image" alt="slot:hero-image-alt" width="640" height="720">
+      <img src="slot:hero-image"
+           srcset="slot:hero-image-srcset"
+           sizes="(min-width: 78rem) 36rem, (min-width: 48rem) 50vw, 100vw"
+           alt="slot:hero-image-alt"
+           width="640"
+           height="720"
+           fetchpriority="high"
+           decoding="async">
     </div>
   </div>
 </section>

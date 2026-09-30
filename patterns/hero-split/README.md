@@ -9,8 +9,14 @@ opener instead. One hero per page, always at the top.
 
 **What it needs.** A headline and one-sentence subhead stating the real offer
 (message-matched to whatever brought the visitor), and one image at least
-1280px wide, served through the CDN sized for the slot with real alt text. The
-CTA is always the platform's join placeholder — never a written-out URL.
+1280px wide with real alt text. **Serve it through the CDN as a `srcset`
+ladder, not one fixed width** — 640 / 960 / 1280w covers it. `sizes` ships
+matching the column the photograph takes: the full width on a phone, about
+half from 48rem, and at most 36rem once the container stops growing; change
+it only if the brand's `--container-max` is far wider than 72rem. It is the
+page's LCP element, so it ships `fetchpriority="high"` and never
+`loading="lazy"`. The CTA is always the platform's join placeholder — never a
+written-out URL.
 
 **Choose between this and `hero-overlay`.** They are alternatives, not
 neighbours: every page gets exactly one opener, which is what
@@ -38,8 +44,13 @@ photograph follows the card.
 **Brand adaptability.** `--card-radius` + `--card-shadow` set the image's
 character: radius 0 and no shadow reads sharp and editorial, soft radius and
 shadow reads warm and friendly. `--font-heading` and the clamp size carry the
-voice. On phones the image leads and the copy follows; from 48rem the copy
-leads. Variant: swap the grid columns (`0.9fr 1.1fr`) for an image-heavy
-brand. The markup ships `width="640" height="720"` as a stand-in ratio —
+voice. **`side` sets which side the photograph takes from 48rem up**:
+`hero-split--end` (the default, copy first) or `hero-split--start`
+(photograph first; the column widths swap with it). Choose `start` when the
+subject faces into the page from the left, or to alternate with a photograph
+further down. On phones the image leads whichever side is chosen; with
+`signup-card` in place of the button the card leads instead, and wide, the
+card overlaps the photograph's inner edge on either side. The markup ships
+`width="640" height="720"` as a stand-in ratio —
 **set both attributes to the real image's intrinsic dimensions** when filling
 the slot, or the page reserves the wrong space and jumps as it loads.
