@@ -555,6 +555,38 @@
         "name": "about-stories",
         "version": 1
       }
+    },
+    {
+      "page": "homepage",
+      "patterns": [
+        "masthead-nav",
+        "hero-bento",
+        "steps-plain",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The homepage whose first screen shows the brand, its people and its interests at once: the opener in tiles, how joining works, the questions, the ask. The sign-up card takes the join button's place when the page starts the sign-up itself.",
+      "composition": {
+        "name": "homepage-bento",
+        "version": 1
+      }
+    },
+    {
+      "page": "landing",
+      "patterns": [
+        "masthead-nav:nav=minimal",
+        "hero-bento:words=top,cells=spaced",
+        "heading-block",
+        "benefit-tiles",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The campaign page in tiles: a menu-free header, the headline and the join across the top with the tiles as cards under them, the reasons as tiles under the heading-block's h2, the ask.",
+      "composition": {
+        "name": "landing-bento",
+        "version": 1
+      }
     }
   ]
 }

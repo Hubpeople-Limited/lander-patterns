@@ -1,0 +1,33 @@
+{
+  "composition": "homepage-bento",
+  "version": 1,
+  "page": "homepage",
+  "library": "v237",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "12"
+    },
+    {
+      "name": "hero-bento",
+      "version": "1"
+    },
+    {
+      "name": "steps-plain",
+      "version": "6"
+    },
+    {
+      "name": "faq-details",
+      "version": "6"
+    },
+    {
+      "name": "cta-band",
+      "version": "6"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ]
+}
