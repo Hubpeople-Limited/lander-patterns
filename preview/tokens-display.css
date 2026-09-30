@@ -253,6 +253,12 @@
      name, because the gate now reports the token and the measurement in one
      sentence instead of a section 22px below a fold.
 
+     2026-09-30, one of those continuous moves. masthead-nav v12 holds its
+     menu links and login link to the 44px tap floor in the bar as well as the
+     drawer, which is 2px a menu row: 129 where the table above says 124.2,
+     and 181 where it says 173.8. 12rem clears the tallest by 11px now, not 18,
+     and a wrap step is still what it exists to catch.
+
      Over-allowing is the cheap direction here and TOKENS.md says so: too large
      costs a band of page background, too small scrolls. On a preview token set
      it costs nothing at all.
