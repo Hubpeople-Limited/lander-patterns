@@ -438,6 +438,40 @@
         "name": "about-values",
         "version": 1
       }
+    },
+    {
+      "page": "location",
+      "patterns": [
+        "masthead-nav",
+        "hero-band:ground=plain",
+        "prose-column",
+        "heading-block",
+        "member-grid",
+        "source-note",
+        "link-cluster:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "A page for one place that opens on a photograph: the place's own words, its members, the honest caveat about what the block shows, the sibling places and the ask. The worded location shell with a band of photograph in place of the stated opener, so a brand with a photograph of the place or its people has a second shape for the page.",
+      "composition": {
+        "name": "location-photo",
+        "version": 1
+      }
+    },
+    {
+      "page": "locations-landing",
+      "patterns": [
+        "masthead-nav",
+        "hero-band:photo=behind,ground=plain",
+        "listing-rows:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The index above a set of location pages, opening on a photograph of the brand's people with the title on a panel in front of it, then the places as ruled rows and the ask. The rows stay words, because a place has no photograph of its own that is honest to use; the one photograph is the brand's, not a place's.",
+      "composition": {
+        "name": "locations-photo",
+        "version": 1
+      }
     }
   ]
 }
