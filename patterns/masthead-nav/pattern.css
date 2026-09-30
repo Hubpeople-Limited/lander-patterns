@@ -426,7 +426,8 @@
   }
   /* 45% for the mark and the rest for the button, gap included, so the two
      share one row: flexbox breaks lines before it shrinks anything. */
-  .masthead-nav--drawer .masthead-nav-disclosure {
+  .masthead-nav--drawer .masthead-nav-disclosure,
+  .masthead-nav--panel .masthead-nav-disclosure {
     max-width: calc(55% - var(--space-3));
   }
   /* Laid out open or shut, so it has somewhere to slide FROM. Engines hide a
@@ -852,6 +853,11 @@
 @media (width < 60rem) {
   .masthead-nav--minimal .masthead-nav-toggle {
     display: none;
+  }
+  /* The join control does not shorten as a menu button's word does, so the
+     row never breaks here: the mark gives way instead. */
+  .masthead-nav--minimal .masthead-nav-inner {
+    flex-wrap: nowrap;
   }
   .masthead-nav--minimal .masthead-nav-inner .masthead-nav-disclosure {
     order: 0;
