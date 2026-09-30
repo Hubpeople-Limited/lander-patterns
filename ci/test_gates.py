@@ -853,6 +853,70 @@ NOTE_CASES = [
      lambda d: d["rule"].update({"label": "  "})),
 ]
 
+STILL_RULE = ".demo:not(.demo--moving) { --hub-motion: none; }"
+# (behaviours, variants, stylesheet, findings wanted, label)
+MOTION_SWITCH_CASES = [
+    ("reveal", "motion=default|moving", STILL_RULE, 0,
+     "a reveal with the switch, still by default"),
+    ("reveal, counter", "ground=plain|brand; motion=default|moving", STILL_RULE, 0,
+     "the switch beside another axis"),
+    ("marquee", "flow=grid|marquee; motion=default|moving",
+     ".demo:not(.demo--moving):not(.demo--marquee) { --hub-motion: none; }", 0,
+     "a moving row that moves on either rung"),
+    ("", "", ".demo {}", 0, "a pattern that does not move"),
+    ("tabs", "", ".demo {}", 0, "a behaviour that answers the visitor"),
+    ("", "motion=default|moving", STILL_RULE, 0,
+     "motion in the pattern's own stylesheet, offered as a switch"),
+    ("reveal", "", ".demo {}", 1, "a reveal with no switch"),
+    ("counter", "motion=default|moving", ".demo {}", 1,
+     "a switch whose still rung still counts"),
+    ("reveal", "motion=moving|default", STILL_RULE, 1, "moving first"),
+    ("reveal", "motion=default|moving|fast", STILL_RULE, 1, "a third rung"),
+    ("", "motion=still|moving", ".demo--still {}", 1, "the still rung given a class"),
+    ("reveal", "motion=default|moving",
+     ".demo:not(.demo--moving) { --hub-motion: auto; }", 1,
+     "a still rung set to another word"),
+    ("reveal", "motion=default|moving",
+     "/* .demo:not(.demo--moving) { --hub-motion: none; } */", 1,
+     "the still rule only in a comment"),
+]
+
+
+def check_motion_switch_gate():
+    """Motion added for effect is a rung, still by default: both directions,
+    then the library."""
+    import lint
+    failures = []
+    print("ci/lint.py, motion added for effect is a switch")
+    here = Path(__file__)
+    for behaviours, variants, css, want, label in MOTION_SWITCH_CASES:
+        before = len(lint.findings)
+        lint.check_motion_switch(here, css, {"behaviours": behaviours, "variants": variants},
+                                 "demo")
+        got = 1 if len(lint.findings) > before else 0
+        del lint.findings[before:]
+        ok = got == want
+        print(f"  {'ok  ' if ok else 'FAIL'} {'catches' if want else 'quiet on'}: {label}")
+        if not ok:
+            failures.append(label)
+    bad = []
+    for pattern in sorted(p for p in (HERE.parent / "patterns").iterdir() if p.is_dir()):
+        meta = lint.parse_header((pattern / "pattern.html").read_text(encoding="utf-8"),
+                                 pattern / "pattern.html")
+        before = len(lint.findings)
+        lint.check_motion_switch(pattern / "pattern.html",
+                                 (pattern / "pattern.css").read_text(encoding="utf-8"),
+                                 meta, pattern.name)
+        if len(lint.findings) > before:
+            bad.append(pattern.name)
+        del lint.findings[before:]
+    ok = not bad
+    print(f"  {'ok  ' if ok else 'FAIL'} quiet on: every pattern in the library"
+          + ("" if ok else " - " + ", ".join(bad)))
+    if not ok:
+        failures.append("library motion switch")
+    return failures
+
 
 def check_variant_notes():
     """The words beside a rung, held to the rungs the pattern actually offers."""
@@ -3215,6 +3279,8 @@ def main():
     print()
     failures += check_variant_notes()
     print()
+    failures += check_motion_switch_gate()
+    print()
     failures += check_type_pairings()
     print()
     failures += check_pages()
@@ -3271,7 +3337,7 @@ def main():
              + len(SPACING) + len(EXTERNAL_CSS) + len(EXTERNAL_HTML)
              + len(HEADING) + len(SHAPE_CASES) + len(VARIANT_CASES) + len(LAYOUT_CASES) + 1
              + len(DISCLOSURE_FIRES) + len(DISCLOSURE_QUIET) + 1
-             + len(MODIFIER_CASES) + 1 + 6 + len(NOTE_CASES) + 2
+             + len(MODIFIER_CASES) + 1 + 6 + len(NOTE_CASES) + 2 + len(MOTION_SWITCH_CASES) + 1
              + len(PAIRING_CASES) + 1
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(RELEASE_TAG_CASES)

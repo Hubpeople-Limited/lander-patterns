@@ -117,7 +117,9 @@ Then the markup. Three rules:
   pattern with an empty stylesheet is not accepted.
 - If the pattern moves (`motion: subtle`/`expressive`), keep every animation
   and transition inside the reduced-motion guard pattern shown in existing
-  patterns, and nothing auto-moves for more than five seconds.
+  patterns, and nothing auto-moves for more than five seconds. Motion added
+  for effect is also a switch, still by default: see
+  [Motion is a switch](#motion-is-a-switch).
 - **A row that scrolls sideways never shows the browser's scroll bar.** On a
   desktop that draws classic bars it is always there, and a carousel reads as a
   broken page. Hide it both ways on the selector that scrolls -
@@ -154,6 +156,32 @@ correct on two rungs and wrong on the third.
 `feature-panels` spells its first rung `--light` and predates this table. Its
 three grounds are a fixed ranked ladder rather than a choice, so it is left as
 it is; a pattern offering a real choice uses the names above.
+
+### Motion is a switch
+
+Motion added for effect is something a page chooses, never something it gets
+by default. That covers easing in as the visitor scrolls (`reveal`),
+counting a figure up (`counter`), a row gliding by itself (`marquee`), a slow
+drift on a photograph and a lift or zoom on hover. A pattern that moves that
+way offers `motion=default|moving`:
+
+- `default` is still and has no class. The stylesheet sets
+  `--hub-motion: none` on `.<name>:not(.<name>--moving)`, and the behaviour
+  library leaves a block that sets or inherits it exactly as authored.
+- `moving` is `.<name>--moving`. Any CSS motion it adds sits inside
+  `@media (prefers-reduced-motion: no-preference)`, and nothing moves by
+  itself for more than five seconds.
+- `variants.json` calls the axis "Movement" and the rungs "Still" and
+  "Moves", with a line on what moves.
+
+A transition that answers the visitor is not motion in this sense and stays
+on both rungs: a question opening, a slide they asked for, a menu, an arrow
+stepping aside under the pointer. `member-grid`'s Moving row is itself a
+choice to move, so it leaves `--hub-motion` unset on that rung. CI holds
+every pattern that hooks `reveal`, `counter` or `marquee` to the switch and
+checks the still rule is in the stylesheet. A page whose styles never set
+`--hub-motion`, which is every page built before the switch, moves as it
+always has.
 
 ## What may be written down, and where
 
