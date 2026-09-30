@@ -3388,6 +3388,208 @@ def check_quote_image_drift():
     return failures
 
 
+def _strip_notes(markup):
+    """A pattern's markup without its header or its builder comments; the
+    slot comments stay, because they are the markup's contract."""
+    markup = re.sub(r"\s*<!--\n.*?\n-->", "", markup, count=1, flags=re.S)
+    return re.sub(r"<!--(?!\s*slot\s*:).*?-->\s*", "", markup, flags=re.S)
+
+
+def check_story_cards():
+    """story-cards and scene-cards: one card in two files, held identical,
+    each with the header its use needs; the big card on the large-and-small
+    rung is as tall as the two beside it; no card covers another's words at
+    any width; over the photograph every line sits below the fade; over the
+    placeholder the drawing shows and the words hold 4.5:1; every rung
+    combination of both passes the phone gate."""
+    import check_phone
+    import check_placeholder_scrim as cps
+    import lint
+    from _placeholders import parse_image_slots
+    failures = []
+    print("story-cards and scene-cards, one card with two uses")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED story cards: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"story cards: {label}")
+
+    story, scene = "story-cards", "scene-cards"
+
+    def read(name, file):
+        return (HERE.parent / "patterns" / name / file).read_text(encoding="utf-8")
+
+    def same(a, b):
+        return a.replace(story, "X") == b.replace(scene, "X")
+
+    case("the two files' markup is one card",
+         same(_strip_notes(read(story, "pattern.html")), _strip_notes(read(scene, "pattern.html"))))
+    case("the two stylesheets are one stylesheet",
+         same(read(story, "pattern.css"), read(scene, "pattern.css")))
+    case("the two files offer the same rungs in the same words",
+         read(story, "variants.json") == read(scene, "variants.json"))
+    drifted = read(scene, "pattern.css").replace("aspect-ratio: 4 / 5;", "aspect-ratio: 3 / 4;", 1)
+    case("catches: one stylesheet changed without the other",
+         drifted != read(scene, "pattern.css") and not same(read(story, "pattern.css"), drifted))
+    metas = {n: lint.parse_header(read(n, "pattern.html"), HERE.parent / "patterns" / n / "pattern.html")
+             for n in (story, scene)}
+    story_slots = parse_image_slots(metas[story]["image-slots"])
+    scene_slots = parse_image_slots(metas[scene]["image-slots"])
+    case("story-cards shows couples and never a drawn stand-in for one",
+         metas[story]["requires"] == "consented-people"
+         and all(not s["placeholder"] for s in story_slots))
+    case("scene-cards takes the placeholder, a drawing that is never a couple or a person",
+         metas[scene]["requires"] == "photography"
+         and all(s["placeholder"] and not {"couple", "person"} & set(s["subjects"])
+                 for s in scene_slots))
+
+    tall_js = """() => {
+        const i = [...document.querySelectorAll('.story-cards-item')].map(e => e.getBoundingClientRect());
+        const l = document.querySelector('.story-cards-list').getBoundingClientRect();
+        return {big: i[0].height, pair: i[2].bottom - i[1].top,
+                left: Math.abs(i[0].left - l.left), beside: i[1].left >= i[0].right}; }"""
+    fade_js = r"""() => [...document.querySelectorAll('.story-cards-caption')].every(c => {
+        const m = getComputedStyle(c).backgroundImage.match(/([\d.]+)px\)\s*$/);
+        const fade = m ? parseFloat(m[1]) : Infinity;
+        const top = c.getBoundingClientRect().top + fade;
+        return [...c.querySelectorAll('h3, p')].every(t => t.getBoundingClientRect().top >= top - 0.5);
+    })"""
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for tokens in ("brand", "display"):
+                for words in ("below", "over"):
+                    got = _render(browser, workdir,
+                                  opener_page(story, {"size": "feature", "words": words}, tokens),
+                                  (1280, 900), tall_js)
+                    case(f"size=feature words={words} on {tokens} at 1280: the big card is as "
+                         f"tall as the two beside it ({got['big']:.0f} and {got['pair']:.0f})",
+                         abs(got["big"] - got["pair"]) <= 2 and got["left"] <= 1 and got["beside"])
+            flat = _render(browser, workdir,
+                           opener_page(story, {"size": "feature"}, "brand",
+                                       extra_css=".story-cards-item:first-child "
+                                                 "{ grid-row: auto !important; }"),
+                           (1280, 900), tall_js)
+            case("catches: a big card that does not span the two beside it",
+                 abs(flat["big"] - flat["pair"]) > 2)
+            for tokens in ("brand", "display"):
+                for mods in _rung_combos(metas[story]):
+                    hits = covered_text(browser, workdir, opener_page(story, mods, tokens),
+                                        ".story-cards-item")
+                    case(f"{' '.join(f'{a}={v}' for a, v in mods.items())} on {tokens}: no card "
+                         f"covers words from 320 to 1440"
+                         + ("" if not hits else " - " + "; ".join(hits[:3])), not hits)
+            pulled = covered_text(browser, workdir,
+                                  opener_page(story, {}, "brand",
+                                              extra_css=".story-cards-item:nth-child(2) "
+                                                        "{ margin-top: -8rem !important; }"),
+                                  ".story-cards-item")
+            case("catches: a card pulled up over the title", bool(pulled))
+            inside_js = """() => [...document.querySelectorAll('.story-cards-item')].flatMap(item => {
+                const c = item.getBoundingClientRect();
+                return [...item.querySelectorAll('h3, p')].flatMap(t => [...t.getClientRects()])
+                    .filter(r => r.left < c.left - 0.5 || r.right > c.right + 0.5)
+                    .map(r => Math.round(r.right - c.right)); })"""
+
+            def runs_past(mods, tokens, extra_css=""):
+                page = opener_page(story, mods, tokens, extra_css=extra_css)
+                return [w for w in COVER_WIDTHS if _render(browser, workdir, page, (w, 900), inside_js)]
+            for tokens in ("brand", "display"):
+                past = [f"{' '.join(f'{a}={v}' for a, v in mods.items())} at {w}"
+                        for mods in _rung_combos(metas[story]) for w in runs_past(mods, tokens)]
+                case(f"on {tokens}, no line of a card's words runs past its card from 320 to 1440"
+                     + ("" if not past else " - " + "; ".join(past[:3])), not past)
+            case("catches: a caption wider than its card",
+                 bool(runs_past({"words": "over"}, "brand",
+                                ".story-cards-caption { width: 150% !important; }")))
+            for tokens in ("brand", "display"):
+                for size in ("feature", "even"):
+                    for width in (390, 1280):
+                        ok = _render(browser, workdir,
+                                     opener_page(story, {"size": size, "words": "over"}, tokens),
+                                     (width, 900), fade_js)
+                        case(f"size={size} words=over on {tokens} at {width}: every line of the "
+                             f"words sits below the fade, on the scrim's full level", ok)
+            high = _render(browser, workdir,
+                           opener_page(story, {"words": "over"}, "brand",
+                                       extra_css=".story-cards-caption { padding-top: "
+                                                 "var(--space-2) !important; }"),
+                           (1280, 900), fade_js)
+            case("catches: words climbing into the fade", not high)
+        finally:
+            browser.close()
+    for size in ("feature", "even"):
+        results = cps.run([scene], mods={"size": size, "words": "over"})
+        bad = [f"{t} {w}px {', '.join(v[2])}" for (_, t, w), v in sorted(results.items()) if v[2]]
+        case(f"scene-cards size={size} words=over over the placeholder on five sample sets: the "
+             f"drawing shows and the words hold 4.5:1"
+             + ("" if not bad else " - " + "; ".join(bad[:3])), not bad)
+    results = cps.run([scene], mods={"words": "over"},
+                      extra_css=".scene-cards-caption { background: none !important; }")
+    case("catches: words over the placeholder with no scrim",
+         any("copy" in v[2] for v in results.values()))
+    with check_phone.Phone() as phone:
+        for name in (story, scene):
+            for tokens in ("brand", "display"):
+                bad = []
+                for mods in _rung_combos(metas[name]):
+                    label = f"{name} " + " ".join(f"{a}={v}" for a, v in mods.items())
+                    bad += phone.faults(label, opener_page(name, mods, tokens))
+                case(f"{name}: every rung combination at 320 and 360 on {tokens} passes the "
+                     f"phone gate" + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
+def check_story_cards_moving():
+    """With the behaviour library on the page: the still rung reveals nothing
+    and the moving rung leaves nothing hidden, on both twins; the photograph
+    grows under the pointer on the moving rung only."""
+    import check_behaviours as cb
+    import check_phone
+    failures = []
+    print("story cards, easing in is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED story cards motion: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"story cards motion: {label}")
+
+    bundle = '<script type="module" src="hub.js"></script></head>'
+    with cb.Shell(False) as shell:
+        for name in ("story-cards", "scene-cards"):
+            still = cb.movement(shell, opener_page(name, {}, "brand").replace("</head>", bundle, 1),
+                                f"{name}-still")
+            case(f"{name}: the still rung reveals nothing", still is not None and still["revealed"] == 0)
+            moving = cb.movement(shell, opener_page(name, {"motion": "moving"}, "brand")
+                                 .replace("</head>", bundle, 1), f"{name}-moving")
+            case(f"{name}: the moving rung eases in and leaves nothing hidden",
+                 moving is not None and moving["revealed"] > 0 and moving["pending"] == 0)
+    js = "() => getComputedStyle(document.querySelector('.story-cards-img')).transitionProperty"
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            still = _render(browser, workdir, opener_page("story-cards", {}, "brand"), (1280, 900), js)
+            case("the still rung's photograph never grows", "scale" not in still)
+            moving = _render(browser, workdir, opener_page("story-cards", {"motion": "moving"}, "brand"),
+                             (1280, 900), js)
+            case("the moving rung's photograph grows under the pointer", "scale" in moving)
+        finally:
+            browser.close()
+    return failures
+
+
 def check_member_grid_motion():
     """member-grid's Moving row is itself a choice to move, so it glides
     whatever the Movement rung says; every other layout is still unless
@@ -3849,6 +4051,10 @@ def main():
     print()
     failures += check_quote_image_drift()
     print()
+    failures += check_story_cards()
+    print()
+    failures += check_story_cards_moving()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -3874,7 +4080,8 @@ def main():
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2 + 4
              + PLACEHOLDER_URL_CASE_COUNT
              + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16 + 6
-             + 27 + 5)
+             + 27 + 5
+             + 39 + 6)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

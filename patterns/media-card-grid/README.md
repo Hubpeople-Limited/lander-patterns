@@ -57,10 +57,10 @@ The arrow cue is `aria-hidden`: it is the visual affordance and repeats nothing.
 
 **Pairing.** `heading-block` above it when the section needs an eyebrow and an
 intro, which is why this pattern carries only a plain `<h2>`. Avoid
-`steps-numbered` on the same page — both are
-portrait image cards with a scrim, and side by side the numbering stops reading
-as meaning. `gallery-scroll` and `portrait-wall` are out for the same reason:
-another run of images and none of them means anything.
+`steps-numbered` on the same page: both are portrait image cards with a
+scrim, and side by side the numbering stops reading as meaning.
+`gallery-scroll`, `portrait-wall` and `story-cards` are out for the same
+reason: another run of people's photographs, and none of them means anything.
 
 **Brand adaptability.** `--card-radius` and `--card-shadow` set nearly all the
 feel: rounded-and-shadowed reads friendly, square-and-flat reads editorial.

@@ -1,0 +1,51 @@
+<!--
+name: story-cards
+display-name: Story cards
+summary: Big photo cards for couples who met here: each photograph, their names and where they are.
+version: 1
+type: section
+page-types: homepage, landing, about
+requires: consented-people
+image-slots: card-image subject=couple crop=portrait min=1200 focal=top placeholder=no
+content-shape: peer set
+layout: people=stories; rhythm=cards
+description: Couples' stories as big photo cards - one large and two small, or three equal - each photograph with the couple's names under it or across its foot and where they are in italics. The twin of scene-cards, which carries places, events and ideas in the same card for a brand with no couples' stories to show.
+keywords: stories, couples, success stories, cards, photographs, people
+needs: three couples who met through the brand, each with their own photograph at least 1200px wide in portrait, the names they are happy to be shown by, where they are, and a line in their own words where they gave one. Works best with each couple's OK to appear on a public page anyone can reach; a brand with no couples' stories has the same card for places, events and ideas in scene-cards
+pairs-with: heading-block, steps-plain, cta-band
+avoid-with: media-card-grid, scene-cards
+tokens-used: --card-radius, --color-heading, --color-on-scrim, --color-primary, --color-scrim, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --space-12, --transition-slow, --type-scale, --weight-display
+variants: size=feature|even; words=below|over; motion=default|moving
+behaviours: reveal
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-09-30
+-->
+<!-- Card sizes: --feature or --even.
+     Where the words sit: --below or --over. -->
+<!-- One card per couple: duplicate the whole <li>. Three read best, and
+     the large-and-small size is drawn for three. Each card works best with
+     the couple's own photograph, the names they chose and where they are,
+     shown with their OK. Delete the line when they gave no words of their
+     own. section-id: draw it from the heading. -->
+<section class="story-cards story-cards--feature story-cards--below" aria-labelledby="slot:section-id">
+  <div class="story-cards-inner">
+    <p class="story-cards-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="story-cards-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <ul class="story-cards-list" role="list" data-hub-module="reveal" data-hub-reveal-children>
+      <li class="story-cards-item">
+        <figure class="story-cards-figure">
+          <div class="story-cards-frame">
+            <img class="story-cards-img" src="slot:card-image" alt="slot:card-image-alt" width="960" height="1200" loading="lazy" decoding="async">
+          </div>
+          <figcaption class="story-cards-caption">
+            <h3 class="story-cards-name"><!-- slot: card-name --></h3>
+            <p class="story-cards-where"><!-- slot: card-where --></p>
+            <p class="story-cards-line"><!-- slot: card-line --></p>
+          </figcaption>
+        </figure>
+      </li>
+    </ul>
+  </div>
+</section>

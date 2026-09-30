@@ -1,0 +1,44 @@
+{
+  "size": {
+    "label": "Card sizes",
+    "note": "How the cards share the row on a wide screen. On a phone they stack, one under another, whichever you pick.",
+    "rungs": {
+      "feature": {
+        "label": "One large, two small",
+        "note": "The first card large on the left and the next two stacked beside it. Drawn for three cards. The default."
+      },
+      "even": {
+        "label": "All the same size",
+        "note": "Every card the same size, three to a row. For three cards of equal weight, or for six."
+      }
+    }
+  },
+  "words": {
+    "label": "Where the words sit",
+    "note": "Where the words go on each card.",
+    "rungs": {
+      "below": {
+        "label": "Under the photograph",
+        "note": "The words on the page under each photograph; nothing covers the picture. The default."
+      },
+      "over": {
+        "label": "On the photograph",
+        "note": "The words across the foot of each photograph, on a dark shade that keeps them readable. Suits photographs with room at the bottom."
+      }
+    }
+  },
+  "motion": {
+    "label": "Movement",
+    "note": "Whether this section moves as the visitor reaches it. Nothing moves for a visitor who has asked their device for less motion, whichever you pick.",
+    "rungs": {
+      "default": {
+        "label": "Still",
+        "note": "Nothing moves. The section is simply there when the visitor reaches it, which is the default."
+      },
+      "moving": {
+        "label": "Moves",
+        "note": "The cards ease in one after another as the visitor scrolls to them, and a card's photograph grows a little when it is pointed at. It needs the platform's behaviour library; where that is not served the section is simply still."
+      }
+    }
+  }
+}

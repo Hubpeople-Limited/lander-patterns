@@ -1,0 +1,14 @@
+{
+  "section-id": "sample-scene-cards",
+  "eyebrow": "Sample eyebrow",
+  "section-title": "Sample heading for the scene cards",
+  "card-image": "sample-portrait.svg",
+  "card-image-alt": "Preview placeholder image",
+  "card-name": "Sample place or event",
+  "card-where": "Sample where or when",
+  "card-line": "One sample line about it, here only to render this preview.",
+  "_repeat": {
+    "class": "scene-cards-item",
+    "count": 3
+  }
+}
