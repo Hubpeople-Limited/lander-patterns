@@ -1,4 +1,4 @@
-/* cta-curtain v6 - tokens only, selectors prefixed. */
+/* cta-curtain - tokens only, selectors prefixed. */
 .cta-curtain {
   position: relative;
   display: block;
@@ -6,11 +6,14 @@
 
 /* 100svh, not 100vh: a mobile address bar showing or hiding would
    otherwise break the pin. The cover's negative margin and the spacer carry
-   the same pair and must stay in step. */
+   the same pair and must stay in step. border-box keeps the padding inside
+   that height: without it the panel is a screen and two --space-8 tall, the
+   cover starts that far down it, and the CTA sits below the middle. */
 .cta-curtain-panel {
   position: sticky;
   top: 0;
   z-index: 1;
+  box-sizing: border-box;
   height: 100vh;
   height: 100svh;
   display: flex;
