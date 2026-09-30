@@ -211,6 +211,38 @@
     transform: translateX(var(--testimonial-carousel-side-offset)) scale(0.94);
   }
 }
+/* controls: where the previous and next arrows sit, read by the behaviour
+   library from these properties. dots: the round pair under the slide
+   dots, centred. */
+.testimonial-carousel--top {
+  --hub-carousel-controls: top;
+  --hub-carousel-look: round;
+}
+.testimonial-carousel--edges {
+  --hub-carousel-controls: edges;
+  --hub-carousel-look: round;
+}
+.testimonial-carousel--dots {
+  --hub-carousel-controls: under;
+  --hub-carousel-look: round;
+}
+/* The machine is full bleed; the pair keeps to the column. */
+.testimonial-carousel .hub-carousel-controls--top {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+/* Above the neighbouring cards, which sit a layer up, on a ground of its
+   own so it reads over them. */
+.testimonial-carousel .hub-carousel-controls--edges {
+  z-index: 2;
+}
+.testimonial-carousel .hub-carousel-controls--edges .hub-carousel-control {
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--card-shadow);
+}
 @media (prefers-reduced-motion: no-preference) {
   .testimonial-carousel-card {
     transition:

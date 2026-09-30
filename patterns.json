@@ -2356,8 +2356,14 @@
   "status": "active",
   "summary": "Testimonials you move through one at a time.",
   "type": "section",
-  "variants": {},
-  "version": "9",
+  "variants": {
+   "controls": [
+    "top",
+    "edges",
+    "dots"
+   ]
+  },
+  "version": "10",
   "whole-page": false
  },
  "testimonial-grid": {
