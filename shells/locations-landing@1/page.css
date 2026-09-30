@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-stated v5 ---- */
+/* ---- hero-stated v6 ---- */
 /* hero-stated v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink, and every rule below reads the pair rather
    than a token, so nothing here knows which ground it is on. */
@@ -1045,6 +1045,11 @@
   max-width: 10.75em;
   margin: 0 0 var(--space-5);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-stated-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-stated-sub {
   font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
@@ -1115,7 +1120,7 @@
   }
 }
 
-/* ---- listing-rows v3 ---- */
+/* ---- listing-rows v4 ---- */
 /* listing-rows v2 - tokens only, selectors prefixed */
 /* Each ground names its own ink set, and every rule below reads that set. The
    base carries the plain ground's values, so a copy that loses its modifier
@@ -1167,6 +1172,11 @@
   margin: 0 0 var(--space-3);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .listing-rows-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .listing-rows-intro {
   color: var(--listing-rows-quiet);
   font-size: 1.0625rem;
@@ -1198,6 +1208,11 @@
   /* 24px, held independently of the type scale: at --type-scale 0.9 the line
      box alone is 22.2px and this is the only tap target in the row. */
   min-block-size: 1.5rem;
+}
+@supports (line-height: 1cap) {
+  .listing-rows-link {
+    line-height: calc(max(1.3em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .listing-rows-link:hover {
   text-decoration: underline;
@@ -1251,7 +1266,7 @@
   }
 }
 
-/* ---- cta-band v5 ---- */
+/* ---- cta-band v6 ---- */
 /* cta-band - tokens only, selectors prefixed */
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
@@ -1316,6 +1331,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-band-lead {
   font-size: 1.0625rem;

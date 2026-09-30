@@ -11,28 +11,28 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
-      "variant": {
-        "ground": "plain"
-      }
-    },
-    {
-      "name": "listing-rows",
-      "version": "3",
-      "variant": {
-        "ground": "soft"
-      }
-    },
-    {
-      "name": "link-cluster",
       "version": "6",
       "variant": {
         "ground": "plain"
       }
     },
     {
+      "name": "listing-rows",
+      "version": "4",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "link-cluster",
+      "version": "7",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

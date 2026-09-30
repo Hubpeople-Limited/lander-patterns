@@ -21,13 +21,13 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-band** v1 (photo=behind, ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
+2. **hero-band** v2 (photo=behind, ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 5 word(s). Sample: Sample page headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): real material, or the group/landscape placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **listing-rows** v3 (ground=soft) - Full-width ruled rows rather than a grid of cards - each row carries a linked title, a real sentence, and up to two true attributes aligned down their own columns; the index for a set of five or more things with no photograph between them.
+3. **listing-rows** v4 (ground=soft) - Full-width ruled rows rather than a grid of cards - each row carries a linked title, a real sentence, and up to two true attributes aligned down their own columns; the index for a set of five or more things with no photograph between them.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample index heading
    - `section-intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
@@ -36,7 +36,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `entry-meta` - text, about 2 word(s). Sample: Sample category
    - `entry-when` - text, about 2 word(s). Sample: Sample date
    - `entry-summary` - text, about 11 word(s). Sample: One sample sentence about this entry, for the preview r...
-4. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+4. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

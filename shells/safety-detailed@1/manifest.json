@@ -11,32 +11,32 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
+      "version": "6",
       "variant": {
         "ground": "deep"
       }
     },
     {
       "name": "claim-stack",
-      "version": "3",
+      "version": "4",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "safety-protections",
-      "version": "4"
+      "version": "5"
     },
     {
       "name": "link-cluster",
-      "version": "6",
+      "version": "7",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

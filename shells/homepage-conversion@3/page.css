@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-split v13 ---- */
+/* ---- hero-split v14 ---- */
 /* hero-split v3 - tokens only, selectors prefixed */
 .hero-split {
   padding-block: var(--space-8);
@@ -1016,6 +1016,11 @@
   color: var(--color-heading);
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-split-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-split-sub {
   color: var(--color-text-soft);
@@ -1141,7 +1146,7 @@
   }
 }
 
-/* ---- steps-plain v4 ---- */
+/* ---- steps-plain v5 ---- */
 /* steps-plain v1 - tokens only, selectors prefixed */
 .steps-plain {
   --steps-plain-cell-min: 15rem;
@@ -1173,6 +1178,11 @@
   line-height: calc(1.15 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .steps-plain-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .steps-plain-intro {
   color: var(--color-text-soft);
@@ -1227,6 +1237,11 @@
   line-height: calc(1.3 * var(--heading-leading, 1));
   margin: 0 0 var(--space-2);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .steps-plain-heading {
+    line-height: calc(max(1.3em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .steps-plain-body {
   color: var(--color-text-soft);
@@ -1396,7 +1411,7 @@
   }
 }
 
-/* ---- cta-band v5 ---- */
+/* ---- cta-band v6 ---- */
 /* cta-band - tokens only, selectors prefixed */
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
@@ -1461,6 +1476,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-band-lead {
   font-size: 1.0625rem;

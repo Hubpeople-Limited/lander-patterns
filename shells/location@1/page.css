@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-stated v5 ---- */
+/* ---- hero-stated v6 ---- */
 /* hero-stated v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink, and every rule below reads the pair rather
    than a token, so nothing here knows which ground it is on. */
@@ -1045,6 +1045,11 @@
   max-width: 10.75em;
   margin: 0 0 var(--space-5);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-stated-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-stated-sub {
   font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
@@ -1115,7 +1120,7 @@
   }
 }
 
-/* ---- prose-column v5 ---- */
+/* ---- prose-column v6 ---- */
 /* prose-column v1 - tokens only, selectors prefixed */
 .prose-column {
   --prose-column-measure: 68ch;
@@ -1141,6 +1146,12 @@
   letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   line-height: calc(1.2 * var(--heading-leading, 1));
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .prose-column h2,
+  .prose-column h3 {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 /* --color-heading on an h2 only: the clamp floor is 28px, above the size the
    token is promised at, and the column paints no ground of its own. */
@@ -1241,7 +1252,7 @@
   border-start-end-radius: var(--card-radius);
 }
 
-/* ---- heading-block v8 ---- */
+/* ---- heading-block v9 ---- */
 /* heading-block v4 - tokens only, selectors prefixed */
 .heading-block {
   /* Same gutter idiom as every other pattern. */
@@ -1283,6 +1294,11 @@
   font-weight: var(--weight-display, 700);
   color: var(--color-heading);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .heading-block-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .heading-block-intro {
   max-width: 42rem;
@@ -1608,7 +1624,7 @@
   text-wrap: pretty;
 }
 
-/* ---- link-cluster v6 ---- */
+/* ---- link-cluster v7 ---- */
 /* link-cluster v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink and pill face; every rule reads the pair. */
 .link-cluster--plain {
@@ -1658,6 +1674,11 @@
   margin: 0 0 var(--space-3);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .link-cluster-title {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .link-cluster-intro {
   color: var(--link-cluster-quiet);
   font-size: 1rem;
@@ -1702,7 +1723,7 @@
   outline-offset: 3px;
 }
 
-/* ---- cta-band v5 ---- */
+/* ---- cta-band v6 ---- */
 /* cta-band - tokens only, selectors prefixed */
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
@@ -1767,6 +1788,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-band-lead {
   font-size: 1.0625rem;

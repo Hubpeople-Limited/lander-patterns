@@ -14,26 +14,26 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
+      "version": "6",
       "variant": {
         "ground": "brand"
       }
     },
     {
       "name": "heading-block",
-      "version": "8"
+      "version": "9"
     },
     {
       "name": "benefit-tiles",
-      "version": "7"
+      "version": "8"
     },
     {
       "name": "testimonial-grid",
-      "version": "11"
+      "version": "12"
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

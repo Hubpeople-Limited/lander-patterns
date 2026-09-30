@@ -11,18 +11,18 @@
     },
     {
       "name": "hero-band",
-      "version": "1",
+      "version": "2",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "prose-column",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "heading-block",
-      "version": "8"
+      "version": "9"
     },
     {
       "name": "member-grid",
@@ -34,14 +34,14 @@
     },
     {
       "name": "link-cluster",
-      "version": "6",
+      "version": "7",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

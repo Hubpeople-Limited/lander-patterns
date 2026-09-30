@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-split v13 ---- */
+/* ---- hero-split v14 ---- */
 /* hero-split v3 - tokens only, selectors prefixed */
 .hero-split {
   padding-block: var(--space-8);
@@ -1016,6 +1016,11 @@
   color: var(--color-heading);
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-split-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-split-sub {
   color: var(--color-text-soft);
@@ -1141,7 +1146,7 @@
   }
 }
 
-/* ---- heading-block v8 ---- */
+/* ---- heading-block v9 ---- */
 /* heading-block v4 - tokens only, selectors prefixed */
 .heading-block {
   /* Same gutter idiom as every other pattern. */
@@ -1184,6 +1189,11 @@
   color: var(--color-heading);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .heading-block-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .heading-block-intro {
   max-width: 42rem;
   margin: var(--space-4) 0 0;
@@ -1201,7 +1211,7 @@
   }
 }
 
-/* ---- benefit-tiles v7 ---- */
+/* ---- benefit-tiles v8 ---- */
 /* benefit-tiles v2 - tokens only, selectors prefixed */
 .benefit-tiles {
   --benefit-tiles-badge-fill: var(--color-primary);
@@ -1282,6 +1292,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .benefit-tiles-title {
+    line-height: calc(max(1.25em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .benefit-tiles-copy {
   color: var(--color-text-soft);
   font-size: 0.9375rem;
@@ -1341,7 +1356,7 @@
   }
 }
 
-/* ---- testimonial-grid v11 ---- */
+/* ---- testimonial-grid v12 ---- */
 /* testimonial-grid v4 - tokens only, selectors prefixed */
 .testimonial-grid {
   padding-block: var(--space-8);
@@ -1431,6 +1446,11 @@
   letter-spacing: calc(-0.035em + var(--heading-tracking, 0) * 1em);
   color: inherit;
 }
+@supports (line-height: 1cap) {
+  .testimonial-grid-quote p {
+    line-height: calc(max(1.28em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 /* margin-top:auto bottom-aligns the attribution across a row. */
 .testimonial-grid-person {
   margin-top: auto;
@@ -1484,7 +1504,7 @@
   }
 }
 
-/* ---- cta-band v5 ---- */
+/* ---- cta-band v6 ---- */
 /* cta-band - tokens only, selectors prefixed */
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
@@ -1549,6 +1569,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-band-lead {
   font-size: 1.0625rem;

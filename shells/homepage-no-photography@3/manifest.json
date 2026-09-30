@@ -11,22 +11,22 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
+      "version": "6",
       "variant": {
         "ground": "deep"
       }
     },
     {
       "name": "heading-block",
-      "version": "8"
+      "version": "9"
     },
     {
       "name": "benefit-tiles",
-      "version": "7"
+      "version": "8"
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

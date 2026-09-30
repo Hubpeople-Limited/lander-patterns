@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-overlay v15 ---- */
+/* ---- hero-overlay v16 ---- */
 /* hero-overlay v13 - tokens only, selectors prefixed. Nothing here moves. */
 .hero-overlay {
   /* Contrast floor: the scrim carries it, never the photo. */
@@ -1055,6 +1055,11 @@
   line-height: calc(1.05 * var(--heading-leading, 1));
   letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-overlay-title {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-overlay-sub {
   margin: 0 0 var(--space-6);
@@ -1128,6 +1133,11 @@
   .hero-overlay-title {
     line-height: calc(1.12 * var(--heading-leading, 1));
   }
+  @supports (line-height: 1cap) {
+    .hero-overlay-title {
+      line-height: calc(max(1.12em, 1.45cap) * var(--heading-leading, 1));
+    }
+  }
 }
 
 /* Short viewports: unpin, or the copy is unreachable. */
@@ -1188,7 +1198,7 @@
   }
 }
 
-/* ---- steps-numbered v12 ---- */
+/* ---- steps-numbered v13 ---- */
 /* steps-numbered v3 - tokens only, selectors prefixed */
 .steps-numbered {
   /* Contrast floor. The words sit on a photograph, so the scrim carries the
@@ -1208,6 +1218,11 @@
   letter-spacing: calc(-0.025em + var(--heading-tracking, 0) * 1em);
   margin: 0 0 var(--space-6);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .steps-numbered-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .steps-numbered-list {
   counter-reset: steps-numbered-count;
@@ -1280,6 +1295,11 @@
   letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
   margin: 0;
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .steps-numbered-heading {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .steps-numbered-body {
   font-size: clamp(0.875rem, 0.8rem + 0.3vw, 1rem);
@@ -1427,7 +1447,7 @@
   }
 }
 
-/* ---- cta-band v5 ---- */
+/* ---- cta-band v6 ---- */
 /* cta-band - tokens only, selectors prefixed */
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
@@ -1492,6 +1512,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-band-lead {
   font-size: 1.0625rem;

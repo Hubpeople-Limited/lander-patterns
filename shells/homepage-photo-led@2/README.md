@@ -21,13 +21,13 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-overlay** v15 - Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.
+2. **hero-overlay** v16 - Cinematic full-bleed opener - one photograph filling the first viewport, the claim and both platform controls set over a vignette scrim that dissolves into the page.
    - `hero-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-3. **steps-numbered** v12 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
+3. **steps-numbered** v13 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
    - `section-title` - text, about 5 word(s). Sample: Sample how-it-works heading for preview
    - `step-image` - attribute (src): real material, or the person/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `step-image-alt` - attribute (alt): what the image shows, in words
@@ -37,7 +37,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `section-title` - text, about 3 word(s). Sample: Sample questions heading
    - `question` - text, about 11 word(s). Sample: A sample question, phrased the way a visitor would ask it?
    - `answer` - markup, about 22 words of copy; its sample shape is printed in page.html's banner
-5. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+5. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

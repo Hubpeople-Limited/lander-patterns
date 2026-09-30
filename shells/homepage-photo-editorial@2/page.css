@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-centred v7 ---- */
+/* ---- hero-centred v8 ---- */
 /* hero-centred v1 - tokens only, selectors prefixed */
 .hero-centred {
   --hero-centred-title-measure: 9.4em;
@@ -1015,6 +1015,11 @@
   max-width: var(--hero-centred-title-measure);
   margin: 0 auto var(--space-5);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-centred-title {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-centred-sub {
   color: var(--color-text-soft);
@@ -1072,7 +1077,7 @@
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 }
 
-/* ---- zigzag-rows v10 ---- */
+/* ---- zigzag-rows v11 ---- */
 /* zigzag-rows v4 - tokens only, selectors prefixed */
 .zigzag-rows {
   /* One ratio for every media box, set once: equal-height rows are what hold
@@ -1095,6 +1100,11 @@
   letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   margin: 0;
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .zigzag-rows-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 /* Phones: one column and no order property - source order already puts the
    image first, so there is nothing to undo. */
@@ -1124,6 +1134,11 @@
   letter-spacing: calc(-0.015em + var(--heading-tracking, 0) * 1em);
   margin: 0 0 var(--space-3);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .zigzag-rows-heading {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 /* Body copy is body copy: it starts at 16px and grows. The source this came
    from set it clamp(13px, 0.9vw, 14px), which is caption size. */
@@ -1319,7 +1334,7 @@
   }
 }
 
-/* ---- cta-image v6 ---- */
+/* ---- cta-image v7 ---- */
 /* cta-image v1 - tokens only, selectors prefixed */
 .cta-image {
   /* Contrast floor: the words sit on a photograph, so the scrim carries the
@@ -1380,6 +1395,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-image-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-image-lead {
   font-size: 1.0625rem;

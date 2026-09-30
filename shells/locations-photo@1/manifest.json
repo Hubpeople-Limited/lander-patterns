@@ -11,7 +11,7 @@
     },
     {
       "name": "hero-band",
-      "version": "1",
+      "version": "2",
       "variant": {
         "photo": "behind",
         "ground": "plain"
@@ -19,14 +19,14 @@
     },
     {
       "name": "listing-rows",
-      "version": "3",
+      "version": "4",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

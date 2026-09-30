@@ -11,14 +11,14 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
+      "version": "6",
       "variant": {
         "ground": "deep"
       }
     },
     {
       "name": "comparison-table",
-      "version": "4"
+      "version": "5"
     },
     {
       "name": "faq-details",
@@ -26,7 +26,7 @@
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

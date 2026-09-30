@@ -19,12 +19,12 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-stated** v5 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
+2. **hero-stated** v6 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **prose-column** v5 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+3. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -37,7 +37,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-4. **heading-block** v8 - Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
+4. **heading-block** v9 - Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 8 word(s). Sample: A sample section title for the preview render
    - `intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
@@ -51,13 +51,13 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `members-empty-text` - attribute (data-members-empty-text): a short label, about 7 word(s)
 6. **source-note** v1 - The line under a claim saying where it came from - who measured it, what they counted, and when - placeable under any figure, statement, answer or card.
    - `source` - text, about 11 word(s). Sample: Sample source line: who produced it, what it counts, an...
-7. **link-cluster** v6 (ground=soft) - A wrapping run of plain links to real pages - places, categories, topics - on a choice of three grounds, with no photograph, no figure and nothing to invent.
+7. **link-cluster** v7 (ground=soft) - A wrapping run of plain links to real pages - places, categories, topics - on a choice of three grounds, with no photograph, no figure and nothing to invent.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample cluster heading
    - `section-intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `link-url` - attribute (href): a short label, about 1 word(s)
    - `link-text` - text, about 2 word(s). Sample: Sample link
-8. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+8. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

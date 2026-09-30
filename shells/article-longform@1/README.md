@@ -19,7 +19,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **article-masthead** v12 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
+2. **article-masthead** v13 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
    - `tag` - text, about 2 word(s). Sample: Sample category
    - `read-time` - text, about 4 word(s). Sample: 6 min sample read
    - `publish-datetime` - attribute (datetime): a short label, about 1 word(s)
@@ -30,11 +30,11 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `author-portrait-alt` - attribute (alt): what the image shows, in words
    - `author-name` - text, about 2 word(s). Sample: Sample Author
    - `author-role` - text, about 6 word(s). Sample: Sample role line for the preview
-3. **article-toc** v2 - In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away; with the behaviour library the link for the section being read is marked, and without it the list is the list.
+3. **article-toc** v3 - In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away; with the behaviour library the link for the section being read is marked, and without it the list is the list.
    - `contents-label` - text, about 2 word(s). Sample: Sample contents
    - `section-anchor` - attribute (href): a short label, about 1 word(s)
    - `section-title` - text, about 11 word(s). Sample: A sample section heading, as it is worded in the body
-4. **prose-column** v5 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+4. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -47,9 +47,9 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-5. **pull-quote** v1 - A line lifted out of the running text and set large between two runs of body copy - the article's own words, repeated for emphasis, with no attribution and no ask.
+5. **pull-quote** v2 - A line lifted out of the running text and set large between two runs of body copy - the article's own words, repeated for emphasis, with no attribution and no ask.
    - `quote` - text, about 12 word(s). Sample: A sample sentence lifted out of the preview copy and se...
-6. **prose-column** v5 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+6. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -62,14 +62,14 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-7. **author-note** v1 - The block at the foot of a written piece - the writer's name, their standing, one paragraph of biography and an optional link to more of their work, on a panel that carries its weight without a portrait.
+7. **author-note** v2 - The block at the foot of a written piece - the writer's name, their standing, one paragraph of biography and an optional link to more of their work, on a panel that carries its weight without a portrait.
    - `block-heading` - text, about 4 word(s). Sample: About the sample author
    - `author-name` - text, about 3 word(s). Sample: Sample Author Name
    - `author-role` - text, about 8 word(s). Sample: Sample standing line, for the preview render only
    - `author-bio` - text, about 37 word(s). Sample: A sample paragraph of preview biography, long enough to...
    - `author-url` - attribute (href): a short label, about 1 word(s)
    - `author-link-text` - text, about 6 word(s). Sample: More sample writing from this author
-8. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+8. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview
