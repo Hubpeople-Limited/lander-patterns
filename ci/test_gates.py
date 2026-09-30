@@ -2175,7 +2175,9 @@ def check_header_fit():
     for label, argv, want in (
             ("header gate quiet on the shipped header (1280 only)",
              ["--widths", "1280", "1024"], 0),
-            ("header gate fires with the fold switched off", ["--broken"], 0)):
+            ("header gate fires with the fold switched off", ["--broken"], 0),
+            ("header gate holds the menu-free bar to one row, and fires with the "
+             "bar as it broke put back", ["--broken-row"], 0)):
         got = subprocess.run([sys.executable, str(HERE / "check_header.py")] + argv,
                              capture_output=True, text=True, encoding="utf-8")
         ok = got.returncode == want
@@ -3004,7 +3006,7 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3)
+             + len(SCROLLBAR_CASES) + 3 + 1)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
