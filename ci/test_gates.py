@@ -2968,6 +2968,63 @@ def _render(browser, workdir, html, viewport, js, reduced=False):
         tab.close()
 
 
+# Every width a card or a tile could slide over words at, from the smallest
+# phone to a wide laptop. The phone gate measures 320 and 360 only.
+COVER_WIDTHS = (320, 360, 390, 480, 600, 768, 900, 1024, 1180, 1280, 1440)
+
+
+def covered_text_js(selector):
+    """JavaScript for _render: up to four lines of text that an element
+    matching `selector` covers without containing them. A line is measured
+    as far as it shows: an ancestor that clips it, as an ellipsis does, cuts
+    it to what the reader sees."""
+    return """() => {
+        const boxes = [...document.querySelectorAll(%s)]
+            .map(el => [el, el.getBoundingClientRect()]);
+        const shown = el => {
+            let c = {left: -Infinity, right: Infinity, top: -Infinity, bottom: Infinity};
+            for (let a = el; a && a !== document.body; a = a.parentElement) {
+                const s = getComputedStyle(a);
+                if (s.overflowX === 'visible' && s.overflowY === 'visible') continue;
+                const b = a.getBoundingClientRect();
+                c = {left: Math.max(c.left, b.left), right: Math.min(c.right, b.right),
+                     top: Math.max(c.top, b.top), bottom: Math.min(c.bottom, b.bottom)};
+            }
+            return c;
+        };
+        const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const hits = [];
+        for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+            if (!n.textContent.trim() || !n.parentElement.checkVisibility()) continue;
+            const range = document.createRange();
+            range.selectNodeContents(n);
+            const c = shown(n.parentElement);
+            for (const whole of range.getClientRects()) {
+                const r = {left: Math.max(whole.left, c.left), right: Math.min(whole.right, c.right),
+                           top: Math.max(whole.top, c.top), bottom: Math.min(whole.bottom, c.bottom)};
+                if (r.right - r.left <= 1 || r.bottom - r.top <= 1) continue;
+                for (const [el, b] of boxes) {
+                    if (el.contains(n)) continue;
+                    const w = Math.min(r.right, b.right) - Math.max(r.left, b.left);
+                    const h = Math.min(r.bottom, b.bottom) - Math.max(r.top, b.top);
+                    if (w > 1 && h > 1)
+                        hits.push(n.textContent.trim().slice(0, 24) + ' under .' + el.classList[0]);
+                }
+            }
+        }
+        return hits.slice(0, 4);
+    }""" % json.dumps(selector)
+
+
+def covered_text(browser, workdir, html, selector, widths=COVER_WIDTHS, height=900):
+    """The text an element matching `selector` covers, at every width."""
+    found = []
+    for width in widths:
+        for hit in _render(browser, workdir, html, (width, height), covered_text_js(selector)):
+            found.append(f"{width}: {hit}")
+    return found
+
+
 # An inner page's opener is one band tall: on a laptop it leaves most of the
 # first screen to the page it opens.
 BAND_MAX_SHARE = 0.7
