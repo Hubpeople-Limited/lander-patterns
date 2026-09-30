@@ -74,6 +74,11 @@ TEXT_MIN = 12
 # objective number with no taste in it.
 FIELD_MIN = 16
 
+# How far one run of words may reach into another's ink before it is a
+# collision rather than a descender brushing a cap. Two pixels is under any
+# stroke at a phone's type sizes and over the rounding in a face's ascent.
+OVERLAP_MIN = 2
+
 # A pattern whose whole job is a horizontal rail. Its track is MEANT to be
 # wider than the viewport - that is the affordance - so the document-overflow
 # rule cannot apply to it. Named here rather than inferred, so that adding a
@@ -140,7 +145,7 @@ MEASURE = r"""
   const W = document.documentElement.clientWidth;
   const TAP = %TAP%, TEXT = %TEXT%, FIELD = %FIELD%;
   const out = { width: W, docScroll: document.documentElement.scrollWidth,
-                overflow: [], taps: [], small: [], fields: [] };
+                overflow: [], taps: [], small: [], fields: [], overlaps: [] };
 
   const style = el => getComputedStyle(el);
 
@@ -285,10 +290,143 @@ MEASURE = r"""
     }
   }
 
+  // ---- text landing on text --------------------------------------------
+  // Last, because it changes the page; the tab is closed straight after. A
+  // numeral or label drawn by ::before or ::after has no text node, so each
+  // one is stood in for by a real span carrying the pseudo-element's own
+  // computed style, with the pseudo-element switched off.
+  //
+  // A box is the ink, not the line box. A Range rect spans the face's whole
+  // ascent and descent, which on a display face is nearly twice the type
+  // size, so it is cut to what that string's glyphs reach above and below
+  // the baseline. Lines of one block are never compared with each other:
+  // tight leading is a type decision, not a collision. Text in a sideways
+  // rail is skipped, and every box is cut to the ancestors that clip it.
+  const OVERLAP = %OVERLAP%;
+  const inRail = el => {
+    for (let p = el; p && p !== document.body; p = p.parentElement) {
+      const s = style(p);
+      if (/auto|scroll/.test(s.overflowX) || /auto|scroll/.test(s.overflowY)) return true;
+    }
+    return false;
+  };
+  const clipped = (el, r) => {
+    let { left, top, right, bottom } = r;
+    for (let p = el; p && p !== document.body; p = p.parentElement) {
+      const s = style(p);
+      if (s.overflowX !== 'visible' || s.overflowY !== 'visible'
+          || s.clipPath !== 'none' || (s.clip && s.clip !== 'auto')) {
+        const b = p.getBoundingClientRect();
+        left = Math.max(left, b.left); top = Math.max(top, b.top);
+        right = Math.min(right, b.right); bottom = Math.min(bottom, b.bottom);
+      }
+    }
+    return { left, top, right, bottom };
+  };
+  const blockOf = el => {
+    for (let p = el; p; p = p.parentElement) {
+      const d = style(p).display;
+      if (d !== 'inline' && d !== 'contents') return p;
+    }
+    return document.body;
+  };
+  // counter() the way a list uses it: the position of the nearest element
+  // that increments it, among its siblings that increment it too.
+  const counterOf = (el, name) => {
+    const bumps = e => style(e).counterIncrement.split(/\s+/).includes(name);
+    for (let a = el; a && a !== document.body; a = a.parentElement) {
+      if (!bumps(a)) continue;
+      let n = 1;
+      for (let s = a.previousElementSibling; s; s = s.previousElementSibling) if (bumps(s)) n++;
+      return n;
+    }
+    return 1;
+  };
+  const generated = (el, which) => {
+    const value = getComputedStyle(el, which).content;
+    if (!value || value === 'none' || value === 'normal') return '';
+    let text = '';
+    const token = /"((?:[^"\\]|\\.)*)"|counter\(\s*([\w-]+)\s*(?:,\s*([\w-]+))?\s*\)|attr\(\s*([\w-]+)\s*\)/g;
+    for (const m of value.matchAll(token)) {
+      if (m[1] !== undefined) text += m[1].replace(/\\(.)/g, '$1');
+      else if (m[2]) {
+        const n = counterOf(el, m[2]);
+        text += m[3] === 'decimal-leading-zero' && n < 10 ? '0' + n : String(n);
+      } else if (m[4]) text += el.getAttribute(m[4]) || '';
+    }
+    return text.trim() ? text : '';
+  };
+  const planned = [];
+  for (const el of all) {
+    if (!shown(el)) continue;
+    for (const which of ['::before', '::after']) {
+      const text = generated(el, which);
+      if (!text) continue;
+      const s = getComputedStyle(el, which);
+      if (s.display === 'none' || s.visibility === 'hidden') continue;
+      const span = document.createElement('span');
+      for (const p of s) if (p !== 'content') span.style.setProperty(p, s.getPropertyValue(p));
+      span.textContent = text;
+      planned.push({ el, which, span, what: describe(el) + which });
+    }
+  }
+  const standIns = new Map();
+  if (planned.length) {
+    const off = document.createElement('style');
+    off.textContent = '[data-phone-before]::before { content: none !important; }'
+                    + '[data-phone-after]::after { content: none !important; }';
+    document.head.append(off);
+  }
+  for (const { el, which, span, what } of planned) {
+    el.setAttribute(which === '::before' ? 'data-phone-before' : 'data-phone-after', '');
+    if (which === '::before') el.prepend(span); else el.append(span);
+    standIns.set(span, what);
+  }
+  const pen = document.createElement('canvas').getContext('2d');
+  const boxes = [];
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const words = node.textContent.trim();
+    const el = node.parentElement;
+    if (!words || !el || el.closest('select, option, textarea')) continue;
+    if (!shown(el) || inRail(el)) continue;
+    // A closed disclosure's answer is laid out and never painted.
+    if (el.checkVisibility
+        && !el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) continue;
+    const s = style(el);
+    pen.font = `${s.fontStyle} ${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
+    const ink = pen.measureText(words);
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    for (const r of range.getClientRects()) {
+      if (r.width < 0.5 || r.height < 0.5) continue;
+      const baseline = r.top + ink.fontBoundingBoxAscent;
+      const box = clipped(el, { left: r.left, right: r.right,
+                                top: baseline - ink.actualBoundingBoxAscent,
+                                bottom: baseline + ink.actualBoundingBoxDescent });
+      if (box.right - box.left <= OVERLAP || box.bottom - box.top <= OVERLAP) continue;
+      boxes.push({ box, block: blockOf(el), what: standIns.get(el) || describe(el) });
+    }
+  }
+  const said = new Set();
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      const a = boxes[i], b = boxes[j];
+      if (a.block === b.block) continue;
+      const w = Math.min(a.box.right, b.box.right) - Math.max(a.box.left, b.box.left);
+      const h = Math.min(a.box.bottom, b.box.bottom) - Math.max(a.box.top, b.box.top);
+      if (w <= OVERLAP || h <= OVERLAP) continue;
+      const key = a.what + '\n' + b.what;
+      if (said.has(key)) continue;
+      said.add(key);
+      out.overlaps.push({ a: a.what, b: b.what });
+    }
+  }
+
   return out;
 }
 """.replace("%TAP%", str(TAP_MIN)).replace("%TEXT%", str(TEXT_MIN)) \
-   .replace("%FIELD%", str(FIELD_MIN))
+   .replace("%FIELD%", str(FIELD_MIN)).replace("%OVERLAP%", str(OVERLAP_MIN))
 
 
 # ------------------------------------------------------------ availability
@@ -448,6 +586,10 @@ class Phone:
             bad.append(f"{name}: form field {say(f['what'])} is {f['size']}px - "
                        f"iOS zooms the page when a field under {FIELD_MIN}px "
                        f"takes focus")
+        # No pixel figure in the line, so a collision at both widths folds
+        # into one sentence naming both.
+        for o in got["overlaps"]:
+            bad.append(f"{name}: text {say(o['a'])} lands on text {say(o['b'])}")
         return bad
 
 

@@ -1176,6 +1176,21 @@ PHONE_FIRES = [
     ("a full-width box whose padding sits outside it",
      ".t-panel { width: 100%; padding: 24px; border: 1px solid #ddd; }",
      "<div class='t-panel'>Sample panel copy.</div>", "scrolls sideways"),
+    # A numeral drawn by ::before has no text node, so the gate stands a real
+    # span in for it. This is a stacked step numeral whose line box is shorter
+    # than its glyphs, pulled onto the title under it.
+    ("a counter numeral drawn over the heading below it",
+     ".t-steps { counter-reset: t-step; list-style: none; margin: 0; padding: 16px; }"
+     " .t-steps li { counter-increment: t-step; }"
+     " .t-steps li::before { content: counter(t-step); display: block;"
+     " font-size: 64px; line-height: 1; margin-bottom: -40px; }"
+     " .t-steps h3 { margin: 0; font-size: 20px; }",
+     "<ol class='t-steps'><li><h3>Sample step title</h3></li></ol>", "lands on text"),
+    ("two captions positioned onto each other",
+     ".t-fig { position: relative; height: 120px; }"
+     " .t-cap { position: absolute; left: 16px; top: 40px; margin: 0; font-size: 18px; }",
+     "<div class='t-fig'><p class='t-cap'>Sample caption one</p>"
+     "<p class='t-cap'>Sample caption two</p></div>", "lands on text"),
 ]
 
 # Valid work the gate must not complain about. Half of these are the exact
@@ -1221,6 +1236,51 @@ PHONE_QUIET = {
          " width: 100%; }",
          "<label for='e2'>Sample email</label>"
          "<input class='t-field' id='e2' type='email'>"),
+    # The overlaps the library makes on purpose. Words on a picture are the
+    # whole of several openers; none of them is text on text.
+    "words over a photograph":
+        (".t-hero { position: relative; }"
+         " .t-hero img { display: block; width: 100%; height: 240px; object-fit: cover; }"
+         " .t-hero h1 { position: absolute; left: 16px; bottom: 16px; margin: 0;"
+         " font-size: 32px; }",
+         "<div class='t-hero'><img src='sample-wide.svg' alt='Sample'>"
+         "<h1>Sample headline</h1></div>"),
+    "words on a scrim":
+        (".t-scrim { position: relative; min-height: 200px; background: #333; }"
+         " .t-scrim::after { content: ''; position: absolute; inset: 0;"
+         " background: rgba(0, 0, 0, .5); }"
+         " .t-scrim p { position: relative; z-index: 1; color: #fff; margin: 0;"
+         " padding: 16px; }",
+         "<div class='t-scrim'><p>Sample copy on a scrim.</p></div>"),
+    "a badge on a card's photograph":
+        (".t-card { position: relative; }"
+         " .t-card img { display: block; width: 100%; height: 160px; }"
+         " .t-badge { position: absolute; top: 8px; left: 8px; padding: 4px 8px;"
+         " background: #fff; font-size: 14px; }"
+         " .t-card h3 { margin: 8px 0 0; }",
+         "<div class='t-card'><img src='sample-portrait.svg' alt='Sample'>"
+         "<span class='t-badge'>Sample new</span><h3>Sample name</h3></div>"),
+    "cards in a sideways rail":
+        (".t-rail { display: flex; overflow-x: auto; }"
+         " .t-rail p { flex: 0 0 200px; margin: 0 -60px 0 0; font-size: 18px; }",
+         "<div class='t-rail'><p>Sample card one</p><p>Sample card two</p>"
+         "<p>Sample card three</p></div>"),
+    "a headline set tighter than its face":
+        (".t-tight { font-size: 40px; line-height: 0.9; width: 200px; margin: 0; }",
+         "<h2 class='t-tight'>Sample headline that wraps</h2>"),
+    "the answer inside a closed question":
+        (".t-faq summary { min-height: 48px; padding: 12px 0; }"
+         " .t-faq p { margin: -40px 0 0; }",
+         "<details class='t-faq'><summary>Sample question</summary>"
+         "<p>Sample answer.</p></details>"),
+    "a label hidden for screen readers over a heading":
+        (".t-box { position: relative; padding: 16px; }"
+         " .t-sr { position: absolute; top: 16px; left: 16px; width: 1px; height: 1px;"
+         " margin: -1px; padding: 0; border: 0; overflow: hidden; white-space: nowrap;"
+         " clip-path: inset(50%); }"
+         " .t-box h2 { margin: 0; font-size: 24px; }",
+         "<div class='t-box'><span class='t-sr'>Sample label for a screen reader</span>"
+         "<h2>Sample heading</h2></div>"),
 }
 
 
@@ -1742,9 +1802,10 @@ def check_shells():
     # carry a `section-title` slot and their sample values differ. Both have to
     # be on the page, in that order. A whole-document fill puts one of them in
     # both places, and the page still renders.
-    conversion = HERE.parent / "shells" / "homepage-conversion@2"
+    conversion = HERE.parent / "shells" / "homepage-conversion@3"
     if not conversion.exists():
-        print("  ok   skipped: homepage-conversion@2 is not in this tree")
+        print("  FAIL homepage-conversion@3 is not in this tree")
+        failures.append("the conversion shell this case fills is missing")
         return failures
 
     rendered, patterns = bp.build_shell(conversion)
@@ -1760,8 +1821,8 @@ def check_shells():
     if not ok:
         failures.append("build_shell left a slot or a comment in the output")
 
-    ok = patterns == ["hero-split", "steps-plain", "faq-details", "cta-band",
-                      "colophon"]
+    ok = patterns == ["masthead-nav", "hero-split", "steps-plain", "faq-details",
+                      "cta-band", "colophon"]
     print(f"  {'ok  ' if ok else 'FAIL'} reports the patterns it placed, in page order")
     if not ok:
         failures.append(f"build_shell reported {patterns}")
@@ -2571,19 +2632,33 @@ def check_masthead_without_portrait():
                     "article-masthead", width, check_phone.token_set())
                 page_html, removed = re.subn(
                     r'<img class="article-masthead-avatar"[^>]*>', "", page_html)
-                out = Path(tmp) / f"masthead-{width}.html"
-                out.write_text(page_html, encoding="utf-8")
-                page = browser.new_page(viewport={"width": width, "height": 900})
-                page.goto(out.as_uri())
-                got = page.evaluate("""() => {
-                    const box = s => document.querySelector(s).getBoundingClientRect();
-                    return {title: box('.article-masthead-title').left,
-                            byline: box('.article-masthead-byline').left,
-                            row: box('.article-masthead-author').height};
-                }""")
-                page.close()
+                # No author at all: the portrait gone and both lines left empty.
+                empty_html, emptied = re.subn(
+                    r'(<p class="article-masthead-(?:byline|role)">)[^<]*(</p>)',
+                    r"\1\2", page_html)
+                got = {}
+                for label, html_text in (("no portrait", page_html),
+                                         ("no author", empty_html)):
+                    out = Path(tmp) / f"masthead-{width}.html"
+                    out.write_text(html_text, encoding="utf-8")
+                    page = browser.new_page(viewport={"width": width, "height": 900})
+                    page.goto(out.as_uri())
+                    got[label] = page.evaluate("""() => {
+                        const box = s => document.querySelector(s).getBoundingClientRect();
+                        const row = document.querySelector('.article-masthead-author');
+                        return {title: box('.article-masthead-title').left,
+                                byline: box('.article-masthead-byline').left,
+                                row: row.getBoundingClientRect().height,
+                                rule: getComputedStyle(row).borderTopWidth};
+                    }""")
+                    page.close()
+                shown = got["no portrait"]
                 case(f"at {width}px with no portrait, the byline starts where the title does",
-                     removed == 1 and abs(got["byline"] - got["title"]) <= 1 and got["row"] > 0)
+                     removed == 1 and abs(shown["byline"] - shown["title"]) <= 1
+                     and shown["row"] > 0)
+                bare = got["no author"]
+                case(f"at {width}px with no author at all, the author row and its rule close up",
+                     emptied == 2 and bare["row"] == 0 and bare["rule"] == "0px")
         finally:
             browser.close()
     return failures
@@ -2787,7 +2862,7 @@ def main():
              + len(RECIPE_FIRES) + len(RECIPE_QUIET) + 2
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
-             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 4 + 2
+             + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
              + PLACEHOLDER_URL_CASE_COUNT)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0

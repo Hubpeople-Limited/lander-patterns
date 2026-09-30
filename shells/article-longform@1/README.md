@@ -19,7 +19,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **article-masthead** v11 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
+2. **article-masthead** v12 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
    - `tag` - text, about 2 word(s). Sample: Sample category
    - `read-time` - text, about 4 word(s). Sample: 6 min sample read
    - `publish-datetime` - attribute (datetime): a short label, about 1 word(s)

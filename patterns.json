@@ -154,7 +154,7 @@
   "summary": "The top of a written piece: the title, who wrote it and when.",
   "type": "section",
   "variants": {},
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "article-toc": {
@@ -2098,7 +2098,7 @@
   "summary": "How it works, as numbered image cards.",
   "type": "section",
   "variants": {},
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "steps-plain": {

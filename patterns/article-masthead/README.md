@@ -34,7 +34,8 @@ announce itself as a second site header alongside the chassis's real one.
   delete the `<img>` and the name and role sit at the start of the row. It
   never takes the library's placeholder, because a drawn person beside a
   named author reads as a picture of that author. The alt is `""` unless the
-  portrait carries something the byline beside it does not.
+  portrait carries something the byline beside it does not. A row left with
+  no portrait, name or role closes up, so no rule is drawn over nothing.
 
 Portrait renders at 44px and is cropped square, so supply at least 88px square.
 
