@@ -1,0 +1,172 @@
+/* hero-band v1 - tokens only, selectors prefixed */
+/* Each ground names its own ink; every rule below reads the pair. */
+.hero-band--plain {
+  --hero-band-ground: var(--color-bg);
+  --hero-band-ink: var(--color-text-soft);
+  --hero-band-title-ink: var(--color-heading);
+  --hero-band-btn-face: var(--color-primary);
+  --hero-band-btn-ink: var(--color-on-primary);
+  --hero-band-ring: var(--color-focus);
+}
+.hero-band--soft {
+  --hero-band-ground: var(--color-surface-soft);
+  --hero-band-ink: var(--color-text);
+  --hero-band-title-ink: var(--color-text);
+  --hero-band-btn-face: var(--color-primary);
+  --hero-band-btn-ink: var(--color-on-primary);
+  --hero-band-ring: var(--color-focus);
+}
+.hero-band--brand {
+  --hero-band-ground: var(--color-primary);
+  --hero-band-ink: var(--color-on-primary);
+  --hero-band-title-ink: var(--color-on-primary);
+  --hero-band-btn-face: var(--color-on-primary);
+  --hero-band-btn-ink: var(--color-primary);
+  --hero-band-ring: var(--color-on-primary);
+}
+.hero-band--deep {
+  --hero-band-ground: var(--color-scrim);
+  --hero-band-ink: var(--color-on-scrim);
+  --hero-band-title-ink: var(--color-on-scrim);
+  --hero-band-btn-face: var(--color-primary);
+  --hero-band-btn-ink: var(--color-on-primary);
+  --hero-band-ring: var(--color-on-scrim);
+}
+.hero-band {
+  background: var(--hero-band-ground);
+  color: var(--hero-band-ink);
+  padding-block: var(--space-5) var(--space-8);
+}
+.hero-band-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  display: grid;
+  gap: var(--space-5);
+  align-items: center;
+}
+/* The photograph leads on a phone; from 48rem the photo rung places it. */
+.hero-band-visual {
+  order: -1;
+  overflow: clip;
+  border-radius: var(--card-radius);
+}
+.hero-band-img {
+  display: block;
+  width: 100%;
+  /* A band, not a screen: from the width, never the viewport height. */
+  height: clamp(11rem, 48vw, 16rem);
+  object-fit: cover;
+}
+.hero-band-eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-3);
+}
+.hero-band-title {
+  font-family: var(--font-heading);
+  color: var(--hero-band-title-ink);
+  font-size: calc(clamp(1.75rem, 1.2rem + 2.6vw, 3.25rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.08 * var(--heading-leading, 1));
+  max-width: 14em;
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+}
+.hero-band-sub {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 46ch;
+  margin: 0 0 var(--space-5);
+}
+.hero-band-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  background: var(--hero-band-btn-face);
+  color: var(--hero-band-btn-ink);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.hero-band-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.hero-band-btn:focus-visible {
+  outline: 3px solid var(--hero-band-ring);
+  outline-offset: 3px;
+}
+/* Behind, the words never sit on the photograph: on a panel of the ground. */
+.hero-band--behind {
+  padding-top: 0;
+}
+.hero-band--behind .hero-band-visual {
+  margin-inline: calc(-1 * var(--space-4));
+  border-radius: 0;
+}
+.hero-band--behind .hero-band-copy {
+  position: relative;
+  margin-top: calc(-1 * var(--space-8));
+  padding: var(--space-5) var(--space-4);
+  background: var(--hero-band-ground);
+  border-radius: var(--card-radius);
+}
+@media (min-width: 48rem) {
+  .hero-band {
+    padding-block: var(--space-8);
+  }
+  .hero-band-inner {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    column-gap: var(--space-8);
+  }
+  .hero-band-img {
+    height: clamp(16rem, 30vw, 24rem);
+  }
+  .hero-band--end .hero-band-visual {
+    order: 0;
+  }
+  .hero-band--start .hero-band-inner {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+  .hero-band--start .hero-band-visual {
+    order: -1;
+  }
+  .hero-band--behind {
+    position: relative;
+    isolation: isolate;
+  }
+  .hero-band--behind .hero-band-inner {
+    grid-template-columns: minmax(0, min(36rem, 62%));
+    min-height: clamp(18rem, 30vw, 24rem);
+  }
+  .hero-band--behind .hero-band-visual {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    margin: 0;
+  }
+  .hero-band--behind .hero-band-img {
+    height: 100%;
+  }
+  .hero-band--behind .hero-band-copy {
+    margin-top: 0;
+    padding: var(--space-6);
+  }
+  /* Keep in step with the panel's track: a placeholder draws beside it. */
+  .hero-band--behind .hero-band-img[data-hub-placeholder] {
+    box-sizing: border-box;
+    padding: var(--space-6) var(--space-8) var(--space-6) calc((100% - min(100% - 2 * var(--space-4), var(--container-max))) / 2 + min(36rem, 0.62 * min(100% - 2 * var(--space-4), var(--container-max))) + var(--space-8));
+    object-fit: contain;
+  }
+}
+
+.hero-band img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
