@@ -1,0 +1,56 @@
+{
+  "side": {
+    "label": "Portrait side",
+    "note": "Which side the portrait sits on when there is room for two columns. On a phone it always comes first, as a short strip.",
+    "rungs": {
+      "start": {
+        "label": "Portrait on the left",
+        "note": "The portrait first, then the words and the sign-up. The default."
+      },
+      "end": {
+        "label": "Portrait on the right",
+        "note": "The words and the sign-up first, then the portrait. Use it to swap sides with a photograph further down the page."
+      }
+    }
+  },
+  "shape": {
+    "label": "Portrait shape",
+    "note": "The outline of the portrait.",
+    "rungs": {
+      "rounded": {
+        "label": "Rounded",
+        "note": "Rounded corners, a little rounder than your brand's cards. On a brand with square corners it stays square."
+      },
+      "arch": {
+        "label": "Arch",
+        "note": "A half circle across the top, like a window. The same shape on every brand."
+      },
+      "half-bleed": {
+        "label": "To the edge",
+        "note": "The portrait runs to the edge of the screen and the full height of the section, with no corners."
+      }
+    }
+  },
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind the words and the sign-up. The sign-up card keeps its own card colour on every choice.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background colour. Quiet, and the right choice for most pages."
+      },
+      "soft": {
+        "label": "Light",
+        "note": "A soft tint, to set the opener apart from the section under it."
+      },
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your brand colour, with text chosen to stay readable on it. Best used once or twice a page, not on everything."
+      },
+      "deep": {
+        "label": "Dark",
+        "note": "A dark band. The boldest option, and the one that loses its impact if you use it more than once."
+      }
+    }
+  }
+}

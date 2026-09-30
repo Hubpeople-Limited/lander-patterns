@@ -41,12 +41,12 @@ toward it. There is no headroom to spend. Raise the scrim, never dim the
 image. A headline past three lines climbs out of the guaranteed
 band: shorten it, or raise the strength.
 
-**Every page gets one opener, so the rest are alternatives rather than
-neighbours.** Pick this one where the photograph *is* the argument. Pick
-`hero-split` where the words are and the image supports them; `hero-centred`
-where the photograph cannot be read through or you do not control it;
-`hero-squeeze` where the page does not continue; `hero-stated` where there is
-no usable photography at all; `signup-steps` where the page opens on its form.
+**Every page gets one opener, so the rest are alternatives.** Pick this one
+where the photograph *is* the argument; `hero-split` where the words are and
+the image supports them; `hero-centred` where the photograph cannot be read
+through or you do not control it; `hero-squeeze` where the page does not
+continue; `hero-stated` where there is no usable photography; `hero-portrait`
+where one face leads; `signup-steps` where the page opens on its form.
 
 **Pairing.** `stats-band` directly beneath it — the dissolve resolves the hero
 into the page background and the numbers begin with no seam. Avoid
