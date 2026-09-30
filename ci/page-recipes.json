@@ -472,6 +472,23 @@
         "name": "locations-photo",
         "version": 1
       }
+    },
+    {
+      "page": "homepage",
+      "patterns": [
+        "masthead-nav",
+        "hero-portrait:ground=plain",
+        "heading-block",
+        "member-grid",
+        "steps-plain",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The people-led homepage: one large portrait beside the claim and the join control, the brand's own members under a heading, how joining works, the ask. The shell for a brand whose first screen should show a face; the sign-up card takes the join button's place when the page starts the sign-up itself.",
+      "composition": {
+        "name": "homepage-portrait",
+        "version": 1
+      }
     }
   ]
 }
