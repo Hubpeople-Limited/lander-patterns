@@ -102,7 +102,9 @@
     grid-template-areas: ". visual" "title visual" "sub visual" ". visual";
     grid-template-rows: 1fr auto auto 1fr;
     row-gap: var(--space-3);
-    column-gap: var(--space-8);
+    /* The card reaches --space-12 out of the photograph's column toward the
+       headline, so the gap has to clear that reach, on either side. */
+    column-gap: calc(var(--space-12) + var(--space-6));
     align-items: stretch;
   }
   .hero-split-inner:has(.signup-card) .hero-split-copy {
@@ -135,13 +137,10 @@
     justify-self: start;
     margin-inline-start: calc(-1 * var(--space-12));
   }
-  /* The same layering mirrored. The card reaches past the photograph by
-     --space-12, and here that reach points at the start of the headline, so
-     the gap has to clear it. */
+  /* The same layering mirrored. */
   .hero-split--start .hero-split-inner:has(.signup-card) {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
     grid-template-areas: "visual ." "visual title" "visual sub" "visual .";
-    column-gap: calc(var(--space-12) + var(--space-6));
   }
   .hero-split--start .hero-split-inner:has(.signup-card) .hero-split-visual {
     margin-inline: 0 var(--space-12);
