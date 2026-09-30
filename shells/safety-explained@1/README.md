@@ -37,7 +37,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-4. **steps-plain** v5 - How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.
+4. **steps-plain** v6 - How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `section-title` - text, about 3 word(s). Sample: Sample steps heading

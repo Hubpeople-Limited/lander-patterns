@@ -27,7 +27,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `hero-image` - attribute (src): real material, or the couple/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **steps-plain** v5 - How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.
+3. **steps-plain** v6 - How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `section-title` - text, about 3 word(s). Sample: Sample steps heading

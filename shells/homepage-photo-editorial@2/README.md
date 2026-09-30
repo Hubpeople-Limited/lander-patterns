@@ -27,7 +27,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `hero-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **zigzag-rows** v11 - Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.
+3. **zigzag-rows** v12 - Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample section title
    - `row-1-image` - attribute (src): real material, or the couple/square placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder

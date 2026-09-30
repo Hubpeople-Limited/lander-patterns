@@ -30,7 +30,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `body` - text, about 13 word(s). Sample: One or two sentences of sample copy, used only to rende...
    - `panel-title` - text, about 3 word(s). Sample: Sample panel heading
    - `panel-body` - text, about 11 word(s). Sample: One line of sample copy saying plainly what is on offer.
-4. **pricing-tiers** v10 - Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.
+4. **pricing-tiers** v11 - Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.
    - `section-title` - text, about 3 word(s). Sample: Sample plans heading
    - `recommended-label` - text, about 2 word(s). Sample: Sample flag
    - `tier-name` - text, about 2 word(s). Sample: Sample tier

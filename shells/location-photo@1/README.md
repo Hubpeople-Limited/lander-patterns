@@ -44,7 +44,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 8 word(s). Sample: A sample section title for the preview render
    - `intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-5. **member-grid** v5 - A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.
+5. **member-grid** v6 - A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.
    - `previous-label` - attribute (data-hub-carousel-prev-label): a short label, about 2 word(s)
    - `next-label` - attribute (data-hub-carousel-next-label): a short label, about 2 word(s)
    - `members-country` - attribute (data-members-country): a short label, about 2 word(s)
