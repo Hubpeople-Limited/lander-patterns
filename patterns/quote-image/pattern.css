@@ -1,0 +1,211 @@
+/* quote-image v1 - tokens only, selectors prefixed */
+.quote-image {
+  --quote-image-scrim-floor: clamp(0.92, var(--quote-image-scrim-strength, 0.92), 1);
+  --quote-image-shade: color-mix(in srgb, var(--color-scrim) calc(var(--quote-image-scrim-floor) * 100%), transparent);
+  /* An eased fade: a straight one reads as a hard edge on a pale photograph. */
+  --quote-image-fade: var(--quote-image-shade), color-mix(in srgb, var(--quote-image-shade) 70%, transparent) 30%, color-mix(in srgb, var(--quote-image-shade) 35%, transparent) 60%, color-mix(in srgb, var(--quote-image-shade) 10%, transparent) 85%, transparent;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  display: grid;
+  align-items: end;
+  min-height: clamp(30rem, 125vw, 40rem);
+  /* The ground a slow or failed photograph leaves the words on. */
+  background: var(--color-scrim);
+  color: var(--color-on-scrim);
+}
+.quote-image-img {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.quote-image--fade {
+  --quote-image-veil: 0%;
+}
+.quote-image--full {
+  --quote-image-veil: 60%;
+}
+.quote-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--color-scrim) calc(var(--quote-image-scrim-floor) * var(--quote-image-veil, 0%)), transparent);
+}
+/* The full level is the words' own box; a fade carries it into the photograph. */
+.quote-image-words {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--space-6) var(--space-4);
+  background: var(--quote-image-shade);
+}
+.quote-image-words::before,
+.quote-image-words::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.quote-image-words::before {
+  inset-inline: 0;
+  bottom: 100%;
+  height: clamp(6rem, 30vw, 9rem);
+  background: linear-gradient(to top, var(--quote-image-fade));
+}
+.quote-image--centre .quote-image-words {
+  text-align: center;
+}
+.quote-image-eyebrow {
+  margin: 0 0 var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.quote-image-quote {
+  max-width: 22em;
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: calc(clamp(1.5rem, 1.05rem + 2vw, 2.625rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.015em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  text-wrap: balance;
+  color: var(--color-on-scrim);
+}
+@supports (line-height: 1cap) {
+  .quote-image-quote {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.quote-image--centre .quote-image-quote {
+  margin-inline: auto;
+}
+.quote-image-quote p {
+  margin: 0;
+}
+.quote-image-by {
+  margin-top: var(--space-5);
+}
+.quote-image-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.quote-image-role {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+@media (min-width: 48rem) {
+  .quote-image {
+    min-height: clamp(30rem, 48vw, 40rem);
+  }
+  .quote-image-words {
+    padding: var(--space-8) var(--space-6);
+  }
+  .quote-image--centre {
+    align-items: center;
+  }
+  .quote-image--centre .quote-image-words::after {
+    inset-inline: 0;
+    top: 100%;
+    height: clamp(6rem, 12vw, 10rem);
+    background: linear-gradient(to bottom, var(--quote-image-fade));
+  }
+  /* Beside the photograph the words are a column the section's height. */
+  .quote-image--start,
+  .quote-image--end {
+    --quote-image-edge: max(var(--space-6), calc((100% - var(--container-max)) / 2));
+    align-items: stretch;
+  }
+  .quote-image--start .quote-image-words,
+  .quote-image--end .quote-image-words {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: min(62%, calc(var(--quote-image-edge) + 32rem));
+  }
+  .quote-image--start .quote-image-words {
+    padding-inline-start: var(--quote-image-edge);
+  }
+  .quote-image--end .quote-image-words {
+    justify-self: end;
+    padding-inline-end: var(--quote-image-edge);
+  }
+  .quote-image--start .quote-image-words::before,
+  .quote-image--end .quote-image-words::before {
+    inset: 0 auto 0 100%;
+    width: clamp(8rem, 20vw, 18rem);
+    height: auto;
+    background: linear-gradient(to right, var(--quote-image-fade));
+  }
+  .quote-image--end .quote-image-words::before {
+    inset: 0 100% 0 auto;
+    background: linear-gradient(to left, var(--quote-image-fade));
+  }
+}
+
+/* Over the placeholder: a lighter floor, and the drawing given its own
+   area beside or above the words, never under them. */
+.quote-image:has(> .quote-image-img[data-hub-placeholder]) {
+  --quote-image-scrim-floor: 0.4;
+  grid-template-areas: "pic" "words";
+  grid-template-rows: minmax(clamp(10rem, 30vw, 16rem), 1fr) auto;
+}
+.quote-image:has(> .quote-image-img[data-hub-placeholder]) .quote-image-words {
+  grid-area: words;
+}
+.quote-image img[data-hub-placeholder] {
+  position: static;
+  grid-area: pic;
+  box-sizing: border-box;
+  contain: size;
+  aspect-ratio: auto;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
+  object-fit: contain;
+}
+@media (min-width: 48rem) {
+  .quote-image--start:has(> .quote-image-img[data-hub-placeholder]) {
+    grid-template-areas: "words pic";
+    grid-template-columns: min(62%, calc(var(--quote-image-edge) + 32rem)) minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+  .quote-image--end:has(> .quote-image-img[data-hub-placeholder]) {
+    grid-template-areas: "pic words";
+    grid-template-columns: minmax(0, 1fr) min(62%, calc(var(--quote-image-edge) + 32rem));
+    grid-template-rows: auto;
+  }
+  .quote-image:has(> .quote-image-img[data-hub-placeholder]) .quote-image-words {
+    width: auto;
+  }
+  .quote-image--start img[data-hub-placeholder],
+  .quote-image--end img[data-hub-placeholder] {
+    padding: var(--space-6);
+  }
+}
+
+.quote-image:not(.quote-image--moving) {
+  --hub-motion: none;
+}
+/* The reveal hook only says when the photograph is in view. */
+.quote-image .quote-image-img.hub-reveal-pending {
+  opacity: 1;
+  translate: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .quote-image--moving .quote-image-img.hub-revealed {
+    animation: quote-image-drift 5s ease-out 1 both;
+  }
+  @keyframes quote-image-drift {
+    from {
+      scale: 1.06;
+    }
+  }
+}

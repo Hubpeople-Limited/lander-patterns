@@ -1,0 +1,42 @@
+<!--
+name: quote-image
+display-name: Quote over a photo
+summary: One real quote, set large over a full-width photograph.
+version: 1
+type: section
+page-types: homepage, landing, about
+requires: photography
+image-slots: quote-backdrop subject=place|group|couple crop=wide min=2000 focal=center placeholder=yes
+content-shape: single claim
+layout: people=testimonials; rhythm=bands
+description: One real quote at display size over a full-width photograph - the words on a soft-edged shade of the scrim that carries their contrast, placed in the middle, on the left or on the right, with the rest of the photograph clear or evenly darkened.
+keywords: quote, testimonial, review, photograph, full-bleed, social proof, member voice
+needs: one real quote, word for word, from a member's review the platform returns or from material the brand gives, with the name it came with and a true detail line; one landscape photograph at least 2000px wide with its own alt text - a place, or people who stand for the brand, reads best behind a quote, where a face tends to read as the speaker's
+pairs-with: steps-plain, faq-details, cta-band
+avoid-with: quote-feature
+tokens-used: --color-on-scrim, --color-primary, --color-scrim, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --weight-display
+variants: words=centre|start|end; scrim=fade|full; motion=default|moving
+behaviours: reveal
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-09-30
+-->
+<!-- Where the words sit: --centre, --start or --end.
+     How much of the photograph the shade covers: --fade or --full. -->
+<!-- The quote goes in word for word. A scene reads best behind it. Delete
+     the eyebrow and the detail line when nothing true fills them. Loading
+     is lazy: this section is not the page's first picture. -->
+<section class="quote-image quote-image--centre quote-image--fade">
+  <img class="quote-image-img" data-hub-module="reveal" src="slot:quote-backdrop" alt="slot:quote-backdrop-alt" width="2000" height="1125" loading="lazy" decoding="async">
+  <figure class="quote-image-words">
+    <p class="quote-image-eyebrow"><!-- slot: eyebrow --></p>
+    <blockquote class="quote-image-quote">
+      <p><!-- slot: quote --></p>
+    </blockquote>
+    <figcaption class="quote-image-by">
+      <p class="quote-image-name"><!-- slot: person-name --></p>
+      <p class="quote-image-role"><!-- slot: person-role --></p>
+    </figcaption>
+  </figure>
+</section>

@@ -1,0 +1,48 @@
+{
+  "words": {
+    "label": "Where the words sit",
+    "note": "Where the quote sits on the photograph on a wide screen. On a phone it always sits across the foot of the photograph.",
+    "rungs": {
+      "centre": {
+        "label": "In the middle",
+        "note": "The quote in the middle of the photograph. The default."
+      },
+      "start": {
+        "label": "On the left",
+        "note": "The quote on the left, the photograph clear on the right. For a photograph whose subject is on the right."
+      },
+      "end": {
+        "label": "On the right",
+        "note": "The quote on the right, the photograph clear on the left. For a photograph whose subject is on the left."
+      }
+    }
+  },
+  "scrim": {
+    "label": "Shade",
+    "note": "How much of the photograph is darkened. The quote always sits on a dark shade that keeps it readable, whichever you pick.",
+    "rungs": {
+      "fade": {
+        "label": "Behind the words",
+        "note": "A soft shade behind the quote only; the rest of the photograph shows as it is. The default."
+      },
+      "full": {
+        "label": "The whole photograph",
+        "note": "The whole photograph is evenly darkened and the quote sits in the mood of it. For a busy or bright photograph."
+      }
+    }
+  },
+  "motion": {
+    "label": "Movement",
+    "note": "Whether this section moves as the visitor reaches it. Nothing moves for a visitor who has asked their device for less motion, whichever you pick.",
+    "rungs": {
+      "default": {
+        "label": "Still",
+        "note": "Nothing moves. The section is simply there when the visitor reaches it, which is the default."
+      },
+      "moving": {
+        "label": "Moves",
+        "note": "The photograph drifts slowly into place over five seconds as the quote comes into view, once, then holds still. It needs the platform's behaviour library; where that is not served the section is simply still."
+      }
+    }
+  }
+}
