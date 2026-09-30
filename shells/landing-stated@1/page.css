@@ -1185,7 +1185,7 @@
   }
 }
 
-/* ---- benefit-tiles v8 ---- */
+/* ---- benefit-tiles v9 ---- */
 /* benefit-tiles v2 - tokens only, selectors prefixed */
 .benefit-tiles {
   --benefit-tiles-badge-fill: var(--color-primary);
@@ -1328,6 +1328,9 @@
   .benefit-tiles-track:has(> :nth-child(5)) > .benefit-tiles-item {
     min-height: 24rem;
   }
+}
+.benefit-tiles:not(.benefit-tiles--moving) {
+  --hub-motion: none;
 }
 
 /* ---- testimonial-grid v12 ---- */

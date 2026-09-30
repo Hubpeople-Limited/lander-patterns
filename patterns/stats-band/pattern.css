@@ -96,3 +96,6 @@
     padding: var(--space-8) var(--space-4);
   }
 }
+.stats-band:not(.stats-band--moving) {
+  --hub-motion: none;
+}

@@ -1198,7 +1198,7 @@
   }
 }
 
-/* ---- steps-numbered v13 ---- */
+/* ---- steps-numbered v14 ---- */
 /* steps-numbered v3 - tokens only, selectors prefixed */
 .steps-numbered {
   /* Contrast floor. The words sit on a photograph, so the scrim carries the
@@ -1328,6 +1328,9 @@
 
 .steps-numbered img[data-hub-placeholder] {
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+.steps-numbered:not(.steps-numbered--moving) {
+  --hub-motion: none;
 }
 
 /* ---- faq-details v6 ---- */

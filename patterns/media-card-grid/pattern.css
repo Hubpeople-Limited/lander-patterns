@@ -156,8 +156,8 @@
   .media-card-grid-item:focus-within .media-card-grid-cue {
     gap: var(--space-4);
   }
-  .media-card-grid-item:hover .media-card-grid-img,
-  .media-card-grid-item:focus-within .media-card-grid-img {
+  .media-card-grid--moving .media-card-grid-item:hover .media-card-grid-img,
+  .media-card-grid--moving .media-card-grid-item:focus-within .media-card-grid-img {
     scale: 1.03;
   }
 }
@@ -169,4 +169,7 @@
   .media-card-grid-text {
     padding-top: var(--space-5);
   }
+}
+.media-card-grid:not(.media-card-grid--moving) {
+  --hub-motion: none;
 }

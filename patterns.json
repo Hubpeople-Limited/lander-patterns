@@ -252,8 +252,13 @@
   "status": "active",
   "summary": "Two to six tall tiles, each with an icon and a short benefit.",
   "type": "section",
-  "variants": {},
-  "version": "8",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "9",
   "whole-page": false
  },
  "capability-tabs": {
@@ -1408,8 +1413,13 @@
   "status": "active",
   "summary": "A grid of upright cards, each led by a photograph.",
   "type": "section",
-  "variants": {},
-  "version": "13",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "14",
   "whole-page": false
  },
  "member-filter": {
@@ -1491,12 +1501,16 @@
     "rail",
     "marquee"
    ],
+   "motion": [
+    "default",
+    "moving"
+   ],
    "phone": [
     "arrows",
     "swipe"
    ]
   },
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "member-strip": {
@@ -1721,8 +1735,13 @@
   "status": "active",
   "summary": "Cards with the photograph on top and the words underneath.",
   "type": "section",
-  "variants": {},
-  "version": "7",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "8",
   "whole-page": false
  },
  "picker-chips": {
@@ -1905,8 +1924,13 @@
   "status": "active",
   "summary": "A lattice of member portraits with the strongest one held in the middle.",
   "type": "section",
-  "variants": {},
-  "version": "8",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "9",
   "whole-page": false
  },
  "pricing-tiers": {
@@ -1935,8 +1959,13 @@
   "status": "active",
   "summary": "Two or three plans side by side with matching buttons.",
   "type": "section",
-  "variants": {},
-  "version": "10",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "11",
   "whole-page": false
  },
  "prose-column": {
@@ -2252,8 +2281,13 @@
   "status": "active",
   "summary": "Full-width rows, each a large figure with a line explaining it.",
   "type": "section",
-  "variants": {},
-  "version": "11",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "12",
   "whole-page": false
  },
  "stats-band": {
@@ -2289,8 +2323,13 @@
   "status": "active",
   "summary": "A full-width band of real figures, each paired with what it means.",
   "type": "section",
-  "variants": {},
-  "version": "11",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "12",
   "whole-page": false
  },
  "steps-numbered": {
@@ -2339,8 +2378,13 @@
   "status": "active",
   "summary": "How it works, as numbered image cards.",
   "type": "section",
-  "variants": {},
-  "version": "13",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "14",
   "whole-page": false
  },
  "steps-plain": {
@@ -2376,8 +2420,13 @@
   "status": "active",
   "summary": "How it works, as a plain numbered lattice with no photographs.",
   "type": "section",
-  "variants": {},
-  "version": "5",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "6",
   "whole-page": false
  },
  "testimonial-carousel": {
@@ -2563,8 +2612,13 @@
   "status": "active",
   "summary": "Image-and-words rows where the image swaps side row to row.",
   "type": "section",
-  "variants": {},
-  "version": "11",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ]
+  },
+  "version": "12",
   "whole-page": false
  }
 }

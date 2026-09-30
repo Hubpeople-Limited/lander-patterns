@@ -292,3 +292,6 @@
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   }
 }
+.member-grid:not(.member-grid--moving):not(.member-grid--marquee) {
+  --hub-motion: none;
+}

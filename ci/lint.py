@@ -57,6 +57,10 @@ TYPES = {"component", "section", "page"}
 SHAPES = {"narrative", "peer set", "comparison", "progression", "single claim",
           "question and answer", "reference"}
 MOTION = {"none", "subtle", "expressive"}
+# The behaviours that move a block for effect. A pattern hooking one offers
+# the motion switch, still by default: CONTRIBUTING.md, "Motion is a switch".
+MOTION_BEHAVIOURS = {"reveal", "counter", "marquee"}
+MOTION_RUNGS = ["default", "moving"]
 STATUS = {"active", "deprecated"}
 ONE_PER_PAGE = {"yes", "no"}
 # How a pattern lays out a page, in the building skill's own words: it tells
@@ -1373,6 +1377,37 @@ def check_motion_claim(html_path, css_path, meta):
              f"motion: none, but pattern.css declares {sorted(set(moving))}")
 
 
+def check_motion_switch(html_path, css_text, meta, folder_name):
+    """Still means still: motion added for effect is a rung, not the default.
+
+    A pattern that hooks reveal, counter or marquee declares exactly
+    `motion=default|moving`, and its still rung sets `--hub-motion: none` on
+    `.<name>:not(.<name>--moving)`, which is what the behaviour library
+    reads. A pattern whose only motion is its own CSS may offer the axis
+    too, and spells it the same way."""
+    axes = parse_variants(meta.get("variants", "")) or {}
+    hooks = {b.strip() for b in meta.get("behaviours", "").split(",")} & MOTION_BEHAVIOURS
+    if "motion" in axes and axes["motion"] != MOTION_RUNGS:
+        find(html_path, "motion-switch",
+             f"motion={'|'.join(axes['motion'])} - the switch is exactly "
+             "motion=default|moving, still first")
+    if not hooks:
+        return
+    if "motion" not in axes:
+        find(html_path, "motion-switch",
+             f"hooks {', '.join(sorted(hooks))} but offers no motion=default|moving "
+             "- motion added for effect is a choice, and still is the default")
+        return
+    css = re.sub(r"/\*.*?\*/", "", css_text, flags=re.S)
+    name = re.escape(folder_name)
+    if not re.search(rf"\.{name}:not\(\.{name}--moving\)[^{{}}]*\{{[^}}]*"
+                     rf"--hub-motion\s*:\s*none\b", css):
+        find(html_path, "motion-switch",
+             f"the still rung does not set --hub-motion: none on "
+             f".{folder_name}:not(.{folder_name}--moving), so the behaviours "
+             "move on it")
+
+
 def check_image_slots(path, meta, markup, css=None):
     """Every image slot says what it needs, in words the toolkit can act on.
 
@@ -1863,6 +1898,8 @@ def main():
         check_list_semantics(html, css, folder.name)
         check_disclosure_holds_the_controls(html, html.read_text(encoding="utf-8"))
         check_motion_claim(html, css, meta)
+        check_motion_switch(html, css.read_text(encoding="utf-8") if css.is_file() else "",
+                            meta, folder.name)
         check_edges_documented(readme, meta)
         check_description_vocabulary(html, meta)
         if css.is_file():

@@ -24,7 +24,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **pricing-tiers** v10 - Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.
+3. **pricing-tiers** v11 - Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.
    - `section-title` - text, about 3 word(s). Sample: Sample plans heading
    - `recommended-label` - text, about 2 word(s). Sample: Sample flag
    - `tier-name` - text, about 2 word(s). Sample: Sample tier

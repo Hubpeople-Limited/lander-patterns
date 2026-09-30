@@ -27,7 +27,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `hero-image-alt` - attribute (alt): what the image shows, in words
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-3. **steps-numbered** v13 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
+3. **steps-numbered** v14 - How-it-works steps as full-bleed image cards - a giant counter numeral and the step copy set on a dark bottom-up scrim over photography.
    - `section-title` - text, about 5 word(s). Sample: Sample how-it-works heading for preview
    - `step-image` - attribute (src): real material, or the person/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `step-image-alt` - attribute (alt): what the image shows, in words

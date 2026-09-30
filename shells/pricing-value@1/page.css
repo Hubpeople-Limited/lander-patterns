@@ -1234,7 +1234,7 @@
   }
 }
 
-/* ---- pricing-tiers v10 ---- */
+/* ---- pricing-tiers v11 ---- */
 /* pricing-tiers v5 - tokens only, selectors prefixed */
 .pricing-tiers {
   padding-block: var(--space-8);
@@ -1322,6 +1322,9 @@
 .pricing-tiers-btn:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;
+}
+.pricing-tiers:not(.pricing-tiers--moving) {
+  --hub-motion: none;
 }
 
 /* ---- trust-row v4 ---- */

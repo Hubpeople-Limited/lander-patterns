@@ -1077,7 +1077,7 @@
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
 }
 
-/* ---- zigzag-rows v11 ---- */
+/* ---- zigzag-rows v12 ---- */
 /* zigzag-rows v4 - tokens only, selectors prefixed */
 .zigzag-rows {
   /* One ratio for every media box, set once: equal-height rows are what hold
@@ -1215,6 +1215,9 @@
 
 .zigzag-rows img[data-hub-placeholder] {
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+.zigzag-rows:not(.zigzag-rows--moving) {
+  --hub-motion: none;
 }
 
 /* ---- faq-details v6 ---- */

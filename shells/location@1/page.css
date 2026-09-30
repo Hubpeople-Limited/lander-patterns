@@ -1317,7 +1317,7 @@
   }
 }
 
-/* ---- member-grid v5 ---- */
+/* ---- member-grid v6 ---- */
 /* member-grid v1 - tokens only, selectors prefixed.
    Everything below .member-grid is markup the PLATFORM writes, so these class
    names are a contract with it, not ours to rename. */
@@ -1611,6 +1611,9 @@
   .member-grid--marquee .lp-grid {
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   }
+}
+.member-grid:not(.member-grid--moving):not(.member-grid--marquee) {
+  --hub-motion: none;
 }
 
 /* ---- source-note v1 ---- */

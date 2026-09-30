@@ -1146,7 +1146,7 @@
   }
 }
 
-/* ---- steps-plain v5 ---- */
+/* ---- steps-plain v6 ---- */
 /* steps-plain v1 - tokens only, selectors prefixed */
 .steps-plain {
   --steps-plain-cell-min: 15rem;
@@ -1292,6 +1292,9 @@
   .steps-plain-body {
     margin-top: auto;
   }
+}
+.steps-plain:not(.steps-plain--moving) {
+  --hub-motion: none;
 }
 
 /* ---- faq-details v6 ---- */

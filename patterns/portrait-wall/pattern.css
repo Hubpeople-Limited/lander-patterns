@@ -118,3 +118,6 @@
     display: contents;
   }
 }
+.portrait-wall:not(.portrait-wall--moving) {
+  --hub-motion: none;
+}

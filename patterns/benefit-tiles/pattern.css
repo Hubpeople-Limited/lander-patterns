@@ -141,3 +141,6 @@
     min-height: 24rem;
   }
 }
+.benefit-tiles:not(.benefit-tiles--moving) {
+  --hub-motion: none;
+}
