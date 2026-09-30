@@ -1322,12 +1322,23 @@ def compat_snapshot(shell, html, stem, width, motion):
     return {"blocks": snap, "moved": moved, "errors": errors}
 
 
+def placements_known(source):
+    """The control placements a bundle builds, read from its own source:
+    "under" is every bundle's fallback, and the rest are the ones it tests
+    for by name."""
+    named = {p for p in ("edges", "top")
+             if re.search(rf'placement\s*[!=]==\s*"{p}"|\[[^\]]*"{p}"[^\]]*\]\.includes\(placement\)',
+                          source)}
+    return {"under"} | named
+
+
 def check_compat(shell, tokens, broken):
     version, old = previous_bundle()
     if not old:
         return ["compat: no earlier bundle is published under publish/hub-behaviours - "
                 "nothing to hold this one to"], 0
     shutil.copy(old, shell._dir / "hub-previous.js")
+    known = placements_known(old.read_text(encoding="utf-8"))
     if broken:
         source = (shell._dir / "hub.js").read_text(encoding="utf-8")
         if COMPAT_CONTROL[0] not in source:
@@ -1377,7 +1388,7 @@ def check_compat(shell, tokens, broken):
                 faults.append(f"{where}: the previous bundle threw {got['errors'][0]}")
             carousel = [b for b in got["blocks"] if "carousel" in (b["module"] or "").split()]
             for b in carousel:
-                if b["used"] not in ("under", "edges"):
+                if b["used"] not in known:
                     faults.append(f"{where}: fell back to {b['used']!r}, not a placement "
                                   f"{version} knows")
                 built = [x for x in b["built"] if 'class="hub-carousel-controls' in x["html"]]
