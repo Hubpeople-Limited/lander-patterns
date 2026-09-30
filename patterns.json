@@ -818,6 +818,70 @@
   "version": "8",
   "whole-page": false
  },
+ "hero-band": {
+  "avoid-with": [
+   "hero-stated"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.",
+  "display-name": "Page opener with a photo",
+  "image-slots": [
+   {
+    "crop": "landscape",
+    "focal": "center",
+    "min": 1600,
+    "placeholder": true,
+    "slot": "hero-image",
+    "subjects": [
+     "group",
+     "couple",
+     "place"
+    ]
+   }
+  ],
+  "layout": {
+   "opener": "beside"
+  },
+  "motion": "none",
+  "needs": "one real photograph at least 1600px wide of people or a place the brand can show, with its own alt text; a headline for this page and one supporting sentence that says something the headline does not",
+  "one-per-page": true,
+  "page-types": [
+   "about",
+   "features",
+   "pricing",
+   "safety",
+   "location",
+   "locations-landing",
+   "articles-landing"
+  ],
+  "pairs-with": [
+   "prose-column",
+   "listing-rows",
+   "pricing-tiers",
+   "safety-protections"
+  ],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "A shorter opener for an inner page: the page's title and one line, beside or in front of a photograph.",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand",
+    "deep"
+   ],
+   "photo": [
+    "end",
+    "start",
+    "behind"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "hero-centred": {
   "avoid-with": [
    "article-masthead",
@@ -1029,6 +1093,7 @@
  "hero-stated": {
   "avoid-with": [
    "article-masthead",
+   "hero-band",
    "hero-centred",
    "hero-overlay",
    "hero-split",

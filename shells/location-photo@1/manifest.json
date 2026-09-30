@@ -1,0 +1,51 @@
+{
+  "composition": "location-photo",
+  "version": 1,
+  "page": "location",
+  "library": "v205",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "11"
+    },
+    {
+      "name": "hero-band",
+      "version": "1",
+      "variant": {
+        "ground": "plain"
+      }
+    },
+    {
+      "name": "prose-column",
+      "version": "5"
+    },
+    {
+      "name": "heading-block",
+      "version": "8"
+    },
+    {
+      "name": "member-grid",
+      "version": "5"
+    },
+    {
+      "name": "source-note",
+      "version": "1"
+    },
+    {
+      "name": "link-cluster",
+      "version": "6",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "cta-band",
+      "version": "5"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ]
+}

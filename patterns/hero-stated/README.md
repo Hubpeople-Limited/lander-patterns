@@ -50,9 +50,9 @@ inside or beneath, where the brand publishes a score. `signup-card` can take the
 button's place, with the assurance slot left empty: wide, the words sit left and
 the card right.
 
-It refuses `hero-overlay`, `hero-split`, `hero-centred`, `hero-squeeze` and
-`article-masthead`. A page opens once, and each of those is the opener for a
-brand that has the photograph this one exists to do without.
+It refuses `hero-overlay`, `hero-split`, `hero-centred`, `hero-squeeze`,
+`hero-band` and `article-masthead`. A page opens once; each of those is the
+opener for a brand with the photograph this one exists to do without.
 
 **Brand adaptability.** Each ground modifier names its own ink, and every rule
 in the file reads that pair rather than a token — so nothing here knows which

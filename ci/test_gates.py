@@ -2719,6 +2719,173 @@ def check_masthead_without_portrait():
     return failures
 
 
+def _rung_combos(meta, skip=("motion",)):
+    """Every combination of a pattern's rungs, the named axes left out. The
+    phone gate renders the rung the markup ships; an opener whose layout
+    changes with its rungs is only measured if each one is put in front of
+    it."""
+    import itertools
+    import lint
+    axes = {a: v for a, v in (lint.parse_variants(meta.get("variants", "")) or {}).items()
+            if a not in skip}
+    names = sorted(axes)
+    for values in itertools.product(*(axes[a] for a in names)):
+        yield dict(zip(names, values))
+
+
+def opener_page(name, mods, tokens_name, card=False, extra_css=""):
+    """The pattern filled with its sample on the rungs asked for, in the phone
+    gate's bare page. With card=True, signup-card filled with its own sample
+    takes the join button's place, as a build nests it."""
+    import check_phone
+    import lint
+    from build_preview import fill
+    from check_page import apply_variants
+    folder = HERE.parent / "patterns" / name
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                             folder / "pattern.html")
+    html = check_phone.pattern_page(name, 390, check_phone.token_set(tokens_name))
+    html = apply_variants(name, meta, html, mods)
+    css = ""
+    if card:
+        card_dir = HERE.parent / "patterns" / "signup-card"
+        markup = re.sub(r"\s*<!--\n.*?\n-->", "",
+                        (card_dir / "pattern.html").read_text(encoding="utf-8"),
+                        count=1, flags=re.S)
+        markup = fill(markup, json.loads(
+            (card_dir / "preview-content.json").read_text(encoding="utf-8")))
+        html, swapped = re.subn(rf'<a class="{re.escape(name)}-btn"[^>]*>.*?</a>',
+                                lambda m: markup, html, count=1, flags=re.S)
+        if swapped != 1:
+            raise SystemExit(f"{name} has no join button for the card to take the place of")
+        css += (card_dir / "pattern.css").read_text(encoding="utf-8")
+    return html.replace("</style>", css + "\n" + extra_css + "\n</style>", 1)
+
+
+def _opener_workdir(tmp):
+    workdir = Path(tmp)
+    for asset in (HERE.parent / "preview").glob("*.svg"):
+        shutil.copy(asset, workdir / asset.name)
+    return workdir
+
+
+def _render(browser, workdir, html, viewport, js, reduced=False):
+    path = workdir / "opener.html"
+    path.write_text(html, encoding="utf-8", newline="\n")
+    tab = browser.new_page(viewport={"width": viewport[0], "height": viewport[1]},
+                           device_scale_factor=1,
+                           reduced_motion="reduce" if reduced else "no-preference")
+    try:
+        tab.goto(path.as_uri())
+        tab.wait_for_load_state("load")
+        return tab.evaluate(js)
+    finally:
+        tab.close()
+
+
+# An inner page's opener is one band tall: on a laptop it leaves most of the
+# first screen to the page it opens.
+BAND_MAX_SHARE = 0.7
+
+
+def check_hero_band():
+    """hero-band is a band, not a screen, on every photo rung; behind the
+    words, the words sit on the ground's own panel and a placeholder is drawn
+    whole beside it; every rung combination passes the phone gate at 320 and
+    360."""
+    import check_phone
+    import lint
+    failures = []
+    print("hero-band, the inner-page opener")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-band: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-band: {label}")
+
+    folder = HERE.parent / "patterns" / "hero-band"
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                             folder / "pattern.html")
+    height_js = "() => document.querySelector('.hero-band').getBoundingClientRect().height"
+    panel_js = """() => ({
+        panel: getComputedStyle(document.querySelector('.hero-band-copy')).backgroundColor,
+        ground: getComputedStyle(document.querySelector('.hero-band')).backgroundColor})"""
+    limit = BAND_MAX_SHARE * 800
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for tokens in ("brand", "display"):
+                for photo in ("end", "start", "behind"):
+                    got = _render(browser, workdir,
+                                  opener_page("hero-band", {"photo": photo}, tokens),
+                                  (1280, 800), height_js)
+                    case(f"photo={photo} on {tokens} at 1280x800 is {got:.0f}px tall, "
+                         f"within {limit:.0f}", got <= limit)
+            tall = _render(browser, workdir,
+                           opener_page("hero-band", {"photo": "end"}, "brand",
+                                       extra_css=".hero-band-img { height: 40rem !important; }"),
+                           (1280, 800), height_js)
+            case("catches: a photograph a screen tall", tall > limit)
+            for ground in ("plain", "soft", "brand", "deep"):
+                for width in (390, 1280):
+                    got = _render(browser, workdir,
+                                  opener_page("hero-band", {"photo": "behind", "ground": ground},
+                                              "brand"),
+                                  (width, 800), panel_js)
+                    case(f"photo=behind ground={ground} at {width}px: the words sit on the "
+                         f"ground's own panel",
+                         got["panel"] == got["ground"] and got["panel"] != "rgba(0, 0, 0, 0)")
+            bare = _render(browser, workdir,
+                           opener_page("hero-band", {"photo": "behind"}, "brand",
+                                       extra_css=".hero-band--behind .hero-band-copy "
+                                                 "{ background: none !important; }"),
+                           (1280, 800), panel_js)
+            case("catches: words behind with no panel under them",
+                 bare["panel"] != bare["ground"])
+            # A placeholder is a marked drawing, not a photograph: behind the
+            # words it is drawn whole beside the panel, never cropped under it.
+            clear_js = """() => {
+                const img = document.querySelector('.hero-band-img');
+                const pad = parseFloat(getComputedStyle(img).paddingLeft);
+                return {drawing: img.getBoundingClientRect().left + pad,
+                        panel: document.querySelector('.hero-band-copy')
+                               .getBoundingClientRect().right,
+                        fit: getComputedStyle(img).objectFit}; }"""
+
+            def placeholder_page(extra_css=""):
+                return opener_page("hero-band", {"photo": "behind"}, "brand",
+                                   extra_css=extra_css).replace(
+                    'class="hero-band-img"',
+                    'class="hero-band-img" data-hub-placeholder="hero-image"', 1)
+            for width in (768, 1024, 1280):
+                got = _render(browser, workdir, placeholder_page(), (width, 800), clear_js)
+                case(f"photo=behind at {width}px: a placeholder is drawn whole, beside "
+                     f"the panel", got["fit"] == "contain" and got["drawing"] >= got["panel"])
+            under = _render(browser, workdir,
+                            placeholder_page(".hero-band-img { padding: 0 !important; "
+                                             "object-fit: cover !important; }"),
+                            (1280, 800), clear_js)
+            case("catches: a placeholder cropped under the panel",
+                 not (under["fit"] == "contain" and under["drawing"] >= under["panel"]))
+        finally:
+            browser.close()
+    with check_phone.Phone() as phone:
+        for tokens in ("brand", "display"):
+            bad = []
+            for mods in _rung_combos(meta):
+                label = "hero-band " + " ".join(f"{a}={v}" for a, v in mods.items())
+                bad += phone.faults(label, opener_page("hero-band", mods, tokens))
+            case(f"every rung combination at 320 and 360 on {tokens} passes the phone gate"
+                 + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
 def check_placeholder_scrim():
     """Both directions of ci/check_placeholder_scrim.py: the library is clean,
     and the positive control catches a drawing the scrim hides and copy the
@@ -2986,6 +3153,8 @@ def main():
     print()
     failures += check_scrollbar_gate()
     print()
+    failures += check_hero_band()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -3010,7 +3179,7 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3 + 1 + 2)
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 22)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

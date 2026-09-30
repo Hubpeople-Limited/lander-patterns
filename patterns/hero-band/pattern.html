@@ -1,0 +1,44 @@
+<!--
+name: hero-band
+display-name: Page opener with a photo
+summary: A shorter opener for an inner page: the page's title and one line, beside or in front of a photograph.
+version: 1
+type: section
+page-types: about, features, pricing, safety, location, locations-landing, articles-landing
+requires: photography
+image-slots: hero-image subject=group|couple|place crop=landscape min=1600 focal=center placeholder=yes
+content-shape: single claim
+layout: opener=beside
+description: Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
+keywords: opener, inner page, photo, hero, about, location, pricing, safety
+needs: one real photograph at least 1600px wide of people or a place the brand can show, with its own alt text; a headline for this page and one supporting sentence that says something the headline does not
+pairs-with: prose-column, listing-rows, pricing-tiers, safety-protections
+avoid-with: hero-stated
+tokens-used: --btn-radius, --card-radius, --color-bg, --color-focus, --color-heading, --color-on-primary, --color-on-scrim, --color-primary, --color-scrim, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --weight-display
+variants: photo=end|start|behind; ground=plain|soft|brand|deep
+motion: none
+one-per-page: yes
+status: active
+added: 2026-09-30
+-->
+<!-- Take one photo rung and one ground: --end puts the photograph right,
+     --start left, and --behind fills the band with it and sets the words
+     on a panel of the ground: --plain, --soft, --brand or --deep.
+     On a phone the photograph always comes first. Delete the eyebrow when
+     nothing true fills it. Set width and height to the file's own pixels;
+     never lazy-load it. -->
+<section class="hero-band hero-band--end hero-band--plain">
+  <div class="hero-band-inner">
+    <div class="hero-band-copy">
+      <p class="hero-band-eyebrow"><!-- slot: eyebrow --></p>
+      <h1 class="hero-band-title"><!-- slot: headline --></h1>
+      <p class="hero-band-sub"><!-- slot: subhead --></p>
+      <div class="hero-band-cta">
+        <a class="hero-band-btn" href="{{join.url}}">{{join.text}}</a>
+      </div>
+    </div>
+    <div class="hero-band-visual">
+      <img class="hero-band-img" src="slot:hero-image" alt="slot:hero-image-alt" width="1600" height="1000" fetchpriority="high" decoding="async">
+    </div>
+  </div>
+</section>
