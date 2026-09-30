@@ -45,6 +45,8 @@ page, and holds each behaviour to what its row says:
     python ci/check_behaviours.py --broken         the positive control, below
     python ci/check_behaviours.py --out /tmp/beh   keep the rendered pages
     python ci/check_behaviours.py --require-browser
+    python ci/check_behaviours.py --compat         the bundle against the last one published
+    python ci/check_behaviours.py --compat --broken   its positive control
 
 THE POSITIVE CONTROL. `--broken` writes a COPY of the bundle with one named
 line of each behaviour turned wrong - the counter's last write, the
@@ -1193,6 +1195,197 @@ def check_signup_messages(shell, name, tokens):
     return faults
 
 
+# ------------------------------------------------------------ compatibility
+
+"""THE PREVIOUS BUNDLE. lib/hub.js is served to every live page from the
+floating URL, so a page built long ago meets whatever is newest. Every new
+setting is opt-in, and --compat holds the bundle to that: a carousel or
+marquee block that sets none of the settings added since the last published
+bundle has to come out of this bundle exactly as it came out of that one -
+the same controls, in the same place, with the same words, moving the rail
+the same way. The blocks are each carousel pattern as released (the tag in
+LATEST, read from git) and as it stands, both with every --hub-carousel-*,
+--hub-marquee-* and matching data-hub-* setting taken out. The other way
+round, today's markup, settings and all, has to fall back on the previous
+bundle to the controls that bundle knows, with nothing thrown.
+
+--compat --broken swaps one line of the bundle so a block with no settings
+draws the new look anyway, and requires the comparison to fire."""
+
+COMPAT_CONTROL = ('if (round) controls.classList.add("hub-carousel-controls--round");',
+                  'controls.classList.add("hub-carousel-controls--round");')
+SETTING_CSS = re.compile(r"--hub-(?:carousel|marquee)-[\w-]+\s*:[^;{}]*;?")
+SETTING_ATTR = re.compile(r'\s+data-hub-(?:carousel-(?:controls|look|phone)|marquee-look)="[^"]*"')
+# (label, pattern, rung class to swap in, or None; module list to swap in, or None)
+COMPAT_BLOCKS = [
+    ("gallery-scroll", "gallery-scroll", None, None),
+    ("testimonial-carousel", "testimonial-carousel", None, None),
+    ("member-grid rail", "member-grid", ("member-grid--grid", "member-grid--rail"), None),
+    ("member-grid marquee", "member-grid", ("member-grid--grid", "member-grid--marquee"), "marquee"),
+]
+
+COMPAT_JS = """
+() => Array.from(document.querySelectorAll('[data-hub-module]')).map(block => {
+  const built = Array.from(block.querySelectorAll('.hub-carousel-controls, .hub-marquee-control'));
+  const box = el => { const r = el.getBoundingClientRect();
+    return [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)]; };
+  return {
+    module: block.getAttribute('data-hub-module'),
+    used: block.getAttribute('data-hub-carousel-controls-used'),
+    built: built.map(el => ({ html: el.outerHTML,
+      at: Array.prototype.indexOf.call(el.parentNode.children, el),
+      parent: el.parentNode === block ? 'block' : el.parentNode.className,
+      box: box(el), shown: el.offsetParent !== null })),
+  };
+})
+"""
+
+
+def previous_bundle():
+    """The newest published bundle older than the one in lib/, as (version, path)."""
+    root = ROOT / "publish" / "hub-behaviours"
+    now = tuple(int(n) for n in bundle_version().split("."))
+    found = []
+    for d in root.iterdir() if root.is_dir() else []:
+        if re.fullmatch(r"\d+\.\d+\.\d+", d.name) and (d / "hub.js").is_file():
+            v = tuple(int(n) for n in d.name.split("."))
+            if v < now:
+                found.append((v, d))
+    if not found:
+        return None, None
+    v, d = max(found)
+    return ".".join(map(str, v)), d / "hub.js"
+
+
+def released(name):
+    """(markup, css) of a pattern at the release LATEST names, or None."""
+    import subprocess
+    tag = (ROOT / "LATEST").read_text(encoding="utf-8").strip()
+    got = []
+    for f in ("pattern.html", "pattern.css", "preview-content.json"):
+        r = subprocess.run(["git", "show", f"{tag}:patterns/{name}/{f}"], cwd=ROOT,
+                           capture_output=True, text=True, encoding="utf-8")
+        if r.returncode != 0:
+            return None
+        got.append(r.stdout)
+    return tag, got
+
+
+def compat_page(html_text, css, sample, rung, module, tokens, bundle, strip):
+    markup = re.sub(r"\s*<!--\n.*?\n-->", "", html_text, count=1, flags=re.S)
+    markup = fill(markup, sample)
+    repeat = sample.get("_repeat")
+    if repeat:
+        markup = repeat_block(markup, repeat["class"], int(repeat["count"]))
+    if rung:
+        markup = markup.replace(rung[0], rung[1], 1)
+        if 'class="mem-card"' in markup:
+            markup = repeat_block(markup, "mem-card", 12)
+    if module:
+        markup = re.sub(r'data-hub-module="[^"]*"',
+                        lambda m: m.group(0).replace("reveal", module), markup, count=1)
+    if strip:
+        css = SETTING_CSS.sub("", css)
+        markup = SETTING_ATTR.sub("", markup)
+    return SHELL.format(title="compat", tokens=tokens, css=css, bundle=bundle,
+                        before="", markup=markup,
+                        after='<section class="behaviour-check-section">' + FILLER + "</section>")
+
+
+def compat_snapshot(shell, html, stem, width, motion):
+    errors = []
+
+    def before(tab):
+        tab.on("pageerror", lambda e: errors.append(str(e)))
+    tab = shell.open(html, stem, width=width, reduced=not motion, before=before)
+    try:
+        tab.wait_for_timeout(250)
+        snap = tab.evaluate(COMPAT_JS)
+        moved = None
+        if not motion and tab.locator(".hub-carousel-next").count():
+            tab.evaluate("() => document.querySelector('.hub-carousel-next').click()")
+            tab.wait_for_timeout(250)
+            moved = tab.evaluate("""() => {
+              const r = Array.from(document.querySelectorAll('input[type=radio]')).findIndex(i => i.checked);
+              const s = Array.from(document.querySelectorAll('ul, ol')).find(l => /^(auto|scroll)$/.test(getComputedStyle(l).overflowX))
+                || document.querySelector('[data-hub-module]');
+              return [r, Math.round(s.scrollLeft)]; }""")
+    finally:
+        tab.close()
+    if motion:
+        # A moving rail is at a different place at every read, and the ends
+        # it has reached with it: which control is disabled is the rail's
+        # position, not the bundle's, so it is left out of the comparison.
+        for block in snap:
+            for b in block["built"]:
+                b["html"] = re.sub(r' aria-disabled="(true|false)"', "", b["html"])
+    return {"blocks": snap, "moved": moved, "errors": errors}
+
+
+def check_compat(shell, tokens, broken):
+    version, old = previous_bundle()
+    if not old:
+        return ["compat: no earlier bundle is published under publish/hub-behaviours - "
+                "nothing to hold this one to"], 0
+    shutil.copy(old, shell._dir / "hub-previous.js")
+    if broken:
+        source = (shell._dir / "hub.js").read_text(encoding="utf-8")
+        if COMPAT_CONTROL[0] not in source:
+            raise SystemExit("control: the compat substitution no longer matches lib/hub.js")
+        (shell._dir / "hub.js").write_text(source.replace(*COMPAT_CONTROL, 1),
+                                           encoding="utf-8", newline="\n")
+    faults, count = [], 0
+    for label, name, rung, module in COMPAT_BLOCKS:
+        folder = PATTERNS / name
+        forms = [("as it stands", (folder / "pattern.html").read_text(encoding="utf-8"),
+                  (folder / "pattern.css").read_text(encoding="utf-8"),
+                  json.loads((folder / "preview-content.json").read_text(encoding="utf-8")))]
+        rel = released(name)
+        if rel:
+            tag, (h, c, j) = rel
+            forms.insert(0, (f"as released in {tag}", h, c, json.loads(j)))
+        else:
+            faults.append(f"compat: {name} could not be read at the release LATEST names")
+        for form, h, c, sample in forms:
+            for width in (WIDTH, PHONE):
+                for motion in ((False, True) if module else (False,)):
+                    new = compat_page(h, c, sample, rung, module, tokens, "hub.js", True)
+                    prev = compat_page(h, c, sample, rung, module, tokens, "hub-previous.js", True)
+                    a = compat_snapshot(shell, new, "compat-new", width, motion)
+                    b = compat_snapshot(shell, prev, "compat-prev", width, motion)
+                    count += 1
+                    where = f"compat: {label} {form}, no settings, {width}px"
+                    if a["errors"]:
+                        faults.append(f"{where}: the bundle threw {a['errors'][0]}")
+                    if a["blocks"] != b["blocks"]:
+                        faults.append(f"{where}: the controls differ from {version}'s - "
+                                      f"{json.dumps(a['blocks'])[:300]} against "
+                                      f"{json.dumps(b['blocks'])[:300]}")
+                    if a["moved"] != b["moved"]:
+                        faults.append(f"{where}: next moves the block to {a['moved']} where "
+                                      f"{version} moved it to {b['moved']}")
+        # Today's markup, settings and all, on the previous bundle.
+        h = (folder / "pattern.html").read_text(encoding="utf-8")
+        c = (folder / "pattern.css").read_text(encoding="utf-8")
+        sample = json.loads((folder / "preview-content.json").read_text(encoding="utf-8"))
+        for width in (WIDTH, PHONE):
+            prev = compat_page(h, c, sample, rung, module, tokens, "hub-previous.js", False)
+            got = compat_snapshot(shell, prev, "compat-fallback", width, bool(module))
+            count += 1
+            where = f"compat: {label} as it stands on {version}, {width}px"
+            if got["errors"]:
+                faults.append(f"{where}: the previous bundle threw {got['errors'][0]}")
+            carousel = [b for b in got["blocks"] if "carousel" in (b["module"] or "").split()]
+            for b in carousel:
+                if b["used"] not in ("under", "edges"):
+                    faults.append(f"{where}: fell back to {b['used']!r}, not a placement "
+                                  f"{version} knows")
+                built = [x for x in b["built"] if 'class="hub-carousel-controls' in x["html"]]
+                if not built:
+                    faults.append(f"{where}: no controls were built")
+    return faults, count
+
+
 CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel,
           "signup": check_signup}
 
@@ -1206,6 +1399,10 @@ def main():
     ap.add_argument("--broken", action="store_true",
                     help="the positive control: a copy of the bundle with one line "
                          "of each behaviour turned wrong; every check must fire")
+    ap.add_argument("--compat", action="store_true",
+                    help="hold the bundle to the last one published: a block with no "
+                         "new setting builds the same controls, and today's markup "
+                         "falls back on the old bundle")
     ap.add_argument("--out", help="write the rendered pages here")
     ap.add_argument("--require-browser", action="store_true")
     args = ap.parse_args()
@@ -1228,6 +1425,24 @@ def main():
         print(f"SKIPPED behaviours: {why}. A skip is not a pass.")
         return 0
     tokens = (PREVIEW / f"tokens-{args.tokens}.css").read_text(encoding="utf-8")
+    if args.compat:
+        with Shell(False) as shell:
+            faults, count = check_compat(shell, tokens, args.broken)
+        for line in faults:
+            print(f"  FAIL  {line}")
+        version = previous_bundle()[0]
+        if args.broken:
+            if faults:
+                print(f"  control: {len(faults)} fault(s) caught with the new look forced on "
+                      f"a block that asked for none. The gate fires.")
+                return 0
+            print("  CONTROL FAILED: the new look was forced on and nothing fired.")
+            return 1
+        if faults:
+            return 1
+        print(f"  clean: {count} render(s) - with no new setting the bundle builds what "
+              f"{version} built, and today's markup falls back on {version}")
+        return 0
     print(f"behaviours: {len(names)} pattern(s) on the {args.tokens} tokens, bundle "
           f"{bundle_version()}" + ("  [control: one line of each turned wrong]" if args.broken else ""))
     print()

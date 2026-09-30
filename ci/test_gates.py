@@ -2200,7 +2200,11 @@ def check_behaviours_run():
         return failures
     for label, argv, want in (
             ("behaviour gate quiet on the shipped behaviours", [], 0),
-            ("behaviour gate fires with one line of each turned wrong", ["--broken"], 0)):
+            ("behaviour gate fires with one line of each turned wrong", ["--broken"], 0),
+            ("a block with no new setting builds what the last published bundle "
+             "built, and today's markup falls back on it", ["--compat"], 0),
+            ("the compatibility check fires with the new look forced on",
+             ["--compat", "--broken"], 0)):
         got = subprocess.run([sys.executable, str(HERE / "check_behaviours.py")] + argv,
                              capture_output=True, text=True, encoding="utf-8")
         ok = got.returncode == want
@@ -3006,7 +3010,7 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3 + 1)
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
