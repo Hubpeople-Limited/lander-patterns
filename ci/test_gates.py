@@ -2865,18 +2865,33 @@ def check_hero_band():
         workdir = _opener_workdir(tmp)
         browser = p.chromium.launch()
         try:
-            for tokens in ("brand", "display"):
-                for photo in ("end", "start", "behind"):
-                    got = _render(browser, workdir,
-                                  opener_page("hero-band", {"photo": photo}, tokens),
-                                  (1280, 800), height_js)
-                    case(f"photo={photo} on {tokens} at 1280x800 is {got:.0f}px tall, "
-                         f"within {limit:.0f}", got <= limit)
+            for photo in ("end", "start", "behind"):
+                got = _render(browser, workdir,
+                              opener_page("hero-band", {"photo": photo}, "brand"),
+                              (1280, 800), height_js)
+                case(f"photo={photo} on brand at 1280x800 is {got:.0f}px tall, "
+                     f"within {limit:.0f}", got <= limit)
             tall = _render(browser, workdir,
                            opener_page("hero-band", {"photo": "end"}, "brand",
                                        extra_css=".hero-band-img { height: 40rem !important; }"),
                            (1280, 800), height_js)
             case("catches: a photograph a screen tall", tall > limit)
+            # On display the headline's own lines set the height: four lines
+            # of a face whose letters reach 1.4em, kept apart, are over 300px,
+            # and the fixture's magnitudes are not a real face's. What holds
+            # there is the band itself: the same height on a taller screen.
+            def band(photo, tall_screen, extra_css=""):
+                return _render(browser, workdir,
+                               opener_page("hero-band", {"photo": photo}, "display",
+                                           extra_css=extra_css),
+                               (1280, 1000 if tall_screen else 800), height_js)
+            for photo in ("end", "start", "behind"):
+                short, long_ = band(photo, False), band(photo, True)
+                case(f"photo={photo} on display is {short:.0f}px tall on an 800px "
+                     f"screen and {long_:.0f}px on a 1000px one", abs(short - long_) <= 1)
+            grows = ".hero-band-img { height: 60vh !important; }"
+            case("catches: a photograph sized from the screen's height",
+                 abs(band("end", False, grows) - band("end", True, grows)) > 1)
             for ground in ("plain", "soft", "brand", "deep"):
                 for width in (390, 1280):
                     got = _render(browser, workdir,
@@ -3224,7 +3239,7 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 22)
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

@@ -63,6 +63,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .cta-band-lead {
   font-size: 1.0625rem;
   line-height: 1.6;

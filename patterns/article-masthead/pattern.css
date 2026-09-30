@@ -52,6 +52,11 @@
   color: var(--color-heading);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .article-masthead-title {
+    line-height: calc(max(1.08em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 /* The lede is held to a shorter measure than the title on purpose. The two
    are not meant to match, and matching them flattens the block. */
 .article-masthead-lede {

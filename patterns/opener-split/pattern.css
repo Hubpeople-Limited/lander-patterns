@@ -29,6 +29,11 @@
   margin: 0;
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .opener-split-title {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .opener-split-intro {
   color: var(--color-text-soft);
   font-size: 1rem;
