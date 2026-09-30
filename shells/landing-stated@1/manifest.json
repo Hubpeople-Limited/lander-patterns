@@ -7,7 +7,7 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "10",
+      "version": "11",
       "variant": {
         "nav": "minimal"
       }
@@ -25,7 +25,7 @@
     },
     {
       "name": "benefit-tiles",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "testimonial-grid",

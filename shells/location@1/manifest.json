@@ -7,7 +7,7 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "10"
+      "version": "11"
     },
     {
       "name": "hero-stated",
@@ -26,7 +26,7 @@
     },
     {
       "name": "member-grid",
-      "version": "4"
+      "version": "5"
     },
     {
       "name": "source-note",

@@ -7,7 +7,7 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "10"
+      "version": "11"
     },
     {
       "name": "hero-stated",
@@ -22,7 +22,7 @@
     },
     {
       "name": "benefit-tiles",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "cta-band",

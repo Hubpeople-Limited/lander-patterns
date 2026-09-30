@@ -35,7 +35,7 @@
 </head>
 <body>
 <!-- ================================================================
-     section 1 of 9 : masthead-nav v10
+     section 1 of 9 : masthead-nav v11
      The site header the platform menu placeholder has no styling for
      - brand mark, the generated primary navigation and the login and
      join controls, on a choice of ground, two desktop arrangements,
@@ -43,7 +43,8 @@
      for its row, a dropdown or a full-width panel for submenus, a
      bar that stays and shrinks as the page scrolls, a menu-free rung
      for a campaign page, three ways the mark meets its ground, a
-     menu button with or without its word, and three bottom edges.
+     menu button with or without its word and its bars drawn four
+     ways, and three bottom edges.
      needs: the brand's logo, the menu items configured on the
      platform, and three words in the brand's own language - one for
      the small-screen menu button, one for that same button while the
@@ -63,7 +64,7 @@
      styles whatever list sits inside the nav landmark, so a list written by
      hand in the same shape takes the same styling. Set the img width and
      height to the logo file's own pixel size; --logo-height sets how tall it renders. -->
-<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--more masthead-nav--dropdown masthead-nav--full masthead-nav--static masthead-nav--direct masthead-nav--menu-start masthead-nav--side-end masthead-nav--labelled masthead-nav--rule" data-hub-module="shrink">
+<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--more masthead-nav--dropdown masthead-nav--full masthead-nav--static masthead-nav--direct masthead-nav--menu-start masthead-nav--side-end masthead-nav--icon masthead-nav--three masthead-nav--rule" data-hub-module="shrink">
   <div class="masthead-nav-inner">
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">
@@ -226,7 +227,7 @@
 </div>
 
 <!-- ================================================================
-     section 5 of 9 : member-grid v4
+     section 5 of 9 : member-grid v5
      A block of live members the platform fills at render time - the
      page ships an empty section and the CMS writes real profiles
      into it, so nothing here is authored, invented or kept in sync.
@@ -236,6 +237,8 @@
      block is scoped to, written exactly as the platform spells it,
      and the brand's own words for the two links and the empty state
      slots:
+       previous-label     attribute (data-hub-carousel-prev-label): a short label, about 2 word(s)
+       next-label         attribute (data-hub-carousel-next-label): a short label, about 2 word(s)
        members-country    attribute (data-members-country): a short label, about 2 word(s)
        members-region     attribute (data-members-region): a short label, about 2 word(s)
        members-cta-text   attribute (data-members-cta-text): a short label, about 3 word(s)
@@ -258,10 +261,14 @@
      location reference before shipping.
 
      The marquee rung is the one variant that is not a class on its own: swap
-     data-hub-module="reveal" for "marquee" as well. Without the behaviour
-     library the block is then the rail, which is what it should be. -->
-<section class="member-grid member-grid--plain member-grid--grid"
-         data-hub-module="reveal"
+     "reveal" for "marquee" in data-hub-module and keep "carousel". Without
+     the behaviour library the block is then the rail, which is what it
+     should be. Keep "carousel" on every rung: it builds previous and next
+     controls for the rail, and for the marquee once it is stopped. -->
+<section class="member-grid member-grid--plain member-grid--grid member-grid--top member-grid--arrows"
+         data-hub-module="reveal carousel"
+         data-hub-carousel-prev-label="slot:previous-label"
+         data-hub-carousel-next-label="slot:next-label"
          data-members
          data-members-styles="none"
          data-members-country="slot:members-country"
