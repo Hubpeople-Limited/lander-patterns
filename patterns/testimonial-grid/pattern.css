@@ -87,6 +87,11 @@
   letter-spacing: calc(-0.035em + var(--heading-tracking, 0) * 1em);
   color: inherit;
 }
+@supports (line-height: 1cap) {
+  .testimonial-grid-quote p {
+    line-height: calc(max(1.28em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 /* margin-top:auto bottom-aligns the attribution across a row. */
 .testimonial-grid-person {
   margin-top: auto;

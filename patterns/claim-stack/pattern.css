@@ -47,6 +47,11 @@
   letter-spacing: calc(0.02em + var(--heading-tracking, 0) * 1em);
   line-height: calc(1.2 * var(--heading-leading, 1));
 }
+@supports (line-height: 1cap) {
+  .claim-stack-heading {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .claim-stack-item {
   /* The ceiling is in vh, not on the spacing ramp. Do not "restore" a token
      here: the ramp's top step is below 10vh on most screens, which pins this
@@ -69,6 +74,11 @@
   margin: 0;
   text-wrap: balance;
   overflow-wrap: break-word;
+}
+@supports (line-height: 1cap) {
+  .claim-stack-claim {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .claim-stack-note {
   color: var(--claim-stack-quiet);

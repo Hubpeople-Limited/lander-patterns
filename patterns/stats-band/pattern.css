@@ -36,6 +36,11 @@
   letter-spacing: calc(-0.025em + var(--heading-tracking, 0) * 1em);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .stats-band-title {
+    line-height: calc(max(1.08em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 
 /* The hairlines are the cells' own borders, not a gap showing through, so
    the lattice never doubles or breaks. */
@@ -60,6 +65,11 @@
   font-weight: var(--weight-display, 700);
   line-height: calc(1.02 * var(--heading-leading, 1));
   letter-spacing: calc(-0.03em + var(--heading-tracking, 0) * 1em);
+}
+@supports (line-height: 1cap) {
+  .stats-band-figure {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 /* The label is a <dd>, so its default indent has to go. It separates from the
    figure by size and weight, never by fading the text - a translucent label

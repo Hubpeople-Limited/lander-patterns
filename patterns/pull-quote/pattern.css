@@ -22,6 +22,11 @@
   color: var(--color-text);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .pull-quote-claim {
+    line-height: calc(max(1.25em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 @media (min-width: 48rem) {
   .pull-quote {
     padding-block: var(--space-6);

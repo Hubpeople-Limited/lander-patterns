@@ -63,6 +63,11 @@
      guaranteed against --color-bg. */
   color: var(--color-text);
 }
+@supports (line-height: 1cap) {
+  .quote-feature-quote {
+    line-height: calc(max(1.24em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .quote-feature-quote p {
   margin: 0;
 }
