@@ -705,6 +705,16 @@ is the positive control and CI runs it**: a copy of the bundle with one named
 line of each behaviour turned wrong, and every check must fire; a substitution
 that no longer matches fails the control rather than letting it go stale.
 
+It also holds the still switch. On a block that sets or inherits
+`--hub-motion: none`, reveal, counter and marquee must leave the block as
+authored; on a page whose styles never set it they must move exactly as
+before, because that is every page built before the switch; and styles that
+arrive after the bundle has started must never leave anything hidden.
+`--broken` turns the switch off and requires all three to be caught moving.
+`--compat` puts every pattern that eased in, counted up or glided in the last
+release before the switch through this bundle and the last one published,
+and requires the two to move it the same way.
+
 ### Display measures
 
 A measure is a `max-width` on display type: the number that decides whether a

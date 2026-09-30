@@ -50,10 +50,10 @@ page, and holds each behaviour to what its row says:
 
 THE POSITIVE CONTROL. `--broken` writes a COPY of the bundle with one named
 line of each behaviour turned wrong - the counter's last write, the
-scrollspy's aria-current, the carousel's move - and requires every one of the
-three checks to fire. The file in lib/ is never touched. A substitution that
-no longer matches is itself a failure, so the control cannot go quietly stale
-when a behaviour is reworded.
+scrollspy's aria-current, the carousel's move, the still switch - and
+requires every one of the checks to fire. The file in lib/ is never touched.
+A substitution that no longer matches is itself a failure, so the control
+cannot go quietly stale when a behaviour is reworded.
 
 WHICH PATTERNS. Discovered from the `behaviours:` header of every pattern:
 anything declaring `counter`, `scrollspy` or `carousel`. A new pattern taking
@@ -66,6 +66,7 @@ import argparse
 import json
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -82,6 +83,10 @@ from check_phone import browser_unavailable             # noqa: E402
 import lint                                             # noqa: E402
 
 BEHAVIOURS = ("counter", "scrollspy", "carousel", "signup")
+# The last release before motion became a switch. Pages built from it keep
+# that markup and those styles and load the bundle from the floating URL,
+# so the bundle is held to moving them exactly as it did.
+LIVE_REF = "v213"
 WIDTH, HEIGHT = 1280, 800
 PHONE = 360
 TAP_MIN = 44
@@ -96,6 +101,38 @@ COUNTER_SETTLE_MS = 2600
 # back exactly.
 FIGURES = ("12,500+", "4.8", "98%", "1,000,000")
 FILLER = "<p>Filler copy so the page scrolls, used only to render this check.</p>\n" * 12
+
+# How long after a block comes into view a moving one has visibly moved.
+MOTION_LOOK_MS = 300
+
+MOTION_JS = """
+() => ({
+  revealed: document.querySelectorAll('.hub-reveal-pending, .hub-revealed').length,
+  pending: document.querySelectorAll('.hub-reveal-pending').length,
+  figures: Array.from(document.querySelectorAll('[data-hub-module~="counter"] dt'))
+                .map(dt => dt.textContent),
+  marquee: document.querySelectorAll('.hub-marquee-control, [data-hub-marquee-copy]').length,
+})
+"""
+
+# The three behaviours that move a block for effect, each on the smallest
+# block that shows it moving.
+STILL_BLOCKS = {
+    "reveal": '<ul data-hub-module="reveal" data-hub-reveal-children>'
+              '<li>Sample one</li><li>Sample two</li></ul>',
+    "counter": f'<dl data-hub-module="counter"><dt>{FIGURES[0]}</dt>'
+               '<dd>Sample figure</dd></dl>',
+    "marquee": '<div data-hub-module="marquee"><ul><li>Sample one</li>'
+               '<li>Sample two</li><li>Sample three</li></ul></div>',
+}
+# (what the page's styles say, those styles, whether the block moves). The
+# first is every page built before the switch.
+STILL_STATES = (
+    ("styles that never mention it", "", True),
+    ("--hub-motion: none on the block", "[data-hub-module] { --hub-motion: none; }", False),
+    ("--hub-motion: none on a section around it", ".still-around { --hub-motion: none; }", False),
+    ("--hub-motion set to another word", "[data-hub-module] { --hub-motion: moving; }", True),
+)
 
 # One line per behaviour, turned wrong by the control. Each must still be
 # present in the bundle, or the control has gone stale and says so.
@@ -117,6 +154,8 @@ CONTROL_SUBSTITUTIONS = {
     "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
     "signup-messages": ("const fresh = pool.filter((l) => !saidLines.has(l));",
                         "const fresh = pool;"),
+    "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
+              "const heldStill = (el) => false;"),
 }
 
 # The signup check hands off to this link and never follows it; the GUID in it
@@ -200,19 +239,23 @@ def filled_markup(name):
     return filled, css
 
 
+def with_figures(filled):
+    """Real figures in the dt slots, one of each shape, cycling."""
+    i = [0]
+
+    def swap(m):
+        text = FIGURES[i[0] % len(FIGURES)]
+        i[0] += 1
+        return m.group(1) + text + m.group(3)
+    return re.sub(r"(<dt\b[^>]*>)(.*?)(</dt>)", swap, filled, flags=re.S)
+
+
 def page_for(name, behaviour, tokens, bundle_file, width):
     """The pattern in a page shaped so the behaviour has something to do."""
     filled, css = filled_markup(name)
     before = after = ""
     if behaviour == "counter":
-        # Real figures in the dt slots, one of each shape, cycling.
-        i = [0]
-
-        def swap(m):
-            text = FIGURES[i[0] % len(FIGURES)]
-            i[0] += 1
-            return m.group(1) + text + m.group(3)
-        filled = re.sub(r"(<dt\b[^>]*>)(.*?)(</dt>)", swap, filled, flags=re.S)
+        filled = with_figures(filled)
         before = '<section class="behaviour-check-section"><h1>Above</h1>' + FILLER + "</section>"
     elif behaviour == "scrollspy":
         # Four entries pointing at four headings spaced down the page.
@@ -361,6 +404,62 @@ def check_counter(shell, name, tokens):
     if still != expected:
         faults.append(f"{where}: under reduced motion the figures read {still!r} - "
                       f"the authored figure is the only one allowed")
+    return faults
+
+
+def movement(shell, html, stem, late_css=None):
+    """What moved once the first behaviour block had been on screen a
+    moment, or None when the bundle did not run. `late_css` arrives after
+    the bundle has started, as a slow stylesheet would."""
+    tab = shell.open(html, stem)
+    try:
+        if tab.evaluate(VERSION_JS) != bundle_version():
+            return None
+        if late_css:
+            tab.add_style_tag(content=late_css)
+        tab.evaluate("() => document.querySelector('[data-hub-module]').scrollIntoView()")
+        tab.wait_for_timeout(MOTION_LOOK_MS)
+        return tab.evaluate(MOTION_JS)
+    finally:
+        tab.close()
+
+
+def moved(behaviour, got):
+    if behaviour == "reveal":
+        return got["revealed"] > 0
+    if behaviour == "counter":
+        return got["figures"] != [FIGURES[i % len(FIGURES)] for i in range(len(got["figures"]))]
+    return got["marquee"] > 0
+
+
+def check_still_means_still(shell, tokens):
+    """A block that sets or inherits --hub-motion: none is left as authored;
+    a page whose styles never set it moves exactly as it always has."""
+    faults = []
+    after = '<section class="behaviour-check-section">' + FILLER + "</section>"
+    for behaviour, block in STILL_BLOCKS.items():
+        for i, (label, css, want) in enumerate(STILL_STATES):
+            html = SHELL.format(title=f"still {behaviour}", tokens=tokens, css=css,
+                                bundle="hub.js", before="",
+                                markup=f'<section class="still-around">{block}</section>',
+                                after=after)
+            got = movement(shell, html, f"still-{behaviour}-{i}")
+            if got is None:
+                return [f"still {behaviour}: the bundle did not run"]
+            if moved(behaviour, got) != want:
+                faults.append(f"still {behaviour}: with {label} it " + (
+                    "stayed still - a page that never set the switch moves as it always did"
+                    if want else "moved - a block built still stays still"))
+    # Styles that arrive after the bundle has started: the block moves as it
+    # would have, and nothing it hid is left hidden.
+    html = SHELL.format(title="still late", tokens=tokens, css="", bundle="hub.js",
+                        before="", after=after,
+                        markup=f'<section class="still-around">{STILL_BLOCKS["reveal"]}</section>')
+    got = movement(shell, html, "still-late",
+                   late_css="[data-hub-module] { --hub-motion: none; }")
+    if got is None or got["pending"]:
+        faults.append("late reveal: styles that arrived after the bundle left "
+                      f"{got['pending'] if got else 'the page'} hidden")
     return faults
 
 
@@ -1339,10 +1438,16 @@ def check_compat(shell, tokens, broken):
                 "nothing to hold this one to"], 0
     shutil.copy(old, shell._dir / "hub-previous.js")
     known = placements_known(old.read_text(encoding="utf-8"))
+    moving = "hub.js"
     if broken:
         source = (shell._dir / "hub.js").read_text(encoding="utf-8")
-        if COMPAT_CONTROL[0] not in source:
-            raise SystemExit("control: the compat substitution no longer matches lib/hub.js")
+        for control in (COMPAT_CONTROL, MOTION_COMPAT_CONTROL):
+            if control[0] not in source:
+                raise SystemExit(f"control: the compat substitution {control[0]!r} no "
+                                 f"longer matches lib/hub.js")
+        moving = "hub-still.js"
+        (shell._dir / moving).write_text(source.replace(*MOTION_COMPAT_CONTROL, 1),
+                                         encoding="utf-8", newline="\n")
         (shell._dir / "hub.js").write_text(source.replace(*COMPAT_CONTROL, 1),
                                            encoding="utf-8", newline="\n")
     faults, count = [], 0
@@ -1394,6 +1499,124 @@ def check_compat(shell, tokens, broken):
                 built = [x for x in b["built"] if 'class="hub-carousel-controls' in x["html"]]
                 if not built:
                     faults.append(f"{where}: no controls were built")
+    more, renders = check_motion_compat(shell, tokens, version, moving)
+    return faults + more, count + renders
+
+
+# ------------------------------------------------ compatibility: motion
+
+"""THE PAGES BUILT BEFORE THE SWITCH. Every page built from LIVE_REF or
+earlier eases in, counts up or glides with no --hub-motion anywhere in its
+styles, and keeps loading the newest bundle. So each block LIVE_REF shipped
+that hooks reveal, counter or marquee, as it shipped it, has to move on this
+bundle exactly as it moves on the last one published: the same items eased
+in, the same figures counting and ending on the same text, the same glide,
+and nothing at all under reduced motion.
+
+--compat --broken also hands these pages a bundle that holds every block
+still, and requires the comparison to fire."""
+
+MOTION_HOOKS = {"reveal", "counter", "marquee"}
+# A rung that moves by swapping its behaviour in rather than shipping it:
+# (label, pattern, the class to swap, the module word to swap in).
+MOTION_COMPAT_RUNGS = [
+    ("member-grid marquee", "member-grid", ("member-grid--grid", "member-grid--marquee"), "marquee"),
+]
+MOTION_COMPAT_CONTROL = (CONTROL_SUBSTITUTIONS["still"][0], "const heldStill = (el) => true;")
+
+
+def git_out(*args):
+    got = subprocess.run(["git", *args], capture_output=True, cwd=ROOT)
+    return got.stdout.decode("utf-8") if got.returncode == 0 else None
+
+
+def shipped(name, ref=None):
+    """pattern.html, pattern.css and the preview sample as `ref` (LIVE_REF
+    by default) shipped them, or None for a pattern it did not have.
+    Without the tag in the checkout the run stops: the pages built from it
+    cannot be checked without it."""
+    ref = ref or LIVE_REF
+    if git_out("rev-parse", "--verify", "-q", f"{ref}^{{commit}}") is None:
+        raise SystemExit(f"behaviours: {ref} is not in this checkout - run "
+                         f"git fetch --tags so the pages built from it can be checked")
+    out = []
+    for part in ("pattern.html", "pattern.css", "preview-content.json"):
+        got = git_out("show", f"{ref}:patterns/{name}/{part}")
+        if got is None:
+            return None
+        out.append(got)
+    return tuple(out)
+
+
+def moving_at_live_ref():
+    """(label, pattern, rung, module) for every block LIVE_REF shipped that
+    eases in, counts up or glides."""
+    listing = git_out("ls-tree", "--name-only", f"{LIVE_REF}:patterns") or ""
+    blocks = []
+    for name in sorted(n for n in listing.split() if n):
+        files = shipped(name)
+        if files is None:
+            continue
+        meta = lint.parse_header(files[0], PATTERNS / name / "pattern.html")
+        hooks = {b.strip() for b in meta.get("behaviours", "").split(",")}
+        if hooks & MOTION_HOOKS:
+            blocks.append((name, name, None, None))
+    have = {b[1] for b in blocks}
+    blocks += [r for r in MOTION_COMPAT_RUNGS if r[1] in have]
+    return blocks
+
+
+def motion_snapshot(shell, html, stem, width, reduced, want_version):
+    errors = []
+
+    def before(tab):
+        tab.on("pageerror", lambda e: errors.append(str(e)))
+    tab = shell.open(html, stem, width=width, reduced=reduced, before=before)
+    try:
+        version = tab.evaluate(VERSION_JS)
+        if version != want_version:
+            return None, [f"the bundle did not run (version {version!r} on the page)"]
+        tab.evaluate("() => document.querySelector('[data-hub-module]').scrollIntoView()")
+        tab.wait_for_timeout(MOTION_LOOK_MS)
+        look = tab.evaluate(MOTION_JS)
+        settled = None
+        if look["figures"]:
+            tab.wait_for_timeout(COUNTER_SETTLE_MS)
+            settled = tab.evaluate(MOTION_JS)["figures"]
+    finally:
+        tab.close()
+    # A figure part-way through its count is wherever the clock put it, so
+    # what is compared is that it was counting and where it ended.
+    return {"revealed": look["revealed"], "pending": look["pending"],
+            "marquee": look["marquee"],
+            "counting": moved("counter", look) if look["figures"] else None,
+            "ended": settled}, errors
+
+
+def check_motion_compat(shell, tokens, version, bundle):
+    """Each block LIVE_REF shipped that moves, on `bundle` and on the last
+    published one: the two have to move it the same way."""
+    faults, count = [], 0
+    for label, name, rung, module in moving_at_live_ref():
+        h, c, j = shipped(name)
+        sample = json.loads(j)
+        for width, reduced in ((WIDTH, False), (PHONE, False), (WIDTH, True)):
+            new = with_figures(compat_page(h, c, sample, rung, module, tokens, bundle, False))
+            prev = with_figures(compat_page(h, c, sample, rung, module, tokens,
+                                            "hub-previous.js", False))
+            a, a_err = motion_snapshot(shell, new, "motion-new", width, reduced, bundle_version())
+            b, b_err = motion_snapshot(shell, prev, "motion-prev", width, reduced, version)
+            count += 1
+            where = (f"compat motion: {label} as {LIVE_REF} shipped it, {width}px"
+                     + (", reduced motion" if reduced else ""))
+            if a_err or b_err:
+                faults.append(f"{where}: {(a_err or b_err)[0]}")
+                continue
+            if a != b:
+                faults.append(f"{where}: moved as {a} where {version} moved it as {b}")
+            elif not reduced and not any((a["revealed"], a["counting"], a["marquee"])):
+                faults.append(f"{where}: nothing moved on either bundle - the check "
+                              f"is measuring nothing")
     return faults, count
 
 
@@ -1443,16 +1666,22 @@ def main():
             print(f"  FAIL  {line}")
         version = previous_bundle()[0]
         if args.broken:
-            if faults:
-                print(f"  control: {len(faults)} fault(s) caught with the new look forced on "
-                      f"a block that asked for none. The gate fires.")
+            look = [f for f in faults if not f.startswith("compat motion:")]
+            still = [f for f in faults if f.startswith("compat motion:")]
+            if look and still:
+                print(f"  control: {len(look)} fault(s) caught with the new look forced on "
+                      f"a block that asked for none, and {len(still)} with every block "
+                      f"{LIVE_REF} shipped held still. The gate fires.")
                 return 0
-            print("  CONTROL FAILED: the new look was forced on and nothing fired.")
+            print("  CONTROL FAILED: " + ("the new look was forced on" if not look
+                                         else f"every block {LIVE_REF} shipped was held still")
+                  + " and nothing fired.")
             return 1
         if faults:
             return 1
         print(f"  clean: {count} render(s) - with no new setting the bundle builds what "
-              f"{version} built, and today's markup falls back on {version}")
+              f"{version} built, today's markup falls back on {version}, and every "
+              f"block {LIVE_REF} shipped moves as {version} moved it")
         return 0
     print(f"behaviours: {len(names)} pattern(s) on the {args.tokens} tokens, bundle "
           f"{bundle_version()}" + ("  [control: one line of each turned wrong]" if args.broken else ""))
@@ -1468,6 +1697,7 @@ def main():
 
     fired = {b: 0 for b in BEHAVIOURS}
     faults = []
+    still = []
     with Shell(args.broken) as shell:
         for name in names:
             for behaviour in sorted(found[name]):
@@ -1475,6 +1705,10 @@ def main():
                 fired[behaviour] += len(got)
                 faults.extend(got)
                 print(f"  {name} {behaviour}: {'FAIL ' + str(len(got)) if got else 'ok'}")
+        if not args.names:
+            still = check_still_means_still(shell, tokens)
+            faults.extend(still)
+            print(f"  still means still: {'FAIL ' + str(len(still)) if still else 'ok'}")
     print()
     for line in faults:
         print(f"  FAIL  {line}")
@@ -1485,6 +1719,13 @@ def main():
         if silent:
             print(f"  CONTROL FAILED: {', '.join(silent)} passed with a line turned "
                   f"wrong. This gate cannot see the thing it exists for.")
+            return 1
+        held = [b for b in STILL_BLOCKS
+                if not args.names and not any(f.startswith(f"still {b}:") for f in still)]
+        if held:
+            print(f"  CONTROL FAILED: with the still switch turned off, "
+                  f"{', '.join(held)} still held still. This gate cannot see "
+                  f"the thing it exists for.")
             return 1
         print(f"  control: {len(faults)} fault(s) caught across "
               f"{', '.join(sorted(exercised))}. The gate fires.")
