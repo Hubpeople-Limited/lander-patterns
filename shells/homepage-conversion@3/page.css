@@ -926,7 +926,7 @@
   }
 }
 
-/* ---- hero-split v12 ---- */
+/* ---- hero-split v13 ---- */
 /* hero-split v3 - tokens only, selectors prefixed */
 .hero-split {
   padding-block: var(--space-8);
@@ -998,6 +998,15 @@
   .hero-split-visual {
     order: 0;
   }
+  .hero-split--end .hero-split-visual {
+    order: 1;
+  }
+  .hero-split--start .hero-split-inner {
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+  .hero-split--start .hero-split-visual {
+    order: -1;
+  }
 }
 
 .hero-split img[data-hub-placeholder] {
@@ -1022,7 +1031,9 @@
     grid-template-areas: ". visual" "title visual" "sub visual" ". visual";
     grid-template-rows: 1fr auto auto 1fr;
     row-gap: var(--space-3);
-    column-gap: var(--space-8);
+    /* The card reaches --space-12 out of the photograph's column toward the
+       headline, so the gap has to clear that reach, on either side. */
+    column-gap: calc(var(--space-12) + var(--space-6));
     align-items: stretch;
   }
   .hero-split-inner:has(.signup-card) .hero-split-copy {
@@ -1043,7 +1054,7 @@
        stretch the picture or move it. */
     height: 38rem;
     align-self: start;
-    margin-left: var(--space-12);
+    margin-inline-start: var(--space-12);
   }
   .hero-split-inner:has(.signup-card) .hero-split-visual img {
     height: 100%;
@@ -1053,7 +1064,19 @@
     z-index: 2;
     align-self: center;
     justify-self: start;
-    margin-left: calc(-1 * var(--space-12));
+    margin-inline-start: calc(-1 * var(--space-12));
+  }
+  /* The same layering mirrored. */
+  .hero-split--start .hero-split-inner:has(.signup-card) {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-areas: "visual ." "visual title" "visual sub" "visual .";
+  }
+  .hero-split--start .hero-split-inner:has(.signup-card) .hero-split-visual {
+    margin-inline: 0 var(--space-12);
+  }
+  .hero-split--start .hero-split-inner:has(.signup-card) .hero-split-cta {
+    justify-self: end;
+    margin-inline: 0 calc(-1 * var(--space-12));
   }
 }
 

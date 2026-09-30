@@ -21,16 +21,17 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-split** v12 - Conversion opener - value proposition left, one strong image right, single join CTA; stacks image-first on phones.
+2. **hero-split** v13 - Conversion opener - value proposition on one side, one strong image on the other, single join CTA; stacks image-first on phones.
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): real material, or the couple/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
+   - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
 3. **heading-block** v8 - Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 8 word(s). Sample: A sample section title for the preview render
    - `intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-4. **benefit-tiles** v5 - A four-up run of tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
+4. **benefit-tiles** v6 - A run of two to six tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
    - `track-label` - attribute (aria-label): a short label, about 2 word(s)
    - `tile-title` - text, about 3 word(s). Sample: Sample benefit title
    - `tile-copy` - text, about 26 word(s). Sample: Two short sentences of sample copy, here only to render...

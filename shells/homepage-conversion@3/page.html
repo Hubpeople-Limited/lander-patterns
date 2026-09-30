@@ -90,7 +90,7 @@
 <main>
 
 <!-- ================================================================
-     section 2 of 6 : hero-split v12
+     section 2 of 6 : hero-split v13
      region: OPENING - decided per page, not by this shell. The pattern
      below is the default the shell ships with. The recipe's opens: line
      says what the first screen has to do; the material decides what
@@ -98,18 +98,22 @@
      a real member's words, or nothing above the content at all. The
      default stays only where the page can say why. The frame - head,
      header, main, footer, the order of what follows - stays as it is.
-     Conversion opener - value proposition left, one strong image
-     right, single join CTA; stacks image-first on phones.
-     needs: one hero image at least 1280px wide from real material; a
-     headline and one-sentence subhead that state the actual offer
+     Conversion opener - value proposition on one side, one strong
+     image on the other, single join CTA; stacks image-first on
+     phones.
+     needs: one hero image at least 1280px wide from real material,
+     with its own alt text and a CDN srcset ladder; a headline and
+     one-sentence subhead that state the actual offer
      slots:
        headline           text, about 4 word(s). Sample: Sample headline for preview
        subhead            text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
        hero-image         attribute (src): real material, or the couple/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
+       hero-image-srcset  attribute (srcset): a short label, about 4 word(s)
        hero-image-alt     attribute (alt): what the image shows, in words
      ================================================================ -->
 
-<section class="hero-split">
+<!-- Below 48rem the photograph comes first whichever side is chosen. -->
+<section class="hero-split hero-split--end">
   <div class="hero-split-inner">
     <div class="hero-split-copy">
       <h1 class="hero-split-title"><!-- slot: headline --></h1>
@@ -119,8 +123,18 @@
         <a class="hero-split-btn" href="{{join.url}}">{{join.text}}</a>
       </div>
     </div>
+    <!-- The page's LCP element: never lazy, high fetch priority, and
+         width/height set to the real file's intrinsic pixels. Fill srcset
+         with a CDN ladder; sizes matches the column the photograph takes. -->
     <div class="hero-split-visual">
-      <img src="slot:hero-image" alt="slot:hero-image-alt" width="640" height="720">
+      <img src="slot:hero-image"
+           srcset="slot:hero-image-srcset"
+           sizes="(min-width: 78rem) 36rem, (min-width: 48rem) 50vw, 100vw"
+           alt="slot:hero-image-alt"
+           width="640"
+           height="720"
+           fetchpriority="high"
+           decoding="async">
     </div>
   </div>
 </section>

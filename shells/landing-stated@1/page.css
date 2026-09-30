@@ -1114,7 +1114,7 @@
   }
 }
 
-/* ---- benefit-tiles v5 ---- */
+/* ---- benefit-tiles v6 ---- */
 /* benefit-tiles v2 - tokens only, selectors prefixed */
 .benefit-tiles {
   --benefit-tiles-badge-fill: var(--color-primary);
@@ -1220,12 +1220,34 @@
     min-height: 24rem;
   }
 }
+/* Three, five or six tiles: three to a row on six tracks, at every width
+   from here up; five centres its last two. Two and four keep the rules above. */
+@media (min-width: 48rem) {
+  .benefit-tiles-track:has(> :nth-child(3):last-child),
+  .benefit-tiles-track:has(> :nth-child(5)) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .benefit-tiles-track:has(> :nth-child(3):last-child) > .benefit-tiles-item,
+  .benefit-tiles-track:has(> :nth-child(5)) > .benefit-tiles-item {
+    grid-column: span 2;
+  }
+  .benefit-tiles-track:has(> :nth-child(5):last-child) > .benefit-tiles-item:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+}
 @media (width > 64rem) {
   .benefit-tiles-track {
     grid-template-columns: repeat(4, 1fr);
   }
   .benefit-tiles-item {
     min-height: clamp(26rem, 34vw, 32rem);
+  }
+  .benefit-tiles-track:has(> :nth-child(2):last-child) {
+    grid-template-columns: 1fr 1fr;
+    max-width: calc(var(--container-max) * 2 / 3);
+  }
+  .benefit-tiles-track:has(> :nth-child(5)) > .benefit-tiles-item {
+    min-height: 24rem;
   }
 }
 
