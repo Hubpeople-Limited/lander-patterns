@@ -3086,6 +3086,75 @@ def check_hero_band():
     return failures
 
 
+def check_hero_band_drift():
+    """Still means still: the photograph drifts only on the moving rung, once,
+    for five seconds at most, and never under reduced motion. It is the
+    page's largest paint, so the drift starts at once with the photograph
+    showing: it moves the picture and never hides it."""
+    import check_phone
+    failures = []
+    print("hero-band, the drift is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-band drift: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-band drift: {label}")
+
+    js = """() => {
+        const img = document.querySelector('.hero-band-img');
+        const s = getComputedStyle(img);
+        const props = new Set();
+        for (const a of img.getAnimations())
+            for (const k of a.effect.getKeyframes())
+                for (const p of Object.keys(k))
+                    if (!['offset', 'computedOffset', 'easing', 'composite'].includes(p))
+                        props.add(p);
+        return {name: s.animationName, secs: parseFloat(s.animationDuration),
+                delay: parseFloat(s.animationDelay), count: s.animationIterationCount,
+                opacity: s.opacity, props: [...props],
+                still: getComputedStyle(document.querySelector('.hero-band'))
+                       .getPropertyValue('--hub-motion').trim()}; }"""
+
+    def shows_at_once(got):
+        return (got["delay"] == 0 and got["opacity"] == "1"
+                and set(got["props"]) <= {"scale", "translate", "transform"})
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+
+        def render(mods, reduced=False, extra_css=""):
+            return _render(browser, workdir,
+                           opener_page("hero-band", mods, "brand", extra_css=extra_css),
+                           (1280, 800), js, reduced=reduced)
+        try:
+            still = render({})
+            case("the still rung does not move, and says so to the behaviours",
+                 still["name"] == "none" and still["still"] == "none")
+            moving = render({"motion": "moving"})
+            case("the moving rung drifts once, for five seconds at most",
+                 moving["name"] == "hero-band-drift" and 0 < moving["secs"] <= 5
+                 and moving["count"] == "1")
+            case("the moving rung starts at once with the photograph showing",
+                 moving["name"] != "none" and shows_at_once(moving))
+            calm = render({"motion": "moving"}, reduced=True)
+            case("the moving rung holds still under reduced motion", calm["name"] == "none")
+            forced = render({}, extra_css=".hero-band-img { animation: hero-band-drift 5s; }")
+            case("catches: a still rung that drifts", forced["name"] != "none")
+            hidden = render({"motion": "moving"},
+                            extra_css="@keyframes hero-band-drift "
+                                      "{ from { opacity: 0; scale: 1.08; } }")
+            case("catches: a drift that starts with the photograph hidden",
+                 not shows_at_once(hidden))
+        finally:
+            browser.close()
+    return failures
+
+
 def check_member_grid_motion():
     """member-grid's Moving row is itself a choice to move, so it glides
     whatever the Movement rung says; every other layout is still unless
@@ -3539,6 +3608,8 @@ def main():
     print()
     failures += check_hero_band()
     print()
+    failures += check_hero_band_drift()
+    print()
     failures += check_hero_portrait()
     print()
     if failures:
@@ -3565,7 +3636,7 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2 + 4
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16)
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16 + 6)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

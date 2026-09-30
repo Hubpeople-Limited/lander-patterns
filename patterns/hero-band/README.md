@@ -47,6 +47,12 @@ location pages, `listing-rows` on the listings, `pricing-tiers`,
 `safety-protections`. Not directly above `photo-band`: two photographs in a
 row is a gallery. Take a different ground from the section under it.
 
+**Movement** (`motion`). Still by default. On `moving` the photograph
+settles from a slight zoom over five seconds as the page opens, once, then
+holds still. It is the page's largest paint, so it shows from the first
+frame and only its size moves; the frame clips it, so the page never widens.
+Inside the reduced-motion guard, and CSS only: no behaviour library needed.
+
 **Brand adaptability.** Four grounds from the ladder (`plain`, `soft`,
 `brand`, `deep`). Each names its own ink and every rule reads that pair, as
 in `hero-stated`, so nothing in the file knows which ground it is on. On
