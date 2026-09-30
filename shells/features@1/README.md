@@ -19,12 +19,12 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-stated** v5 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
+2. **hero-stated** v6 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **feature-panels** v5 - A run of full-bleed panels climbing a ground ladder - light, then the brand colour, then dark - each carrying a mark, a label, one large claim and a link on its floor.
+3. **feature-panels** v6 - A run of full-bleed panels climbing a ground ladder - light, then the brand colour, then dark - each carrying a mark, a label, one large claim and a link on its floor.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `section-title` - text, about 3 word(s). Sample: Sample panels heading
@@ -38,7 +38,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `panel-3-label` - text, about 2 word(s). Sample: Sample three
    - `panel-3-claim` - text, about 6 word(s). Sample: Sample claim for the third panel
    - `panel-3-link-text` - text, about 2 word(s). Sample: Sample link
-4. **comparison-table** v4 - A real table comparing three things against the same criteria - tier names across the top, one criterion per row, the recommended column named in words and never by colour alone.
+4. **comparison-table** v5 - A real table comparing three things against the same criteria - tier names across the top, one criterion per row, the recommended column named in words and never by colour alone.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample comparison heading
    - `section-intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
@@ -56,7 +56,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `section-title` - text, about 3 word(s). Sample: Sample questions heading
    - `question` - text, about 11 word(s). Sample: A sample question, phrased the way a visitor would ask it?
    - `answer` - markup, about 22 words of copy; its sample shape is printed in page.html's banner
-6. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+6. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

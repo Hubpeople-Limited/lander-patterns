@@ -28,6 +28,11 @@
   margin: 0;
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .pinned-cards-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .pinned-cards-list {
   list-style: none;
   margin: 0;
@@ -74,6 +79,11 @@
   line-height: calc(1.2 * var(--heading-leading, 1));
   margin: 0 0 var(--space-3);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .pinned-cards-heading {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .pinned-cards-body {
   color: var(--color-text-soft);

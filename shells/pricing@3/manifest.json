@@ -11,7 +11,7 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
+      "version": "6",
       "variant": {
         "ground": "plain"
       }
@@ -26,7 +26,7 @@
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

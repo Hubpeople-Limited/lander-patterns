@@ -56,6 +56,11 @@
   margin: 0 0 var(--space-5);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .hero-stated-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .hero-stated-sub {
   font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
   line-height: 1.55;

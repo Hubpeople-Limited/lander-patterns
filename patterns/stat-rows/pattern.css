@@ -25,6 +25,11 @@
   line-height: calc(1.04 * var(--heading-leading, 1));
   letter-spacing: calc(-0.03em + var(--heading-tracking, 0) * 1em);
 }
+@supports (line-height: 1cap) {
+  .stat-rows-figure {
+    line-height: calc(max(1.04em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .stat-rows-note {
   margin: 0;
   color: var(--color-text-soft);

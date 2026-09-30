@@ -95,20 +95,22 @@ LOST = {
         "every display heading going from bold to regular",
 }
 
-# --heading-leading is the one dial a unit does not break by dropping. The
-# pattern writes `calc(1.02 * var(--heading-leading, 1))`, and number times
-# length is VALID CSS: nothing drops and nothing warns. Chromium computes
-# `calc(1.02 * 1.1rem)` to 17.952px, line-height is inherited, so a 40px
-# heading and the 20px line under it are both set on a 17.952px body and the
-# text overlaps itself. Saying "it drops" here would be the same class of
-# mistake this table exists to correct.
+# --heading-leading breaks two ways under a unit, and which one depends on the
+# browser. A pattern writes `calc(1.02 * var(--heading-leading, 1))` and then,
+# under @supports (line-height: 1cap), `calc(max(1.02em, 1.45cap) *
+# var(--heading-leading, 1))`. Where `cap` is supported the second one wins,
+# and length times length is invalid, so it drops: Chromium computes the
+# heading at the inherited 1.6. Where it is not, only the first applies, and
+# number times length is VALID CSS: `calc(1.02 * 1.1rem)` is 17.952px, fixed
+# and inherited, so a 40px heading and the 20px line under it overlap.
 LOST_UNIT = dict(LOST, **{
     "heading-leading":
-        "a number times a length is valid CSS, so nothing drops and nothing "
-        "warns - line-height becomes a fixed length that no longer tracks "
-        "font-size and is inherited by everything under the heading. "
-        "calc(1.02 * 1.1rem) is 17.952px on a 40px heading and 17.952px on "
-        "the 20px line below it, which overlap",
+        "a length times a length is invalid, so in any browser with the "
+        "`cap` unit every line-height reading it drops and display type takes "
+        "the inherited leading - the body's, 1.6 on most brands. A browser "
+        "without `cap` reads the older declaration, where a number times a "
+        "length is valid: calc(1.02 * 1.1rem) is a fixed 17.952px on a 40px "
+        "heading and on the 20px line below it, which overlap",
 })
 
 # Unanchored, and tolerant of what really appears in a declaration: several
@@ -192,8 +194,9 @@ def check_dials(brand, text):
 
     - A length (`1.1rem`). What it costs differs per dial and is spelled out
       in LOST above: three of the five drop the declaration, --heading-leading
-      stays valid and silently stops scaling, and --weight-display hands the
-      element its ancestor's weight.
+      drops where the browser has the `cap` unit and stays valid and stops
+      scaling where it does not, and --weight-display hands the element its
+      ancestor's weight.
     - Zero. Every display size computes to 0px and the headings are simply
       gone. legibility.py already treats font-size 0 as hidden content inside
       the library; a brand can do the same thing from outside it.
@@ -256,7 +259,8 @@ def check_dials(brand, text):
             # not per kind - naming the wrong fallback sends the reader
             # looking somewhere the fault is not, which is worse than saying
             # nothing. And a unit is not the same fault as an empty or
-            # unreadable value: on --heading-leading a unit stays valid.
+            # unreadable value: on --heading-leading a unit stays valid in a
+            # browser without the `cap` unit.
             if v is None:
                 out.append((True, f"{brand}: {token} is empty. An empty value "
                                   f"is a declaration, not the absence of one, "

@@ -129,12 +129,14 @@ CASES = [
 #   --weight-display  font-weight is inherited, so an invalid substitution
 #                     hands the element its ANCESTOR's weight, not the
 #                     pattern's 700. Ancestor 300 + dial 700px computes 300.
-#   --heading-leading calc(1.02 * 1.1rem) is number x length, which is VALID
-#                     CSS: 17.952px, fixed and inherited, not a drop.
+#   --heading-leading where the browser has `cap`, the floored declaration
+#                     is length x length and drops to the inherited
+#                     leading; the 17.952px of calc(1.02 * 1.1rem) is what
+#                     a browser without `cap` computes.
 LOST_PHRASES = {
     ("heading-tracking", "0.02em"): "`normal`",
     ("weight-display", "700px"): "ANCESTOR",
-    ("heading-leading", "1.1rem"): "17.952px",
+    ("heading-leading", "1.1rem"): "inherited leading",
     ("type-scale", "1.1rem"): "inherited",
     ("space-scale", "1.2px"): "fall to 0",
 }
@@ -1314,9 +1316,6 @@ PHONE_QUIET = {
          " .t-rail p { flex: 0 0 200px; margin: 0 -60px 0 0; font-size: 18px; }",
          "<div class='t-rail'><p>Sample card one</p><p>Sample card two</p>"
          "<p>Sample card three</p></div>"),
-    "a headline set tighter than its face":
-        (".t-tight { font-size: 40px; line-height: 0.9; width: 200px; margin: 0; }",
-         "<h2 class='t-tight'>Sample headline that wraps</h2>"),
     "the answer inside a closed question":
         (".t-faq summary { min-height: 48px; padding: 12px 0; }"
          " .t-faq p { margin: -40px 0 0; }",
@@ -1331,6 +1330,42 @@ PHONE_QUIET = {
          "<div class='t-box'><span class='t-sr'>Sample label for a screen reader</span>"
          "<h2>Sample heading</h2></div>"),
 }
+
+# The lines of one block, against each other. Each case names the sample
+# token set it renders on, because whether two lines touch is a property of
+# the face: `display` is the tall one, whose ascenders and descenders
+# together reach about 1.4em.
+PHONE_LINES = [
+    ("fires on: two lines of a heading at 0.9 on a tall face", "display",
+     ".t-tall { font-family: var(--font-heading); font-size: 40px;"
+     " line-height: 0.9; width: 220px; margin: 16px; }",
+     "<h2 class='t-tall'>Sample heading that wraps</h2>", True),
+    ("quiet on: a heading at 1.2 on an ordinary face", "brand",
+     ".t-head { font-family: var(--font-heading); font-size: 40px;"
+     " line-height: 1.2; width: 220px; margin: 16px; }",
+     "<h2 class='t-head'>Sample heading that wraps</h2>", False),
+    ("quiet on: a heading on one line, however tight", "display",
+     ".t-one { font-family: var(--font-heading); font-size: 40px;"
+     " line-height: 0.9; margin: 16px; }",
+     "<h2 class='t-one'>Sample</h2>", False),
+    # steps-numbered's own shape: a numeral whose line box is shorter than
+    # its glyphs, set flush beside a heading that wraps.
+    ("quiet on: a numeral set flush beside its heading", "brand",
+     ".t-step { display: flex; align-items: flex-start; gap: 24px; padding: 16px; }"
+     " .t-step::before { content: '1'; font-family: var(--font-heading);"
+     " font-size: 84px; font-weight: 700; line-height: 0.8; flex: none; }"
+     " .t-step h3 { margin: 0; font-family: var(--font-heading); font-size: 22px;"
+     " line-height: 1.15; }",
+     "<div class='t-step'><h3>Sample step title that wraps onto"
+     " a second line</h3></div>", False),
+    # A carousel draws its side cards smaller with a transform. The line
+    # boxes shrink with it and the glyphs have to be measured shrunk too.
+    ("quiet on: a heading in a card drawn smaller by a transform", "brand",
+     ".t-card { transform: scale(0.7); transform-origin: 0 0; padding: 16px; }"
+     " .t-card h3 { margin: 0; font-family: var(--font-heading); font-size: 40px;"
+     " line-height: 1.2; width: 220px; }",
+     "<div class='t-card'><h3>Sample heading that wraps</h3></div>", False),
+]
 
 
 def check_phone():
@@ -1355,7 +1390,7 @@ def check_phone():
     failures = []
     tokens = check_phone.token_set("brand")
 
-    def page(css, markup):
+    def page(css, markup, tokens=tokens):
         return check_phone.SHELL.format(name="fixture", width=320,
                                         tokens=tokens, css=css, markup=markup)
 
@@ -1380,6 +1415,18 @@ def check_phone():
                 failures.append(label)
                 for line in found:
                     print(f"        got: {line}")
+        for label, which, css, markup, fires in PHONE_LINES:
+            found = phone.faults("fixture", page(css, markup,
+                                                 check_phone.token_set(which)))
+            hit = [line for line in found if "overlap each other" in line]
+            ok = bool(hit) if fires else not found
+            print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+            if not ok:
+                failures.append(label)
+                for line in found:
+                    print(f"        got: {line}")
+                if not found:
+                    print("        got: nothing")
 
     # The skip path, exercised for real rather than asserted about. A shim
     # package on the path makes `import playwright` raise, which is exactly
@@ -2820,18 +2867,33 @@ def check_hero_band():
         workdir = _opener_workdir(tmp)
         browser = p.chromium.launch()
         try:
-            for tokens in ("brand", "display"):
-                for photo in ("end", "start", "behind"):
-                    got = _render(browser, workdir,
-                                  opener_page("hero-band", {"photo": photo}, tokens),
-                                  (1280, 800), height_js)
-                    case(f"photo={photo} on {tokens} at 1280x800 is {got:.0f}px tall, "
-                         f"within {limit:.0f}", got <= limit)
+            for photo in ("end", "start", "behind"):
+                got = _render(browser, workdir,
+                              opener_page("hero-band", {"photo": photo}, "brand"),
+                              (1280, 800), height_js)
+                case(f"photo={photo} on brand at 1280x800 is {got:.0f}px tall, "
+                     f"within {limit:.0f}", got <= limit)
             tall = _render(browser, workdir,
                            opener_page("hero-band", {"photo": "end"}, "brand",
                                        extra_css=".hero-band-img { height: 40rem !important; }"),
                            (1280, 800), height_js)
             case("catches: a photograph a screen tall", tall > limit)
+            # On display the headline's own lines set the height: four lines
+            # of a face whose letters reach 1.4em, kept apart, are over 300px,
+            # and the fixture's magnitudes are not a real face's. What holds
+            # there is the band itself: the same height on a taller screen.
+            def band(photo, tall_screen, extra_css=""):
+                return _render(browser, workdir,
+                               opener_page("hero-band", {"photo": photo}, "display",
+                                           extra_css=extra_css),
+                               (1280, 1000 if tall_screen else 800), height_js)
+            for photo in ("end", "start", "behind"):
+                short, long_ = band(photo, False), band(photo, True)
+                case(f"photo={photo} on display is {short:.0f}px tall on an 800px "
+                     f"screen and {long_:.0f}px on a 1000px one", abs(short - long_) <= 1)
+            grows = ".hero-band-img { height: 60vh !important; }"
+            case("catches: a photograph sized from the screen's height",
+                 abs(band("end", False, grows) - band("end", True, grows)) > 1)
             for ground in ("plain", "soft", "brand", "deep"):
                 for width in (390, 1280):
                     got = _render(browser, workdir,
@@ -3169,7 +3231,7 @@ def main():
              + len(PAIRING_CASES) + 1
              + len(PAGE_FIRES) + 2 + len(recipes["recipes"])
              + len(RELEASE_TAG_CASES)
-             + len(PHONE_FIRES) + len(PHONE_QUIET) + 2
+             + len(PHONE_FIRES) + len(PHONE_QUIET) + len(PHONE_LINES) + 2
              + len(MEASURE_FIRES) + len(MEASURE_QUIET)
              + len(MEASURE_CALIBRATION) + 3
              + len(FOLD_BOUND) + len(FOLD_FURNITURE) + len(FOLD_VERDICT) + 3
@@ -3179,7 +3241,7 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 22)
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

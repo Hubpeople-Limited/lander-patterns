@@ -23,6 +23,11 @@
   color: var(--color-heading);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .signup-steps-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .signup-steps-sub {
   margin: var(--space-3) 0 0;
   max-width: 34rem;
@@ -50,6 +55,12 @@
   line-height: calc(1.2 * var(--heading-leading, 1));
   letter-spacing: calc(-0.005em + var(--heading-tracking, 0) * 1em);
   color: var(--color-text);
+}
+@supports (line-height: 1cap) {
+  .signup-steps-card-title,
+  .signup-steps-q {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .signup-steps-card-title {
   font-size: calc(clamp(1.375rem, 1.2rem + .8vw, 1.75rem) * var(--type-scale, 1));

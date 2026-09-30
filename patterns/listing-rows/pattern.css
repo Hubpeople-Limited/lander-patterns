@@ -49,6 +49,11 @@
   margin: 0 0 var(--space-3);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .listing-rows-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .listing-rows-intro {
   color: var(--listing-rows-quiet);
   font-size: 1.0625rem;
@@ -80,6 +85,11 @@
   /* 24px, held independently of the type scale: at --type-scale 0.9 the line
      box alone is 22.2px and this is the only tap target in the row. */
   min-block-size: 1.5rem;
+}
+@supports (line-height: 1cap) {
+  .listing-rows-link {
+    line-height: calc(max(1.3em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .listing-rows-link:hover {
   text-decoration: underline;

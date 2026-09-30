@@ -11,31 +11,31 @@
     },
     {
       "name": "article-masthead",
-      "version": "12"
+      "version": "13"
     },
     {
       "name": "article-toc",
+      "version": "3"
+    },
+    {
+      "name": "prose-column",
+      "version": "6"
+    },
+    {
+      "name": "pull-quote",
       "version": "2"
     },
     {
       "name": "prose-column",
-      "version": "5"
-    },
-    {
-      "name": "pull-quote",
-      "version": "1"
-    },
-    {
-      "name": "prose-column",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "author-note",
-      "version": "1"
+      "version": "2"
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

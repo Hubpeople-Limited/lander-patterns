@@ -21,12 +21,12 @@ This shell needs real pictures of people who agreed to appear. A people slot nev
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-stated** v5 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
+2. **hero-stated** v6 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **portrait-prose** v2 - One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
+3. **portrait-prose** v3 - One person and their story - a portrait given a column of its own with a caption naming them, beside a heading and two or three paragraphs of prose on the page ground; the founder section, and the shape for any page that is really about one person.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `portrait-image` - attribute (src): real, consented material only - never a placeholder
    - `portrait-alt` - attribute (alt): what the image shows, in words
@@ -35,12 +35,12 @@ This shell needs real pictures of people who agreed to appear. A people slot nev
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `heading` - text, about 8 word(s). Sample: A sample heading about the person, for preview
    - `body-paragraph` - text, about 23 word(s). Sample: One sample paragraph of prose, used only to render this...
-4. **claim-stack** v3 (ground=soft) - Three to five promises set very large, one to a screenful, separated by hairlines and nothing else - the section with nowhere to hide, for words the brand can stand behind.
+4. **claim-stack** v4 (ground=soft) - Three to five promises set very large, one to a screenful, separated by hairlines and nothing else - the section with nowhere to hide, for words the brand can stand behind.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample section heading
    - `claim` - text, about 8 word(s). Sample: A sample promise, set large for the preview.
    - `claim-note` - text, about 8 word(s). Sample: One sample line of supporting detail, preview only.
-5. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+5. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

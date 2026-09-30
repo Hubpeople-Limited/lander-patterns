@@ -38,6 +38,11 @@
   line-height: calc(1.05 * var(--heading-leading, 1));
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .cta-curtain-title {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .cta-curtain-lead {
   margin: 0 0 var(--space-6);
   color: var(--color-text-soft);

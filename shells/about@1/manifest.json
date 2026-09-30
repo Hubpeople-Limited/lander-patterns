@@ -11,25 +11,25 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
+      "version": "6",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "portrait-prose",
-      "version": "2"
+      "version": "3"
     },
     {
       "name": "claim-stack",
-      "version": "3",
+      "version": "4",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

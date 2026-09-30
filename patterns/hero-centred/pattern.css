@@ -26,6 +26,11 @@
   margin: 0 auto var(--space-5);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .hero-centred-title {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .hero-centred-sub {
   color: var(--color-text-soft);
   font-size: clamp(1rem, 1.4vw, 1.1875rem);

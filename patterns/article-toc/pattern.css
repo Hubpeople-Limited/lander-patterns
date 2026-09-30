@@ -35,6 +35,11 @@
   line-height: calc(1.3 * var(--heading-leading, 1));
   text-transform: uppercase;
 }
+@supports (line-height: 1cap) {
+  .article-toc-label {
+    line-height: calc(max(1.3em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 /* The indicator is a shape, not a glyph and never colour alone. */
 .article-toc-icon {
   position: relative;

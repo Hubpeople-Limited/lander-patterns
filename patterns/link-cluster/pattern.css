@@ -47,6 +47,11 @@
   margin: 0 0 var(--space-3);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .link-cluster-title {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .link-cluster-intro {
   color: var(--link-cluster-quiet);
   font-size: 1rem;

@@ -79,6 +79,16 @@ FIELD_MIN = 16
 # stroke at a phone's type sizes and over the rounding in a face's ascent.
 OVERLAP_MIN = 2
 
+# How far one line of a block may reach into the next line's ink. Tighter
+# than the figure above, because the two lines are the same face at the same
+# size and nothing else stands between them. Canvas reports a glyph's ink to
+# the whole pixel at the size it is drawn, so each of the two edges carries up
+# to half a pixel of rounding: a measured pixel of overlap can be no contact
+# at all, and at one device pixel it is the anti-aliased fringe of a stroke,
+# which reads as a descender brushing an ascender. More than a pixel is a row
+# of one letter's solid stroke painted inside another's, which a reader sees.
+LINE_OVERLAP_MIN = 1
+
 # A pattern whose whole job is a horizontal rail. Its track is MEANT to be
 # wider than the viewport - that is the affordance - so the document-overflow
 # rule cannot apply to it. Named here rather than inferred, so that adding a
@@ -141,11 +151,14 @@ body {{ margin: 0; font-family: var(--font-body); background: var(--color-bg);
 # The measurement. One pass in the page, returning observations rather than
 # verdicts - what is a fault is decided in Python, where it can be read.
 MEASURE = r"""
-() => {
+async () => {
+  // Ink is measured in the face the page draws in, so the faces come first.
+  await document.fonts.ready;
   const W = document.documentElement.clientWidth;
   const TAP = %TAP%, TEXT = %TEXT%, FIELD = %FIELD%;
   const out = { width: W, docScroll: document.documentElement.scrollWidth,
-                overflow: [], taps: [], small: [], fields: [], overlaps: [] };
+                overflow: [], taps: [], small: [], fields: [], overlaps: [],
+                lines: [] };
 
   const style = el => getComputedStyle(el);
 
@@ -298,11 +311,16 @@ MEASURE = r"""
   //
   // A box is the ink, not the line box. A Range rect spans the face's whole
   // ascent and descent, which on a display face is nearly twice the type
-  // size, so it is cut to what that string's glyphs reach above and below
-  // the baseline. Lines of one block are never compared with each other:
-  // tight leading is a type decision, not a collision. Text in a sideways
-  // rail is skipped, and every box is cut to the ancestors that clip it.
-  const OVERLAP = %OVERLAP%;
+  // size, so it is cut to what that line's own glyphs reach above and below
+  // the baseline - measured on the words of that line, cased as they are
+  // drawn, and scaled with any transform that scaled the rect. Text in a
+  // sideways rail is skipped, and every box is cut to the ancestors that
+  // clip it.
+  //
+  // Two runs in different blocks may not meet by more than OVERLAP. Two
+  // lines of one block may not meet by more than LINE_OVERLAP: a descender
+  // on one line reaching into an ascender on the next.
+  const OVERLAP = %OVERLAP%, LINE_OVERLAP = %LINE_OVERLAP%;
   const inRail = el => {
     for (let p = el; p && p !== document.body; p = p.parentElement) {
       const s = style(p);
@@ -383,6 +401,38 @@ MEASURE = r"""
     standIns.set(span, what);
   }
   const pen = document.createElement('canvas').getContext('2d');
+  const cased = (text, how) =>
+    how === 'uppercase' ? text.toUpperCase()
+    : how === 'lowercase' ? text.toLowerCase()
+    : how === 'capitalize' ? text.replace(/(^|\s)(\S)/g, (m, a, b) => a + b.toUpperCase())
+    : text;
+  // One text node's lines, each with the words drawn on it. A node on one
+  // line is one rect; a node that wraps is split word by word and the words
+  // are gathered by the line they landed on.
+  const linesOf = (node, words) => {
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    const rects = [...range.getClientRects()].filter(r => r.width >= 0.5 && r.height >= 0.5);
+    if (rects.length < 2) return rects.map(r => ({ rect: r, text: words }));
+    const lines = new Map();
+    for (const m of node.textContent.matchAll(/\S+/g)) {
+      const word = document.createRange();
+      word.setStart(node, m.index);
+      word.setEnd(node, m.index + m[0].length);
+      for (const r of word.getClientRects()) {
+        if (r.width < 0.5 || r.height < 0.5) continue;
+        const key = Math.round(r.top);
+        const line = lines.get(key);
+        if (!line) { lines.set(key, { rect: r, left: r.left, right: r.right, text: m[0] }); continue; }
+        line.left = Math.min(line.left, r.left);
+        line.right = Math.max(line.right, r.right);
+        line.text += ' ' + m[0];
+      }
+    }
+    return [...lines.values()].map(l => ({
+      rect: { left: l.left, right: l.right, top: l.rect.top, height: l.rect.height },
+      text: l.text }));
+  };
   const boxes = [];
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -395,26 +445,39 @@ MEASURE = r"""
         && !el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) continue;
     const s = style(el);
     pen.font = `${s.fontStyle} ${s.fontWeight} ${s.fontSize} ${s.fontFamily}`;
-    const ink = pen.measureText(words);
-    const range = document.createRange();
-    range.selectNodeContents(node);
-    for (const r of range.getClientRects()) {
-      if (r.width < 0.5 || r.height < 0.5) continue;
-      const baseline = r.top + ink.fontBoundingBoxAscent;
+    const block = blockOf(el);
+    for (const { rect: r, text } of linesOf(node, words)) {
+      const ink = pen.measureText(cased(text, s.textTransform));
+      const face = ink.fontBoundingBoxAscent + ink.fontBoundingBoxDescent;
+      // A rect is drawn through every transform above it; the canvas is not.
+      const zoom = face > 0 ? r.height / face : 1;
+      const baseline = r.top + ink.fontBoundingBoxAscent * zoom;
       const box = clipped(el, { left: r.left, right: r.right,
-                                top: baseline - ink.actualBoundingBoxAscent,
-                                bottom: baseline + ink.actualBoundingBoxDescent });
-      if (box.right - box.left <= OVERLAP || box.bottom - box.top <= OVERLAP) continue;
-      boxes.push({ box, block: blockOf(el), what: standIns.get(el) || describe(el) });
+                                top: baseline - ink.actualBoundingBoxAscent * zoom,
+                                bottom: baseline + ink.actualBoundingBoxDescent * zoom });
+      if (box.right - box.left <= LINE_OVERLAP || box.bottom - box.top <= LINE_OVERLAP) continue;
+      boxes.push({ box, block, baseline, what: standIns.get(el) || describe(el) });
     }
   }
   const said = new Set();
   for (let i = 0; i < boxes.length; i++) {
     for (let j = i + 1; j < boxes.length; j++) {
       const a = boxes[i], b = boxes[j];
-      if (a.block === b.block) continue;
       const w = Math.min(a.box.right, b.box.right) - Math.max(a.box.left, b.box.left);
       const h = Math.min(a.box.bottom, b.box.bottom) - Math.max(a.box.top, b.box.top);
+      if (a.block === b.block) {
+        // Runs on one line sit side by side; only different lines can meet.
+        if (Math.abs(a.baseline - b.baseline) < 1) continue;
+        if (w <= LINE_OVERLAP || h <= LINE_OVERLAP) continue;
+        const what = standIns.get(a.block) || describe(a.block);
+        if (said.has('lines\n' + what)) continue;
+        said.add('lines\n' + what);
+        const bs = style(a.block);
+        const leading = parseFloat(bs.lineHeight) / parseFloat(bs.fontSize);
+        out.lines.push({ what, leading: Number.isFinite(leading)
+                                        ? leading.toFixed(2) : bs.lineHeight });
+        continue;
+      }
       if (w <= OVERLAP || h <= OVERLAP) continue;
       const key = a.what + '\n' + b.what;
       if (said.has(key)) continue;
@@ -426,7 +489,7 @@ MEASURE = r"""
   return out;
 }
 """.replace("%TAP%", str(TAP_MIN)).replace("%TEXT%", str(TEXT_MIN)) \
-   .replace("%FIELD%", str(FIELD_MIN)).replace("%OVERLAP%", str(OVERLAP_MIN))
+   .replace("%FIELD%", str(FIELD_MIN)).replace("%OVERLAP%", str(OVERLAP_MIN))    .replace("%LINE_OVERLAP%", str(LINE_OVERLAP_MIN))
 
 
 # ------------------------------------------------------------ availability
@@ -590,6 +653,11 @@ class Phone:
         # into one sentence naming both.
         for o in got["overlaps"]:
             bad.append(f"{name}: text {say(o['a'])} lands on text {say(o['b'])}")
+        # The leading is a ratio to the type size, so it is the same number at
+        # every width and the sentence folds like the one above.
+        for o in got["lines"]:
+            bad.append(f"{name}: lines of {say(o['what'])} overlap each other "
+                       f"at line-height {o['leading']}")
         return bad
 
 

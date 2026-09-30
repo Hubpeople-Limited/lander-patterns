@@ -78,6 +78,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .benefit-tiles-title {
+    line-height: calc(max(1.25em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .benefit-tiles-copy {
   color: var(--color-text-soft);
   font-size: 0.9375rem;

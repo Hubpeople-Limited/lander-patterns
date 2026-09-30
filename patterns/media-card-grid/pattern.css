@@ -19,6 +19,11 @@
   margin: 0 0 var(--space-6);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .media-card-grid-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .media-card-grid-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
@@ -91,6 +96,11 @@
   letter-spacing: calc(-0.015em + var(--heading-tracking, 0) * 1em);
   margin: 0 0 var(--space-2);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .media-card-grid-heading {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 /* One link per card, and it is the heading. ::after makes the whole card
    the target without nesting anything inside the link. */

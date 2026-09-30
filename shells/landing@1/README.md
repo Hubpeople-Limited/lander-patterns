@@ -21,21 +21,21 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-split** v13 - Conversion opener - value proposition on one side, one strong image on the other, single join CTA; stacks image-first on phones.
+2. **hero-split** v14 - Conversion opener - value proposition on one side, one strong image on the other, single join CTA; stacks image-first on phones.
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): real material, or the couple/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **heading-block** v8 - Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
+3. **heading-block** v9 - Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 8 word(s). Sample: A sample section title for the preview render
    - `intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-4. **benefit-tiles** v7 - A run of two to six tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
+4. **benefit-tiles** v8 - A run of two to six tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
    - `track-label` - attribute (aria-label): a short label, about 2 word(s)
    - `tile-title` - text, about 3 word(s). Sample: Sample benefit title
    - `tile-copy` - text, about 26 word(s). Sample: Two short sentences of sample copy, here only to render...
-5. **testimonial-grid** v11 - Three equal-height testimonial cards with portraits overlapping the card edge; one card may be filled and is named as featured in words.
+5. **testimonial-grid** v12 - Three equal-height testimonial cards with portraits overlapping the card edge; one card may be filled and is named as featured in words.
    - `section-title` - text, about 3 word(s). Sample: Sample testimonials heading
    - `avatar` - attribute (src): real, consented material only - never a placeholder
    - `avatar-alt` - attribute (alt): what the image shows, in words
@@ -44,7 +44,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `person-role` - text, about 6 word(s). Sample: Sample attribution line for the preview
    - `source-url` - attribute (href): a short label, about 1 word(s)
    - `source-text` - text, about 3 word(s). Sample: Sample source link
-6. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+6. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

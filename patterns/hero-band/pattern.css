@@ -75,6 +75,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .hero-band-title {
+    line-height: calc(max(1.08em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .hero-band-sub {
   font-size: 1.0625rem;
   line-height: 1.55;

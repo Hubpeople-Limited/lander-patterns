@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-stated v5 ---- */
+/* ---- hero-stated v6 ---- */
 /* hero-stated v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink, and every rule below reads the pair rather
    than a token, so nothing here knows which ground it is on. */
@@ -1045,6 +1045,11 @@
   max-width: 10.75em;
   margin: 0 0 var(--space-5);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-stated-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-stated-sub {
   font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
@@ -1115,7 +1120,7 @@
   }
 }
 
-/* ---- offer-split v4 ---- */
+/* ---- offer-split v5 ---- */
 /* offer-split v1 - tokens only, selectors prefixed */
 .offer-split {
   --offer-split-panel-min: 18rem;
@@ -1139,6 +1144,11 @@
   line-height: calc(1.15 * var(--heading-leading, 1));
   margin: 0 0 var(--space-5);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .offer-split-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .offer-split-body {
   color: var(--color-text-soft);
@@ -1172,6 +1182,11 @@
   line-height: calc(1.2 * var(--heading-leading, 1));
   margin: 0 0 var(--space-3);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .offer-split-panel-title {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .offer-split-panel-body {
   font-size: 1rem;
@@ -1400,7 +1415,7 @@
   }
 }
 
-/* ---- cta-band v5 ---- */
+/* ---- cta-band v6 ---- */
 /* cta-band - tokens only, selectors prefixed */
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
@@ -1465,6 +1480,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-band-lead {
   font-size: 1.0625rem;

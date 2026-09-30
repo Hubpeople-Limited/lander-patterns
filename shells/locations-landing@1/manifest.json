@@ -11,21 +11,21 @@
     },
     {
       "name": "hero-stated",
-      "version": "5",
+      "version": "6",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "listing-rows",
-      "version": "3",
+      "version": "4",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "colophon",

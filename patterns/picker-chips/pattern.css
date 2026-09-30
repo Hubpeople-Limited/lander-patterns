@@ -18,6 +18,11 @@
   font-size: calc(clamp(1.125rem, 1rem + 0.5vw, 1.375rem) * var(--type-scale, 1));
   line-height: calc(1.2 * var(--heading-leading, 1));
 }
+@supports (line-height: 1cap) {
+  .picker-chips-title {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .picker-chips-helper {
   margin: 0 0 var(--space-4);
   color: var(--color-text-soft);

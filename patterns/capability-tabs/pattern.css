@@ -18,6 +18,11 @@
   font-size: calc(clamp(1.75rem, 1rem + 2vw, 2.25rem) * var(--type-scale, 1));
   line-height: calc(1.1 * var(--heading-leading, 1));
 }
+@supports (line-height: 1cap) {
+  .capability-tabs-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .capability-tabs-sub {
   margin: var(--space-3) 0 0;
   max-width: 52ch;
@@ -51,6 +56,11 @@
   color: var(--color-text);
   font-size: calc(clamp(1.25rem, 1rem + 1.2vw, 1.875rem) * var(--type-scale, 1));
   line-height: calc(1.15 * var(--heading-leading, 1));
+}
+@supports (line-height: 1cap) {
+  .capability-tabs-panel-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .capability-tabs-lede {
   margin: var(--space-3) 0 0;
@@ -128,6 +138,11 @@
   color: var(--color-text);
   white-space: nowrap;
   cursor: pointer;
+}
+@supports (line-height: 1cap) {
+  .capability-tabs .hub-tabs-tab {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .capability-tabs .hub-tabs-tab[aria-selected="true"] {
   background: var(--color-primary);

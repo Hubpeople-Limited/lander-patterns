@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-squeeze v13 ---- */
+/* ---- hero-squeeze v14 ---- */
 /* hero-squeeze v10 - tokens only, selectors prefixed */
 .hero-squeeze {
   --hero-squeeze-scrim-floor: clamp(0.86, var(--hero-squeeze-scrim-strength, 0.86), 1);
@@ -1044,6 +1044,11 @@
   line-height: calc(1.08 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-squeeze-title {
+    line-height: calc(max(1.08em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-squeeze-sub {
   font-size: clamp(1rem, 1.6vw, 1.125rem);

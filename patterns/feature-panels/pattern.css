@@ -29,6 +29,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .feature-panels-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .feature-panels-intro {
   color: var(--color-text-soft);
   font-size: 1rem;
@@ -106,6 +111,11 @@
   line-height: calc(1.15 * var(--heading-leading, 1));
   margin: 0;
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .feature-panels-claim {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 /* margin-top:auto pins the link to the panel floor, so panels holding claims
    of unequal length still line their links up across the row. */

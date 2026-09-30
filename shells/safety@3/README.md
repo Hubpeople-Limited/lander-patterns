@@ -19,12 +19,12 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-stated** v5 (ground=brand) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
+2. **hero-stated** v6 (ground=brand) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **safety-protections** v4 - Categorised safety protections as cards, each carrying three registers - the name of the protection, what it does, and the line the reader takes away about how it protects them.
+3. **safety-protections** v5 - Categorised safety protections as cards, each carrying three registers - the name of the protection, what it does, and the line the reader takes away about how it protects them.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample protections heading
    - `section-intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
@@ -32,7 +32,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `protection-what` - text, about 17 word(s). Sample: One or two plain sentences saying what the brand actual...
    - `effect-label` - text, about 3 word(s). Sample: Sample takeaway label
    - `protection-effect` - text, about 9 word(s). Sample: One sentence of sample copy giving the reader-facing co...
-4. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+4. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

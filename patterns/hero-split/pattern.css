@@ -27,6 +27,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .hero-split-title {
+    line-height: calc(max(1.15em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .hero-split-sub {
   color: var(--color-text-soft);
   font-size: 1.125rem;

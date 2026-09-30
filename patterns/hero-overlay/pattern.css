@@ -66,6 +66,11 @@
   letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .hero-overlay-title {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .hero-overlay-sub {
   margin: 0 0 var(--space-6);
   max-width: 32rem;
@@ -137,6 +142,11 @@
   }
   .hero-overlay-title {
     line-height: calc(1.12 * var(--heading-leading, 1));
+  }
+  @supports (line-height: 1cap) {
+    .hero-overlay-title {
+      line-height: calc(max(1.12em, 1.45cap) * var(--heading-leading, 1));
+    }
   }
 }
 

@@ -21,13 +21,13 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-band** v1 (ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
+2. **hero-band** v2 (ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 5 word(s). Sample: Sample page headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): real material, or the group/landscape placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **prose-column** v5 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+3. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -40,7 +40,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-4. **heading-block** v8 - Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
+4. **heading-block** v9 - Section opener - rule-flanked eyebrow, tightly set display title, one supporting line; centred by default, left-aligned on phones.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 8 word(s). Sample: A sample section title for the preview render
    - `intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
@@ -54,13 +54,13 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `members-empty-text` - attribute (data-members-empty-text): a short label, about 7 word(s)
 6. **source-note** v1 - The line under a claim saying where it came from - who measured it, what they counted, and when - placeable under any figure, statement, answer or card.
    - `source` - text, about 11 word(s). Sample: Sample source line: who produced it, what it counts, an...
-7. **link-cluster** v6 (ground=soft) - A wrapping run of plain links to real pages - places, categories, topics - on a choice of three grounds, with no photograph, no figure and nothing to invent.
+7. **link-cluster** v7 (ground=soft) - A wrapping run of plain links to real pages - places, categories, topics - on a choice of three grounds, with no photograph, no figure and nothing to invent.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample cluster heading
    - `section-intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `link-url` - attribute (href): a short label, about 1 word(s)
    - `link-text` - text, about 2 word(s). Sample: Sample link
-8. **cta-band** v5 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+8. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview

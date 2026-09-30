@@ -987,7 +987,7 @@
   }
 }
 
-/* ---- hero-stated v5 ---- */
+/* ---- hero-stated v6 ---- */
 /* hero-stated v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink, and every rule below reads the pair rather
    than a token, so nothing here knows which ground it is on. */
@@ -1045,6 +1045,11 @@
   max-width: 10.75em;
   margin: 0 0 var(--space-5);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-stated-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .hero-stated-sub {
   font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
@@ -1115,7 +1120,7 @@
   }
 }
 
-/* ---- heading-block v8 ---- */
+/* ---- heading-block v9 ---- */
 /* heading-block v4 - tokens only, selectors prefixed */
 .heading-block {
   /* Same gutter idiom as every other pattern. */
@@ -1158,6 +1163,11 @@
   color: var(--color-heading);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .heading-block-title {
+    line-height: calc(max(1.02em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .heading-block-intro {
   max-width: 42rem;
   margin: var(--space-4) 0 0;
@@ -1175,7 +1185,7 @@
   }
 }
 
-/* ---- benefit-tiles v7 ---- */
+/* ---- benefit-tiles v8 ---- */
 /* benefit-tiles v2 - tokens only, selectors prefixed */
 .benefit-tiles {
   --benefit-tiles-badge-fill: var(--color-primary);
@@ -1256,6 +1266,11 @@
   margin: 0 0 var(--space-4);
   text-wrap: balance;
 }
+@supports (line-height: 1cap) {
+  .benefit-tiles-title {
+    line-height: calc(max(1.25em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
 .benefit-tiles-copy {
   color: var(--color-text-soft);
   font-size: 0.9375rem;
@@ -1315,7 +1330,7 @@
   }
 }
 
-/* ---- cta-band v5 ---- */
+/* ---- cta-band v6 ---- */
 /* cta-band - tokens only, selectors prefixed */
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
@@ -1380,6 +1395,11 @@
   line-height: calc(1.1 * var(--heading-leading, 1));
   margin: 0 0 var(--space-4);
   text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .cta-band-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
 }
 .cta-band-lead {
   font-size: 1.0625rem;
