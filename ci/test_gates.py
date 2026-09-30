@@ -129,12 +129,14 @@ CASES = [
 #   --weight-display  font-weight is inherited, so an invalid substitution
 #                     hands the element its ANCESTOR's weight, not the
 #                     pattern's 700. Ancestor 300 + dial 700px computes 300.
-#   --heading-leading calc(1.02 * 1.1rem) is number x length, which is VALID
-#                     CSS: 17.952px, fixed and inherited, not a drop.
+#   --heading-leading where the browser has `cap`, the floored declaration
+#                     is length x length and drops to the inherited
+#                     leading; the 17.952px of calc(1.02 * 1.1rem) is what
+#                     a browser without `cap` computes.
 LOST_PHRASES = {
     ("heading-tracking", "0.02em"): "`normal`",
     ("weight-display", "700px"): "ANCESTOR",
-    ("heading-leading", "1.1rem"): "17.952px",
+    ("heading-leading", "1.1rem"): "inherited leading",
     ("type-scale", "1.1rem"): "inherited",
     ("space-scale", "1.2px"): "fall to 0",
 }

@@ -535,7 +535,11 @@ canvas reports a glyph's ink to the whole pixel, so one pixel of overlap can
 be rounding on each edge, or the anti-aliased fringe of a descender brushing
 an ascender. More than that is one letter's solid stroke painted inside
 another's. The fault names the block and its leading as a ratio of its type
-size, which is the same number at every width.
+size, which is the same number at every width. A leading that clears an
+ordinary face can still fail on `display`, whose letters reach about 1.4em
+from ascender to descender: write a display leading the way the library
+does, with the cap-height floor described under `--heading-leading` in
+TOKENS.md.
 
 **What it deliberately does not check.** A rule that cannot be made reliable is
 worse than none, because the first false positive teaches everyone to stop

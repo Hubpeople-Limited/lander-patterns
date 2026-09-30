@@ -389,6 +389,19 @@ have no reachable value at all. Additive keeps the designed differences too:
 `1.15` the `1.3` card headings reach `1.5`, and the dial has started changing
 card heights rather than type.
 
+**Display leading never drops below 1.45 cap heights.** Each display
+line-height is written twice: `calc(1.08 * var(--heading-leading, 1))`, then,
+inside `@supports (line-height: 1cap)`, `calc(max(1.08em, 1.45cap) *
+var(--heading-leading, 1))`. From ascender to descender a face's letters
+reach about 1.2 to 1.42 times its cap height, so a face whose letters are
+large for their em gets the leading its glyphs need, and the dial multiplies
+the result. On Georgia the em figure always wins and nothing moves; on a
+Helvetica or Arial stack only the three `1.02` leadings do, to about `1.04`;
+on the `display` sample set every heading takes the floor, about `1.43em`.
+A browser without the `cap` unit keeps the first declaration. Because the
+floor is a length, an element set in a different size inside a heading
+inherits the heading's leading in pixels; no pattern here puts one there.
+
 **`--heading-tracking` in practice.** Supported range `-0.02` to `0.04`, in em,
 **added** not multiplied. At `-0.02` the `-0.035em` quotes reach `-0.055em`,
 where a tight face touches; at `+0.04` a headline held to `10.75em` gains
@@ -447,7 +460,7 @@ which is an accessibility floor rather than a taste one.
 |---|---|
 | `--type-scale: 1.1rem` | length × length is an area, every `calc()` reading it is invalid and drops. `font-size` is inherited, so every display size collapses to whatever it sits inside, on every viewport at once |
 | `--space-scale: 1.2px` | the same, in the ramp. `padding`, `margin` and `gap` are **not** inherited, so they fall to `0` and the page loses every gap it had |
-| `--heading-leading: 1.1rem` | **valid CSS.** Number × length is a length, so nothing drops and nothing warns — `calc(1.02 * 1.1rem)` computes to `17.952px`, a fixed leading that no longer tracks font-size and is inherited downward. A 40px heading and the 20px line under it are both set on a 17.952px body, and the text overlaps itself |
+| `--heading-leading: 1.1rem` | **depends on the browser.** Where the `cap` unit is supported, the floored declaration `calc(max(1.02em, 1.45cap) * 1.1rem)` is length × length and drops, so display type takes the **inherited** leading — the body's `1.6` on most brands, loose on every heading. Where it is not, the plain declaration applies and number × length is a valid length: `calc(1.02 * 1.1rem)` computes to `17.952px`, a fixed leading that no longer tracks font-size and is inherited downward. A 40px heading and the 20px line under it are both set on a 17.952px body, and the text overlaps itself |
 | `--heading-tracking: 0.02em` | an area inside `calc(-0.02em + var(--heading-tracking, 0) * 1em)`, so the declaration drops and letter-spacing falls back to **`normal`** — not to the `-0.02em` the pattern designed. The brand loses tracking it never set |
 | `--weight-display: 700px` | `font-weight` is inherited, so the declaration is invalid at computed-value time and the element takes its **ancestor's** weight, not the pattern's `700`. Probed with an ancestor at 300, the heading computes 300 — on a real brand that is body weight, so every display heading goes bold to regular |
 
