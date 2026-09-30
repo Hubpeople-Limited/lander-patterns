@@ -231,14 +231,14 @@
    "reveal"
   ],
   "content-shape": "peer set",
-  "description": "A four-up run of tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.",
+  "description": "A run of two to six tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.",
   "display-name": "Benefit tiles",
   "image-slots": [],
   "layout": {
    "rhythm": "cards"
   },
   "motion": "none",
-  "needs": "three to five real capabilities the brand actually offers, each with a short title and one or two sentences of real copy; a simple line mark per tile, drawn inline so it takes the badge's ink; a label naming what the set is. Every claim here is a fact the brand can evidence: never a member number, a success rate, a superiority claim or an unqualified free without a source, and never that every profile is verified - verification on this platform is free and optional, so that one is untrue on every brand",
+  "needs": "two to six real capabilities the brand actually offers, each with a short title and one or two sentences of real copy; a simple line mark per tile, drawn inline so it takes the badge's ink; a label naming what the set is. Every claim here is a fact the brand can evidence: never a member number, a success rate, a superiority claim or an unqualified free without a source, and never that every profile is verified - verification on this platform is free and optional, so that one is untrue on every brand",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -250,10 +250,10 @@
   "replaced-by": "",
   "requires": "none",
   "status": "active",
-  "summary": "Four tall tiles, each with an icon and a short benefit.",
+  "summary": "Two to six tall tiles, each with an icon and a short benefit.",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "capability-tabs": {
@@ -923,7 +923,7 @@
   ],
   "behaviours": [],
   "content-shape": "single claim",
-  "description": "Conversion opener - value proposition left, one strong image right, single join CTA; stacks image-first on phones.",
+  "description": "Conversion opener - value proposition on one side, one strong image on the other, single join CTA; stacks image-first on phones.",
   "display-name": "Split opener",
   "image-slots": [
    {
@@ -943,7 +943,7 @@
    "opener": "beside"
   },
   "motion": "none",
-  "needs": "one hero image at least 1280px wide from real material; a headline and one-sentence subhead that state the actual offer",
+  "needs": "one hero image at least 1280px wide from real material, with its own alt text and a CDN srcset ladder; a headline and one-sentence subhead that state the actual offer",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -957,8 +957,13 @@
   "status": "active",
   "summary": "The opening claim on one side, a strong photograph on the other.",
   "type": "section",
-  "variants": {},
-  "version": "12",
+  "variants": {
+   "side": [
+    "end",
+    "start"
+   ]
+  },
+  "version": "13",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -1768,7 +1773,7 @@
    "reveal"
   ],
   "content-shape": "peer set",
-  "description": "A five-by-three lattice of member portraits with the strongest photograph held in the centre cell - a full-section image wall that carries scale rather than copy.",
+  "description": "A lattice of member portraits three rows deep - three, five or seven columns across - with the strongest photograph held in the centre cell; a full-section image wall that carries scale rather than copy.",
   "display-name": "Portrait wall",
   "image-slots": [
    {
@@ -1797,7 +1802,7 @@
    "rhythm": "cards"
   },
   "motion": "none",
-  "needs": "fifteen different real member photographs, portrait-crop and at least 420px wide - never stock, never the same face twice; a short label naming what the wall shows; and a section around it carrying the words, because the wall says nothing on its own. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "needs": "nine, fifteen or twenty-one different real member photographs, portrait-crop and at least 420px wide - never stock, never the same face twice; a short label naming what the wall shows; and a section around it carrying the words, because the wall says nothing on its own. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -1812,7 +1817,7 @@
   "summary": "A lattice of member portraits with the strongest one held in the middle.",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "pricing-tiers": {
