@@ -38,7 +38,7 @@
     "soft"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "announcement-bar": {
@@ -165,7 +165,7 @@
   "summary": "The top of a written piece: the title, who wrote it and when.",
   "type": "section",
   "variants": {},
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "article-toc": {
@@ -195,7 +195,7 @@
   "summary": "A short list of links to the sections of a long piece, which a reader can put away.",
   "type": "component",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "author-note": {
@@ -222,7 +222,7 @@
   "summary": "The block at the end of a piece saying who wrote it and why they know the subject.",
   "type": "component",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "benefit-tiles": {
@@ -253,7 +253,7 @@
   "summary": "Two to six tall tiles, each with an icon and a short benefit.",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "capability-tabs": {
@@ -300,7 +300,7 @@
   "summary": "A row of tabs, each showing one feature in a panel below.",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "claim-stack": {
@@ -343,7 +343,7 @@
     "deep"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "colophon": {
@@ -422,7 +422,7 @@
   "summary": "Three things compared against the same list of criteria.",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "crumb-trail": {
@@ -541,7 +541,7 @@
     "deep"
    ]
   },
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "cta-curtain": {
@@ -577,7 +577,7 @@
   "summary": "A full-screen closing call to action, uncovered as the page above it scrolls away.",
   "type": "section",
   "variants": {},
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "cta-image": {
@@ -624,7 +624,7 @@
   "summary": "A closing call to action over one full-width photograph.",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "cta-sticky": {
@@ -719,7 +719,7 @@
   "summary": "A run of full-width panels, each a shade stronger than the last.",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "gallery-scroll": {
@@ -815,7 +815,7 @@
   "summary": "A heading and one supporting line, to introduce what follows.",
   "type": "component",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "hero-band": {
@@ -879,7 +879,7 @@
     "behind"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "hero-centred": {
@@ -930,7 +930,7 @@
   "summary": "An opening claim centred above a wide photograph.",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "hero-overlay": {
@@ -980,7 +980,7 @@
   "summary": "One photograph filling the first screen, with the claim over it.",
   "type": "section",
   "variants": {},
-  "version": "15",
+  "version": "16",
   "whole-page": false
  },
  "hero-split": {
@@ -1036,7 +1036,7 @@
     "start"
    ]
   },
-  "version": "13",
+  "version": "14",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -1087,7 +1087,7 @@
   "summary": "The whole page in a single screen: a photograph, one claim, one button.",
   "type": "section",
   "variants": {},
-  "version": "13",
+  "version": "14",
   "whole-page": true
  },
  "hero-stated": {
@@ -1145,7 +1145,7 @@
     "deep"
    ]
   },
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "key-takeaways": {
@@ -1173,7 +1173,7 @@
   "summary": "A short box near the top saying what the piece tells you.",
   "type": "component",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "link-cluster": {
@@ -1216,7 +1216,7 @@
     "brand"
    ]
   },
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "listing-rows": {
@@ -1260,7 +1260,7 @@
     "brand"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "masthead-nav": {
@@ -1409,7 +1409,7 @@
   "summary": "A grid of upright cards, each led by a photograph.",
   "type": "section",
   "variants": {},
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "member-filter": {
@@ -1575,7 +1575,7 @@
   "summary": "A conversion beat with no photography: the argument on one side, the offer on the other.",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "opener-split": {
@@ -1615,7 +1615,7 @@
     "ruled"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "photo-band": {
@@ -1722,7 +1722,7 @@
   "summary": "Cards with the photograph on top and the words underneath.",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "picker-chips": {
@@ -1752,7 +1752,7 @@
   "summary": "The first sign-up decision as one tap: a question and a row of choices.",
   "type": "component",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "pinned-cards": {
@@ -1798,7 +1798,7 @@
   "summary": "Full-screen photo cards that stack over one another as you scroll.",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "portrait-prose": {
@@ -1847,7 +1847,7 @@
     "end"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "portrait-wall": {
@@ -1972,7 +1972,7 @@
   "summary": "The body of a written piece, held to a readable width.",
   "type": "component",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "pull-quote": {
@@ -2000,7 +2000,7 @@
   "summary": "One line from the article, set large to break up a long read.",
   "type": "component",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "quote-feature": {
@@ -2041,7 +2041,7 @@
   "summary": "One oversized testimonial on a full-width tinted stage.",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "rating-mark": {
@@ -2105,7 +2105,7 @@
   "summary": "Safety measures as cards, grouped by what they protect against.",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "signup-card": {
@@ -2142,7 +2142,7 @@
   "summary": "A short sign-up card that sits in an opener in place of its join button.",
   "type": "component",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "signup-steps": {
@@ -2182,7 +2182,7 @@
   "summary": "An opening that asks the first sign-up questions on the page itself.",
   "type": "section",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "source-note": {
@@ -2253,7 +2253,7 @@
   "summary": "Full-width rows, each a large figure with a line explaining it.",
   "type": "section",
   "variants": {},
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "stats-band": {
@@ -2290,7 +2290,7 @@
   "summary": "A full-width band of real figures, each paired with what it means.",
   "type": "section",
   "variants": {},
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "steps-numbered": {
@@ -2340,7 +2340,7 @@
   "summary": "How it works, as numbered image cards.",
   "type": "section",
   "variants": {},
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "steps-plain": {
@@ -2377,7 +2377,7 @@
   "summary": "How it works, as a plain numbered lattice with no photographs.",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "testimonial-carousel": {
@@ -2428,7 +2428,7 @@
     "dots"
    ]
   },
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "testimonial-grid": {
@@ -2473,7 +2473,7 @@
   "summary": "Three testimonial cards side by side, with portraits.",
   "type": "section",
   "variants": {},
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "trust-row": {
@@ -2564,7 +2564,7 @@
   "summary": "Image-and-words rows where the image swaps side row to row.",
   "type": "section",
   "variants": {},
-  "version": "10",
+  "version": "11",
   "whole-page": false
  }
 }
