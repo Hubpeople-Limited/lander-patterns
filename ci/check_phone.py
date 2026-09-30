@@ -12,9 +12,14 @@ first menu link, a wordmark pushing a menu button onto a second row, an
 opener putting its join control below the fold. Each passed every gate. Each
 was found by opening a browser.
 
-Most of the traffic is phones, so that is the width this measures.
+Most of the traffic is phones, so that is the width this measures first.
+`--desktop` holds the same rules at 1024 and 1280, because two patterns kept
+a defect above 60rem that no phone width could reach: one that unwinds to
+plain flow on a phone, and one whose menu dropped its tap floor on a wide
+screen.
 
     python ci/check_phone.py                     every pattern, 320 and 360
+    python ci/check_phone.py --desktop           every pattern, 1024 and 1280
     python ci/check_phone.py hero-split faq-details
     python ci/check_phone.py --width 320
     python ci/check_phone.py --out /tmp/phone    keep the rendered pages
@@ -58,10 +63,25 @@ from build_preview import fill, repeat_block  # noqa: E402
 # before.
 WIDTHS = (320, 360)
 
+# The same rules above the breakpoints. 1024 is the narrowest width most
+# patterns lay out wide at - they switch at 60rem - and it is a tablet held
+# sideways, so it is touched as often as clicked. 1280 is the commonest laptop.
+# Both are what ci/check_measures.py renders at, for the same reasons. 1440 was
+# tried and found nothing 1280 had not.
+#
+# A separate set rather than two more defaults, so a phone run stays the phone
+# run and CI names the desktop one as its own step.
+DESKTOP_WIDTHS = (1024, 1280)
+
 # 44 CSS pixels in the smaller dimension. It is the figure Apple's guidance
 # and WCAG's AAA target-size rule both land on, and it is what a thumb
 # actually needs. WCAG 2.2's AA floor is 24, which is low enough to pass
 # controls nobody can reliably hit.
+#
+# The same figure at the desktop widths, on purpose. A viewport's width says
+# nothing about what is pointing at it: 1024 is a tablet held sideways and
+# 1280 a laptop with a touch screen, and the header the library ships already
+# holds every target to 44 at every width by its own rule.
 TAP_MIN = 44
 
 # Below this, body text on a phone is not being read, it is being squinted
@@ -158,7 +178,7 @@ async () => {
   const TAP = %TAP%, TEXT = %TEXT%, FIELD = %FIELD%;
   const out = { width: W, docScroll: document.documentElement.scrollWidth,
                 overflow: [], taps: [], small: [], fields: [], overlaps: [],
-                lines: [] };
+                lines: [], screens: [] };
 
   const style = el => getComputedStyle(el);
 
@@ -300,6 +320,24 @@ async () => {
     const size = parseFloat(style(el).fontSize);
     if (size < FIELD - 0.01) {
       out.fields.push({ what: describe(el), size: Math.round(size * 10) / 10 });
+    }
+  }
+
+  // ---- a box sized to the screen, drawn taller than it ------------------
+  // `height: 100svh` sizes the CONTENT box unless the box says otherwise, so
+  // padding or a border beside it lands outside the screen: a pinned panel a
+  // screen and two paddings tall, whose middle is not the screen's middle and
+  // whose foot is below the fold. Read off the page, not the source - the
+  // content box is exactly the viewport and the drawn box is not. Nothing
+  // measured it at a phone width because the patterns that pin a screen
+  // unwind to plain flow there.
+  const H = window.innerHeight;
+  for (const el of all) {
+    if (!shown(el)) continue;
+    if (Math.abs(parseFloat(style(el).height) - H) >= 0.5) continue;
+    const r = el.getBoundingClientRect();
+    if (r.height > H + 1) {
+      out.screens.push({ what: describe(el), h: Math.round(r.height), H });
     }
   }
 
@@ -456,9 +494,44 @@ async () => {
                                 top: baseline - ink.actualBoundingBoxAscent * zoom,
                                 bottom: baseline + ink.actualBoundingBoxDescent * zoom });
       if (box.right - box.left <= LINE_OVERLAP || box.bottom - box.top <= LINE_OVERLAP) continue;
-      boxes.push({ box, block, baseline, what: standIns.get(el) || describe(el) });
+      boxes.push({ box, block, baseline, el, what: standIns.get(el) || describe(el) });
     }
   }
+  // Two runs that meet with an opaque box stacked between them are not text
+  // on text: the lower one is under a sheet, which is what a curtain reveal
+  // or a card pulled over a heading is for. Decided at the middle and the
+  // four corners of where the two meet, from the page's own stacking order:
+  // at every one of the five points something between the two runs, and not
+  // behind the lower one, must paint a fully opaque colour with nothing above
+  // it fading it. A translucent sheet, a sheet the lower run reaches past, a
+  // gradient or a picture is not trusted to hide anything, and a run the page
+  // cannot hit-test is reported rather than excused.
+  const tint = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+  const solid = el => {
+    for (let p = el; p; p = p.parentElement) if (parseFloat(style(p).opacity) < 1) return false;
+    tint.clearRect(0, 0, 1, 1);
+    tint.fillStyle = 'rgba(0, 0, 0, 0)';
+    tint.fillStyle = style(el).backgroundColor;
+    tint.fillRect(0, 0, 1, 1);
+    return tint.getImageData(0, 0, 1, 1).data[3] === 255;
+  };
+  const hiddenAt = (a, b, x, y) => {
+    const stack = document.elementsFromPoint(x, y);
+    const ia = stack.indexOf(a), ib = stack.indexOf(b);
+    if (ia < 0 || ib < 0) return false;
+    const lower = stack[Math.max(ia, ib)];
+    for (let k = Math.min(ia, ib) + 1; k < Math.max(ia, ib); k++) {
+      if (!stack[k].contains(lower) && solid(stack[k])) return true;
+    }
+    return false;
+  };
+  const underSheet = (a, b, m) => {
+    const e = 0.5;
+    return [[(m.left + m.right) / 2, (m.top + m.bottom) / 2],
+            [m.left + e, m.top + e], [m.right - e, m.top + e],
+            [m.left + e, m.bottom - e], [m.right - e, m.bottom - e]]
+      .every(([x, y]) => hiddenAt(a, b, x, y));
+  };
   const said = new Set();
   for (let i = 0; i < boxes.length; i++) {
     for (let j = i + 1; j < boxes.length; j++) {
@@ -479,6 +552,10 @@ async () => {
         continue;
       }
       if (w <= OVERLAP || h <= OVERLAP) continue;
+      if (underSheet(a.el, b.el, {
+            left: Math.max(a.box.left, b.box.left), right: Math.min(a.box.right, b.box.right),
+            top: Math.max(a.box.top, b.box.top), bottom: Math.min(a.box.bottom, b.box.bottom) }))
+        continue;
       const key = a.what + '\n' + b.what;
       if (said.has(key)) continue;
       said.add(key);
@@ -658,6 +735,10 @@ class Phone:
         for o in got["lines"]:
             bad.append(f"{name}: lines of {say(o['what'])} overlap each other "
                        f"at line-height {o['leading']}")
+        for o in got["screens"]:
+            bad.append(f"{name}: {say(o['what'])} is sized to the screen and "
+                       f"draws {o['h']}px tall in a {o['H']}px viewport - its "
+                       f"padding or border sits outside that height")
         return bad
 
 
@@ -707,14 +788,16 @@ def sweep(widths=WIDTHS, tokens_name=BASELINE_TOKENS, names=None):
                     matched.add((name, why))
                 else:
                     new.append(line)
-    # Only a run over the whole library ON THE BASELINE TOKEN SET can say an
-    # entry matched nothing. A run over three named patterns would call every
+    # Only a run over the whole library ON THE BASELINE TOKEN SET AT THE PHONE
+    # WIDTHS can say an entry matched nothing. The baseline was taken at 320
+    # and 360, and an entry for a fault that lives only there is not stale on
+    # a run that never looked there. A run over three named patterns would call every
     # other entry stale, and a run on another sample brand would call stale
     # every entry whose fault the other brand's type metrics happen to lift
     # over the threshold - which is a live baseline entry being deleted for
     # the wrong reason. See BASELINE_TOKENS.
     full = (names == sorted(f.name for f in PATTERNS.iterdir() if f.is_dir())
-            and tokens_name == BASELINE_TOKENS)
+            and tokens_name == BASELINE_TOKENS and tuple(widths) == WIDTHS)
     stale = ([f"{p}: {w}" for p, n, w in ACCEPTED if (p, w) not in matched]
              if full else [])
     return new, known, stale
@@ -727,6 +810,8 @@ def main():
                     help="pattern names; default every pattern in the library")
     ap.add_argument("--width", type=int, action="append",
                     help="a viewport width; repeatable. Default 320 and 360")
+    ap.add_argument("--desktop", action="store_true",
+                    help="measure at 1024 and 1280 instead of the phone widths")
     ap.add_argument("--tokens", default="brand",
                     help="which preview token set to render on (default brand)")
     ap.add_argument("--out", help="directory to keep the rendered pages in")
@@ -748,7 +833,11 @@ def main():
         # inferred here, so it is passed in.
         return 1 if args.require_browser else 0
 
-    widths = tuple(args.width) if args.width else WIDTHS
+    if args.width and args.desktop:
+        print("phone widths: --width and --desktop both name the widths; pick one")
+        return 2
+    widths = (tuple(args.width) if args.width
+              else DESKTOP_WIDTHS if args.desktop else WIDTHS)
     names = args.patterns or sorted(
         f.name for f in PATTERNS.iterdir() if f.is_dir())
     for name in names:
@@ -766,7 +855,8 @@ def main():
     if out_dir:
         out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"phone widths: {len(names)} pattern(s) at "
+    print(f"{'desktop' if widths == DESKTOP_WIDTHS else 'phone'} widths: "
+          f"{len(names)} pattern(s) at "
           f"{', '.join(str(w) for w in widths)}px on the {args.tokens} tokens\n")
 
     if out_dir:
@@ -789,6 +879,10 @@ def main():
         print(f"  note: the accepted baseline was measured on the "
               f"{BASELINE_TOKENS} tokens, so stale detection is off on this "
               f"run. A pixel size is a size in a particular typeface")
+    elif widths != WIDTHS:
+        print(f"  note: the accepted baseline was measured at "
+              f"{' and '.join(str(w) for w in WIDTHS)}px, so stale detection "
+              f"is off on this run")
 
     if not new and not known:
         print(f"  clean: {len(names)} pattern(s), nothing overflows, no target "
