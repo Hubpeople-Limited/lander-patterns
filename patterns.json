@@ -2109,6 +2109,7 @@
  },
  "quote-feature": {
   "avoid-with": [
+   "quote-image",
    "testimonial-grid"
   ],
   "behaviours": [],
@@ -2146,6 +2147,70 @@
   "type": "section",
   "variants": {},
   "version": "8",
+  "whole-page": false
+ },
+ "quote-image": {
+  "avoid-with": [
+   "quote-feature"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "single claim",
+  "description": "One real quote at display size over a full-width photograph - the words on a soft-edged shade of the scrim that carries their contrast, placed in the middle, on the left or on the right, with the rest of the photograph clear or evenly darkened.",
+  "display-name": "Quote over a photo",
+  "image-slots": [
+   {
+    "crop": "wide",
+    "focal": "center",
+    "min": 2000,
+    "placeholder": true,
+    "slot": "quote-backdrop",
+    "subjects": [
+     "place",
+     "group",
+     "couple"
+    ]
+   }
+  ],
+  "layout": {
+   "people": "testimonials",
+   "rhythm": "bands"
+  },
+  "motion": "subtle",
+  "needs": "one real quote, word for word, from a member's review the platform returns or from material the brand gives, with the name it came with and a true detail line; one landscape photograph at least 2000px wide with its own alt text - a place, or people who stand for the brand, reads best behind a quote, where a face tends to read as the speaker's",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "about"
+  ],
+  "pairs-with": [
+   "steps-plain",
+   "faq-details",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "One real quote, set large over a full-width photograph.",
+  "type": "section",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "scrim": [
+    "fade",
+    "full"
+   ],
+   "words": [
+    "centre",
+    "start",
+    "end"
+   ]
+  },
+  "version": "1",
   "whole-page": false
  },
  "rating-mark": {
