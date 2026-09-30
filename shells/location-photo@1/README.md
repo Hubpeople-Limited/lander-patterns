@@ -21,7 +21,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-band** v2 (ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
+2. **hero-band** v3 (ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 5 word(s). Sample: Sample page headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
