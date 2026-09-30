@@ -1,4 +1,4 @@
-/* pinned-cards v1 - tokens only, selectors prefixed */
+/* pinned-cards - tokens only, selectors prefixed */
 .pinned-cards {
   --pinned-cards-panel-max: 34rem;
   --pinned-cards-step: 6vh;
@@ -44,7 +44,10 @@
   display: flex;
   align-items: flex-end;
   /* min-height, never height: a card whose copy outgrows the viewport must
-   be able to grow. See the README. */
+   be able to grow. See the README. border-box keeps the padding inside the
+   screen: without it a pinned card is a screen and two paddings tall, and
+   the foot of its panel sits under the fold where nothing can scroll to it. */
+  box-sizing: border-box;
   min-height: 100vh;
   min-height: 100svh;
   padding: var(--space-5);
