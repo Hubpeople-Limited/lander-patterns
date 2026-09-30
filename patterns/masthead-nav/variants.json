@@ -165,15 +165,37 @@
   },
   "toggle": {
     "label": "Menu button",
-    "note": "Whether the button that opens the mobile menu carries a word beside the three bars. Your word is read out to anyone using a screen reader or voice control either way.",
+    "note": "Whether the button that opens the mobile menu shows the bars alone or a word beside them. Your word is read out to anyone using a screen reader or voice control either way.",
     "rungs": {
-      "labelled": {
-        "label": "Word and bars",
-        "note": "Your word for the menu, next to the three bars. People find it more readily than the bars on their own, so this is the safer choice and the default."
-      },
       "icon": {
         "label": "Bars only",
-        "note": "Just the three bars. Tidier, and it hands room in the bar back to a wide logo. Worth it when your menu is short and your visitors know the site."
+        "note": "Just the bars, as most sites people use every day show it. Tidy, and it leaves room in the bar for a wide logo. The default."
+      },
+      "labelled": {
+        "label": "Word and bars",
+        "note": "Your word for the menu next to the bars. Worth it when your visitors are less used to phone menus, or when your logo is small and there is room to spare."
+      }
+    }
+  },
+  "burger": {
+    "label": "Menu icon",
+    "note": "How the bars on the mobile menu button are drawn. Whichever you pick, they turn into a cross while the menu is open.",
+    "rungs": {
+      "three": {
+        "label": "Three bars",
+        "note": "Three thin bars, the icon most people know. The default."
+      },
+      "two": {
+        "label": "Two bars",
+        "note": "Two thin bars, a little lighter and more modern looking. Suits a clean, minimal site."
+      },
+      "bold": {
+        "label": "Bold bars",
+        "note": "Three heavier, slightly wider bars. Easier to spot, and suits a brand with a strong, confident look."
+      },
+      "boxed": {
+        "label": "Bars in a shape",
+        "note": "The bars sit in a filled shape in the same colours as your join button, rounded the way your buttons are. The most noticeable choice."
       }
     }
   },

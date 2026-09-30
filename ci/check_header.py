@@ -130,6 +130,36 @@ COMBOS = [
     {"overflow": "more", "submenu": "dropdown", "layout": "inline", "sticky": "compact"},
 ]
 
+# The menu button's rungs, crossed, at the phone widths where the button is
+# drawn: every one has to stay thumb-sized and clear of the mark, shut and
+# open. Every other axis at its default.
+PHONE_COMBOS = [
+    {"overflow": "more", "submenu": "dropdown", "layout": "inline",
+     "toggle": t, "burger": b}
+    for t in ("icon", "labelled")
+    for b in ("three", "two", "bold", "boxed")
+] + [
+    # Every other rung that decides how much of the row the mark may take.
+    {"overflow": "more", "submenu": "dropdown", "layout": "inline", "toggle": t, **extra}
+    for t in ("icon", "labelled")
+    for extra in ({"nav": "minimal"}, {"menu": "panel"}, {"menu-side": "side-start"},
+                  {"mark": "plate"}, {"nav": "minimal", "mark": "plate"})
+]
+# The menu-free bar as it stood when it broke onto two rows: a row free to
+# wrap, and the room of one menu button given to the mark on a rung that has
+# none. The row control appends it and requires the check to fire.
+ROW_REGRESSION = '''
+@media (width < 60rem) {
+  .masthead-nav--minimal .masthead-nav-inner {
+    flex-wrap: wrap;
+  }
+  .masthead-nav--drawer.masthead-nav--icon .masthead-nav-mark {
+    max-width: calc(100% - var(--masthead-nav-tap) - var(--space-3));
+  }
+}
+'''
+PHONE_WIDTHS = (320, 360, 390)
+
 FILLER = "  <p>More sample copy, so the page is tall enough to scroll.</p>\n" * 30
 
 SHELL = """<!DOCTYPE html>
@@ -248,9 +278,24 @@ MEASURE = r"""
     }
   }
 
+  // The bar is one row: the mark shares it with the menu button, or on the
+  // menu-free rung with the join control. The join control dropping under
+  // the mark grows the bar and moves everything below it.
+  const mark = document.querySelector('.masthead-nav-mark');
+  const partner = [toggle, join].find(el => shown(el)
+    && !(el.closest('.masthead-nav-tray')
+         && getComputedStyle(el.closest('.masthead-nav-tray')).visibility === 'hidden'));
+  let oneRow = null;
+  if (mark && partner) {
+    const m = mark.getBoundingClientRect(), o = partner.getBoundingClientRect();
+    oneRow = o.top < m.bottom - 1 && o.bottom > m.top + 1;
+  }
+
   return {
     viewport: W,
     docScrollWidth: document.documentElement.scrollWidth,
+    oneRow,
+    partner: partner ? (partner.getAttribute('class') || '').split(/\s+/)[0] : null,
     rowLayout: !toggle || getComputedStyle(toggle).display === 'none',
     navShown: !!nav && getComputedStyle(nav).display !== 'none',
     rows: tops.length,
@@ -270,6 +315,18 @@ MEASURE = r"""
                                     .textContent.trim().slice(0, 30) }))
       : [],
   };
+}
+"""
+
+# The open button against the mark. The rest of an open drawer may lie over
+# the mark by design, so only the button that shuts it is held to this.
+TOGGLE_ON_MARK = r"""
+() => {
+  const logo = document.querySelector('.masthead-nav-logo');
+  const toggle = document.querySelector('.masthead-nav-toggle');
+  if (!logo || !toggle) return false;
+  const a = logo.getBoundingClientRect(), b = toggle.getBoundingClientRect();
+  return a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1;
 }
 """
 
@@ -331,7 +388,9 @@ def markup_for(combo, menu, logo_fixture):
 
 def page(combo, menu, logo_fixture, tokens, script, broken=False):
     css = (PATTERN / "pattern.css").read_text(encoding="utf-8")
-    if broken:
+    if broken == "row":
+        css += ROW_REGRESSION
+    elif broken:
         css += "\n.masthead-nav-links > ul { --hub-overflow: off !important; }\n"
     tag = '<script type="module" src="hub.js"></script>' if script else ""
     return SHELL.format(title="masthead-nav " + " ".join(f"{k}={v}" for k, v in combo.items()),
@@ -463,6 +522,9 @@ def measure_render(tab, combo, script):
             faults.append("the join control is not reachable on the bar"
                           + (f" - behind {j['blockedBy']}" if j.get("blockedBy") else ""))
     elif got["rowLayout"] and minimal:
+        if got["oneRow"] is False:
+            faults.append(f"the bar breaks onto two rows: {got['partner']} sits under the "
+                          f"brand mark, and the bar is {got['headerHeight']}px tall")
         j = got["join"]
         if not (j["present"] and j["visible"] and j["inView"] and j["onTop"]):
             faults.append("the join control is not reachable on the menu-free bar")
@@ -471,6 +533,9 @@ def measure_render(tab, combo, script):
     else:
         # Below the line: the drawer, open, has to hand over the join control
         # and every control has to be thumb-sized.
+        if got["oneRow"] is False:
+            faults.append(f"the bar breaks onto two rows: {got['partner']} sits under the "
+                          f"brand mark, and the bar is {got['headerHeight']}px tall")
         if minimal:
             j = got["join"]
             if not (j["present"] and j["visible"] and j["inView"] and j["onTop"]):
@@ -485,6 +550,8 @@ def measure_render(tab, combo, script):
                 faults.append("with the drawer open the join control is not reachable"
                               + (f" - behind {j['blockedBy']}" if j.get("blockedBy") else ""))
             got["small"] = sorted(set(got["small"]) | set(opened["small"]))
+            if tab.evaluate(TOGGLE_ON_MARK):
+                faults.append("with the menu open the button sits on the brand mark")
         for s in got["small"]:
             faults.append(f"a control under {TAP_MIN}px: {s}")
     return got, faults
@@ -547,6 +614,9 @@ def main():
     ap.add_argument("--broken", action="store_true",
                     help="the positive control: switch the fold off and require "
                          "this check to fire")
+    ap.add_argument("--broken-row", action="store_true",
+                    help="the one-row control: quiet on the menu-free bar as it "
+                         "ships, and firing with the bar as it broke put back")
     ap.add_argument("--widths", type=int, nargs="*", default=list(WIDTHS))
     ap.add_argument("--out", help="write the rendered pages here")
     ap.add_argument("--require-browser", action="store_true",
@@ -567,6 +637,26 @@ def main():
         if args.out:
             shell.keep = Path(args.out)
             shell.keep.mkdir(parents=True, exist_ok=True)
+        if args.broken_row:
+            combos = [c for c in PHONE_COMBOS if c.get("nav") == "minimal"]
+            quiet, n = sweep(shell, tokens, combos, ["short"], LOGO_FIXTURES,
+                             list(PHONE_WIDTHS), [False, True])
+            fired, m = sweep(shell, tokens, combos, ["short"], LOGO_FIXTURES,
+                             list(PHONE_WIDTHS), [False, True], broken="row")
+            fired = [f for f in fired if "two rows" in f]
+            if quiet:
+                print(f"check_header --broken-row: the shipped menu-free bar is not "
+                      f"clean ({len(quiet)} of {n} renders)")
+                for f in quiet:
+                    print("  " + f)
+                return 1
+            if not fired:
+                print("check_header --broken-row: the bar as it broke was put back "
+                      "and nothing fired - the one-row check is not measuring")
+                return 1
+            print(f"check_header --broken-row: quiet on the shipped bar ({n} renders), "
+                  f"fires on the bar as it broke ({len(fired)} of {m} renders)")
+            return 0
         if args.broken:
             # The narrowest claim that must fail: the long menu, the fold rung,
             # the library on, above the line. Anything wider would let a
@@ -584,6 +674,11 @@ def main():
             return 1
         faults, count = sweep(shell, tokens, COMBOS, list(MENUS), LOGO_FIXTURES,
                               args.widths, [False, True])
+        phone_widths = [w for w in args.widths if w in PHONE_WIDTHS]
+        more, extra = sweep(shell, tokens, PHONE_COMBOS, list(MENUS), LOGO_FIXTURES,
+                            phone_widths, [False, True])
+        faults += more
+        count += extra
 
     for k in known:
         print("  known " + k)
@@ -595,7 +690,8 @@ def main():
         return 1
     print(f"check_header ({args.tokens}): clean - {count} renders, "
           f"{len(COMBOS)} rung sets x {len(MENUS)} menus x {len(LOGO_FIXTURES)} marks "
-          f"x {len(args.widths)} widths, library on and off"
+          f"x {len(args.widths)} widths, and {len(PHONE_COMBOS)} menu button rung sets "
+          f"at {len(PHONE_WIDTHS)} phone widths, library on and off"
           + (f"; {len(known)} known" if known else ""))
     return 0
 

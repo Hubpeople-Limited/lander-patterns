@@ -213,6 +213,13 @@ jobs:
       # behaviour turned wrong, and every one of the three checks has to fire.
       - name: Confirm the behaviour gate can still catch a broken behaviour
         run: python ci/check_behaviours.py --require-browser --broken
+      # Every live page loads the newest bundle, so a block that sets nothing
+      # new has to come out of it exactly as it came out of the last one
+      # published, and today's markup has to fall back on that one.
+      - name: The bundle builds what the last published one built
+        run: python ci/check_behaviours.py --require-browser --compat
+      - name: Confirm the compatibility check can still catch a difference
+        run: python ci/check_behaviours.py --require-browser --compat --broken
       - name: Legibility
         run: python ci/legibility.py
       # The bundle is the one file here published to a URL rather than copied

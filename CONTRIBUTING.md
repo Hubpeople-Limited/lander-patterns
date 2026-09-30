@@ -118,6 +118,16 @@ Then the markup. Three rules:
 - If the pattern moves (`motion: subtle`/`expressive`), keep every animation
   and transition inside the reduced-motion guard pattern shown in existing
   patterns, and nothing auto-moves for more than five seconds.
+- **A row that scrolls sideways never shows the browser's scroll bar.** On a
+  desktop that draws classic bars it is always there, and a carousel reads as a
+  broken page. Hide it both ways on the selector that scrolls -
+  `scrollbar-width: none` and `::-webkit-scrollbar { display: none; }` - and
+  give a mouse another way along: hook `carousel` for previous and next
+  controls, and under `@media (scripting: none)`, where nothing can build
+  them, lay the row out wrapped. `member-grid` and `gallery-scroll` show both
+  halves. CI holds the first half to every rule that sets `overflow-x`,
+  `overflow` or `overflow-inline` to `auto` or `scroll`; the two data tables
+  it allows to keep a bar are named, with the reason, in `ci/_scrollbars.py`.
 
 ### The ground ladder — one vocabulary, four rungs
 
@@ -270,6 +280,8 @@ On every pull request, CI:
 - checks that `tokens-used` lists exactly the CONTRACT tokens your
   `pattern.css` references — your own `--<pattern-name>-*` properties are
   yours to use freely and are ignored by this check;
+- rejects a sideways scroller that can show the browser's scroll bar, in a
+  pattern or in the behaviour library's injected styles;
 - refuses certain internal strings (the check reports position only);
 - renders every pattern against five sample token sets — soft-rounded,
   sharp-flat, `dark`, a hostile brand whose `--color-heading` sits at the

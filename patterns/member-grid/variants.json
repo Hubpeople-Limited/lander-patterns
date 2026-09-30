@@ -27,11 +27,39 @@
       },
       "rail": {
         "label": "Swipe row",
-        "note": "One row the visitor swipes, scrolls or arrows through, snapping to each member. It keeps a long set to one band's worth of height. Nothing moves on its own and nothing auto-advances - the visitor is always the one driving."
+        "note": "One row the visitor swipes through or moves with previous and next buttons, snapping to each member. It keeps a long set to one band's worth of height, and shows no scroll bar. Nothing moves on its own and nothing auto-advances - the visitor is always the one driving."
       },
       "marquee": {
         "label": "Moving row",
-        "note": "The swipe row, moving along by itself, with a button to stop it. It needs the platform's behaviour library: where that is not served the block is simply the swipe row, which is why it is safe to choose. Nothing moves for a visitor who has asked their device for less motion, and it halts on hover, on keyboard focus, while it is being dragged, and whenever it scrolls out of view. Use it where the members are atmosphere rather than the thing being read - a homepage band rather than the block a location page is built around."
+        "note": "The swipe row, moving along by itself, with a button to stop it; once stopped, previous and next buttons move it. It needs the platform's behaviour library: where that is not served the block is simply the swipe row, which is why it is safe to choose. Nothing moves for a visitor who has asked their device for less motion, and it halts on hover, on keyboard focus, while it is being dragged, and whenever it scrolls out of view. Use it where the members are atmosphere rather than the thing being read - a homepage band rather than the block a location page is built around."
+      }
+    }
+  },
+  "controls": {
+    "label": "Arrows",
+    "note": "Where the arrows that move the row sit, on the swipe row and the moving row. They only show when there are more members than fit.",
+    "rungs": {
+      "top": {
+        "label": "Above, at the right",
+        "note": "Two round arrows above the row at the right, where people expect them; on a phone they sit under the row. The default."
+      },
+      "edges": {
+        "label": "Over the sides",
+        "note": "Two round arrows over the left and right of the row, halfway down, on a solid circle so they stay clear over photographs."
+      }
+    }
+  },
+  "phone": {
+    "label": "Arrows on a phone",
+    "note": "Whether a phone shows the arrows too. Either way a visitor can swipe the row.",
+    "rungs": {
+      "arrows": {
+        "label": "Show them",
+        "note": "The arrows under the row on a phone as well. The default."
+      },
+      "swipe": {
+        "label": "Swipe only",
+        "note": "No arrows on a phone: the next member peeking in at the edge says the row goes on. Tidier, for visitors used to swiping."
       }
     }
   }

@@ -37,6 +37,7 @@ What it does need is four decisions:
   brands' members.
 - **The brand's own words for the two links.** The card link goes to the join
   flow, not to that member's profile, so the wording must not promise a profile.
+  Two more, `previous-label` and `next-label`, name the row's controls.
 - **An empty-state sentence** that is true when the block is empty.
 
 **Pairing.** `heading-block` above it — the grid has no heading of its own and
@@ -53,27 +54,27 @@ carry the whole feel — hairline-and-square reads as a directory, rounded-and-
 shadowed as a product. `--color-primary` tints the initial tile that stands in
 for a member with no photograph, and colours the verified badge.
 
-Two axes. **Card style** — `plain` (square photo, no furniture), `framed`
+Four axes. **Card style** — `plain` (square photo, no furniture), `framed`
 (bordered card on your surface colour), `portrait` (a taller photo, cropping
 faces less). All three are deliberately quiet: member photographs are a real,
 mixed set, and furniture that flatters a shoot makes a mixed set look worse.
 **Layout** — `grid` wraps onto as many rows as it needs, `rail` is one row the
 visitor swipes through snapping to each member, and `marquee` is that row moving
-along by itself.
+along by itself. **Arrows** — `top`, a round pair above the row (under it on a
+phone), or `edges`, over its sides on a solid circle. **Arrows on a phone** —
+`arrows`, or `swipe` to leave them off there.
 
-**`rail` never moves on its own**, the same bargain `gallery-scroll` makes.
-**`marquee` does, and it is the only rung needing a markup change as well as the
-class**: swap `data-hub-module="reveal"` for `"marquee"`. Where the behaviour
-library is not served the block is then simply the rail, which is why choosing
-it is safe.
+**`rail` never moves on its own**, the same bargain `gallery-scroll` makes, and
+shows no scroll bar: `carousel` builds the arrows, none while every member fits,
+and with scripting off both rows wrap like `grid`: a mouse has no other way along. **`marquee` is the only rung needing a markup
+change as well as the class**: swap `"reveal"` for `"marquee"` in
+`data-hub-module` and keep `"carousel"`. With no library it is simply the rail.
 
 Everything the marquee needs is built rather than authored: it clones the run for
 a seamless loop, keeps the copies out of the tab order and hidden from assistive
 technology, and **makes its own pause control**. That control is not decoration —
 content that moves by itself needs a way to stop it, and pause-on-hover is not
-one, doing nothing for a visitor on a phone or a keyboard. It also halts on
-hover, on focus, while dragged, and off screen. Under reduced motion nothing
-moves and no control appears.
-
-The `reveal` hook on the other two rungs fades the block in where the library is
-served.
+one, doing nothing for a visitor on a phone or a keyboard; it is a round pause or
+play icon beside the arrows. It also halts on hover, on focus, while dragged, and
+off screen. Under reduced motion nothing moves and no stop control appears. The
+arrows show once it is stopped, or when it never starts.

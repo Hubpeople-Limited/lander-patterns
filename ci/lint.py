@@ -23,6 +23,7 @@ import legibility
 from _display_type import display_faults
 from _heading_size import heading_size_faults
 from _containment import external_faults, spacing_faults
+from _scrollbars import ALLOWED as SCROLLBAR_ALLOWED, allowances_in_use, scrollbar_faults
 from _placeholders import (CROPS, FOCAL, IMAGE_SRC_SLOT, SUBJECTS,
                            file_name, parse_image_slots, slot_matches)
 import _dials as dials
@@ -1721,6 +1722,27 @@ def check_containment(html, css, name):
              f"of --space-scale with it")
 
 
+def check_scrollbars_hidden(css, name, path=None):
+    """A row that scrolls sideways never shows the browser's scroll bar.
+
+    On a desktop that draws classic bars the one under a carousel is always
+    there, and the row reads as a broken page. See ci/_scrollbars.py, which
+    also names the two data tables allowed to keep theirs.
+    """
+    for _, why in scrollbar_faults(css, name):
+        find(path or PATTERNS / name / "pattern.css", "scrollbar", why)
+    return allowances_in_use(css, name)
+
+
+def check_scrollbar_allowances(used):
+    """An allowance for a box that no longer scrolls is reported, not kept."""
+    for (name, sel), why in sorted(SCROLLBAR_ALLOWED.items()):
+        if (name, sel) not in used:
+            find(ROOT / "ci" / "_scrollbars.py", "scrollbar",
+                 f"ALLOWED names {sel} in {name} ({why}), which no longer "
+                 f"scrolls sideways - delete the entry")
+
+
 def check_heading_token_size(css, name):
     """--color-heading only where it is guaranteed, across the whole dial range.
 
@@ -1802,6 +1824,7 @@ def main():
     names = set()
     cross_refs = []
     avoids, avoid_paths = {}, {}
+    scrollbar_allowed = set()
     CONTRACT = contract_tokens()
     if not CONTRACT:
         find(ROOT / "TOKENS.md", "contract",
@@ -1865,6 +1888,8 @@ def main():
                 css.read_text(encoding="utf-8"), folder.name)
             check_containment(html.read_text(encoding="utf-8"),
                               css.read_text(encoding="utf-8"), folder.name)
+            scrollbar_allowed |= {(folder.name, sel) for sel in check_scrollbars_hidden(
+                css.read_text(encoding="utf-8"), folder.name)}
             # `tokens-used` names the CONTRACT tokens a pattern consumes. A
             # pattern's own custom properties (--<pattern-name>-*) are its
             # internal plumbing, not part of the contract, so they are
@@ -2034,6 +2059,7 @@ def main():
             f"{shape or '?'} · {meta.get('page-types', '?')}"
             f"{material}{varies}{moves}{limit} · {meta.get('description', '?')}"
         )
+    check_scrollbar_allowances(scrollbar_allowed)
 
     # The behaviour library injects CSS into every page that gets it, so its
     # stylesheet reaches brands exactly as a pattern's does. It goes through
@@ -2054,6 +2080,7 @@ def main():
             if not re.search(r"\{[^{}]*[\w-]+\s*:", block):
                 continue
             check_css(hub, "hub", block)
+            check_scrollbars_hidden(block, "hub", hub)
         # legibility.check is deliberately NOT run here. Its rule is that a
         # pattern may not hide content and wait for a script; this file IS
         # the script, and hiding a panel is the whole of what it does.

@@ -2175,7 +2175,9 @@ def check_header_fit():
     for label, argv, want in (
             ("header gate quiet on the shipped header (1280 only)",
              ["--widths", "1280", "1024"], 0),
-            ("header gate fires with the fold switched off", ["--broken"], 0)):
+            ("header gate fires with the fold switched off", ["--broken"], 0),
+            ("header gate holds the menu-free bar to one row, and fires with the "
+             "bar as it broke put back", ["--broken-row"], 0)):
         got = subprocess.run([sys.executable, str(HERE / "check_header.py")] + argv,
                              capture_output=True, text=True, encoding="utf-8")
         ok = got.returncode == want
@@ -2198,7 +2200,11 @@ def check_behaviours_run():
         return failures
     for label, argv, want in (
             ("behaviour gate quiet on the shipped behaviours", [], 0),
-            ("behaviour gate fires with one line of each turned wrong", ["--broken"], 0)):
+            ("behaviour gate fires with one line of each turned wrong", ["--broken"], 0),
+            ("a block with no new setting builds what the last published bundle "
+             "built, and today's markup falls back on it", ["--compat"], 0),
+            ("the compatibility check fires with the new look forced on",
+             ["--compat", "--broken"], 0)):
         got = subprocess.run([sys.executable, str(HERE / "check_behaviours.py")] + argv,
                              capture_output=True, text=True, encoding="utf-8")
         ok = got.returncode == want
@@ -2799,6 +2805,95 @@ def check_shell_placeholders():
     return failures
 
 
+# A sideways scroller hides the browser's scroll bar, both spellings, on the
+# same selector. (label, pattern name, css, faults wanted).
+IDIOM = ("scrollbar-width: none; }} {sel}::-webkit-scrollbar {{ display: none; }}")
+SCROLLBAR_CASES = [
+    ("overflow-x: auto and nothing hiding the bar", "demo",
+     ".demo-row { overflow-x: auto; }", 1),
+    ("the standard property alone", "demo",
+     ".demo-row { overflow-x: scroll; scrollbar-width: none; }", 1),
+    ("the engine rule alone", "demo",
+     ".demo-row { overflow-x: auto; } .demo-row::-webkit-scrollbar { display: none; }", 1),
+    ("the engine rule that draws the bar", "demo",
+     ".demo-row { overflow-x: auto; scrollbar-width: none; } "
+     ".demo-row::-webkit-scrollbar { display: block; }", 1),
+    ("the overflow shorthand", "demo", ".demo-row { overflow: auto; }", 1),
+    ("the shorthand scrolling only sideways", "demo",
+     ".demo-row { overflow: auto hidden; }", 1),
+    ("overflow-inline", "demo", ".demo-row { overflow-inline: auto; }", 1),
+    ("with !important", "demo", ".demo-row { overflow-x: auto !important; }", 1),
+    ("inside a media query", "demo",
+     "@media (width < 48rem) { .demo-row { overflow-x: auto; } }", 1),
+    ("one selector of two hidden", "demo",
+     ".demo--a .demo-row, .demo--b .demo-row { overflow-x: auto; } "
+     ".demo--a .demo-row { " + IDIOM.format(sel=".demo--a .demo-row"), 1),
+    ("an allowance claimed by the wrong box", "prose-column",
+     ".prose-column table { overflow-x: auto; }", 1),
+    ("the house idiom", "demo",
+     ".demo-row { overflow-x: auto; " + IDIOM.format(sel=".demo-row"), 0),
+    ("the idiom on a selector list", "demo",
+     ".demo--a .demo-row, .demo--b .demo-row { overflow-x: auto; scrollbar-width: none; } "
+     ".demo--a .demo-row::-webkit-scrollbar, .demo--b .demo-row::-webkit-scrollbar "
+     "{ display: none; }", 0),
+    ("the idiom inside a media query", "demo",
+     "@media (width < 48rem) { .demo-row { overflow-x: auto; "
+     + IDIOM.format(sel=".demo-row") + " }", 0),
+    ("a list that scrolls down, not across", "demo",
+     ".demo-list { overflow-y: auto; }", 0),
+    ("the shorthand scrolling only down", "demo",
+     ".demo-list { overflow: hidden auto; }", 0),
+    ("a box that clips", "demo", ".demo-frame { overflow: hidden; }", 0),
+    ("a row put back to visible", "demo", ".demo-row { overflow-x: visible; }", 0),
+    ("an article table, allowed by name", "prose-column",
+     ".prose-column figure { overflow-x: auto; }", 0),
+]
+
+
+def check_scrollbar_gate():
+    """ci/_scrollbars.py: every sideways scroller hides the browser's bar, the
+    allowances are the named tables only, and an allowance whose box no longer
+    scrolls is reported. Then the library and the behaviour library's
+    injected stylesheet, which must be clean."""
+    import lint
+    from _scrollbars import ALLOWED, scrollbar_faults
+    failures = []
+
+    def case(label, ok, note=""):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}" + ("" if ok else note))
+        if not ok:
+            failures.append(label)
+
+    for label, name, css, want in SCROLLBAR_CASES:
+        got = len(scrollbar_faults(css, name))
+        verb = "catches" if want else "quiet on"
+        case(f"scrollbar {verb}: {label}", got == want, f" (got {got}, want {want})")
+
+    before = len(lint.findings)
+    lint.check_scrollbar_allowances(set())
+    stale = len(lint.findings) - before
+    del lint.findings[before:]
+    case("scrollbar: every allowance whose box no longer scrolls is reported",
+         stale == len(ALLOWED), f" (got {stale}, want {len(ALLOWED)})")
+    before = len(lint.findings)
+    lint.check_scrollbar_allowances(set(ALLOWED))
+    quiet = len(lint.findings) - before
+    del lint.findings[before:]
+    case("scrollbar: quiet while every allowance is in use", quiet == 0, f" (got {quiet})")
+
+    found = []
+    for folder in sorted((HERE.parent / "patterns").iterdir()):
+        css = folder / "pattern.css"
+        if css.is_file():
+            found += [why for _, why in scrollbar_faults(css.read_text(encoding="utf-8"),
+                                                         folder.name)]
+    for block in re.findall(r"`([^`]*)`", (HERE.parent / "lib" / "hub.js").read_text(encoding="utf-8")):
+        found += [why for _, why in scrollbar_faults(block, "hub")]
+    case("scrollbar: no pattern and no behaviour can show a sideways scroll bar",
+         not found, "".join(f"\n        {why}" for why in found))
+    return failures
+
+
 def main():
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
@@ -2889,6 +2984,8 @@ def main():
     print()
     failures += check_shell_placeholders()
     print()
+    failures += check_scrollbar_gate()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -2912,7 +3009,8 @@ def main():
              + len(HUB_VERSION_CASES) + 7
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2
-             + PLACEHOLDER_URL_CASE_COUNT)
+             + PLACEHOLDER_URL_CASE_COUNT
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

@@ -1,0 +1,20 @@
+{
+  "controls": {
+    "label": "Arrows",
+    "note": "Where the arrows that move between testimonials sit. The dots under the cards are always there too.",
+    "rungs": {
+      "top": {
+        "label": "Above, at the right",
+        "note": "Two round arrows above the cards at the right, where people expect them; on a phone they sit under the cards. The default."
+      },
+      "edges": {
+        "label": "Over the sides",
+        "note": "Two round arrows at the left and right of the cards, halfway down, on a solid circle so they stay clear."
+      },
+      "dots": {
+        "label": "Under the dots",
+        "note": "Two round arrows centred under the dots, so everything that moves the cards sits together below them."
+      }
+    }
+  }
+}

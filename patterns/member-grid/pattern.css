@@ -168,8 +168,13 @@
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: var(--space-4);
+  scrollbar-width: none;
   padding-block: var(--space-2);
   max-width: none;
+}
+.member-grid--rail .lp-grid::-webkit-scrollbar,
+.member-grid--marquee .lp-grid::-webkit-scrollbar {
+  display: none;
 }
 .member-grid--rail .mem-card,
 .member-grid--marquee .mem-card {
@@ -181,6 +186,62 @@
 .member-grid--marquee .lp-grid:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+/* The carousel's controls stay hidden while the marquee moves the row, and
+   show once its stop control is pressed. */
+.member-grid--marquee:has(.hub-marquee-running):not(:has(.hub-marquee-control[aria-pressed="true"])) .hub-carousel-controls {
+  display: none;
+}
+
+/* controls: where the previous and next arrows sit, read by the behaviour
+   library from these properties. phone: whether a phone shows them. */
+.member-grid--top {
+  --hub-carousel-controls: top;
+  --hub-carousel-look: round;
+}
+.member-grid--edges {
+  --hub-carousel-controls: edges;
+  --hub-carousel-look: round;
+}
+.member-grid--arrows {
+  --hub-carousel-phone: show;
+}
+.member-grid--swipe {
+  --hub-carousel-phone: hide;
+}
+.member-grid--marquee {
+  --hub-marquee-look: round;
+}
+/* The pair keeps to the column the heading above it sits in. */
+.member-grid .hub-carousel-controls--top {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+/* Over a photograph the arrows need a ground of their own. */
+.member-grid .hub-carousel-controls--edges .hub-carousel-control {
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--card-shadow);
+}
+/* The marquee's stop control shares the arrows' row, at its end. */
+.member-grid--marquee {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+.member-grid--marquee .lp-grid,
+.member-grid--marquee .lp-members__empty {
+  flex: 0 0 100%;
+}
+.member-grid--marquee .hub-carousel-controls--top {
+  margin-inline: 0;
+  padding-inline: 0 var(--space-2);
+}
+.member-grid--marquee .hub-marquee-control {
+  margin: 0 var(--space-4) var(--space-3) 0;
 }
 
 @media (min-width: 48rem) {
@@ -206,5 +267,28 @@
   }
   .member-grid .mem-card__cta {
     transition: color var(--transition-fast);
+  }
+}
+
+/* With scripting off nothing can build the previous and next controls, and
+   the hidden scroll bar would leave a mouse no way along the row, so both
+   rows wrap like the grid rung. */
+@media (scripting: none) {
+  .member-grid--rail .lp-grid,
+  .member-grid--marquee .lp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    overflow-x: visible;
+    max-width: var(--container-max);
+  }
+  .member-grid--rail .mem-card,
+  .member-grid--marquee .mem-card {
+    width: auto;
+  }
+}
+@media (scripting: none) and (min-width: 48rem) {
+  .member-grid--rail .lp-grid,
+  .member-grid--marquee .lp-grid {
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
   }
 }

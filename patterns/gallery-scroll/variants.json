@@ -1,0 +1,30 @@
+{
+  "controls": {
+    "label": "Arrows",
+    "note": "Where the arrows that move the gallery sit. They only show when there are more photographs than fit.",
+    "rungs": {
+      "top": {
+        "label": "Above, at the right",
+        "note": "Two round arrows above the photographs at the right, where people expect them; on a phone they sit under the row. The default."
+      },
+      "edges": {
+        "label": "Over the sides",
+        "note": "Two round arrows over the left and right of the photographs, halfway down, on a solid circle so they stay clear over any picture."
+      }
+    }
+  },
+  "phone": {
+    "label": "Arrows on a phone",
+    "note": "Whether a phone shows the arrows too. Either way a visitor can swipe the row.",
+    "rungs": {
+      "arrows": {
+        "label": "Show them",
+        "note": "The arrows under the photographs on a phone as well. The default."
+      },
+      "swipe": {
+        "label": "Swipe only",
+        "note": "No arrows on a phone: the next photograph peeking in at the edge says the row goes on. Tidier, for visitors used to swiping."
+      }
+    }
+  }
+}

@@ -2,26 +2,26 @@
 name: masthead-nav
 display-name: Site header
 summary: Your logo, the menu, and the log in and join buttons.
-version: 10
+version: 11
 type: component
 page-types: homepage, landing, pricing, safety, article, features, articles-landing, location, locations-landing, about
 requires: none
 content-shape: reference
 layout: none
-description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word, and three bottom edges.
+description: The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
 keywords: header, masthead, navigation, menu, logo, mobile menu, drawer, mega menu, overflow
 needs: the brand's logo, the menu items configured on the platform, and three words in the brand's own language - one for the small-screen menu button, one for that same button while the menu is showing, and one for the item that holds whatever does not fit the row. Every other value on it is platform furniture
 pairs-with: none
 avoid-with: none
 tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-rule, --color-scrim, --color-surface, --color-surface-soft, --color-text, --container-max, --font-heading, --logo-height, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --transition-fast, --type-scale, --weight-display
-variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row; overflow=wrap|more|scroll; submenu=dropdown|mega; nav=full|minimal; sticky=static|pinned|compact; mark=direct|plate|mono; menu-align=menu-start|menu-centre|menu-end; menu-side=side-start|side-end; toggle=labelled|icon; edge=rule|shadow|flush
+variants: ground=plain|soft|brand; layout=inline|centred; menu=drawer|panel|row; overflow=wrap|more|scroll; submenu=dropdown|mega; nav=full|minimal; sticky=static|pinned|compact; mark=direct|plate|mono; menu-align=menu-start|menu-centre|menu-end; menu-side=side-start|side-end; toggle=icon|labelled; burger=three|two|bold|boxed; edge=rule|shadow|flush
 behaviours: drawer, menu, overflow, shrink
 motion: subtle
 one-per-page: yes
 status: active
 added: 2026-08-25
 -->
-<!-- Take one modifier from each of the twelve axes. See the README.
+<!-- Take one modifier from each of the thirteen axes. See the README.
        ground:      --plain page ground | --soft tinted fill | --brand brand colour
        layout:      --inline one row | --centred the mark over the menu
        menu:        --drawer a side panel on a phone | --panel a sheet under the bar | --row no button
@@ -32,7 +32,8 @@ added: 2026-08-25
        mark:        --direct as it is | --plate on a page-colour plate | --mono a white silhouette
        menu-align:  --menu-start | --menu-centre | --menu-end, below 60rem
        menu-side:   --side-start | --side-end, the side the button and its drawer share
-       toggle:      --labelled the word beside the bars | --icon the bars alone, the word clipped, and the mark may fill the row
+       toggle:      --icon the bars alone, the word clipped but still read out, and the mark may fill the row | --labelled the word beside the bars
+       burger:      --three bars | --two bars | --bold heavier bars | --boxed bars in a filled square, rounded as the buttons are
        edge:        --rule a hairline | --shadow a soft edge | --flush neither
      Login and join are INSIDE the disclosure and must stay there: an open
      drawer covers the bar. ci/lint.py fails the build if one moves.
@@ -41,7 +42,7 @@ added: 2026-08-25
      styles whatever list sits inside the nav landmark, so a list written by
      hand in the same shape takes the same styling. Set the img width and
      height to the logo file's own pixel size; --logo-height sets how tall it renders. -->
-<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--more masthead-nav--dropdown masthead-nav--full masthead-nav--static masthead-nav--direct masthead-nav--menu-start masthead-nav--side-end masthead-nav--labelled masthead-nav--rule" data-hub-module="shrink">
+<header class="masthead-nav masthead-nav--plain masthead-nav--inline masthead-nav--drawer masthead-nav--more masthead-nav--dropdown masthead-nav--full masthead-nav--static masthead-nav--direct masthead-nav--menu-start masthead-nav--side-end masthead-nav--icon masthead-nav--three masthead-nav--rule" data-hub-module="shrink">
   <div class="masthead-nav-inner">
     <a class="masthead-nav-mark" href="slot:home-url">
       <img class="masthead-nav-logo" src="{{logo.src}}" alt="{{logo.alt}}" width="240" height="60">

@@ -20,6 +20,9 @@
    from the section, trailing inset from here. */
   padding: var(--space-1) var(--space-4) var(--space-2) 0;
 }
+.benefit-tiles-track::-webkit-scrollbar {
+  display: none;
+}
 .benefit-tiles-track:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: calc(-1 * var(--space-1));

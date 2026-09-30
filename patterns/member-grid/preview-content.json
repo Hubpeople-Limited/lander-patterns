@@ -3,5 +3,7 @@
   "members-region": "Sample region",
   "members-cta-text": "Sample link text",
   "members-join-text": "Sample join text",
-  "members-empty-text": "Sample empty-state sentence for the preview render."
+  "members-empty-text": "Sample empty-state sentence for the preview render.",
+  "previous-label": "Previous (sample)",
+  "next-label": "Next (sample)"
 }

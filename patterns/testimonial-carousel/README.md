@@ -38,12 +38,9 @@ tab order until the reader brings it in. With the three slides that ship, that
 only happens below 60rem — above it all three are on stage as active, previous
 and next. A fourth slide is off stage at every width.
 
-**There are no prev/next arrows.** They would need a two-label set per slide,
-renumbered on every content change, and two labels pointing at one radio
-concatenate into its accessible name. The dots reach every slide in one press
-from either device. **There is no star rating either**: a rating is a separate
-factual claim needing a review system behind it, and `testimonial-grid`
-already settled that.
+**No arrows in the markup.** Labels would need a set per slide and would join into
+the radio's name, so the dots reach every slide; with the library, `carousel` adds
+two round arrows. **No star rating either**: that is a separate factual claim.
 
 **What it needs.** At least three real testimonials — each quote as the person
 actually wrote it, their real name, and a true attribution line. One real
@@ -77,4 +74,5 @@ at `--weight-display` (700) with tight tracking does the work in the quote. The 
 carry responsive values on `.testimonial-carousel`, so overriding one means a
 `.testimonial-carousel { … }` rule after the appended CSS — a `:root`
 declaration is not specific enough to reach it. Below 60rem the neighbours are
-not drawn. With the library, `carousel` adds previous and next controls after the dots; they wrap.
+not drawn. **Arrows**: `top`, above the cards at the right (under them on a phone),
+`edges`, over the sides on a solid circle, or `dots`, centred under the dots.

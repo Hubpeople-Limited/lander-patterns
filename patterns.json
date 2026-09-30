@@ -253,7 +253,7 @@
   "summary": "Two to six tall tiles, each with an icon and a short benefit.",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "capability-tabs": {
@@ -735,7 +735,7 @@
    "carousel"
   ],
   "content-shape": "peer set",
-  "description": "User-driven horizontal gallery with CSS scroll-snap - the no-JavaScript carousel; never auto-advances, and gains previous and next controls when the behaviour library is on the page.",
+  "description": "User-driven horizontal gallery with CSS scroll-snap and no scroll bar; never auto-advances, gains previous and next controls when the behaviour library is on the page, and wraps into rows with scripting off.",
   "display-name": "Photo gallery",
   "image-slots": [
    {
@@ -772,8 +772,17 @@
   "status": "active",
   "summary": "A row of photographs you swipe sideways through.",
   "type": "component",
-  "variants": {},
-  "version": "6",
+  "variants": {
+   "controls": [
+    "top",
+    "edges"
+   ],
+   "phone": [
+    "arrows",
+    "swipe"
+   ]
+  },
+  "version": "7",
   "whole-page": false
  },
  "heading-block": {
@@ -1198,7 +1207,7 @@
    "shrink"
   ],
   "content-shape": "reference",
-  "description": "The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word, and three bottom edges.",
+  "description": "The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.",
   "display-name": "Site header",
   "image-slots": [],
   "layout": {},
@@ -1224,6 +1233,12 @@
   "summary": "Your logo, the menu, and the log in and join buttons.",
   "type": "component",
   "variants": {
+   "burger": [
+    "three",
+    "two",
+    "bold",
+    "boxed"
+   ],
    "edge": [
     "rule",
     "shadow",
@@ -1276,11 +1291,11 @@
     "mega"
    ],
    "toggle": [
-    "labelled",
-    "icon"
+    "icon",
+    "labelled"
    ]
   },
-  "version": "10",
+  "version": "11",
   "whole-page": false
  },
  "media-card-grid": {
@@ -1367,7 +1382,8 @@
  "member-grid": {
   "avoid-with": [],
   "behaviours": [
-   "reveal"
+   "reveal",
+   "carousel"
   ],
   "content-shape": "peer set",
   "description": "A block of live members the platform fills at render time - the page ships an empty section and the CMS writes real profiles into it, so nothing here is authored, invented or kept in sync.",
@@ -1401,13 +1417,21 @@
     "framed",
     "portrait"
    ],
+   "controls": [
+    "top",
+    "edges"
+   ],
    "flow": [
     "grid",
     "rail",
     "marquee"
+   ],
+   "phone": [
+    "arrows",
+    "swipe"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "member-strip": {
@@ -2332,8 +2356,14 @@
   "status": "active",
   "summary": "Testimonials you move through one at a time.",
   "type": "section",
-  "variants": {},
-  "version": "9",
+  "variants": {
+   "controls": [
+    "top",
+    "edges",
+    "dots"
+   ]
+  },
+  "version": "10",
   "whole-page": false
  },
  "testimonial-grid": {

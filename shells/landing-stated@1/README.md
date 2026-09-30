@@ -16,7 +16,7 @@ This shell needs real pictures of people who agreed to appear. A people slot nev
 
 ## Sections, in order
 
-1. **masthead-nav** v10 (nav=minimal) - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word, and three bottom edges.
+1. **masthead-nav** v11 (nav=minimal) - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
@@ -30,7 +30,7 @@ This shell needs real pictures of people who agreed to appear. A people slot nev
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 8 word(s). Sample: A sample section title for the preview render
    - `intro` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-4. **benefit-tiles** v6 - A run of two to six tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
+4. **benefit-tiles** v7 - A run of two to six tall bordered tiles, each with a filled icon badge at the top and its title and copy set on the floor of the tile; the feature run for a page with no photography.
    - `track-label` - attribute (aria-label): a short label, about 2 word(s)
    - `tile-title` - text, about 3 word(s). Sample: Sample benefit title
    - `tile-copy` - text, about 26 word(s). Sample: Two short sentences of sample copy, here only to render...
