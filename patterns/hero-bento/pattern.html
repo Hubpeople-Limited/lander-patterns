@@ -1,0 +1,81 @@
+<!--
+name: hero-bento
+display-name: Opener in tiles
+summary: An opener set in a grid of tiles: the headline, the join, a photograph, a few live members, the brand's interests and, when the brand wants one, its member figure.
+version: 1
+type: section
+page-types: homepage, landing
+requires: photography
+image-slots: bento-photo subject=group|couple|place crop=landscape min=1600 focal=center placeholder=yes; bento-second subject=couple|person|place crop=square min=800 focal=center placeholder=yes
+content-shape: single claim
+layout: opener=cells
+description: Opener set in a ruled or spaced grid of tiles - the h1 and one line, the join button or the sign-up card, a photograph, a few live members, the brand's own interest labels, a second photograph and the brand's membership figure - where any tile but the headline and the join may be left out and the rest close up with no gap.
+keywords: opener, bento, tiles, grid, sign-up, members, interests, hero
+needs: a headline and one supporting sentence in the brand's own words; one photograph at least 1600px wide and, for the second photograph, one at least 800px square, each with its own alt text, or the library's placeholder; the brand's own interest labels, spelled as its join flow spells them; a membership figure from the platform's own count, when the brand wants a figure shown; the brand's words for the members tile's links and its empty state; signup-card in place of the join button, or the button alone
+pairs-with: signup-card, steps-plain, faq-details, cta-band
+avoid-with: hero-centred, hero-overlay, hero-portrait, hero-split, hero-squeeze, hero-stated, signup-steps
+tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --chip-radius, --color-bg, --color-focus, --color-on-primary, --color-primary, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-1, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --transition-fast, --type-scale, --weight-display
+variants: words=start|end|top; cells=ruled|spaced; motion=default|moving
+behaviours: reveal
+motion: subtle
+one-per-page: yes
+status: active
+added: 2026-09-30
+-->
+<!-- Where the headline tile sits: --start, --end or --top.
+     How the tiles are divided: --ruled or --spaced. -->
+<!-- Every tile but the headline and the join may go: delete its whole
+     <li> and the rest close up. A tile with nothing true to fill it is
+     better deleted. The figure reads best as the platform's own member
+     count, rounded as a sentence says it. The member loop is written by
+     the platform: leave it empty and keep data-members-strict lowercase
+     "true". The interest tile repeats its chip once per label. A SIGN-UP
+     OPENER puts signup-card in place of the join button and drops the
+     join line. Never lazy-load the first photograph. -->
+<section class="hero-bento hero-bento--start hero-bento--ruled">
+  <div class="hero-bento-grid">
+    <div class="hero-bento-lead">
+      <p class="hero-bento-eyebrow"><!-- slot: eyebrow --></p>
+      <h1 class="hero-bento-title"><!-- slot: headline --></h1>
+      <p class="hero-bento-sub"><!-- slot: subhead --></p>
+    </div>
+    <div class="hero-bento-join">
+      <p class="hero-bento-join-line"><!-- slot: join-line --></p>
+      <a class="hero-bento-btn" href="{{join.url}}">{{join.text}}</a>
+    </div>
+    <ul class="hero-bento-cells" role="list" data-hub-module="reveal" data-hub-reveal-children>
+      <li class="hero-bento-photo">
+        <img class="hero-bento-img" src="slot:bento-photo" alt="slot:bento-photo-alt" width="1600" height="1200" fetchpriority="high" decoding="async">
+      </li>
+      <li class="hero-bento-figure">
+        <p class="hero-bento-figure-num"><!-- slot: figure --></p>
+        <p class="hero-bento-figure-label"><!-- slot: figure-label --></p>
+      </li>
+      <li class="hero-bento-members">
+        <p class="hero-bento-cell-title"><!-- slot: members-title --></p>
+        <section class="hero-bento-loop"
+                 data-members
+                 data-members-styles="none"
+                 data-members-country="slot:members-country"
+                 data-members-region="slot:members-region"
+                 data-members-strict="true"
+                 data-members-count="3"
+                 data-members-min="3"
+                 data-members-image-size="240"
+                 data-members-cta-text="slot:members-cta-text"
+                 data-members-join-text="slot:members-join-text"
+                 data-members-verified-text="slot:members-verified-text"
+                 data-members-empty-text="slot:members-empty-text"></section>
+      </li>
+      <li class="hero-bento-interests">
+        <p class="hero-bento-cell-title"><!-- slot: interests-title --></p>
+        <ul class="hero-bento-chips" role="list">
+          <li class="hero-bento-chip"><!-- slot: interest --></li>
+        </ul>
+      </li>
+      <li class="hero-bento-second">
+        <img class="hero-bento-img" src="slot:bento-second" alt="slot:bento-second-alt" width="800" height="800" loading="lazy" decoding="async">
+      </li>
+    </ul>
+  </div>
+</section>

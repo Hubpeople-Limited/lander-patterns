@@ -469,6 +469,7 @@ VARIANT_CASES = [
 LAYOUT_CASES = [
     ("none", 0, "a pattern that takes no layout role"),
     ("opener=beside", 0, "one role"),
+    ("opener=cells", 0, "the opener set in tiles, a word the building skill has"),
     ("people=members; rhythm=cards", 0, "two roles, the way a people grid is both"),
     ("rhythm=column; reading=picture", 0, "a written piece's two roles"),
     ("", 1, "an empty line"),
@@ -3590,6 +3591,173 @@ def check_story_cards_moving():
     return failures
 
 
+# Below a site header on the commonest phone and on a laptop, the sign-up
+# card's first question is on the first screen. 152px is the header allowance
+# hero-overlay subtracts (9.5rem).
+BENTO_FIRST_SCREEN = {(390, 844): 844 - 152, (1280, 800): 800 - 152}
+
+
+def check_hero_bento():
+    """hero-bento: holding the card, its first question is on the first
+    screen; no tile, card or words cover words from 320 to 1440; any tile
+    left out and the rest close up with no gap; every rung combination, with
+    the button and with the card, passes the phone gate."""
+    import check_phone
+    import lint
+    failures = []
+    print("hero-bento, the opener in tiles")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-bento: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-bento: {label}")
+
+    folder = HERE.parent / "patterns" / "hero-bento"
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                             folder / "pattern.html")
+    first_js = """() => document.querySelector('.signup-card-q').getBoundingClientRect().top
+                        - document.querySelector('.hero-bento').getBoundingClientRect().top"""
+    boxes = ".signup-card, .hero-bento-lead, .hero-bento-join, .hero-bento-cells > li"
+
+    def rows_js(drop):
+        return """() => {
+            for (const c of %s) document.querySelectorAll('.' + c).forEach(e => e.remove());
+            const l = document.querySelector('.hero-bento-cells').getBoundingClientRect();
+            const rows = {};
+            for (const li of document.querySelectorAll('.hero-bento-cells > li')) {
+                const r = li.getBoundingClientRect();
+                (rows[Math.round(r.top)] = rows[Math.round(r.top)] || []).push(r);
+            }
+            const all = Object.values(rows);
+            return all.length > 0
+                && all.every(rs => Math.abs(Math.min(...rs.map(r => r.left)) - l.left) <= 2
+                                   && Math.abs(Math.max(...rs.map(r => r.right)) - l.right) <= 2)
+                && Math.abs(Math.max(...all.flat().map(r => r.bottom)) - l.bottom) <= 2;
+        }""" % json.dumps(drop)
+
+    drops = ([], ["hero-bento-members"], ["hero-bento-figure", "hero-bento-interests"],
+             ["hero-bento-figure", "hero-bento-members", "hero-bento-interests", "hero-bento-second"])
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for tokens in ("brand", "display"):
+                for words in ("start", "end", "top"):
+                    for viewport, limit in BENTO_FIRST_SCREEN.items():
+                        got = _render(browser, workdir,
+                                      opener_page("hero-bento", {"words": words}, tokens, card=True),
+                                      viewport, first_js)
+                        case(f"words={words} holding the card on {tokens} at {viewport[0]}x"
+                             f"{viewport[1]}: the first question starts {got:.0f}px down, "
+                             f"within {limit}", got <= limit)
+            pushed = _render(browser, workdir,
+                             opener_page("hero-bento", {}, "brand", card=True,
+                                         extra_css=".hero-bento-lead { padding-top: 40rem !important; }"),
+                             (390, 844), first_js)
+            case("catches: a headline tile that pushes the card off the first screen",
+                 pushed > BENTO_FIRST_SCREEN[(390, 844)])
+            for words in ("start", "end", "top"):
+                for cells in ("ruled", "spaced"):
+                    hits = covered_text(browser, workdir,
+                                        opener_page("hero-bento", {"words": words, "cells": cells},
+                                                    "display", card=True), boxes)
+                    case(f"words={words} cells={cells} holding the card on display: nothing "
+                         f"covers words from 320 to 1440"
+                         + ("" if not hits else " - " + "; ".join(hits[:3])), not hits)
+            over = covered_text(browser, workdir,
+                                opener_page("hero-bento", {}, "brand", card=True,
+                                            extra_css=".hero-bento-join { margin-top: -14rem !important; }"),
+                                boxes)
+            case("catches: the card pulled up over the headline", bool(over))
+            for words in ("start", "end", "top"):
+                for drop in drops:
+                    ok = _render(browser, workdir, opener_page("hero-bento", {"words": words}, "brand"),
+                                 (1280, 900), rows_js(list(drop)))
+                    case(f"words={words} without {', '.join(drop) or 'nothing'}: the tiles close "
+                         f"up with no gap", ok)
+            holed = _render(browser, workdir,
+                            opener_page("hero-bento", {}, "brand",
+                                        extra_css=".hero-bento-cells > li { flex-grow: 0 !important; }"),
+                            (1280, 900), rows_js(["hero-bento-members"]))
+            case("catches: tiles that leave a gap where one was left out", not holed)
+        finally:
+            browser.close()
+    with check_phone.Phone() as phone:
+        for tokens in ("brand", "display"):
+            for card in (False, True):
+                bad = []
+                for mods in _rung_combos(meta):
+                    label = ("hero-bento " + " ".join(f"{a}={v}" for a, v in mods.items())
+                             + (" with the card" if card else ""))
+                    bad += phone.faults(label, opener_page("hero-bento", mods, tokens, card=card))
+                case(f"every rung combination {'with the card' if card else 'with the button'} "
+                     f"at 320 and 360 on {tokens} passes the phone gate"
+                     + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
+def check_hero_bento_moving():
+    """With the behaviour library on the page: the still rung reveals nothing
+    and the moving rung leaves nothing hidden; a member tile lifts under the
+    pointer on the moving rung only."""
+    import check_behaviours as cb
+    import check_phone
+    failures = []
+    print("hero-bento, easing in is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-bento motion: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-bento motion: {label}")
+
+    def seen(shell, html, stem):
+        """What moved once the page had opened and been read to its foot:
+        an opener's lower tiles ease in as the visitor scrolls to them."""
+        tab = shell.open(html, stem)
+        try:
+            if tab.evaluate(cb.VERSION_JS) != cb.bundle_version():
+                return None
+            tab.wait_for_timeout(cb.MOTION_LOOK_MS)
+            tab.evaluate("() => window.scrollTo(0, document.body.scrollHeight)")
+            tab.wait_for_timeout(cb.MOTION_LOOK_MS)
+            return tab.evaluate(cb.MOTION_JS)
+        finally:
+            tab.close()
+
+    bundle = '<script type="module" src="hub.js"></script></head>'
+    with cb.Shell(False) as shell:
+        still = seen(shell, opener_page("hero-bento", {}, "brand").replace("</head>", bundle, 1),
+                     "bento-still")
+        case("the still rung reveals nothing", still is not None and still["revealed"] == 0)
+        moving = seen(shell, opener_page("hero-bento", {"motion": "moving"}, "brand")
+                      .replace("</head>", bundle, 1), "bento-moving")
+        case("the moving rung eases the tiles in and leaves nothing hidden",
+             moving is not None and moving["revealed"] > 0 and moving["pending"] == 0)
+    js = "() => getComputedStyle(document.querySelector('.hero-bento .mem-card')).transitionProperty"
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            still = _render(browser, workdir, opener_page("hero-bento", {}, "brand"), (1280, 900), js)
+            case("a member tile never lifts on the still rung", "translate" not in still)
+            moving = _render(browser, workdir, opener_page("hero-bento", {"motion": "moving"}, "brand"),
+                             (1280, 900), js)
+            case("a member tile lifts under the pointer on the moving rung", "translate" in moving)
+        finally:
+            browser.close()
+    return failures
+
+
 def check_member_grid_motion():
     """member-grid's Moving row is itself a choice to move, so it glides
     whatever the Movement rung says; every other layout is still unless
@@ -4055,6 +4223,10 @@ def main():
     print()
     failures += check_story_cards_moving()
     print()
+    failures += check_hero_bento()
+    print()
+    failures += check_hero_bento_moving()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -4081,7 +4253,8 @@ def main():
              + PLACEHOLDER_URL_CASE_COUNT
              + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16 + 6
              + 27 + 5
-             + 39 + 6)
+             + 39 + 6
+             + 37 + 4)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

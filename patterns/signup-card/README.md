@@ -6,10 +6,10 @@ their date of birth and their email, then hands everything to the brand's own
 join flow, which skips every step those answers settle. The opener keeps its
 own headline, sentence and picture.
 
-It goes in `hero-overlay`, `hero-split`, `hero-stated`, `hero-squeeze` or
-`hero-portrait`, inside the element that held the join button: words one side
-and card the other on a wide screen, the first step above a laptop's fold; on
-a phone the card follows the headline. Whatever else was beside it comes out.
+It goes in `hero-overlay`, `hero-split`, `hero-stated`, `hero-squeeze`,
+`hero-portrait` or `hero-bento`, inside the element that held the join button:
+words one side and card the other on a wide screen, the first step above a
+laptop's fold; on a phone it follows the headline. Anything beside it goes.
 
 With the behaviour library it asks **one question at a time** (two from
 `60rem`), adds interest steps and a first name, shows live members; without it,

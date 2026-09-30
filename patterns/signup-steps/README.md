@@ -51,15 +51,14 @@ with a hidden `mt` or `lf` input: nobody is asked it, the value is sent, and wit
 **Options on the section**, all `data-hub-signup-*`: `seeking` — `none`, the
 default, leaves "looking for" empty; `opposite` ticks it from "I am" (a woman,
 men), and `same` does so for a brand whose members meet their own sex; the
-visitor's own tick always wins. `dob` — `boxes`, the
-default, or `wheel`; `reward` for a complete date — `sign` (age and star sign,
-the default), `age` or `none`; `settle="off"` stops a phone scrolling the card
-up at each step; `guid` where the join link carries no site GUID, without which
-there is no member strip. Every visible word has an English default and an
-option of its own — `next`, `back`, `skip`, `step`, `seeking-help`,
-`intent-help`, `enjoy-help`, `tally`, `tally-none`, `tally-full`, `more`, the five
-`error-*`, `members`, `who`, `signs`, `done`, `going` — so a brand in another
-language sets them all.
+visitor's own tick always wins. `dob` — `boxes`, the default, or `wheel`;
+`reward` for a complete date — `sign` (age and star sign, the default), `age` or
+`none`; `settle="off"` stops a phone scrolling the card up at each step; `guid`
+where the join link carries no site GUID, without which there is no member
+strip. Every visible word has an English default and an option of its own —
+`next`, `back`, `skip`, `step`, `seeking-help`, `intent-help`, `enjoy-help`,
+`tally`, `tally-none`, `tally-full`, `more`, the five `error-*`, `members`,
+`who`, `signs`, `done`, `going` — so a brand in another language sets them all.
 
 **The members are the brand's own, fetched live** as the visitor answers, never
 stored: faces in the card on a phone, a row under the headline when wide.
@@ -67,8 +66,9 @@ Nothing shows when there are none or the search fails.
 
 **Pairing.** `member-grid` below it, `steps-plain` for how joining works, and
 `cta-band` to close. It refuses `picker-chips` — two opening questions is no
-opening question — and every other opener (`article-masthead`, `hero-centred`,
-`hero-overlay`, `hero-portrait`, `hero-split`, `hero-squeeze`, `hero-stated`).
+opening question — and every other opener (`article-masthead`, `hero-bento`,
+`hero-centred`, `hero-overlay`, `hero-portrait`, `hero-split`, `hero-squeeze`,
+`hero-stated`).
 
 **Brand adaptability.** `--btn-radius` shapes the answer rows, fields and
 buttons together; `--chip-radius` the interest pills, the progress bar and the
