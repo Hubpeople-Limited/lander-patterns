@@ -33,9 +33,12 @@ stand-in ratio — **set both attributes to each real image's intrinsic
 dimensions** when filling the slots.
 
 **The rail shows no scroll bar**, which on a desktop reads as a broken page rather
-than a gallery. **With the library, `carousel` builds a previous and a next
-control** inside the scroller, sticky to its start edge so they stay in view; each
-moves the rail by one item and disables at the ends. Without the library the rail
+than a gallery. The list scrolls inside the block, so **with the library,
+`carousel` builds two round arrows** that hold still: **Arrows** `top`, above the
+photographs at the right (under them on a phone), or `edges`, over their sides on
+a solid circle with a soft shadow; **Arrows on a phone** `arrows`, or `swipe` to
+leave them off there. Each arrow moves the rail by one photograph and dims at an
+end, and none show while every photograph fits. Without the library the rail
 still swipes and takes the keyboard. With scripting off nothing can build the
-controls and a mouse would have no way along it, so the photographs wrap into
+arrows and a mouse would have no way along it, so the photographs wrap into
 centred rows instead.

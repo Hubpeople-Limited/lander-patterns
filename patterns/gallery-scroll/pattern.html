@@ -14,18 +14,19 @@ keywords: gallery, carousel, scroll-snap, images
 needs: three or more real images of the same kind, each with real alt text, sized for the slot via the CDN
 pairs-with: pricing-tiers
 avoid-with: hero-overlay, hero-split, media-card-grid, photo-cards, portrait-wall, steps-numbered
-tokens-used: --card-radius, --card-shadow, --color-focus, --color-primary, --color-surface, --color-text-soft, --space-2, --space-3, --space-4
+tokens-used: --card-radius, --card-shadow, --color-bg, --color-focus, --color-primary, --color-surface, --color-text, --color-text-soft, --space-2, --space-3, --space-4
 motion: subtle
 one-per-page: no
 status: active
 added: 2026-08-21
 behaviours: carousel
+variants: controls=top|edges; phone=arrows|swipe
 -->
 <!-- The visitor scrolls or swipes; nothing moves by itself. Duplicate one
-     gallery-scroll-item per real image. tabindex="0" keeps the scroller
-     keyboard-reachable; the label tells assistive tech what it is. -->
-<div class="gallery-scroll" tabindex="0" role="region" aria-label="slot:gallery-label" data-hub-module="carousel" data-hub-carousel-prev-label="slot:previous-label" data-hub-carousel-next-label="slot:next-label">
-  <ul class="gallery-scroll-track" role="list">
+     gallery-scroll-item per real image. tabindex="0" keeps the scrolling
+     list keyboard-reachable; the label tells assistive tech what it is. -->
+<div class="gallery-scroll gallery-scroll--top gallery-scroll--arrows" role="region" aria-label="slot:gallery-label" data-hub-module="carousel" data-hub-carousel-prev-label="slot:previous-label" data-hub-carousel-next-label="slot:next-label">
+  <ul class="gallery-scroll-track" role="list" tabindex="0">
     <li class="gallery-scroll-item">
       <img src="slot:image" alt="slot:image-alt" width="480" height="360" loading="lazy">
       <p class="gallery-scroll-caption"><!-- slot: caption --></p>

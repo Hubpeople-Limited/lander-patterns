@@ -772,7 +772,16 @@
   "status": "active",
   "summary": "A row of photographs you swipe sideways through.",
   "type": "component",
-  "variants": {},
+  "variants": {
+   "controls": [
+    "top",
+    "edges"
+   ],
+   "phone": [
+    "arrows",
+    "swipe"
+   ]
+  },
   "version": "7",
   "whole-page": false
  },

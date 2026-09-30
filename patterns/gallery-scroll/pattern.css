@@ -1,23 +1,24 @@
 /* gallery-scroll v5 - tokens only, selectors prefixed */
 .gallery-scroll {
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
   padding-block: var(--space-3);
-  /* room for the focus ring, so it is not clipped by the overflow */
-  scroll-padding-inline: var(--space-4);
-  scrollbar-width: none;
 }
-.gallery-scroll::-webkit-scrollbar {
-  display: none;
-}
+/* The list is the scroller, not the block, so the arrows the behaviour
+   library builds hold still while the photographs move. */
 .gallery-scroll-track {
   display: flex;
   gap: var(--space-4);
   list-style: none;
   margin: 0;
   padding: 0 var(--space-4);
-  width: max-content;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  /* room for the focus ring, so it is not clipped by the overflow */
+  scroll-padding-inline: var(--space-4);
+  scrollbar-width: none;
+}
+.gallery-scroll-track::-webkit-scrollbar {
+  display: none;
 }
 .gallery-scroll-item {
   scroll-snap-align: start;
@@ -36,26 +37,50 @@
   margin: var(--space-2) 0 0;
 }
 /* A visible edge on the scroller when it has keyboard focus */
-.gallery-scroll:focus-visible {
+.gallery-scroll-track:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .gallery-scroll {
+  .gallery-scroll-track {
     scroll-behavior: smooth;
   }
+}
+
+/* controls: where the previous and next arrows sit, read by the behaviour
+   library from these properties. phone: whether a phone shows them. */
+.gallery-scroll--top {
+  --hub-carousel-controls: top;
+  --hub-carousel-look: round;
+}
+.gallery-scroll--edges {
+  --hub-carousel-controls: edges;
+  --hub-carousel-look: round;
+}
+.gallery-scroll--arrows {
+  --hub-carousel-phone: show;
+}
+.gallery-scroll--swipe {
+  --hub-carousel-phone: hide;
+}
+.gallery-scroll .hub-carousel-controls--top {
+  padding-inline: var(--space-4);
+}
+/* Over a photograph the arrows need a ground of their own. */
+.gallery-scroll .hub-carousel-controls--edges .hub-carousel-control {
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--card-shadow);
 }
 
 /* With scripting off nothing builds the previous and next controls, and the
    hidden scroll bar would leave a mouse no way along the row, so it wraps. */
 @media (scripting: none) {
-  .gallery-scroll {
-    overflow-x: visible;
-  }
   .gallery-scroll-track {
+    overflow-x: visible;
     flex-wrap: wrap;
     justify-content: center;
-    width: auto;
   }
 }
 
