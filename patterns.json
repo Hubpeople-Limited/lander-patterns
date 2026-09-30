@@ -891,6 +891,7 @@
   "avoid-with": [
    "article-masthead",
    "hero-overlay",
+   "hero-portrait",
    "hero-split",
    "hero-squeeze",
    "hero-stated",
@@ -943,6 +944,7 @@
    "article-masthead",
    "gallery-scroll",
    "hero-centred",
+   "hero-portrait",
    "hero-split",
    "hero-squeeze",
    "hero-stated",
@@ -988,12 +990,79 @@
   "version": "16",
   "whole-page": false
  },
+ "hero-portrait": {
+  "avoid-with": [
+   "hero-centred",
+   "hero-overlay",
+   "hero-split",
+   "hero-squeeze",
+   "hero-stated",
+   "signup-steps"
+  ],
+  "behaviours": [],
+  "content-shape": "single claim",
+  "description": "Conversion opener built to hold signup-card - one large portrait on one side, the headline, one line and the card on the other; the portrait rounded, arched or running to the page edge; on phones a short portrait strip, then the words, then the card.",
+  "display-name": "Sign-up beside a portrait",
+  "image-slots": [
+   {
+    "crop": "portrait",
+    "focal": "top",
+    "min": 1200,
+    "placeholder": true,
+    "slot": "portrait-image",
+    "subjects": [
+     "person",
+     "couple"
+    ]
+   }
+  ],
+  "layout": {
+   "opener": "beside"
+  },
+  "motion": "none",
+  "needs": "one real photograph of a person or a couple, at least 1200px wide in portrait, that stands for the brand's members without being one of them - never a named member, a testimonial's face or a founder - with its own alt text; a headline and one supporting sentence in the brand's own words; signup-card in place of the join button, or the button alone",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "signup-card",
+   "member-grid",
+   "steps-plain"
+  ],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "An opener with one large portrait on one side, and the words and the sign-up card on the other.",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand",
+    "deep"
+   ],
+   "shape": [
+    "rounded",
+    "arch",
+    "half-bleed"
+   ],
+   "side": [
+    "start",
+    "end"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "hero-split": {
   "avoid-with": [
    "article-masthead",
    "gallery-scroll",
    "hero-centred",
    "hero-overlay",
+   "hero-portrait",
    "hero-squeeze",
    "hero-stated",
    "signup-steps",
@@ -1049,6 +1118,7 @@
    "article-masthead",
    "hero-centred",
    "hero-overlay",
+   "hero-portrait",
    "hero-split",
    "hero-stated",
    "signup-steps"
@@ -1101,6 +1171,7 @@
    "hero-band",
    "hero-centred",
    "hero-overlay",
+   "hero-portrait",
    "hero-split",
    "hero-squeeze",
    "signup-steps"
@@ -2146,12 +2217,12 @@
    "signup"
   ],
   "content-shape": "single claim",
-  "description": "Conversion card for an opener - set in place of the join button in hero-overlay, hero-split, hero-stated or hero-squeeze, it asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled. The opener keeps its own headline and picture; on a wide screen it sets the words on one side and the card on the other.",
+  "description": "Conversion card for an opener - set in place of the join button in hero-overlay, hero-split, hero-stated, hero-squeeze or hero-portrait, it asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled. The opener keeps its own headline and picture; on a wide screen it sets the words on one side and the card on the other.",
   "display-name": "Sign-up card",
   "image-slots": [],
   "layout": {},
   "motion": "subtle",
-  "needs": "an opener to sit in (hero-overlay, hero-split, hero-stated or hero-squeeze); the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples",
+  "needs": "an opener to sit in (hero-overlay, hero-split, hero-stated, hero-squeeze or hero-portrait); the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -2162,6 +2233,7 @@
    "hero-split",
    "hero-stated",
    "hero-squeeze",
+   "hero-portrait",
    "member-grid",
    "steps-plain"
   ],
@@ -2179,6 +2251,7 @@
    "article-masthead",
    "hero-centred",
    "hero-overlay",
+   "hero-portrait",
    "hero-split",
    "hero-squeeze",
    "hero-stated",
