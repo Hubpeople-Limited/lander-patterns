@@ -15,38 +15,38 @@ impressions, which is why the header declares `avoid-with: hero-split`.
 
 **What it needs.** One landscape photograph, at least 2400px wide, that survives
 being cropped hard at both ends of the viewport range. **Serve it through the
-CDN as a `srcset` ladder sized for the slot, not one fixed width** — the slot
-is full-bleed, so `sizes` is `100vw` and a sensible ladder is 640 / 960 / 1280
-/ 1920 / 2560w; a single 2560px file costs a phone most of its LCP budget. It
-is the page's largest asset and its LCP element, so it ships
-`fetchpriority="high"` and **must never carry `loading="lazy"`**; set `width`
-and `height` to the real file's intrinsic pixels (the shipped 1920×1280 is a
-stand-in ratio). It needs its own alt text describing the photograph — empty
-the value only for a pure texture, never delete the attribute. Then a headline
-of one or two lines and one supporting sentence. Both controls are platform
-placeholders: join for the new visitor, login for the returning one. Delete
-the second anchor for a pure acquisition page; never repoint it at a
-written-out URL. Contrast here is **not optional and the tokens do not cover
-it**: text on photography is outside the contract. The scrim's strongest stop
-must be **at least 92% opaque**, and the CSS enforces that floor —
-`--hero-overlay-scrim-strength` may be raised toward `1` for a bright or busy
-image, and `clamp()` pulls anything below 0.92 back up. Because the scrim
-resolves to `--color-bg`, the ink sits on the page's own background — so
-`--color-text` carries the title and the ghost control's edge, and
-`--color-text-soft` the subhead — both at the 4.5:1 the contract states,
+CDN as a `srcset` ladder sized for the slot, not one fixed width** — the slot is
+full-bleed, so `sizes` is `100vw` and a sensible ladder is 640 / 960 / 1280 /
+1920 / 2560w; a single 2560px file costs a phone most of its LCP budget. It is
+the page's largest asset and its LCP element, so it ships `fetchpriority="high"`
+and **must never carry `loading="lazy"`**; set `width` and `height` to the real
+file's intrinsic pixels (the shipped 1920×1280 is a stand-in ratio). It needs
+its own alt text describing the photograph — empty the value only for a pure
+texture, never delete the attribute. Then a headline of one or two lines and one
+supporting sentence. Both controls are platform placeholders: join for the new
+visitor, login for the returning one. Delete the second anchor for a pure
+acquisition page; never repoint it at a written-out URL. Contrast here is **not
+optional and the tokens do not cover it**: text on photography is outside the
+contract. The scrim's strongest stop must be **at least 92% opaque**, and the
+CSS enforces that floor — `--hero-overlay-scrim-strength` may be raised toward
+`1` for a bright or busy image, and `clamp()` pulls anything below 0.92 back up.
+Because the scrim resolves to `--color-bg`, the ink sits on the page's own
+background — so `--color-text` carries the title and the ghost control's edge,
+and `--color-text-soft` the subhead — both at the 4.5:1 the contract states,
 against a token it states it against. `--color-heading` is used nowhere here:
 its only promise is 3:1 against `--color-bg`, and the ground is that colour at
 92% over a photograph, which a bright image pushes away from solid rather than
-toward it. There is no headroom to spend. Raise the scrim, never dim the
-image. A headline past three lines climbs out of the guaranteed
-band: shorten it, or raise the strength.
+toward it. There is no headroom to spend. Raise the scrim, never dim the image.
+A headline past three lines climbs out of the guaranteed band: shorten it, or
+raise the strength.
 
 **Every page gets one opener, so the rest are alternatives.** Pick this one
 where the photograph *is* the argument; `hero-split` where the words are and
 the image supports them; `hero-centred` where the photograph cannot be read
 through or you do not control it; `hero-squeeze` where the page does not
 continue; `hero-stated` where there is no usable photography; `hero-portrait`
-where one face leads; `signup-steps` where the page opens on its form.
+where one face leads; `hero-bento` where tiles do; `signup-steps` where the
+page opens on its form.
 
 **Pairing.** `stats-band` directly beneath it — the dissolve resolves the hero
 into the page background and the numbers begin with no seam. Avoid

@@ -1,0 +1,40 @@
+{
+  "composition": "landing-bento",
+  "version": 1,
+  "page": "landing",
+  "library": "v237",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "12",
+      "variant": {
+        "nav": "minimal"
+      }
+    },
+    {
+      "name": "hero-bento",
+      "version": "1",
+      "variant": {
+        "words": "top",
+        "cells": "spaced"
+      }
+    },
+    {
+      "name": "heading-block",
+      "version": "9"
+    },
+    {
+      "name": "benefit-tiles",
+      "version": "9"
+    },
+    {
+      "name": "cta-band",
+      "version": "6"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ]
+}

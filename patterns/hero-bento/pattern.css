@@ -1,0 +1,366 @@
+/* hero-bento v1 - tokens only, selectors prefixed.
+   .lp-grid and .mem-card* below are the platform's markup, a contract. */
+.hero-bento {
+  padding-block: var(--space-5) var(--space-8);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.hero-bento-grid {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "lead" "join" "cells";
+}
+.hero-bento-lead {
+  grid-area: lead;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-6) var(--space-5);
+}
+.hero-bento-join {
+  grid-area: join;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+.hero-bento-join:has(.signup-card) {
+  align-items: stretch;
+  padding: var(--space-4);
+}
+.hero-bento-cells {
+  grid-area: cells;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Every tile grows to fill its row, so one left out leaves no gap. */
+.hero-bento-cells > li {
+  box-sizing: border-box;
+  flex: 1 1 11rem;
+  min-width: 0;
+  min-height: clamp(9rem, 14vw, 12rem);
+}
+.hero-bento-photo,
+.hero-bento-second {
+  position: relative;
+  overflow: clip;
+}
+.hero-bento-cells > .hero-bento-photo {
+  flex-basis: 100%;
+  min-height: clamp(14rem, 30vw, 22rem);
+}
+.hero-bento-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.hero-bento-figure,
+.hero-bento-members,
+.hero-bento-interests {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+.hero-bento-cells > .hero-bento-members {
+  flex-basis: 20rem;
+}
+/* The figure is sized to its own tile, so a number never breaks. */
+.hero-bento-cells > .hero-bento-figure {
+  flex-basis: 12rem;
+  container-type: inline-size;
+}
+.hero-bento-figure {
+  justify-content: flex-end;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.hero-bento-eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero-bento-title {
+  max-width: 12em;
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-size: calc(clamp(2rem, 1.3rem + 2.6vw, 3.5rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.05 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-bento-title {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.hero-bento-sub {
+  max-width: 42ch;
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+.hero-bento-join-line,
+.hero-bento-cell-title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: calc(0.9375rem * var(--type-scale, 1));
+  font-weight: 700;
+  line-height: 1.4;
+}
+.hero-bento-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.hero-bento-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.hero-bento-btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+.hero-bento-figure-num {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: calc(clamp(1.5rem, 17cqi, 2.75rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.05 * var(--heading-leading, 1));
+}
+@supports (line-height: 1cap) {
+  .hero-bento-figure-num {
+    line-height: calc(max(1.05em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.hero-bento-figure-label {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+.hero-bento-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-bento-chip {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--chip-radius);
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.hero-bento .lp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(4.75rem, 100%), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-bento .mem-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.hero-bento .mem-card img,
+.hero-bento .mem-card__initial {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--card-radius);
+  background: var(--color-surface-soft);
+}
+.hero-bento .mem-card__initial {
+  display: grid;
+  place-items: center;
+  font-family: var(--font-heading);
+  font-size: calc(1.5rem * var(--type-scale, 1));
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+}
+.hero-bento .mem-card .badge {
+  position: absolute;
+  top: var(--space-1);
+  inset-inline-start: var(--space-1);
+  max-width: calc(100% - 2 * var(--space-1));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 var(--space-1);
+  border-radius: var(--chip-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.hero-bento .mem-card__name {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow: hidden;
+}
+/* A tile shows a face and a name; the member's own line is for member-grid. */
+.hero-bento .mem-card__line {
+  display: none;
+}
+.hero-bento .mem-card__where {
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hero-bento .mem-card__cta {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: auto;
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.hero-bento .mem-card__cta:hover {
+  text-decoration: underline;
+}
+.hero-bento .mem-card__cta:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.hero-bento .mem-card--join {
+  display: grid;
+  place-items: center;
+  padding: var(--space-3);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  text-align: center;
+}
+.hero-bento .lp-members__empty {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+/* cells: one block ruled by hairlines, or separate cards. */
+.hero-bento--ruled .hero-bento-grid,
+.hero-bento--ruled .hero-bento-cells {
+  gap: 1px;
+  background: var(--color-rule);
+}
+.hero-bento--ruled .hero-bento-grid {
+  overflow: clip;
+  border: 1px solid var(--color-rule);
+  border-radius: var(--card-radius);
+}
+.hero-bento--ruled .hero-bento-lead,
+.hero-bento--ruled .hero-bento-join,
+.hero-bento--ruled .hero-bento-cells > li:not(.hero-bento-figure) {
+  background: var(--color-bg);
+}
+.hero-bento--spaced .hero-bento-grid,
+.hero-bento--spaced .hero-bento-cells {
+  gap: var(--space-4);
+}
+.hero-bento--spaced .hero-bento-lead,
+.hero-bento--spaced .hero-bento-join,
+.hero-bento--spaced .hero-bento-cells > li {
+  overflow: clip;
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+.hero-bento--spaced .hero-bento-lead {
+  background: var(--color-surface-soft);
+}
+.hero-bento--spaced .hero-bento-join,
+.hero-bento--spaced .hero-bento-cells > li:not(.hero-bento-figure) {
+  background: var(--color-surface);
+}
+@media (min-width: 60rem) {
+  .hero-bento--start .hero-bento-grid {
+    grid-template-columns: minmax(0, 11fr) minmax(0, 13fr);
+    grid-template-rows: 1fr auto;
+    grid-template-areas: "lead cells" "join cells";
+  }
+  .hero-bento--end .hero-bento-grid {
+    grid-template-columns: minmax(0, 13fr) minmax(0, 11fr);
+    grid-template-rows: 1fr auto;
+    grid-template-areas: "cells lead" "cells join";
+  }
+  .hero-bento--top .hero-bento-grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas: "lead join" "cells cells";
+  }
+  .hero-bento--top .hero-bento-cells > .hero-bento-photo {
+    flex-basis: 24rem;
+  }
+  .hero-bento-lead {
+    padding: var(--space-6);
+  }
+  /* Holding the card beside the tiles, the headline steps down a size so
+     the card's first question stays on the first screen. */
+  .hero-bento--start .hero-bento-grid:has(.signup-card) .hero-bento-title,
+  .hero-bento--end .hero-bento-grid:has(.signup-card) .hero-bento-title {
+    font-size: calc(clamp(2rem, 1.2rem + 2vw, 2.75rem) * var(--type-scale, 1));
+  }
+}
+
+.hero-bento img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+  object-fit: contain;
+}
+
+.hero-bento:not(.hero-bento--moving) {
+  --hub-motion: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-bento--moving .mem-card {
+    transition: translate var(--transition-fast) ease-out;
+  }
+  .hero-bento--moving .mem-card:hover,
+  .hero-bento--moving .mem-card:focus-within {
+    translate: 0 calc(-1 * var(--space-1));
+  }
+}

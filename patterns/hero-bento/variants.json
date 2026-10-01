@@ -1,0 +1,48 @@
+{
+  "words": {
+    "label": "Headline tile",
+    "note": "Where the headline and the join sit among the tiles on a wide screen. On a phone the headline and the join always come first, then the tiles.",
+    "rungs": {
+      "start": {
+        "label": "On the left",
+        "note": "The headline and the join down the left, the tiles to their right. The default."
+      },
+      "end": {
+        "label": "On the right",
+        "note": "The tiles on the left, the headline and the join down the right. Use it to swap sides with a photograph further down the page."
+      },
+      "top": {
+        "label": "Across the top",
+        "note": "The headline and the join side by side across the top, the tiles in a band under them."
+      }
+    }
+  },
+  "cells": {
+    "label": "Tile style",
+    "note": "How the tiles are set apart from each other.",
+    "rungs": {
+      "ruled": {
+        "label": "Ruled",
+        "note": "One block divided by thin lines, like a printed grid. The default."
+      },
+      "spaced": {
+        "label": "Spaced",
+        "note": "Separate cards with a gap between them, in your brand's card style."
+      }
+    }
+  },
+  "motion": {
+    "label": "Movement",
+    "note": "Whether this section moves as the visitor reaches it. Nothing moves for a visitor who has asked their device for less motion, whichever you pick.",
+    "rungs": {
+      "default": {
+        "label": "Still",
+        "note": "Nothing moves. The section is simply there when the visitor reaches it, which is the default."
+      },
+      "moving": {
+        "label": "Moves",
+        "note": "The tiles ease in one after another as the page opens, after the headline and the join, and a member lifts a little when pointed at. It needs the platform's behaviour library; where that is not served the section is simply still."
+      }
+    }
+  }
+}

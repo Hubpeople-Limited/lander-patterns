@@ -891,9 +891,91 @@
   "version": "3",
   "whole-page": false
  },
+ "hero-bento": {
+  "avoid-with": [
+   "hero-centred",
+   "hero-overlay",
+   "hero-portrait",
+   "hero-split",
+   "hero-squeeze",
+   "hero-stated",
+   "signup-steps"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "single claim",
+  "description": "Opener set in a ruled or spaced grid of tiles - the h1 and one line, the join button or the sign-up card, a photograph, a few live members, the brand's own interest labels, a second photograph and the brand's membership figure - where any tile but the headline and the join may be left out and the rest close up with no gap.",
+  "display-name": "Opener in tiles",
+  "image-slots": [
+   {
+    "crop": "landscape",
+    "focal": "center",
+    "min": 1600,
+    "placeholder": true,
+    "slot": "bento-photo",
+    "subjects": [
+     "group",
+     "couple",
+     "place"
+    ]
+   },
+   {
+    "crop": "square",
+    "focal": "center",
+    "min": 800,
+    "placeholder": true,
+    "slot": "bento-second",
+    "subjects": [
+     "couple",
+     "person",
+     "place"
+    ]
+   }
+  ],
+  "layout": {
+   "opener": "cells"
+  },
+  "motion": "subtle",
+  "needs": "a headline and one supporting sentence in the brand's own words; one photograph at least 1600px wide and, for the second photograph, one at least 800px square, each with its own alt text, or the library's placeholder; the brand's own interest labels, spelled as its join flow spells them; a membership figure from the platform's own count, when the brand wants a figure shown; the brand's words for the members tile's links and its empty state; signup-card in place of the join button, or the button alone",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing"
+  ],
+  "pairs-with": [
+   "signup-card",
+   "steps-plain",
+   "faq-details",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "An opener set in a grid of tiles: the headline, the join, a photograph, a few live members, the brand's interests and, when the brand wants one, its member figure.",
+  "type": "section",
+  "variants": {
+   "cells": [
+    "ruled",
+    "spaced"
+   ],
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "words": [
+    "start",
+    "end",
+    "top"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "hero-centred": {
   "avoid-with": [
    "article-masthead",
+   "hero-bento",
    "hero-overlay",
    "hero-portrait",
    "hero-split",
@@ -947,6 +1029,7 @@
   "avoid-with": [
    "article-masthead",
    "gallery-scroll",
+   "hero-bento",
    "hero-centred",
    "hero-portrait",
    "hero-split",
@@ -996,6 +1079,7 @@
  },
  "hero-portrait": {
   "avoid-with": [
+   "hero-bento",
    "hero-centred",
    "hero-overlay",
    "hero-split",
@@ -1064,6 +1148,7 @@
   "avoid-with": [
    "article-masthead",
    "gallery-scroll",
+   "hero-bento",
    "hero-centred",
    "hero-overlay",
    "hero-portrait",
@@ -1120,6 +1205,7 @@
  "hero-squeeze": {
   "avoid-with": [
    "article-masthead",
+   "hero-bento",
    "hero-centred",
    "hero-overlay",
    "hero-portrait",
@@ -1173,6 +1259,7 @@
   "avoid-with": [
    "article-masthead",
    "hero-band",
+   "hero-bento",
    "hero-centred",
    "hero-overlay",
    "hero-portrait",
@@ -2352,12 +2439,12 @@
    "signup"
   ],
   "content-shape": "single claim",
-  "description": "Conversion card for an opener - set in place of the join button in hero-overlay, hero-split, hero-stated, hero-squeeze or hero-portrait, it asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled. The opener keeps its own headline and picture; on a wide screen it sets the words on one side and the card on the other.",
+  "description": "Conversion card for an opener - set in place of the join button in hero-overlay, hero-split, hero-stated, hero-squeeze, hero-portrait or hero-bento, it asks who the visitor is, who they are looking for, their date of birth and their email, then hands everything to the brand's own join flow pre-filled. The opener keeps its own headline and picture; on a wide screen it sets the words on one side and the card on the other.",
   "display-name": "Sign-up card",
   "image-slots": [],
   "layout": {},
   "motion": "subtle",
-  "needs": "an opener to sit in (hero-overlay, hero-split, hero-stated, hero-squeeze or hero-portrait); the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples",
+  "needs": "an opener to sit in (hero-overlay, hero-split, hero-stated, hero-squeeze, hero-portrait or hero-bento); the card's title; the brand's wording for each answer; the brand's interest labels for the two choice steps, spelled exactly as its join flow spells them, with the two questions and the first-name label; the consent sentence HubPeople supplies, with the brand's terms and privacy links; one line saying the password is chosen on the next screen; the brand's platform, because only Excite brands offer couples",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -2369,6 +2456,7 @@
    "hero-stated",
    "hero-squeeze",
    "hero-portrait",
+   "hero-bento",
    "member-grid",
    "steps-plain"
   ],
@@ -2384,6 +2472,7 @@
  "signup-steps": {
   "avoid-with": [
    "article-masthead",
+   "hero-bento",
    "hero-centred",
    "hero-overlay",
    "hero-portrait",
