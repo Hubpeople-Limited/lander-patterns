@@ -3758,6 +3758,109 @@ def check_hero_bento_moving():
     return failures
 
 
+# A line may break between words, after a hyphen or a slash, and nowhere
+# else: a figure or a name broken inside a word reads as two words.
+BREAKS_AFTER = "-/‐–—­"
+
+
+def split_words_js(selector):
+    """JavaScript for _render: the words broken across two lines inside any
+    visible element matching `selector`, each as "word in .class"."""
+    return """() => {
+        const found = [];
+        for (const el of document.querySelectorAll(%s)) {
+            if (!el.checkVisibility()) continue;
+            const chars = [];
+            const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+                for (let i = 0; i < n.length; i++) {
+                    const range = document.createRange();
+                    range.setStart(n, i);
+                    range.setEnd(n, i + 1);
+                    const r = range.getClientRects()[0];
+                    chars.push({c: n.data[i], top: r ? r.top : null});
+                }
+            }
+            for (let i = 1; i < chars.length; i++) {
+                const a = chars[i - 1], b = chars[i];
+                if (/\\s/.test(a.c) || /\\s/.test(b.c) || %s.includes(a.c)) continue;
+                if (a.top === null || b.top === null || Math.abs(a.top - b.top) < 2) continue;
+                let s = i - 1, e = i;
+                while (s > 0 && !/\\s/.test(chars[s - 1].c)) s--;
+                while (e < chars.length - 1 && !/\\s/.test(chars[e + 1].c)) e++;
+                found.push(chars.slice(s, e + 1).map(x => x.c).join('') + ' in .' + el.classList[0]);
+            }
+        }
+        return [...new Set(found)].slice(0, 4);
+    }""" % (json.dumps(selector), json.dumps(BREAKS_AFTER))
+
+
+# Every heading and figure in the library, at the phone gate's widths.
+WHOLE_WORD_SELECTOR = "h1, h2, h3, h4, dt, [class$='-num'], [class*='-figure']"
+
+
+def check_words_whole():
+    """No line breaks inside a word: in every tile of hero-bento at every
+    width from 320 to 1440 on every rung, and in every heading and figure in
+    the library at 320 and 360."""
+    import check_phone
+    import lint
+    failures = []
+    print("words whole, a line breaks only between words")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED words whole: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"words whole: {label}")
+
+    folder = HERE.parent / "patterns" / "hero-bento"
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                             folder / "pattern.html")
+    tiles = (".hero-bento-figure-num, .hero-bento-figure-label, .hero-bento-cell-title, "
+             ".hero-bento-chip, .hero-bento-title, .hero-bento-sub, .hero-bento-join-line, "
+             ".mem-card__name")
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for tokens in ("brand", "display", "sharp", "dark"):
+                split = []
+                for mods in _rung_combos(meta):
+                    page = opener_page("hero-bento", mods, tokens)
+                    for width in COVER_WIDTHS:
+                        for hit in _render(browser, workdir, page, (width, 900),
+                                           split_words_js(tiles)):
+                            split.append(f"{' '.join(f'{a}={v}' for a, v in mods.items())} "
+                                         f"at {width}: {hit}")
+                case(f"hero-bento on {tokens}: no word in a tile breaks across lines, every rung, "
+                     f"320 to 1440" + ("" if not split else " - " + "; ".join(split[:3])),
+                     not split)
+            broken = opener_page("hero-bento", {}, "display",
+                                 extra_css=".hero-bento-figure-num { overflow-wrap: anywhere "
+                                           "!important; font-size: 4rem !important; }")
+            case("catches: a figure broken inside a word",
+                 bool(_render(browser, workdir, broken, (1280, 900), split_words_js(tiles))))
+            for tokens in ("brand", "display"):
+                split = []
+                for name in sorted(d.name for d in (HERE.parent / "patterns").iterdir() if d.is_dir()):
+                    page = check_phone.pattern_page(name, 390, check_phone.token_set(tokens))
+                    for width in (320, 360):
+                        for hit in _render(browser, workdir, page, (width, 900),
+                                           split_words_js(WHOLE_WORD_SELECTOR)):
+                            split.append(f"{name} at {width}: {hit}")
+                case(f"every heading and figure in the library on {tokens} at 320 and 360 keeps "
+                     f"its words whole" + ("" if not split else " - " + "; ".join(split[:4])),
+                     not split)
+        finally:
+            browser.close()
+    return failures
+
+
 def check_member_grid_motion():
     """member-grid's Moving row is itself a choice to move, so it glides
     whatever the Movement rung says; every other layout is still unless
@@ -4227,6 +4330,8 @@ def main():
     print()
     failures += check_hero_bento_moving()
     print()
+    failures += check_words_whole()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -4254,7 +4359,8 @@ def main():
              + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16 + 6
              + 27 + 5
              + 39 + 6
-             + 37 + 4)
+             + 37 + 4
+             + 7)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
