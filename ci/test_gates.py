@@ -1482,7 +1482,8 @@ PHONE_LINES = [
 
 
 def check_phone():
-    """Both halves, then the library.
+    """Both halves. The library itself is swept by the workflow's own
+    check_phone steps, not here.
 
     Skipping is a first-class outcome here and not a pass: with no browser
     this prints SKIPPED and returns no failures, because a contributor
@@ -1579,35 +1580,10 @@ def check_phone():
     finally:
         shutil.rmtree(shim, ignore_errors=True)
 
-    # The library itself. `new` is anything not in check_phone.ACCEPTED, so
-    # this fails the day a pattern acquires a phone-width fault - while the
-    # four the library already has stay visible in the output instead of
-    # being excluded by a rule nobody can see.
-    new, known, stale = check_phone.sweep()
-    ok = not new and not stale
-    print(f"  {'ok  ' if ok else 'FAIL'} the library at 320 and 360"
-          f"                     {len(new)} new, {len(known)} known")
-    if new:
-        failures.append("new phone-width fault in the library")
-        for line in new:
-            print(f"        {line}")
-    if stale:
-        failures.append("stale phone-width baseline entry")
-        for line in stale:
-            print(f"        baseline entry matched nothing - {line}")
-
-    # And again above the breakpoints, where cta-curtain's panel and
-    # masthead-nav's menu kept their faults while 320 and 360 were clean. No
-    # stale check here: the baseline was taken at the phone widths.
-    new, known, _stale = check_phone.sweep(check_phone.DESKTOP_WIDTHS)
-    ok = not new
-    print(f"  {'ok  ' if ok else 'FAIL'} the library at 1024 and 1280"
-          f"                   {len(new)} new, {len(known)} known")
-    if new:
-        failures.append("new desktop-width fault in the library")
-        for line in new:
-            print(f"        {line}")
-
+    # The library itself is not swept here. The workflow runs exactly that
+    # sweep as its own steps - `check_phone.py --require-browser` at 320 and
+    # 360 on brand, stale baseline entries included, and `--desktop` at 1024
+    # and 1280 - so a sweep here was the same renders a second time.
     return failures
 
 
@@ -2349,9 +2325,12 @@ def check_recipes():
 
 
 def check_header_fit():
-    """ci/check_header.py, both directions: the shipped header holds one row
-    against the long menu, and the positive control fires when the fold is
-    switched off. Skips, and says so, without a browser."""
+    """ci/check_header.py's positive controls: the gate fires when the fold is
+    switched off, and the one-row check is quiet on the menu-free bar as it
+    ships and fires with the bar as it broke. The shipped header itself is
+    swept by the workflow's own check_header steps, at every width this ran
+    at and more, so it is not rendered here a second time. Skips, and says
+    so, without a browser."""
     import check_phone
     failures = []
     why = check_phone.browser_unavailable()
@@ -2359,8 +2338,6 @@ def check_header_fit():
         print(f"  skip check_header: {why}")
         return failures
     for label, argv, want in (
-            ("header gate quiet on the shipped header (1280 only)",
-             ["--widths", "1280", "1024"], 0),
             ("header gate fires with the fold switched off", ["--broken"], 0),
             ("header gate holds the menu-free bar to one row, and fires with the "
              "bar as it broke put back", ["--broken-row"], 0)):
@@ -2375,9 +2352,12 @@ def check_header_fit():
 
 
 def check_behaviours_run():
-    """ci/check_behaviours.py, both directions: the shipped behaviours do what
-    the registry says, and the positive control fires with one line of each
-    turned wrong. Skips, and says so, without a browser."""
+    """ci/check_behaviours.py's positive controls: the gate fires with one line
+    of each behaviour turned wrong, and the compatibility check fires with the
+    new look forced on. The shipped behaviours and the compatibility run
+    itself are the workflow's own check_behaviours steps, the same commands,
+    so they are not run here a second time. Skips, and says so, without a
+    browser."""
     import check_phone
     failures = []
     why = check_phone.browser_unavailable()
@@ -2385,10 +2365,7 @@ def check_behaviours_run():
         print(f"  skip check_behaviours: {why}")
         return failures
     for label, argv, want in (
-            ("behaviour gate quiet on the shipped behaviours", [], 0),
             ("behaviour gate fires with one line of each turned wrong", ["--broken"], 0),
-            ("a block with no new setting builds what the last published bundle "
-             "built, and today's markup falls back on it", ["--compat"], 0),
             ("the compatibility check fires with the new look forced on",
              ["--compat", "--broken"], 0)):
         got = subprocess.run([sys.executable, str(HERE / "check_behaviours.py")] + argv,
@@ -4163,12 +4140,13 @@ def check_hero_portrait_moving():
 
 
 def check_placeholder_scrim():
-    """Both directions of ci/check_placeholder_scrim.py: the library is clean,
-    and the positive control catches a drawing the scrim hides and copy the
-    scrim no longer carries. A browser-less run skips, as check_phone does."""
+    """ci/check_placeholder_scrim.py's positive control: it catches a drawing
+    the scrim hides and copy the scrim no longer carries. The library run is
+    the workflow's own scrim step, the same command, so it is not run here a
+    second time. A browser-less run skips, as check_phone does."""
     print("ci/check_placeholder_scrim.py, a placeholder under a photo scrim")
     failures = []
-    for label, argv in (("the library", []), ("the positive control", ["--broken"])):
+    for label, argv in (("the positive control", ["--broken"]),):
         got = subprocess.run([sys.executable, str(HERE / "check_placeholder_scrim.py"), *argv],
                              capture_output=True, text=True, cwd=HERE.parent)
         ok = got.returncode == 0
