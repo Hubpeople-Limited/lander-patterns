@@ -143,7 +143,7 @@ def discover(names=None):
     return found
 
 
-def page(name, tokens, extra_css=""):
+def page(name, tokens, extra_css="", mods=None):
     folder = PATTERNS / name
     markup = (folder / "pattern.html").read_text(encoding="utf-8")
     markup = re.sub(r"\s*<!--\n.*?\n-->", "", markup, count=1, flags=re.S)
@@ -151,12 +151,21 @@ def page(name, tokens, extra_css=""):
     import json
     sample = json.loads((folder / "preview-content.json").read_text(encoding="utf-8"))
     css = (folder / "pattern.css").read_text(encoding="utf-8") + "\n" + extra_css
-    return SHELL.format(name=name, width="scrim", tokens=tokens, css=css,
+    html = SHELL.format(name=name, width="scrim", tokens=tokens, css=css,
                         markup=fill(markup, sample))
+    if mods:
+        # A rung other than the one the markup ships: a pattern whose words
+        # sit on a photograph on one rung only is measured on that rung.
+        import lint
+        from check_page import apply_variants
+        meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                                 folder / "pattern.html")
+        html = apply_variants(name, meta, html, mods)
+    return html
 
 
-def measure(browser, workdir, name, tokens_name, viewport, extra_css=""):
-    html = page(name, token_set(tokens_name), extra_css)
+def measure(browser, workdir, name, tokens_name, viewport, extra_css="", mods=None):
+    html = page(name, token_set(tokens_name), extra_css, mods)
     hidden = f"<style>{HIDE_COPY.format(n=name)}</style></head>"
     shot = workdir / f"{name}-{tokens_name}-{viewport[0]}.html"
     shot.write_text(html.replace("</head>", hidden, 1), encoding="utf-8", newline="\n")
@@ -203,7 +212,7 @@ def measure(browser, workdir, name, tokens_name, viewport, extra_css=""):
         tab.close()
 
 
-def run(names, broken_kind=None):
+def run(names, broken_kind=None, mods=None, extra_css=""):
     """Returns {(name, tokens, width): (drawing, copy, faults)}."""
     from playwright.sync_api import sync_playwright
     out = {}
@@ -221,10 +230,10 @@ def run(names, broken_kind=None):
             browser = p.chromium.launch()
             try:
                 for name in names:
-                    extra = BROKEN[broken_kind].format(n=name) if broken_kind else ""
+                    extra = (BROKEN[broken_kind].format(n=name) if broken_kind else "") + extra_css
                     for tokens_name in TOKEN_SETS:
                         for viewport in VIEWPORTS:
-                            got = measure(browser, workdir, name, tokens_name, viewport, extra)
+                            got = measure(browser, workdir, name, tokens_name, viewport, extra, mods)
                             faults = []
                             if got["drawing"] < THRESHOLD:
                                 faults.append("drawing")

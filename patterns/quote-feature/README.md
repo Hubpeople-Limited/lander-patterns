@@ -39,6 +39,9 @@ this one. Where a brand has three or more testimonials, use `testimonial-grid`
 and drop this pattern; where it has one, use this one. `one-per-page: yes`:
 two full-screen quote stages on one page is a mistake, not a layout choice.
 
+Not on a page with `quote-image` either: that is one quote set over a
+photograph, and a page reads best giving one quote the stage.
+
 Give it room. The stage is a tint edge to edge, so it reads as a break in the
 page and wants a section either side that is not also tinted.
 

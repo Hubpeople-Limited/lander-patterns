@@ -3155,6 +3155,182 @@ def check_hero_band_drift():
     return failures
 
 
+def check_quote_image():
+    """quote-image: the words sit on the scrim at its full level on every
+    placement; over the placeholder the drawing shows and the words hold
+    4.5:1 on every rung; the height comes from the width; every rung
+    combination passes the phone gate at 320 and 360."""
+    import check_phone
+    import check_placeholder_scrim as cps
+    import lint
+    failures = []
+    print("quote-image, a quote over a photograph")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED quote-image: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"quote-image: {label}")
+
+    folder = HERE.parent / "patterns" / "quote-image"
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                             folder / "pattern.html")
+    shade_js = r"""() => {
+        const s = document.querySelector('.quote-image').getBoundingClientRect();
+        const w = document.querySelector('.quote-image-words');
+        const b = w.getBoundingClientRect();
+        const bg = getComputedStyle(w).backgroundColor;
+        const m = bg.match(/\/\s*([\d.]+)\s*\)$/) || bg.match(/rgba\([^)]*,\s*([\d.]+)\)$/);
+        return {alpha: bg === 'rgba(0, 0, 0, 0)' ? 0 : (m ? parseFloat(m[1]) : 1),
+                inside: b.top >= s.top - 0.5 && b.bottom <= s.bottom + 0.5
+                        && b.left >= s.left - 0.5 && b.right <= s.right + 0.5};
+    }"""
+    height_js = "() => document.querySelector('.quote-image').getBoundingClientRect().height"
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for tokens in ("brand", "display"):
+                for words in ("centre", "start", "end"):
+                    for width in (390, 1280):
+                        got = _render(browser, workdir,
+                                      opener_page("quote-image", {"words": words}, tokens),
+                                      (width, 900), shade_js)
+                        case(f"words={words} on {tokens} at {width}: the words sit on the scrim "
+                             f"at its full level ({got['alpha']:.2f}), inside the section",
+                             got["alpha"] >= 0.915 and got["inside"])
+            bare = _render(browser, workdir,
+                           opener_page("quote-image", {"words": "start"}, "brand",
+                                       extra_css=".quote-image-words { background: none !important; }"),
+                           (1280, 900), shade_js)
+            case("catches: words with no shade under them", bare["alpha"] < 0.915)
+            short = _render(browser, workdir, opener_page("quote-image", {}, "brand"),
+                            (1280, 800), height_js)
+            tall = _render(browser, workdir, opener_page("quote-image", {}, "brand"),
+                           (1280, 1400), height_js)
+            case(f"the height comes from the width: {short:.0f}px on an 800px screen, "
+                 f"{tall:.0f}px on a 1400px one", abs(short - tall) <= 0.5)
+            vh = [_render(browser, workdir,
+                          opener_page("quote-image", {}, "brand",
+                                      extra_css=".quote-image { min-height: 80vh !important; }"),
+                          (1280, h), height_js) for h in (800, 1400)]
+            case("catches: a height taken from the screen", abs(vh[0] - vh[1]) > 0.5)
+        finally:
+            browser.close()
+    for words in ("centre", "start", "end"):
+        for scrim in ("fade", "full"):
+            results = cps.run(["quote-image"], mods={"words": words, "scrim": scrim})
+            bad = [f"{t} {w}px {', '.join(v[2])}" for (_, t, w), v in sorted(results.items()) if v[2]]
+            case(f"words={words} scrim={scrim} over the placeholder on five sample sets: the "
+                 f"drawing shows and the words hold 4.5:1"
+                 + ("" if not bad else " - " + "; ".join(bad[:3])), not bad)
+    # Over the placeholder the drawing takes its own area: no line of the
+    # words may sit on it at any width.
+    clear_js = """() => {
+        const p = document.querySelector('.quote-image-img').getBoundingClientRect();
+        return [...document.querySelectorAll('.quote-image-words :is(p, blockquote)')]
+            .flatMap(e => [...e.getClientRects()])
+            .filter(r => r.width && Math.min(r.right, p.right) - Math.max(r.left, p.left) > 1
+                         && Math.min(r.bottom, p.bottom) - Math.max(r.top, p.top) > 1).length; }"""
+
+    def on_drawing(words, extra_css=""):
+        page = opener_page("quote-image", {"words": words}, "brand", extra_css=extra_css).replace(
+            'class="quote-image-img"', 'class="quote-image-img" data-hub-placeholder="quote-backdrop"', 1)
+        with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+            workdir = _opener_workdir(tmp)
+            browser = p.chromium.launch()
+            try:
+                return [w for w in (390, 768, 1024, 1280)
+                        if _render(browser, workdir, page, (w, 900), clear_js)]
+            finally:
+                browser.close()
+    for words in ("centre", "start", "end"):
+        hit = on_drawing(words)
+        case(f"words={words}: the placeholder takes its own area, clear of every line of the "
+             f"words at 390, 768, 1024 and 1280" + (f" - over it at {hit}" if hit else ""), not hit)
+    case("catches: a placeholder laid back under the words",
+         bool(on_drawing("start", ".quote-image .quote-image-img[data-hub-placeholder] "
+                                  "{ position: absolute !important; grid-area: auto !important; "
+                                  "inset: 0 !important; height: 100% !important; }")))
+    with check_phone.Phone() as phone:
+        for tokens in ("brand", "display"):
+            bad = []
+            for mods in _rung_combos(meta):
+                label = "quote-image " + " ".join(f"{a}={v}" for a, v in mods.items())
+                bad += phone.faults(label, opener_page("quote-image", mods, tokens))
+            case(f"every rung combination at 320 and 360 on {tokens} passes the phone gate"
+                 + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
+def check_quote_image_drift():
+    """Still means still: the photograph drifts only on the moving rung, once,
+    for five seconds at most, once it is in view, and never under reduced
+    motion; the reveal hook never fades or slides it."""
+    import check_phone
+    failures = []
+    print("quote-image, the drift is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED quote-image drift: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"quote-image drift: {label}")
+
+    # The library's reveal, as it leaves the photograph once it is in view.
+    js = """() => { const i = document.querySelector('.quote-image-img');
+        i.classList.add('hub-revealed');
+        const s = getComputedStyle(i);
+        return {name: s.animationName, secs: parseFloat(s.animationDuration),
+                count: s.animationIterationCount, opacity: s.opacity}; }"""
+    pending_js = """() => { const i = document.querySelector('.quote-image-img');
+        i.classList.add('hub-reveal-pending');
+        const s = getComputedStyle(i);
+        return {opacity: s.opacity, translate: s.translate}; }"""
+    # The behaviour library's own rule for a block it is about to reveal.
+    pending_css = ".hub-reveal-pending { opacity: 0; translate: 0 24px; }"
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            still = _render(browser, workdir, opener_page("quote-image", {}, "brand"),
+                            (1280, 800), js)
+            case("the still rung does not move", still["name"] == "none")
+            moving = _render(browser, workdir,
+                             opener_page("quote-image", {"motion": "moving"}, "brand"),
+                             (1280, 800), js)
+            case("the moving rung drifts once, for five seconds at most, and stays opaque",
+                 moving["name"] == "quote-image-drift" and moving["secs"] <= 5
+                 and moving["count"] == "1" and moving["opacity"] == "1")
+            calm = _render(browser, workdir,
+                           opener_page("quote-image", {"motion": "moving"}, "brand"),
+                           (1280, 800), js, reduced=True)
+            case("the moving rung holds still under reduced motion", calm["name"] == "none")
+            forced = _render(browser, workdir,
+                             opener_page("quote-image", {}, "brand",
+                                         extra_css=".quote-image-img { animation: "
+                                                   "quote-image-drift 5s; }"),
+                             (1280, 800), js)
+            case("catches: a still rung that drifts", forced["name"] != "none")
+            waiting = _render(browser, workdir,
+                              opener_page("quote-image", {"motion": "moving"}, "brand",
+                                          extra_css=pending_css),
+                              (1280, 800), pending_js)
+            case("the photograph waiting for the reveal is neither faded nor moved",
+                 waiting["opacity"] == "1" and waiting["translate"] in ("none", "0px"))
+        finally:
+            browser.close()
+    return failures
+
+
 def check_member_grid_motion():
     """member-grid's Moving row is itself a choice to move, so it glides
     whatever the Movement rung says; every other layout is still unless
@@ -3612,6 +3788,10 @@ def main():
     print()
     failures += check_hero_portrait()
     print()
+    failures += check_quote_image()
+    print()
+    failures += check_quote_image_drift()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -3636,7 +3816,8 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2 + 4
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16 + 6)
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16 + 6
+             + 27 + 5)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
