@@ -3586,9 +3586,28 @@ def check_story_cards_moving():
 BENTO_FIRST_SCREEN = {(390, 844): 844 - 152, (1280, 800): 800 - 152}
 
 
+# Holding the card on a laptop, the join tile is the card. The join line a
+# sign-up opener drops is dropped here too, as a build drops it.
+BENTO_CARD_WIDTHS = (1024, 1280, 1440)
+BENTO_CARD_FILL_JS = """() => {
+    document.querySelector('.hero-bento-join-line')?.remove();
+    const t = document.querySelector('.hero-bento-join');
+    const f = document.querySelector('.signup-card-form');
+    const a = t.getBoundingClientRect(), b = f.getBoundingClientRect();
+    const s = getComputedStyle(t), fs = getComputedStyle(f), px = v => parseFloat(v) || 0;
+    return {edges: [b.left - a.left - px(s.borderLeftWidth),
+                    a.right - px(s.borderRightWidth) - b.right,
+                    b.top - a.top - px(s.borderTopWidth),
+                    a.bottom - px(s.borderBottomWidth) - b.bottom].map(Math.round),
+            border: px(fs.borderTopWidth) + px(fs.borderLeftWidth),
+            shadow: fs.boxShadow};
+}"""
+
+
 def check_hero_bento():
     """hero-bento: holding the card, its first question is on the first
-    screen; no tile, card or words cover words from 320 to 1440; any tile
+    screen and, from 1024 to 1440, the card fills its tile with one border;
+    no tile, card or words cover words from 320 to 1440; any tile
     left out and the rest close up with no gap; every rung combination, with
     the button and with the card, passes the phone gate."""
     import check_phone
@@ -3669,6 +3688,31 @@ def check_hero_bento():
                                  (1280, 900), rows_js(list(drop)))
                     case(f"words={words} without {', '.join(drop) or 'nothing'}: the tiles close "
                          f"up with no gap", ok)
+            for words in ("start", "end", "top"):
+                for cells in ("ruled", "spaced"):
+                    for width in BENTO_CARD_WIDTHS:
+                        gaps = _render(browser, workdir,
+                                       opener_page("hero-bento", {"words": words, "cells": cells},
+                                                   "brand", card=True),
+                                       (width, 900), BENTO_CARD_FILL_JS)
+                        case(f"words={words} cells={cells} at {width}: the card fills its tile "
+                             f"with one border - edges {gaps['edges']}, form border "
+                             f"{gaps['border']}, shadow {gaps['shadow']}",
+                             max(map(abs, gaps["edges"])) <= 1 and gaps["border"] == 0
+                             and gaps["shadow"] == "none")
+            narrow = _render(browser, workdir,
+                             opener_page("hero-bento", {}, "brand", card=True,
+                                         extra_css=".hero-bento-join .signup-card "
+                                                   "{ max-width: 24rem !important; }"),
+                             (1280, 900), BENTO_CARD_FILL_JS)
+            case("catches: a card held to its own width inside a wider tile",
+                 max(map(abs, narrow["edges"])) > 1)
+            boxed = _render(browser, workdir,
+                            opener_page("hero-bento", {}, "brand", card=True,
+                                        extra_css=".hero-bento-join .signup-card-form "
+                                                  "{ border: 1px solid !important; }"),
+                            (1280, 900), BENTO_CARD_FILL_JS)
+            case("catches: a card drawing its own border inside the tile's", boxed["border"] > 0)
             holed = _render(browser, workdir,
                             opener_page("hero-bento", {}, "brand",
                                         extra_css=".hero-bento-cells > li { flex-grow: 0 !important; }"),
@@ -4485,7 +4529,8 @@ def main(argv=None):
              + 39 + 6
              + 37 + 4
              + 7
-             + 11)
+             + 11
+             + 18 + 2)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
