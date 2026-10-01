@@ -1,6 +1,7 @@
 """Proof that each gate fires, and that it stays quiet on valid CSS.
 
 Run: python ci/test_gates.py
+     python ci/test_gates.py --shard 2/3    one of three shares, as CI runs it
 
 Both halves matter. A check that never fires is worse than no check, because
 it converts an unknown into a false assurance - but a check that fires on
@@ -13,6 +14,7 @@ found nine defects in - so the scope of this file is not a detail, it is the
 thing that decides which defects survive.
 """
 
+import argparse
 import json
 import os
 import re
@@ -2351,31 +2353,41 @@ def check_header_fit():
     return failures
 
 
-def check_behaviours_run():
-    """ci/check_behaviours.py's positive controls: the gate fires with one line
-    of each behaviour turned wrong, and the compatibility check fires with the
-    new look forced on. The shipped behaviours and the compatibility run
-    itself are the workflow's own check_behaviours steps, the same commands,
-    so they are not run here a second time. Skips, and says so, without a
-    browser."""
+def _behaviours_control(label, argv):
+    """One positive control of ci/check_behaviours.py, run as the workflow
+    runs it, required to fire. Skips, and says so, without a browser."""
     import check_phone
     failures = []
     why = check_phone.browser_unavailable()
     if why:
         print(f"  skip check_behaviours: {why}")
         return failures
-    for label, argv, want in (
-            ("behaviour gate fires with one line of each turned wrong", ["--broken"], 0),
-            ("the compatibility check fires with the new look forced on",
-             ["--compat", "--broken"], 0)):
-        got = subprocess.run([sys.executable, str(HERE / "check_behaviours.py")] + argv,
-                             capture_output=True, text=True, encoding="utf-8")
-        ok = got.returncode == want
-        print(f"  {'ok  ' if ok else 'FAIL'} {label} exit={got.returncode} want={want}")
-        if not ok:
-            print("      " + (got.stdout.strip().splitlines() or ["(no output)"])[-1])
-            failures.append(label)
+    got = subprocess.run([sys.executable, str(HERE / "check_behaviours.py")] + argv,
+                         capture_output=True, text=True, encoding="utf-8")
+    ok = got.returncode == 0
+    print(f"  {'ok  ' if ok else 'FAIL'} {label} exit={got.returncode} want=0")
+    if not ok:
+        print("      " + (got.stdout.strip().splitlines() or ["(no output)"])[-1])
+        failures.append(label)
     return failures
+
+
+def check_behaviours_run():
+    """ci/check_behaviours.py's positive control: the gate fires with one line
+    of each behaviour turned wrong. The shipped behaviours and the
+    compatibility run itself are the workflow's own check_behaviours steps,
+    the same commands, so they are not run here a second time."""
+    return _behaviours_control(
+        "behaviour gate fires with one line of each turned wrong", ["--broken"])
+
+
+def check_compat_control():
+    """The compatibility check's positive control: it fires with the new look
+    forced on. Its own check, apart from the one above, because each takes
+    minutes and the shares balance better with them apart."""
+    return _behaviours_control(
+        "the compatibility check fires with the new look forced on",
+        ["--compat", "--broken"])
 
 
 def _hub(version, header=None, body=""):
@@ -4315,7 +4327,9 @@ def check_scrollbar_gate():
     return failures
 
 
-def main():
+def check_brand_fit():
+    """ci/brand_fit.py, the dials: every fault fires and every valid form
+    stays quiet."""
     base = os.path.join(tempfile.gettempdir(), "lander-dial-test")
     failures = []
 
@@ -4348,95 +4362,104 @@ def main():
         failures.append(label)
 
     shutil.rmtree(base, ignore_errors=True)
-    print()
-    failures += check_lost_messages()
-    print()
-    failures += check_display_type()
-    print()
-    failures += check_modules()
-    print()
-    failures += check_header()
-    print()
-    failures += check_disclosure()
-    print()
-    failures += check_modifier_spelling()
-    print()
-    failures += check_every_rung_applies()
-    print()
-    failures += check_variant_notes()
-    print()
-    failures += check_motion_switch_gate()
-    print()
-    failures += check_type_pairings()
-    print()
-    failures += check_pages()
-    print()
-    failures += check_phone()
-    print()
-    failures += check_measures()
-    print()
-    failures += check_fold()
-    print()
-    failures += check_shells()
-    print()
-    failures += check_configurator()
-    print()
-    failures += check_release_tag_is_not_freshness()
-    print()
-    failures += check_recipes()
-    print()
-    failures += check_header_fit()
-    print()
-    failures += check_behaviours_run()
-    print()
-    failures += check_hub_version()
-    print()
-    failures += check_hub_publish()
-    print()
-    failures += check_placeholder_set()
-    print()
-    failures += check_image_slots_gate()
-    print()
-    failures += check_placeholder_manifest_gate()
-    print()
-    failures += check_placeholder_urls_gate()
-    print()
-    failures += check_masthead_without_portrait()
-    print()
-    failures += check_member_grid_motion()
-    print()
-    failures += check_placeholder_scrim()
-    print()
-    failures += check_shell_placeholders()
-    print()
-    failures += check_scrollbar_gate()
-    print()
-    failures += check_hero_band()
-    print()
-    failures += check_hero_band_drift()
-    print()
-    failures += check_hero_portrait()
-    print()
-    failures += check_hero_portrait_moving()
-    print()
-    failures += check_quote_image()
-    print()
-    failures += check_quote_image_drift()
-    print()
-    failures += check_story_cards()
-    print()
-    failures += check_story_cards_moving()
-    print()
-    failures += check_hero_bento()
-    print()
-    failures += check_hero_bento_moving()
-    print()
-    failures += check_words_whole()
-    print()
+    return failures
+
+
+# Every check, in the order a full run takes them. A share (--shard) is every
+# Nth entry of this list, so the shares are disjoint and together they are the
+# whole list: a check added here is in exactly one share, whatever N is.
+CHECKS = [
+    check_brand_fit,
+    check_lost_messages,
+    check_display_type,
+    check_modules,
+    check_header,
+    check_disclosure,
+    check_modifier_spelling,
+    check_every_rung_applies,
+    check_variant_notes,
+    check_motion_switch_gate,
+    check_type_pairings,
+    check_pages,
+    check_phone,
+    check_measures,
+    check_fold,
+    check_shells,
+    check_configurator,
+    check_release_tag_is_not_freshness,
+    check_recipes,
+    check_header_fit,
+    check_behaviours_run,
+    check_compat_control,
+    check_hub_version,
+    check_hub_publish,
+    check_placeholder_set,
+    check_image_slots_gate,
+    check_placeholder_manifest_gate,
+    check_placeholder_urls_gate,
+    check_masthead_without_portrait,
+    check_member_grid_motion,
+    check_placeholder_scrim,
+    check_shell_placeholders,
+    check_scrollbar_gate,
+    check_hero_band,
+    check_hero_band_drift,
+    check_hero_portrait,
+    check_hero_portrait_moving,
+    check_quote_image,
+    check_quote_image_drift,
+    check_story_cards,
+    check_story_cards_moving,
+    check_hero_bento,
+    check_hero_bento_moving,
+    check_words_whole,
+]
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(
+        description="Prove that each gate fires, and that it stays quiet on "
+                    "valid input.")
+    ap.add_argument("--shard", metavar="K/N",
+                    help="run the K-th of N shares of the checks (1-based). "
+                         "Every share together is the whole suite; CI runs "
+                         "the shares side by side")
+    ap.add_argument("--require-browser", action="store_true",
+                    help="treat a missing browser as a failure, not a skip. "
+                         "Without it the browser checks skip, which is right "
+                         "for a contributor and wrong for CI")
+    args = ap.parse_args(argv)
+
+    if args.require_browser:
+        import check_phone
+        why = check_phone.browser_unavailable()
+        if why:
+            print(f"gate tests: no browser here - {why}")
+            print("  --require-browser was given, so a skip is a failure.")
+            return 1
+
+    checks, share = CHECKS, None
+    if args.shard:
+        got = re.fullmatch(r"(\d+)/(\d+)", args.shard)
+        k, n = (int(got.group(1)), int(got.group(2))) if got else (0, 0)
+        if not 1 <= k <= n:
+            print(f"gate tests: --shard takes K/N with 1 <= K <= N, not "
+                  f"{args.shard!r}")
+            return 2
+        checks, share = CHECKS[k - 1::n], (k, n)
+
+    failures = []
+    for check in checks:
+        failures += check()
+        print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
         return 1
+    if share:
+        print(f"clean: share {share[0]} of {share[1]}, {len(checks)} of the "
+              f"{len(CHECKS)} checks; the other shares run the rest.")
+        return 0
     recipes = json.loads((HERE / "page-recipes.json").read_text(encoding="utf-8"))
     total = (len(CASES) + 1 + len(LOST_PHRASES) + len(LOST_ABSENT)
              + len(BYPASSES) + len(QUIET) + len(LEGIBILITY)
