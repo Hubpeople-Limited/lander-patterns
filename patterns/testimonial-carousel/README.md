@@ -14,10 +14,10 @@ and a pause control cannot be built without script, which is why TOKENS.md
 refuses them outright. This one is legitimate precisely because the reader
 drives every move. Do not add a CSS animation that changes slides on a timer.
 
-**Do not use it** for fewer than three testimonials (there is no carousel to
-operate), for anonymous praise, or for anything the visitor needs in order to
-decide — a carousel hides most of its content, so it is for depth, not for the
-case. It is `one-per-page: yes`: a page has one body of social proof, and a
+**It works best** with three testimonials or more (with fewer there is no
+carousel to operate), each with a name to it, and for depth rather than
+anything the visitor needs in order to decide — a carousel hides most of its
+content. It is `one-per-page: yes`: a page has one body of social proof, and a
 second full-bleed stage competes with the first rather than adding to it.
 
 **How a keyboard works it.** The radios are the interface, clipped to one

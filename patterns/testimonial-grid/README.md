@@ -4,10 +4,10 @@
 height, each with the person's portrait breaking the top edge of the card and
 their name bottom-aligned so the row shares one baseline. One card may invert
 to the brand's action colour to lead the set. Use it where a page needs social
-proof from real, attributable people. Do **not** use it with fewer than three
+proof from real, attributable people. It works best with three
 testimonials (two cards read as a gap, one is a pull quote — a different
-thing), and do not use it for anonymous praise: a quote with no name attached
-is not evidence and this pattern makes it look like evidence.
+thing), each from a named person: a quote with no name attached is not
+evidence, and this pattern makes it look like evidence.
 
 **There is no star rating, deliberately.** The source component drew five
 stars on every card with `aria-label="5 star rating"` hardcoded, whatever the
@@ -29,7 +29,7 @@ non-featured card. The source link needs a real URL and real link text or it
 is deleted outright.
 
 **Pairing.** `heading-block` above it gives the section its opener, which is
-why this pattern carries only a plain `<h2>`. Do not put it directly next to a
+why this pattern carries only a plain `<h2>`. It reads better away from a
 second card grid — two rows of cards in a row stop reading as distinct
 sections — and not on a page with `portrait-wall`, which is a third run of
 faces. Nor with `quote-feature`, which spends a whole screen on one

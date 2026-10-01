@@ -2,9 +2,9 @@
 
 **What it is and when to use it.** Two or three tier cards, structurally
 identical, equal height, CTAs bottom-aligned whatever each tier's feature
-count. Use it on the pricing page when the brand sells distinct tiers. Do
-**not** use it for a single-plan brand (say the one plan plainly instead),
-and never pad a tier with invented features to balance the row — a card with
+count. Use it on the pricing page when the brand sells distinct tiers. A
+single-plan brand reads better saying the one plan plainly, and a tier is
+never padded with invented features to balance the row — a card with
 three real lines beats one with six half-true ones.
 
 **What it needs.** The real tiers: names, actual prices with their currency,

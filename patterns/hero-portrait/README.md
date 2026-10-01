@@ -8,10 +8,11 @@ homepage or a landing page whose job is sign-ups, for a brand with one good
 photograph of a person or a couple. `hero-split` is the choice when the
 picture is a scene rather than a face; this one gives the face the room.
 
-**Who the portrait may show.** Someone who stands for the brand's members
-without being one of them: a photograph the brand has the right to use. Never
-a named member, a testimonial's face or a founder, and never a caption saying
-who it is. Before the brand has a photograph the slot takes the library's
+**Who the portrait works best with.** Someone who stands for the brand's
+members: a photograph the brand has the right to use, with the person's OK. It
+carries no name or caption, so a named member, a testimonial's face or a
+founder reads better in a pattern built to name them - `member-strip`,
+`quote-feature`, `portrait-prose`. Before the brand has a photograph the slot takes the library's
 placeholder, a line drawing, never a likeness, drawn whole on the tint rather
 than cropped, so "Photo to come" reads even in the phone strip.
 
@@ -45,8 +46,8 @@ carries its `h1`; a page opens once.
 
 **Pairing.** `member-grid` below it, under a `heading-block`: the portrait
 says who the brand is for, the members show who is there. `steps-plain` for
-how joining works. Never with `picker-chips` while it holds the card: two
-first questions is none.
+how joining works. It reads better without `picker-chips` while it holds the
+card: two first questions is none.
 
 **Brand adaptability.** Each ground names its own ink and every rule reads
 that pair, as in `hero-stated`. On `plain` the title is `--color-heading`,

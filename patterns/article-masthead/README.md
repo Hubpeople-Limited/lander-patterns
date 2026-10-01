@@ -11,8 +11,8 @@ for it: `heading-block` is a section opener with an `<h2>`, for announcing a
 section *inside* any page. The two are not alternatives — an article page can
 carry this masthead at the top and several `heading-block`s down the body.
 
-Do **not** use it to head a section, and do not put it on a page that already
-has a hero. `hero-split` and `hero-overlay` each ship the page's `<h1>`, so a
+It heads the page rather than a section, and it takes the place of a hero
+rather than sitting under one. `hero-split` and `hero-overlay` each ship the page's `<h1>`, so a
 masthead beside either gives the page two, and a marketing hero above an article
 buries the piece it was meant to introduce. Pick one opener per page.
 
@@ -21,15 +21,15 @@ The root is a `<div>`, not a `<header>`. A `<header>` that is not inside an
 landmark, and pasted into a page body this one would not be — so it would
 announce itself as a second site header alongside the chassis's real one.
 
-**What it needs.** All of it real, and it gates use:
+**What it needs.** All of it real:
 
 - A title, and a lede of one or two sentences that actually stands the piece up.
 - The category the article genuinely sits in, an honest read time, and the real
   publication date. `datetime` takes the machine-readable form (`2026-08-22`),
   the slot beside it the words a reader sees.
 - The name and role of the person who wrote it. A byline is a claim about a
-  named human being: if nobody is willing to be named, this is the wrong
-  pattern, not a field to fill.
+  named human being, so it names someone happy to be named; with nobody,
+  delete the name and role rather than fill them.
 - Their portrait, where the brand has a real one. It is optional: with none,
   delete the `<img>` and the name and role sit at the start of the row. It
   never takes the library's placeholder, because a drawn person beside a

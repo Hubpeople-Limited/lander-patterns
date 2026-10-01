@@ -7,8 +7,8 @@ one band tall rather than a screen, so what the visitor came to the page for
 starts on the first screen. Use it where an inner page would otherwise open
 on words alone and the brand has a photograph of people or a place it can
 show. `hero-stated` stays the opener for a page with no photograph worth the
-space. Not for a homepage or a campaign page, which open on a full photo
-opener, and not for an article, which opens on `article-masthead`.
+space. A homepage or a campaign page usually opens on a full photo
+opener, and an article on `article-masthead`.
 
 **Three places for the photograph** (`photo`):
 

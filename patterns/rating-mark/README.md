@@ -10,8 +10,8 @@ things — a hero's copy column, a testimonial's attribution, beside a
 measured against shows a rating somewhere, and until now there was nothing to
 show one with.
 
-Do **not** use it as a section of its own. A rating floating on its own band is
-a number with nothing to be a rating *of*.
+It works best beside something rather than as a section of its own. A rating
+floating on its own band is a number with nothing to be a rating *of*.
 
 **What it needs.** A rating the platform actually publishes, **and the count
 behind it**. Both, always.

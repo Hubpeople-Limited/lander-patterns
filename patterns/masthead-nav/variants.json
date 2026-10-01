@@ -45,7 +45,7 @@
       },
       "row": {
         "label": "Scrolling row",
-        "note": "No button at all - the links stay in a row you swipe sideways. Only works with a few short links."
+        "note": "No button at all - the links stay in a row you swipe sideways. Works best with a few short links."
       }
     }
   },
@@ -127,7 +127,7 @@
       },
       "mono": {
         "label": "White silhouette",
-        "note": "Your logo drawn in solid white. Only for a logo whose shape works in one colour, on a dark background."
+        "note": "Your logo drawn in solid white. Best for a logo whose shape works in one colour, on a dark background."
       }
     }
   },

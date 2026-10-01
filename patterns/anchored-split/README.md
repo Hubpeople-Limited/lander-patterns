@@ -11,13 +11,13 @@ mechanics of it, a position and the reasons for it. It is the section for
 material that is genuinely one argument rather than a set of peers, which is
 what separates it from an index or a card run.
 
-Do **not** use it for peers. If the items on the right would read the same in
+Peers suit something else. If the items on the right would read the same in
 any order and the panel on the left is only a heading, this is a heading and a
-list, and `heading-block` plus `listing-rows` says so with less machinery. Do
-not use it below three items: a sticky panel beside two paragraphs never moves,
-so the whole device is invisible and the reader is left with a narrow column for
-no reason. And do not put a second one on the same page — two panels competing
-to stay put is the layout arguing with itself.
+list, and `heading-block` plus `listing-rows` says so with less machinery. It
+works best with three items or more: a sticky panel beside two paragraphs never
+moves, so the device is invisible and the reader is left with a narrow column
+for no reason. And it is one per page — two panels competing to stay put is
+the layout arguing with itself.
 
 **What it needs.** One claim, as a title and at most two sentences. Then three or
 more real items, each with its own subheading and a paragraph from real

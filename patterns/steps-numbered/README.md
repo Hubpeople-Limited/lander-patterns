@@ -5,9 +5,9 @@ cards, each a photograph at a fixed portrait ratio with a dark bottom-up scrim
 carrying a giant numeral and two lines of copy. Use it when the thing being
 explained genuinely happens **in order** and each step has a real photograph
 behind it. Three or four steps is the useful range: two is a list, five stops
-being a sequence anyone remembers. Do **not** use it for unordered features or
-benefits — that is a peer set and the numbering would be a lie — and do not use
-it without photography, because a scrim over a flat fill is just a dark box.
+being a sequence anyone remembers. Unordered features or
+benefits suit another pattern — that is a peer set and the numbering would be a
+lie — and it is built for photography: a scrim over a flat fill is a dark box.
 
 **What it needs.** One real photograph per step, portrait-ish and at least
 1020px wide (the cards render at 510×590 CSS pixels, so 2× for retina), each

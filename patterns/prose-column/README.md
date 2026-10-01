@@ -15,8 +15,7 @@ Use it for any run of real writing: an article body, a long safety explanation,
 a founder's account, the middle of a guide. Several may sit on one page with
 other sections between them.
 
-Do **not** use it as a general text wrapper for a section that is really a
-component. A single centred paragraph under a heading is `heading-block`'s
+It is not a general text wrapper for a section that is really a component. A single centred paragraph under a heading is `heading-block`'s
 supporting line; a short claim is `opener-split`'s.
 
 **What it needs.** Real writing, structured so it can be scanned and quoted:

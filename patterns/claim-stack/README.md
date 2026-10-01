@@ -15,9 +15,9 @@ a card grid looks like a card grid; filler copy at 4rem looks like filler copy.
 If the claims are not good, this composition tells the reader so. Choose
 something else rather than softening the words to fit.
 
-Do **not** stack more than five, and do not use it as a page. This is
-punctuation — one of these on a page, after or before something with texture in
-it. Do not use it for a set of features: features have detail, and detail is
+Five is the most it carries, and it works as punctuation rather than as a
+page — one of these on a page, after or before something with texture in it.
+A set of features suits another pattern: features have detail, and detail is
 what this device removes. Do not number the claims; they are peers, and
 numbering a set with no order is decoration pretending to be structure.
 

@@ -4,10 +4,10 @@
 Each card is one photograph with a corner chip, and its heading, one line of
 copy and an arrow cue set over a dark bottom-up scrim. Use it for a set of
 peers that each have a real photograph and a real destination — audiences,
-solutions, places to go next. Do **not** use it without photography: a scrim
-over a flat fill is a dark box, and this pattern is the photograph. Not for an
-ordered process (`steps-numbered`), and not for more copy than one sentence — a
-card needing a paragraph is a page, and the sentence is the link to it.
+solutions, places to go next. It is built for photography: a scrim over a
+flat fill is a dark box, and this pattern is the photograph. An ordered process
+fits `steps-numbered` better, and a card holds one sentence — a card needing a
+paragraph is a page, and the sentence is the link to it.
 
 **The copy sits over the image, not below it**, so the card holds one visual
 object rather than two stacked ones and a wrapping row reads as a set of

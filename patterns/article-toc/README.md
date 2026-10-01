@@ -11,8 +11,8 @@ shape — roughly a thousand words and up, four sections and up. That is the
 material search rewards on a dating brand, and on a phone it is the difference
 between a page you navigate and a page you scroll.
 
-Do **not** put one on a short article. Three headings over eight hundred words
-do not get a contents list, they get read; a list of three is a list that costs
+A short article reads better without one. Three headings over eight hundred
+words do not need a contents list, they get read; a list of three is a list that costs
 a screen and saves nothing. Nor is it a menu: every link goes to a heading on
 this page, never to another page, which is `link-cluster`'s job. And where the
 sections have more than one level, list the top level only — a nested contents

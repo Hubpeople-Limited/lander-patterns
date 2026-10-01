@@ -8,9 +8,9 @@ Use it when the brand has one piece of news that is true this month and a page
 that carries it. Take it off when the news stops being news; a bar that has said
 the same thing for a year is furniture, and visitors learn to skip furniture.
 
-Not for a second call to action - the join control is the header's and the
-page's - and not for anything that needs a second sentence. A second sentence
-is a section, and sections go on the page.
+It works best as news rather than a second call to action - the join control
+is the header's and the page's - and as one sentence. A second sentence is a
+section, and sections go on the page.
 
 **What it needs.** One line of real news the brand can stand behind: an offer
 that exists, a place newly served, a date that is true. The page it links to,

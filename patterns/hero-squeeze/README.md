@@ -9,9 +9,9 @@ whether they sign up. It is the highest-volume shape in acquisition and it is
 the one shape where every extra section costs money.
 
 The other heroes are **openers for pages that continue**; this one is the page,
-which is why it is a separate pattern rather than a modifier. Do **not** put a
-second section after it — that is how a squeeze quietly becomes a short landing
-page, and `hero-overlay` is the opener for one of those.
+which is why it is a separate pattern rather than a modifier. Nothing follows
+it: a second section is how a squeeze quietly becomes a short landing page, and
+`hero-overlay` is the opener for one of those.
 
 **What it needs.** One landscape photograph at least 1600px wide with real alt
 text; a headline of one line; one supporting sentence; a reassurance line; and

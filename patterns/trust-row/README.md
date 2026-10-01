@@ -10,12 +10,12 @@ brand that question is not decoration: age assurance, moderation and payment
 security are live objections, and until now the library had no component that
 answered any of them.
 
-Do **not** use it as a logo garden of partners, press mentions or payment-card
-brands — those are a different claim and want their own pattern. Do not use it
-twice on a page; `one-per-page: yes` because the marks are the page's single
+Partners, press mentions and payment-card brands are a different claim and
+read better in a pattern of their own than as a logo garden here. It is
+`one-per-page: yes` because the marks are the page's single
 answer to one question, and a second strip reads as padding rather than as more
-assurance. And do not place it immediately above the site footer, which on most
-brands already carries the same legal furniture. That last one is a note about
+assurance. And it reads better away from the spot just above the site footer, which on
+most brands already carries the same legal furniture. That last one is a note about
 neighbours, not an `avoid-with` edge.
 
 **What it needs.** Real, verifiable compliance marks or memberships the brand

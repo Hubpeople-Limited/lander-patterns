@@ -5,10 +5,11 @@
 when a row opens. **No JavaScript at all**: the browser gives keyboard
 operation, the expanded/collapsed announcement, and find-in-page that opens
 the matching row. Use it where a page genuinely has to answer repeated
-questions — end of a landing page, below pricing. Do **not** use it to hide
-material the visitor needs to make the decision the page is asking for: an
-accordion is for the long tail, not for the case. Do not use it for two
-questions (write them out), for navigation, or for a step-by-step sequence.
+questions — end of a landing page, below pricing. Material the
+visitor needs to make the decision the page is asking for reads better in the
+open: an accordion is for the long tail, not for the case. Two questions read
+better written out, and navigation and a step-by-step sequence have patterns
+of their own.
 
 **What it needs.** A section heading, and the real questions people ask with
 true answers in the brand's own words. Every row is one `<details>` — duplicate

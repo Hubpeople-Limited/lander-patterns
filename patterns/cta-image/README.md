@@ -14,8 +14,7 @@ Choose between the three by what is doing the work. `cta-band` when the words
 are; this when the picture is; `cta-curtain` only when the uncovering itself is
 the point.
 
-Do **not** use it without a photograph strong enough to fill a band at that
-size. A weak image under a heavy scrim is a grey rectangle with a headline on
+It works best with a photograph strong enough to fill a band at that size. A weak image under a heavy scrim is a grey rectangle with a headline on
 it, which is `cta-band` with extra bytes and a slower page.
 
 **What it needs.** One landscape photograph at least 2000px wide with its own

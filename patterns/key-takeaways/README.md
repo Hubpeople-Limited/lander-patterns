@@ -11,10 +11,10 @@ long explanation somebody arrives at holding one question. The opener differs
 between the two: `article-masthead` is for `article` only, so a safety page
 opens on a hero and this sits under that instead.
 
-Do **not** use it as a contents list, a set of selling points, or a place to
-put a call to action. It summarises the piece it sits inside and asks for
-nothing. And do not use it on a page whose whole body is already short: a
-summary of four paragraphs is four paragraphs with a box drawn round them.
+It is not a contents list, a set of selling points, or a place for a call to
+action: it summarises the piece it sits inside and asks for nothing. A page
+whose whole body is already short reads better without one: a summary of four
+paragraphs is four paragraphs with a box drawn round them.
 
 **Opens at `h2`.** The page's `h1` comes from whatever opens it, and the
 heading here is the reader's label for the box — "In short", "What this

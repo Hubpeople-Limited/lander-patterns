@@ -9,10 +9,10 @@ heading, no copy and no link. **It is decorative and carries no message on its
 own, so it needs a section around it that does**: a heading block above it, or a
 CTA below it, saying who these people are and what the visitor should do. Drop
 it onto a page by itself and you have shipped a screen of faces that argues
-nothing. Do not use it as a hero (there is nothing to read), as a substitute for
-`media-card-grid` (those tiles are links to somewhere), or on any page that
-already runs a set of image cards — a second grid of photographs is where a page
-stops looking designed.
+nothing. It makes a poor hero (there is nothing to read) and no substitute for
+`media-card-grid` (those tiles are links to somewhere), and it reads best on a
+page with no other set of image cards — a second grid of photographs is where
+a page stops looking designed.
 
 **What it needs.** Nine, fifteen or twenty-one **real** member photographs,
 all different, portrait-crop and at least 420px wide (tiles render around 220px
@@ -20,8 +20,8 @@ at the widest, so 2× for retina). Those counts fill the lattice — three rows 
 an odd number of columns — so with twelve, use nine. The markup ships fifteen:
 delete the outer ring for nine, or duplicate it as a fourth layer for
 twenty-one, numbering its slots on from `tile-15`. This is the library's
-hungriest pattern and the obvious place to reach for stock: don't. Bought
-smiles read as bought smiles, and the one claim the wall makes — that these are
+hungriest pattern and the obvious place to reach for stock; it works best
+without. Bought smiles read as bought smiles, and the one claim the wall makes — that these are
 members — is the one it then can't support. With fewer than nine, a smaller set
 belongs in `gallery-scroll` or `media-card-grid`. Also needed: a short label
 for `wall-label` naming what the wall shows, and real content around it.

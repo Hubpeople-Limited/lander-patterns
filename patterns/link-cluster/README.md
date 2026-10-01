@@ -16,8 +16,8 @@ one per card, and both require a sentence of copy as well. A brand with forty
 city pages and no photography of forty cities either buys stock for all of them
 or shows none of them. This costs nothing and cannot be faked.
 
-Do **not** use it as a navigation menu. The site chassis carries the menu; this
-is a content block that belongs where a reader has finished reading, not at the
+It is not a navigation menu. The site chassis carries the menu; this is a
+content block that reads best where a reader has finished reading, not at the
 top of the page.
 
 **What it needs.** Real destination pages that **already exist and already have

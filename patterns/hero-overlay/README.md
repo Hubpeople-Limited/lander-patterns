@@ -8,9 +8,9 @@ screen is atmosphere — who this is for, what it feels like — rather than
 explanation. Reach for `hero-split` instead when the offer needs a stated value
 proposition read alongside the image, or when the image is a product shot,
 screenshot or anything that must be *looked at* rather than felt: cover-cropping
-a screenshot to fill a screen destroys it. Do **not** use it without a real
-photograph — a scrim over a flat fill is a dark rectangle — and never put it on
-a page that already has a hero. Two openers means two `<h1>`s and two first
+a screenshot to fill a screen destroys it. It is built for a real
+photograph — a scrim over a flat fill is a dark rectangle — and a page takes
+one hero. Two openers means two `<h1>`s and two first
 impressions, which is why the header declares `avoid-with: hero-split`.
 
 **What it needs.** One landscape photograph, at least 2400px wide, that survives

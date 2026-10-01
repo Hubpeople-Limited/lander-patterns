@@ -22,7 +22,7 @@ other. Choose like this:
 - `hero-centred` — the photograph is landscape, or unpredictable, or the claim
   is the thing that has to land first.
 
-Do **not** use it as a section opener further down a page. It carries the page's
+It opens the page rather than a section further down: it carries the page's
 only `h1`; `opener-split` and `heading-block` are the section openers.
 
 **What it needs.** A headline of one or two lines and one supporting sentence,

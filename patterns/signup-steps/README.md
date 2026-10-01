@@ -16,8 +16,8 @@ members of the brand as the visitor answers, and draws a tick before handing
 off. Without it the card is a short plain form that still submits correctly.
 
 Use it on a homepage or landing page whose job is sign-ups, in place of another
-opener. Do **not** use it where the opening has to sell with a photograph first
-(`hero-split` or `hero-overlay` do that better), or on a page for members.
+opener. Where the opening has to sell with a photograph first, `hero-split` or
+`hero-overlay` do that better, and a page for members has no use for it.
 
 **It sends only what the visitor gave.** Nothing is pre-ticked or pre-filled: a
 default nobody changed would be sent as their answer and end up on their

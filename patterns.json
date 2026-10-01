@@ -106,7 +106,7 @@
    "rhythm": "column"
   },
   "motion": "none",
-  "needs": "one real photograph that shows something the writing refers to, its own alt text describing what is in it, a caption saying what the reader is looking at and why it is here, and the credit the picture is licensed under. A picture that only fills space carries no caption, and a figure with no caption is not this pattern",
+  "needs": "one real photograph that shows something the writing refers to, its own alt text describing what is in it, a caption saying what the reader is looking at and why it is here, and the credit the picture is licensed under. A picture that only fills space suits a pattern without a caption, since this one is built around what the caption says",
   "one-per-page": false,
   "page-types": [
    "article",
@@ -1024,7 +1024,7 @@
    "opener": "beside"
   },
   "motion": "none",
-  "needs": "one real photograph of a person or a couple, at least 1200px wide in portrait, that stands for the brand's members without being one of them - never a named member, a testimonial's face or a founder - with its own alt text; a headline and one supporting sentence in the brand's own words; signup-card in place of the join button, or the button alone",
+  "needs": "one real photograph of a person or a couple, at least 1200px wide in portrait, that stands for the brand's members, with the person's OK - a named member, a testimonial's face or a founder reads better in a pattern built to name them - with its own alt text; a headline and one supporting sentence in the brand's own words; signup-card in place of the join button, or the button alone",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -1149,7 +1149,7 @@
    "opener": "over"
   },
   "motion": "none",
-  "needs": "one landscape photograph at least 1600px wide with its own alt text; a headline of one line and one supporting sentence; and the two things that go under the control - the reassurance line, and one piece of real proof. Nothing else may go on the page, so everything the visitor needs to decide has to be in these five things",
+  "needs": "one landscape photograph at least 1600px wide with its own alt text; a headline of one line and one supporting sentence; and the two things that go under the control - the reassurance line, and one piece of real proof. Nothing else goes on the page, so everything the visitor needs to decide has to be in these five things",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -1474,7 +1474,7 @@
    "rhythm": "cards"
   },
   "motion": "subtle",
-  "needs": "one real photograph per card, portrait-ish and at least 1280px wide, each with its own alt text; a short heading, one sentence of copy and a real destination URL per card; a short chip label per card only where the brand genuinely has one. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "needs": "one real photograph per card, portrait-ish and at least 1280px wide, each with its own alt text; a short heading, one sentence of copy and a real destination URL per card; a short chip label per card only where the brand genuinely has one. Check that everyone whose face or words appear here has agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
   "one-per-page": false,
   "page-types": [
    "homepage",
@@ -1612,7 +1612,7 @@
    "people": "members"
   },
   "motion": "none",
-  "needs": "four to eight real members the brand can name, each with their real photograph and the name they actually use on the platform. Every one of them must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing, and this is a face and a username on an acquisition page. Never stock, never a face reused, and never a member invented to lengthen the row",
+  "needs": "four to eight real members the brand can name, each with their real photograph and the name they actually use on the platform. Check that each of them has agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing, and this is a face and a username on an acquisition page. It reads best with each face once, in the member's own photograph rather than stock; a member is never invented to lengthen the row",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -1918,7 +1918,7 @@
    "rhythm": "column"
   },
   "motion": "none",
-  "needs": "one real portrait of a real person who has agreed to appear on a public page anyone can reach, at least 800px wide and taller than it is wide; their name and one line of standing for the caption; a heading; and two to four paragraphs of real prose in the brand's own voice about that person and why the brand exists",
+  "needs": "one real portrait of a real person, with their OK to appear on a public page anyone can reach, at least 800px wide and taller than it is wide; their name and one line of standing for the caption; a heading; and two to four paragraphs of real prose in the brand's own voice about that person and why the brand exists",
   "one-per-page": true,
   "page-types": [
    "about",
@@ -1985,7 +1985,7 @@
    "rhythm": "cards"
   },
   "motion": "none",
-  "needs": "nine, fifteen or twenty-one different real member photographs, portrait-crop and at least 420px wide - never stock, never the same face twice; a short label naming what the wall shows; and a section around it carrying the words, because the wall says nothing on its own. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "needs": "nine, fifteen or twenty-one different real member photographs, portrait-crop and at least 420px wide - each face once, and members' own photographs rather than stock, which reads as bought; a short label naming what the wall shows; and a section around it carrying the words, because the wall says nothing on its own. Check that everyone whose face or words appear here has agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -2131,7 +2131,7 @@
    "people": "testimonials"
   },
   "motion": "none",
-  "needs": "one real testimonial, quoted word for word as the person actually wrote it, with their real name and a true attribution line; one real portrait of that person with real alt text; a star rating only where a real published rating exists. A quote nobody said is not a candidate for this pattern - do not write one, do not paraphrase one, and do not attach a name to praise that arrived unattributed. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "needs": "one real testimonial, quoted word for word as the person actually wrote it, with their real name and a true attribution line; one real portrait of that person with real alt text; a star rating only where a real published rating exists. A quote nobody said is not a candidate for this pattern - do not write one, do not paraphrase one, and do not attach a name to praise that arrived unattributed. Check that everyone whose face or words appear here has agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -2479,7 +2479,7 @@
    "rhythm": "column"
   },
   "motion": "none",
-  "needs": "three to five real steps in the order they actually happen, each with a short title and one or two sentences; a section heading. No photography of any kind - that is the point of it",
+  "needs": "three to five real steps in the order they actually happen, each with a short title and one or two sentences; a section heading. It carries no photography - that is the point of it",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -2532,7 +2532,7 @@
    "people": "testimonials"
   },
   "motion": "subtle",
-  "needs": "at least three real testimonials - each quote as the person actually wrote it, with a real name and a true attribution line; one real portrait per person with real alt text; a section heading; each quote short enough to read in about three lines, since the longest in the set sets the height of every slide. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "needs": "at least three real testimonials - each quote as the person actually wrote it, with a real name and a true attribution line; one real portrait per person with real alt text; a section heading; each quote short enough to read in about three lines, since the longest in the set sets the height of every slide. Check that everyone whose face or words appear here has agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
   "one-per-page": true,
   "page-types": [
    "homepage",
@@ -2583,7 +2583,7 @@
    "people": "testimonials"
   },
   "motion": "none",
-  "needs": "three real testimonials - each quote as the person actually wrote it, their name, and their attribution; one real portrait per person with real alt text; a public source URL only where the testimonial genuinely has one. Every person whose face or words appear here must have agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
+  "needs": "three real testimonials - each quote as the person actually wrote it, their name, and their attribution; one real portrait per person with real alt text; a public source URL only where the testimonial genuinely has one. Check that everyone whose face or words appear here has agreed to appear on a public page that anyone can reach without an account - consent to be a member is not consent to be marketing",
   "one-per-page": false,
   "page-types": [
    "homepage",

@@ -10,10 +10,10 @@ it: a comparison is only a table when every row genuinely applies to every
 column. Three things that differ in kind rather than in degree are not a
 comparison, and a table of them invents a symmetry the brand does not have.
 
-Do **not** use it where the tiers differ only in price and term. A matrix whose
-every row reads the same across all three columns tells a reader nothing and
-takes a screen to do it — that is a sentence, not a table. Do not use it as a
-feature list for one thing; that is `benefit-tiles` or `steps-plain`. And do not
+Where the tiers differ only in price and term, a sentence serves better. A
+matrix whose every row reads the same across all three columns tells a reader
+nothing and takes a screen to do it. A feature list for one thing suits
+`benefit-tiles` or `steps-plain`. And do not
 rebuild it out of `div`s: a comparison laid out as boxes has lost the row and
 column relationships that make it readable by anything other than an eye.
 

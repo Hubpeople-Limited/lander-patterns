@@ -19,28 +19,29 @@ is *these specific people, by name*. A page carrying both is making the same
 gesture twice with different furniture, and the anonymous version undercuts the
 named one.
 
-Do **not** use it as a gallery. Four to eight members; below four it reads as
+It is a strip rather than a gallery. Four to eight members; below four it reads as
 the only four the brand has, and above eight it stops being a strip and becomes
 the wall.
 
-**What it needs, and this is the strictest consent gate in the library.** Four
+**What it needs, and this is the strongest consent reminder in the library.** Four
 to eight real members the brand can name, each with their real photograph and
 the name they actually use on the platform.
 
-**Every one of them must have agreed to appear on a public page anyone can
+**Check that each of them has agreed to appear on a public page anyone can
 reach without an account.** Consent to be a member is not consent to be
 marketing. This is a face and a username on an acquisition page, and on this
 vertical the consequences of getting it wrong land on someone who did not
 choose them — a member's neighbours, family or employer can be the audience for
 the ad this page serves.
 
-That gate is not satisfied by the members existing, by the photographs being
-real, or by the platform's terms permitting it. It is satisfied by somebody
-having asked them. If nobody has, use `rating-mark` or a `quote-feature` from
-someone who did agree.
+The members existing, the photographs being real and the platform's terms
+permitting it are not the same as somebody having asked them, so it is worth
+asking first. Until then, `rating-mark` or a `quote-feature` from someone who
+did agree carries the proof.
 
-Never stock, never the same face twice, and never a member invented to lengthen
-the row.
+It reads best with each face once, in the member's own photograph: stock or a
+repeated face undercuts the one claim the row makes. A member is never
+invented to lengthen the row.
 
 **The `alt` is empty and must stay empty.** The name sits directly beside the
 photograph and carries it; describing the face again is noise to anyone using a

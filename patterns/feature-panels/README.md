@@ -10,9 +10,8 @@ Use it for two to four things the brand offers that genuinely sit in an order:
 membership tiers, levels of visibility, degrees of access. The ladder says
 *these are ranked* before a word is read, which is work no card grid does.
 
-Do **not** use it for a peer set — `benefit-tiles` is that, and unranked things
-on a ladder tell a reader there is a hierarchy they have missed. Nor as a price
-table: `pricing-tiers` carries the figures and the aligned CTAs, this one a
+A peer set fits `benefit-tiles` better — unranked things on a ladder tell a
+reader there is a hierarchy they have missed. It is not a price table either: `pricing-tiers` carries the figures and the aligned CTAs, this one a
 claim and a route, and the two read well on one page in that order.
 
 **What it needs.** Two to four real offerings that are genuinely ranked, each
