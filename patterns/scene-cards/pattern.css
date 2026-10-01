@@ -1,0 +1,181 @@
+/* scene-cards v1 - tokens only, selectors prefixed */
+/* Its twin's stylesheet is this file with the name swapped: change both. */
+.scene-cards {
+  --scene-cards-scrim-floor: clamp(0.92, var(--scene-cards-scrim-strength, 0.92), 1);
+  padding-block: var(--space-8);
+}
+.scene-cards-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.scene-cards-eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.scene-cards-title {
+  max-width: 20em;
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: calc(clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.1 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .scene-cards-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.scene-cards-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.scene-cards-item {
+  display: flex;
+  min-width: 0;
+}
+.scene-cards-figure {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+}
+.scene-cards-frame {
+  position: relative;
+  flex: 1 1 auto;
+  aspect-ratio: 4 / 5;
+  overflow: clip;
+  border-radius: var(--card-radius);
+  background: var(--color-surface-soft);
+}
+.scene-cards-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+.scene-cards--below .scene-cards-caption {
+  padding-top: var(--space-4);
+}
+.scene-cards-name {
+  margin: 0;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-size: calc(clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .scene-cards-name {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.scene-cards-where {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-soft);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+.scene-cards-line {
+  max-width: 40ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+/* Over the photograph the two share one cell: a long caption grows the
+   card rather than climbing out of it. */
+.scene-cards--over .scene-cards-figure {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "card";
+  overflow: clip;
+  border-radius: var(--card-radius);
+}
+.scene-cards--over .scene-cards-frame,
+.scene-cards--over .scene-cards-caption {
+  grid-area: card;
+}
+.scene-cards--over .scene-cards-frame {
+  align-self: stretch;
+  justify-self: stretch;
+  border-radius: 0;
+}
+/* The fade is the caption's top padding and no more. */
+.scene-cards--over .scene-cards-caption {
+  --scene-cards-shade: color-mix(in srgb, var(--color-scrim) calc(var(--scene-cards-scrim-floor) * 100%), transparent);
+  z-index: 1;
+  align-self: end;
+  padding: var(--space-12) var(--space-5) var(--space-5);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--scene-cards-shade) 30%, transparent) calc(var(--space-12) * 0.4), color-mix(in srgb, var(--scene-cards-shade) 72%, transparent) calc(var(--space-12) * 0.72), var(--scene-cards-shade) var(--space-12));
+}
+.scene-cards--over .scene-cards-name,
+.scene-cards--over .scene-cards-where,
+.scene-cards--over .scene-cards-line {
+  color: var(--color-on-scrim);
+}
+@media (min-width: 30rem) and (max-width: 47.99rem) {
+  .scene-cards-frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+@media (min-width: 48rem) {
+  .scene-cards--even .scene-cards-list {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .scene-cards--feature .scene-cards-list {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-auto-flow: row dense;
+  }
+  .scene-cards--feature .scene-cards-item:first-child {
+    grid-row: span 2;
+  }
+  .scene-cards--feature .scene-cards-item:first-child .scene-cards-frame {
+    aspect-ratio: auto;
+    min-height: 20rem;
+  }
+  .scene-cards--feature .scene-cards-item:not(:first-child) .scene-cards-frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.scene-cards img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+  object-fit: contain;
+}
+.scene-cards--over img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
+}
+.scene-cards--over .scene-cards-figure:has(img[data-hub-placeholder]) {
+  --scene-cards-scrim-floor: 0.4;
+}
+
+.scene-cards:not(.scene-cards--moving) {
+  --hub-motion: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .scene-cards--moving .scene-cards-img {
+    transition: scale var(--transition-slow) ease-out;
+  }
+  .scene-cards--moving .scene-cards-item:hover .scene-cards-img {
+    scale: 1.03;
+  }
+}

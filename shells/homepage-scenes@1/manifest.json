@@ -1,0 +1,37 @@
+{
+  "composition": "homepage-scenes",
+  "version": 1,
+  "page": "homepage",
+  "library": "v235",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "12"
+    },
+    {
+      "name": "hero-overlay",
+      "version": "16"
+    },
+    {
+      "name": "scene-cards",
+      "version": "1"
+    },
+    {
+      "name": "steps-plain",
+      "version": "6"
+    },
+    {
+      "name": "faq-details",
+      "version": "6"
+    },
+    {
+      "name": "cta-band",
+      "version": "6"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ]
+}

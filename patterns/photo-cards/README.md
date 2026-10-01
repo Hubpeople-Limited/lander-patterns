@@ -38,6 +38,9 @@ below. `avoid-with` names `media-card-grid` for the reason above, and
 `gallery-scroll`, which is a second horizontal run of images competing with this
 one for the same attention.
 
+Nor with `scene-cards`: that is a run of photograph cards too, set
+editorially, and a page carrying both shows the section twice.
+
 **Brand adaptability.** Every ink is a pair the contract states.
 `--color-text` carries the heading and the chip; `--color-text-soft` carries the
 copy. Both sit on `--color-surface` or `--color-surface-soft`, the grounds those

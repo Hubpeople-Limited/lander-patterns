@@ -70,9 +70,15 @@ BLANK = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16'
 # Hides the copy and the controls and nothing else - the image, its tint and
 # every scrim stay - so the pixels measured are what the copy sits on. Text a
 # pseudo-element draws, such as a counter numeral, is copy too: its glyphs go
-# transparent and any scrim it paints as a background stays.
+# transparent and any scrim it paints as a background stays. A caption or a
+# quote is a box around copy and may carry the scrim itself: its own text goes
+# transparent and its background stays, while the lines inside it are hidden.
 TEXT = "h1, h2, h3, h4, p, a, button, span, small, strong, em, time, figcaption, blockquote"
 HIDE_COPY = (".{n} :is(" + TEXT + ") {{ visibility: hidden !important; }}"
+             " .{n} :is(figcaption, blockquote) {{ visibility: visible !important;"
+             " color: transparent !important; }}"
+             " .{n} :is(figcaption, blockquote) :is(" + TEXT + ")"
+             " {{ visibility: hidden !important; }}"
              " .{n} img {{ visibility: visible !important; }}"
              " .{n} *::before, .{n} *::after {{ color: transparent !important; }}")
 

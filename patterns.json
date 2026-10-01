@@ -1448,7 +1448,8 @@
    "gallery-scroll",
    "photo-cards",
    "portrait-wall",
-   "steps-numbered"
+   "steps-numbered",
+   "story-cards"
   ],
   "behaviours": [
    "reveal"
@@ -1764,7 +1765,8 @@
  "photo-cards": {
   "avoid-with": [
    "gallery-scroll",
-   "media-card-grid"
+   "media-card-grid",
+   "scene-cards"
   ],
   "behaviours": [
    "reveal"
@@ -2277,6 +2279,70 @@
   "version": "5",
   "whole-page": false
  },
+ "scene-cards": {
+  "avoid-with": [
+   "photo-cards",
+   "story-cards"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "Places, events or ideas as big photo cards - one large and two small, or three equal - each photograph with its name under it or across its foot and where or when in italics. The twin of story-cards, the same card for a brand with no couples' stories to show.",
+  "display-name": "Scene cards",
+  "image-slots": [
+   {
+    "crop": "portrait",
+    "focal": "center",
+    "min": 1200,
+    "placeholder": true,
+    "slot": "card-image",
+    "subjects": [
+     "place",
+     "group",
+     "object"
+    ]
+   }
+  ],
+  "layout": {
+   "rhythm": "cards"
+  },
+  "motion": "subtle",
+  "needs": "three real things the brand is about - a place members meet, an event it runs, an idea for a date - each with a photograph at least 1200px wide in portrait or the library's placeholder, its name, and where or when it is. A couple's story reads best in story-cards",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "about",
+   "location"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "steps-plain",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "Big photo cards for the places, events and ideas the brand is about.",
+  "type": "section",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "size": [
+    "feature",
+    "even"
+   ],
+   "words": [
+    "below",
+    "over"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "signup-card": {
   "avoid-with": [
    "picker-chips",
@@ -2569,6 +2635,68 @@
    ]
   },
   "version": "6",
+  "whole-page": false
+ },
+ "story-cards": {
+  "avoid-with": [
+   "media-card-grid",
+   "scene-cards"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "peer set",
+  "description": "Couples' stories as big photo cards - one large and two small, or three equal - each photograph with the couple's names under it or across its foot and where they are in italics. The twin of scene-cards, which carries places, events and ideas in the same card for a brand with no couples' stories to show.",
+  "display-name": "Story cards",
+  "image-slots": [
+   {
+    "crop": "portrait",
+    "focal": "top",
+    "min": 1200,
+    "placeholder": false,
+    "slot": "card-image",
+    "subjects": [
+     "couple"
+    ]
+   }
+  ],
+  "layout": {
+   "people": "stories",
+   "rhythm": "cards"
+  },
+  "motion": "subtle",
+  "needs": "three couples who met through the brand, each with their own photograph at least 1200px wide in portrait, the names they are happy to be shown by, where they are, and a line in their own words where they gave one. Works best with each couple's OK to appear on a public page anyone can reach; a brand with no couples' stories has the same card for places, events and ideas in scene-cards",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "about"
+  ],
+  "pairs-with": [
+   "heading-block",
+   "steps-plain",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "consented-people",
+  "status": "active",
+  "summary": "Big photo cards for couples who met here: each photograph, their names and where they are.",
+  "type": "section",
+  "variants": {
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "size": [
+    "feature",
+    "even"
+   ],
+   "words": [
+    "below",
+    "over"
+   ]
+  },
+  "version": "1",
   "whole-page": false
  },
  "testimonial-carousel": {

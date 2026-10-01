@@ -1,0 +1,181 @@
+/* story-cards v1 - tokens only, selectors prefixed */
+/* Its twin's stylesheet is this file with the name swapped: change both. */
+.story-cards {
+  --story-cards-scrim-floor: clamp(0.92, var(--story-cards-scrim-strength, 0.92), 1);
+  padding-block: var(--space-8);
+}
+.story-cards-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.story-cards-eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.story-cards-title {
+  max-width: 20em;
+  margin: 0 0 var(--space-6);
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-size: calc(clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.1 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .story-cards-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.story-cards-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.story-cards-item {
+  display: flex;
+  min-width: 0;
+}
+.story-cards-figure {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+}
+.story-cards-frame {
+  position: relative;
+  flex: 1 1 auto;
+  aspect-ratio: 4 / 5;
+  overflow: clip;
+  border-radius: var(--card-radius);
+  background: var(--color-surface-soft);
+}
+.story-cards-img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+.story-cards--below .story-cards-caption {
+  padding-top: var(--space-4);
+}
+.story-cards-name {
+  margin: 0;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-size: calc(clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .story-cards-name {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.story-cards-where {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-soft);
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+.story-cards-line {
+  max-width: 40ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+/* Over the photograph the two share one cell: a long caption grows the
+   card rather than climbing out of it. */
+.story-cards--over .story-cards-figure {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "card";
+  overflow: clip;
+  border-radius: var(--card-radius);
+}
+.story-cards--over .story-cards-frame,
+.story-cards--over .story-cards-caption {
+  grid-area: card;
+}
+.story-cards--over .story-cards-frame {
+  align-self: stretch;
+  justify-self: stretch;
+  border-radius: 0;
+}
+/* The fade is the caption's top padding and no more. */
+.story-cards--over .story-cards-caption {
+  --story-cards-shade: color-mix(in srgb, var(--color-scrim) calc(var(--story-cards-scrim-floor) * 100%), transparent);
+  z-index: 1;
+  align-self: end;
+  padding: var(--space-12) var(--space-5) var(--space-5);
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--story-cards-shade) 30%, transparent) calc(var(--space-12) * 0.4), color-mix(in srgb, var(--story-cards-shade) 72%, transparent) calc(var(--space-12) * 0.72), var(--story-cards-shade) var(--space-12));
+}
+.story-cards--over .story-cards-name,
+.story-cards--over .story-cards-where,
+.story-cards--over .story-cards-line {
+  color: var(--color-on-scrim);
+}
+@media (min-width: 30rem) and (max-width: 47.99rem) {
+  .story-cards-frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+@media (min-width: 48rem) {
+  .story-cards--even .story-cards-list {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .story-cards--feature .story-cards-list {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    grid-auto-flow: row dense;
+  }
+  .story-cards--feature .story-cards-item:first-child {
+    grid-row: span 2;
+  }
+  .story-cards--feature .story-cards-item:first-child .story-cards-frame {
+    aspect-ratio: auto;
+    min-height: 20rem;
+  }
+  .story-cards--feature .story-cards-item:not(:first-child) .story-cards-frame {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.story-cards img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+  object-fit: contain;
+}
+.story-cards--over img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
+}
+.story-cards--over .story-cards-figure:has(img[data-hub-placeholder]) {
+  --story-cards-scrim-floor: 0.4;
+}
+
+.story-cards:not(.story-cards--moving) {
+  --hub-motion: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .story-cards--moving .story-cards-img {
+    transition: scale var(--transition-slow) ease-out;
+  }
+  .story-cards--moving .story-cards-item:hover .story-cards-img {
+    scale: 1.03;
+  }
+}

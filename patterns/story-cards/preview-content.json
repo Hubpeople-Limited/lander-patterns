@@ -1,0 +1,14 @@
+{
+  "section-id": "sample-story-cards",
+  "eyebrow": "Sample eyebrow",
+  "section-title": "Sample heading for the story cards",
+  "card-image": "sample-portrait.svg",
+  "card-image-alt": "Preview placeholder image",
+  "card-name": "Sample names",
+  "card-where": "Sample place",
+  "card-line": "One sample line in the couple's own words, here only to render this preview.",
+  "_repeat": {
+    "class": "story-cards-item",
+    "count": 3
+  }
+}
