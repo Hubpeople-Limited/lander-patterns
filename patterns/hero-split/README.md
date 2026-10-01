@@ -33,6 +33,8 @@ argument on its own.
 
 **Not on a page with `signup-steps`.** That one opens the page on its own sign-up card; a page opens once.
 
+**Not on a page with `hero-portrait`.** That one sets the claim beside one large portrait; a page opens once.
+
 **Pairing.** Works ahead of `pricing-tiers` on long pages. Not on a page with
 `gallery-scroll` — two large visual moments compete and neither wins — nor with
 `zigzag-rows`, which is the same image-beside-copy shape further down. Not with

@@ -3054,6 +3054,144 @@ def check_member_grid_motion():
     return failures
 
 
+# Below a site header on the commonest phone and on a laptop, the sign-up
+# card's first question is on the first screen. 152px is the header allowance
+# hero-overlay subtracts (9.5rem).
+PORTRAIT_FIRST_SCREEN = {(390, 844): 844 - 152, (1280, 800): 800 - 152}
+# From the two-column width to a wide desktop: the card must never land on the
+# headline or the line under it, at any width between.
+PORTRAIT_CLEAR_WIDTHS = range(768, 1441, 48)
+
+
+def check_hero_portrait():
+    """hero-portrait holding the card: the first question on the first
+    screen; the portrait holds still when a step grows; the card never lands
+    on the words; every rung combination, with the button and with the card,
+    passes the phone gate."""
+    import check_phone
+    import lint
+    failures = []
+    print("hero-portrait, the sign-up beside a portrait")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-portrait: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-portrait: {label}")
+
+    folder = HERE.parent / "patterns" / "hero-portrait"
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                             folder / "pattern.html")
+    first_js = """() => document.querySelector('.signup-card-q').getBoundingClientRect().top
+                        - document.querySelector('.hero-portrait').getBoundingClientRect().top"""
+    steady_js = """() => {
+        const img = document.querySelector('.hero-portrait-img');
+        const a = img.getBoundingClientRect();
+        const tall = document.createElement('div');
+        tall.style.height = '20rem';
+        document.querySelector('.signup-card-form').append(tall);
+        const b = img.getBoundingClientRect();
+        return {moved: Math.abs(a.top - b.top), grew: Math.abs(a.height - b.height)};
+    }"""
+    # How far the card reaches into the headline or the line under it, in
+    # pixels each way; 0 when it stays clear.
+    clear_js = """() => {
+        const card = document.querySelector('.signup-card').getBoundingClientRect();
+        let worst = 0;
+        for (const sel of ['.hero-portrait-title', '.hero-portrait-sub']) {
+            const r = document.querySelector(sel).getBoundingClientRect();
+            const x = Math.min(card.right, r.right) - Math.max(card.left, r.left);
+            const y = Math.min(card.bottom, r.bottom) - Math.max(card.top, r.top);
+            worst = Math.max(worst, Math.min(x, y));
+        }
+        return worst;
+    }"""
+
+    def reach(browser, workdir, html):
+        """The card's worst reach into the words across the widths, and where."""
+        path = workdir / "opener.html"
+        path.write_text(html, encoding="utf-8", newline="\n")
+        tab = browser.new_page(viewport={"width": 768, "height": 900}, device_scale_factor=1)
+        try:
+            tab.goto(path.as_uri())
+            tab.wait_for_load_state("load")
+            worst = (0, 0)
+            for width in PORTRAIT_CLEAR_WIDTHS:
+                tab.set_viewport_size({"width": width, "height": 900})
+                got = tab.evaluate(clear_js)
+                if got > worst[0]:
+                    worst = (got, width)
+            return worst
+        finally:
+            tab.close()
+
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for tokens in ("brand", "display"):
+                for viewport, limit in PORTRAIT_FIRST_SCREEN.items():
+                    got = _render(browser, workdir,
+                                  opener_page("hero-portrait", {}, tokens, card=True),
+                                  viewport, first_js)
+                    case(f"holding the card on {tokens} at {viewport[0]}x{viewport[1]}: the "
+                         f"first question starts {got:.0f}px down, within {limit}", got <= limit)
+            tall = _render(browser, workdir,
+                           opener_page("hero-portrait", {}, "brand", card=True,
+                                       extra_css=".hero-portrait-img "
+                                                 "{ height: 30rem !important; }"),
+                           (390, 844), first_js)
+            case("catches: a phone portrait that pushes the card off the first screen",
+                 tall > PORTRAIT_FIRST_SCREEN[(390, 844)])
+            for shape in ("rounded", "arch", "half-bleed"):
+                got = _render(browser, workdir,
+                              opener_page("hero-portrait", {"shape": shape}, "brand", card=True),
+                              (1280, 800), steady_js)
+                case(f"shape={shape} at 1280: a taller step neither moves nor stretches the "
+                     f"portrait", got["moved"] <= 0.5 and got["grew"] <= 0.5)
+            loose = _render(browser, workdir,
+                            opener_page("hero-portrait", {}, "brand", card=True,
+                                        extra_css=".hero-portrait-inner:has(.signup-card) "
+                                                  "{ align-items: center !important; }"),
+                            (1280, 800), steady_js)
+            case("catches: a portrait centred against a card that grows", loose["moved"] > 0.5)
+            for tokens in ("brand", "display"):
+                bad = []
+                for mods in _rung_combos(meta):
+                    worst, width = reach(browser, workdir,
+                                         opener_page("hero-portrait", mods, tokens, card=True))
+                    if worst > 1:
+                        bad.append(" ".join(f"{a}={v}" for a, v in mods.items())
+                                   + f" at {width}px by {worst:.0f}px")
+                case(f"every rung combination on {tokens}, 768 to 1440 wide: the card stays "
+                     f"clear of the headline and the line under it"
+                     + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+            over, _ = reach(browser, workdir,
+                            opener_page("hero-portrait", {}, "brand", card=True,
+                                        extra_css=".hero-portrait-cta "
+                                                  "{ margin-top: -10rem !important; }"))
+            case("catches: a card pulled up over the words", over > 1)
+        finally:
+            browser.close()
+    with check_phone.Phone() as phone:
+        for tokens in ("brand", "display"):
+            for card in (False, True):
+                bad = []
+                for mods in _rung_combos(meta):
+                    label = ("hero-portrait " + " ".join(f"{a}={v}" for a, v in mods.items())
+                             + (" with the card" if card else ""))
+                    bad += phone.faults(label, opener_page("hero-portrait", mods, tokens,
+                                                           card=card))
+                case(f"every rung combination {'with the card' if card else 'with the button'} "
+                     f"at 320 and 360 on {tokens} passes the phone gate"
+                     + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
 def check_placeholder_scrim():
     """Both directions of ci/check_placeholder_scrim.py: the library is clean,
     and the positive control catches a drawing the scrim hides and copy the
@@ -3327,6 +3465,8 @@ def main():
     print()
     failures += check_hero_band()
     print()
+    failures += check_hero_portrait()
+    print()
     if failures:
         print(f"{len(failures)} gate check(s) not behaving: "
               + ", ".join(failures))
@@ -3351,7 +3491,7 @@ def main():
              + len(SLOT_MATCH_CASES) + 4
              + len(IMAGE_SLOT_CASES) + len(TINT_CASES) + 9 + 14 + 6 + 2 + 4
              + PLACEHOLDER_URL_CASE_COUNT
-             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23)
+             + len(SCROLLBAR_CASES) + 3 + 1 + 2 + 23 + 16)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

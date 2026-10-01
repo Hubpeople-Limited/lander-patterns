@@ -1,0 +1,179 @@
+/* hero-portrait v1 - tokens only, selectors prefixed */
+/* Each ground names its own ink; every rule below reads the pair. */
+.hero-portrait--plain {
+  --hero-portrait-ground: var(--color-bg);
+  --hero-portrait-ink: var(--color-text-soft);
+  --hero-portrait-title-ink: var(--color-heading);
+  --hero-portrait-btn-face: var(--color-primary);
+  --hero-portrait-btn-ink: var(--color-on-primary);
+  --hero-portrait-ring: var(--color-focus);
+}
+.hero-portrait--soft {
+  --hero-portrait-ground: var(--color-surface-soft);
+  --hero-portrait-ink: var(--color-text);
+  --hero-portrait-title-ink: var(--color-text);
+  --hero-portrait-btn-face: var(--color-primary);
+  --hero-portrait-btn-ink: var(--color-on-primary);
+  --hero-portrait-ring: var(--color-focus);
+}
+.hero-portrait--brand {
+  --hero-portrait-ground: var(--color-primary);
+  --hero-portrait-ink: var(--color-on-primary);
+  --hero-portrait-title-ink: var(--color-on-primary);
+  --hero-portrait-btn-face: var(--color-on-primary);
+  --hero-portrait-btn-ink: var(--color-primary);
+  --hero-portrait-ring: var(--color-on-primary);
+}
+.hero-portrait--deep {
+  --hero-portrait-ground: var(--color-scrim);
+  --hero-portrait-ink: var(--color-on-scrim);
+  --hero-portrait-title-ink: var(--color-on-scrim);
+  --hero-portrait-btn-face: var(--color-primary);
+  --hero-portrait-btn-ink: var(--color-on-primary);
+  --hero-portrait-ring: var(--color-on-scrim);
+}
+.hero-portrait {
+  background: var(--hero-portrait-ground);
+  color: var(--hero-portrait-ink);
+  padding-block: var(--space-5) var(--space-8);
+}
+.hero-portrait-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+  display: grid;
+  gap: var(--space-5);
+  align-items: center;
+}
+/* The portrait leads on a phone; from 48rem the side rung places it. */
+.hero-portrait-visual {
+  order: -1;
+}
+.hero-portrait-img {
+  display: block;
+  width: 100%;
+  height: clamp(13rem, 64vw, 20rem);
+  object-fit: cover;
+  /* A face sits high in a portrait; a short crop keeps it. */
+  object-position: 50% 25%;
+}
+.hero-portrait--rounded .hero-portrait-img {
+  border-radius: calc(2 * var(--card-radius));
+}
+/* The arch is a shape, not the brand's corner: a half circle on every brand. */
+.hero-portrait--arch .hero-portrait-img {
+  border-start-start-radius: 9999px;
+  border-start-end-radius: 9999px;
+  border-end-start-radius: var(--card-radius);
+  border-end-end-radius: var(--card-radius);
+}
+.hero-portrait--half-bleed {
+  padding-block-start: 0;
+}
+.hero-portrait--half-bleed .hero-portrait-visual {
+  margin-inline: calc(-1 * var(--space-4));
+}
+.hero-portrait-title {
+  font-family: var(--font-heading);
+  color: var(--hero-portrait-title-ink);
+  font-size: calc(clamp(2rem, 1.2rem + 3.2vw, 3.5rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.08 * var(--heading-leading, 1));
+  max-width: 12em;
+  margin: 0 0 var(--space-4);
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .hero-portrait-title {
+    line-height: calc(max(1.08em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.hero-portrait-sub {
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 42ch;
+  margin: 0 0 var(--space-5);
+}
+.hero-portrait-btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--btn-radius);
+  background: var(--hero-portrait-btn-face);
+  color: var(--hero-portrait-btn-ink);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+.hero-portrait-btn:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.hero-portrait-btn:focus-visible {
+  outline: 3px solid var(--hero-portrait-ring);
+  outline-offset: 3px;
+}
+@media (min-width: 48rem) {
+  .hero-portrait {
+    padding-block: var(--space-8);
+  }
+  .hero-portrait-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--space-8);
+  }
+  .hero-portrait--start .hero-portrait-visual {
+    order: -1;
+  }
+  .hero-portrait--end .hero-portrait-visual {
+    order: 0;
+  }
+  /* A height, not a minimum: a taller card step never stretches it. */
+  .hero-portrait-img {
+    height: clamp(30rem, 52vw, 44rem);
+  }
+  .hero-portrait--half-bleed {
+    padding-block: 0;
+  }
+  .hero-portrait--half-bleed .hero-portrait-inner {
+    width: 100%;
+    column-gap: 0;
+  }
+  .hero-portrait--half-bleed .hero-portrait-visual {
+    margin-inline: 0;
+  }
+  .hero-portrait--half-bleed .hero-portrait-copy {
+    padding-block: var(--space-8);
+    padding-inline: var(--space-8) max(var(--space-4), calc(100% - var(--container-max) / 2));
+  }
+  .hero-portrait--half-bleed.hero-portrait--end .hero-portrait-copy {
+    padding-inline: max(var(--space-4), calc(100% - var(--container-max) / 2)) var(--space-8);
+  }
+}
+
+.hero-portrait img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+  object-fit: contain;
+}
+
+/* Holding a signup-card: on a phone the portrait shrinks to a strip so the
+   first question is on the first screen; wide, it is anchored at the top. */
+@media (width < 48rem) {
+  .hero-portrait-inner:has(.signup-card) .hero-portrait-img {
+    height: clamp(8rem, 36vw, 10rem);
+  }
+}
+@media (min-width: 48rem) {
+  .hero-portrait-inner:has(.signup-card) {
+    align-items: start;
+  }
+  /* Keep in step with the card's first step: the two end together. */
+  .hero-portrait-inner:has(.signup-card) .hero-portrait-img {
+    height: clamp(38rem, 66vw, 50rem);
+  }
+  .hero-portrait--half-bleed .hero-portrait-inner:has(.signup-card) .hero-portrait-img {
+    height: calc(clamp(38rem, 66vw, 50rem) + 2 * var(--space-8));
+  }
+}

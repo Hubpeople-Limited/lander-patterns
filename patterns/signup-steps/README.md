@@ -67,8 +67,8 @@ Nothing shows when there are none or the search fails.
 
 **Pairing.** `member-grid` below it, `steps-plain` for how joining works, and
 `cta-band` to close. It refuses `picker-chips` — two opening questions is no
-opening question — and every other opener (`article-masthead`,
-`hero-centred`, `hero-overlay`, `hero-split`, `hero-squeeze`, `hero-stated`).
+opening question — and every other opener (`article-masthead`, `hero-centred`,
+`hero-overlay`, `hero-portrait`, `hero-split`, `hero-squeeze`, `hero-stated`).
 
 **Brand adaptability.** `--btn-radius` shapes the answer rows, fields and
 buttons together; `--chip-radius` the interest pills, the progress bar and the

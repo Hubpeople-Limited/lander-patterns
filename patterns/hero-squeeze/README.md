@@ -33,9 +33,9 @@ nothing goes after it. `signup-card` can take the button's place, assurance left
 empty: words left, card right, and the photograph clipped to a fixed height so
 it holds still while the section grows.
 
-It refuses every other opener — `hero-overlay`, `hero-split`, `hero-centred`,
-`hero-stated`, `signup-steps`, `article-masthead`. A page opens once: two means two
-first impressions and two claims on the `h1`.
+It refuses every other opener: `hero-overlay`, `hero-split`, `hero-centred`,
+`hero-stated`, `hero-portrait`, `signup-steps`, `article-masthead`. A page
+opens once: two means two first impressions and two claims on the `h1`.
 
 **Brand adaptability.** Every ink is `--color-on-scrim` on a `--color-scrim`
 ground, one of the pairs the contract states. The headline takes it too:
