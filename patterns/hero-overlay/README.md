@@ -8,10 +8,13 @@ screen is atmosphere — who this is for, what it feels like — rather than
 explanation. Reach for `hero-split` instead when the offer needs a stated value
 proposition read alongside the image, or when the image is a product shot,
 screenshot or anything that must be *looked at* rather than felt: cover-cropping
-a screenshot to fill a screen destroys it. It is built for a real
-photograph — a scrim over a flat fill is a dark rectangle — and a page takes
-one hero. Two openers means two `<h1>`s and two first
-impressions, which is why the header declares `avoid-with: hero-split`.
+a screenshot to fill a screen destroys it. It works best with a real
+photograph — a scrim over a flat fill is a dark rectangle.
+
+**Before the photograph arrives,** the library's placeholder takes a band of its
+own above the words, on the brand tint with no scrim, and the words sit on
+`--color-bg`. Its drawing and "Photo to come" mark never sit under the copy or
+the card: `ci/check_placeholder_clear.py` measures both from 320 to 1440.
 
 **What it needs.** One landscape photograph, at least 2400px wide, that survives
 being cropped hard at both ends of the viewport range. **Serve it through the
@@ -73,8 +76,5 @@ pattern, so a plain `100svh` puts the foot — where the join control is — one
 header-height below the fold. The height is `calc(100svh -
 var(--page-header-height, 9.5rem))`; take that number off the brand's rendered
 header rather than off `--logo-height`, which came up 11px short on a live page,
-and `0px` where nothing sits above. `9.5rem` is the default: this library's own
-`masthead-nav` renders up to 145px on the sample brands. No footer allowance:
-this opener is not the whole page, so the footer is at the bottom of what
-follows rather than in the first viewport, and `hero-squeeze` is the pattern
-that subtracts one.
+and `0px` where nothing sits above. No footer allowance: this opener is not
+the whole page, and `hero-squeeze` is the pattern that subtracts one.

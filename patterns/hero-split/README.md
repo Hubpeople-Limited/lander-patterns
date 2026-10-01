@@ -44,7 +44,8 @@ argument on its own.
 `article-masthead`: that opens an article and carries the page's `<h1>`, which
 this pattern also does. `signup-card` can take the button's place: wide, the
 photograph fills its half and the card overlaps its inner edge; on a phone the
-photograph follows the card.
+photograph follows the card. Over the library's placeholder the card sits under
+the words instead, so the drawing and its mark stay whole beside it.
 
 **Brand adaptability.** `--card-radius` + `--card-shadow` set the image's
 character: radius 0 and no shadow reads sharp and editorial, soft radius and

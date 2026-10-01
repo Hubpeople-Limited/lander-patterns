@@ -51,13 +51,13 @@ headroom left for an image to eat.
 of `0.92` however it is set — the same floor `steps-numbered` enforces, for the
 same reason. A brand may make the scrim heavier and cannot make it lighter.
 
-**Over the library's placeholder the floor drops to `0.4`**, and the tint
-behind the drawing is the brand colour mixed into `--color-scrim`. Under a full
-scrim the drawing and its "Photo to come" mark disappear, and the band reads as
-finished. The placeholder's ground is known, so the lighter scrim can be held to
-a number: `ci/check_placeholder_scrim.py` requires the drawing to show and the
-copy to clear 4.5:1 on all five sample sets. The rule keys on
-`[data-hub-placeholder]`, so a real photograph never gets the lighter scrim.
+**Over the library's placeholder the floor drops to `0.4`**, the tint behind
+the drawing is the brand colour mixed into `--color-scrim`, and the drawing
+takes a band of its own above the words, never the ground under the words or
+the buttons. `ci/check_placeholder_scrim.py` requires the drawing to show and
+the copy to clear 4.5:1; `ci/check_placeholder_clear.py` keeps the drawing and
+its mark clear of every word and control. The rules key on
+`[data-hub-placeholder]`, so a real photograph keeps the full floor.
 
 **The section paints `--color-scrim` as a solid ground beneath the image**,
 which is worth knowing before anyone removes it. It is not decoration: an image

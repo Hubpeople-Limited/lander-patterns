@@ -52,9 +52,9 @@ here sits in the middle of the frame rather than against an edge, and the
 gradient reaches full strength behind it by 12% down.
 
 **Over the library's placeholder the floor drops to `0.4`**, on a tint of the
-brand colour mixed into `--color-scrim`, so the drawing shows. That ground is
-known, so `ci/check_placeholder_scrim.py` holds the copy to 4.5:1 on it; a real
-photograph, which carries no `[data-hub-placeholder]`, keeps the full floor.
+brand colour mixed into `--color-scrim`, and the drawing takes its own area:
+above the words, or beside them on a wide screen with no card. A real
+photograph, with no `[data-hub-placeholder]`, keeps the full floor.
 
 **The ramp starts at 68%, and that number is load-bearing.** Content is centred,
 so on a tall content box - 200% zoom, a long headline, a landscape phone - the
