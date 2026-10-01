@@ -2,7 +2,7 @@ name: Prepare a check job
 description: >
   What every job in the validate workflow starts from, after the checkout:
   origin/main resolvable, Python, and - for a job that renders - Playwright and
-  the Chromium it drives.
+  the Chromium it drives, with every download cached between runs.
 
 inputs:
   browser:
@@ -20,12 +20,53 @@ runs:
       run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
 
     - uses: actions/setup-python@v5
+      if: inputs.browser != 'true'
       with:
         python-version: "3.12"
+    # The pip cache only exists in a job that installs something, and
+    # setup-python fails a job whose cache folder was never written, so it is
+    # asked for only here.
+    - uses: actions/setup-python@v5
+      if: inputs.browser == 'true'
+      with:
+        python-version: "3.12"
+        cache: pip
+        cache-dependency-path: .github/actions/prepare/action.yml
 
-    - name: Install the browser the phone-width gate needs
+    # The same unpinned install the single job always ran; the version it
+    # lands on keys the caches below, so a new release is fetched once and
+    # then reused.
+    - name: Install Playwright
+      id: playwright
       if: inputs.browser == 'true'
       shell: bash
       run: |
         python -m pip install --quiet playwright
+        echo "version=$(python -m pip show playwright | sed -n 's/^Version: //p')" >> "$GITHUB_OUTPUT"
+    - uses: actions/cache@v4
+      if: inputs.browser == 'true'
+      with:
+        path: ~/.cache/ms-playwright
+        key: ms-playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+    # The system packages Chromium needs - fonts most of all, and every gate
+    # here measures text - are still installed by apt on every run, at
+    # whatever version the mirror serves today. Only the downloaded files are
+    # kept: one slow mirror once took three minutes to send them, and with
+    # the checks in parallel jobs the slowest install holds up the whole run.
+    # apt uses a kept file only when it is the exact version it wants, and
+    # fetches anything else.
+    - uses: actions/cache@v4
+      if: inputs.browser == 'true'
+      with:
+        path: ~/apt-debs
+        key: apt-debs-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+    - name: Install the browser the phone-width gate needs
+      if: inputs.browser == 'true'
+      shell: bash
+      run: |
+        mkdir -p ~/apt-debs
+        if ls ~/apt-debs/*.deb >/dev/null 2>&1; then
+          sudo cp ~/apt-debs/*.deb /var/cache/apt/archives/
+        fi
         python -m playwright install --with-deps chromium
+        cp /var/cache/apt/archives/*.deb ~/apt-debs/ 2>/dev/null || true
