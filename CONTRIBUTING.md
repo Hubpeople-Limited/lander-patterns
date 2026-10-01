@@ -322,10 +322,11 @@ On every pull request, CI:
   by looking at Georgia. The pages attach to your pull request as the
   `pattern-previews` artifact, so you see all five before anyone merges;
   on merge they publish to the repo's Pages site;
-- lays every pattern out in a headless browser at 320 and 360 and measures
-  what came out — sideways scroll, tap-target size, text size, text landing
-  on text, on `brand` and again on `display`. See
-  [At a phone width](#at-a-phone-width);
+- lays every pattern out in a headless browser at 320 and 360, and again at
+  1024 and 1280, and measures what came out — sideways scroll, tap-target
+  size, text size, text landing on text, a box sized to the screen that is
+  taller than it, on `brand` and again on `display`. See
+  [At a phone width](#at-a-phone-width) and [Above it](#above-it);
 - renders every display measure on all five sample brands and requires the
   resolved widths to be the same number, then re-renders them in the pre-v57
   `ch` form and requires that check to fire. See
@@ -526,6 +527,7 @@ Your pattern must, at both widths:
 | **Keep text readable** | 12px |
 | **Keep form fields at a size iOS will not zoom into** | 16px |
 | **Keep text off other text.** No run of words, and no numeral or label drawn by `::before` or `::after`, may land on another's ink | more than 2px each way |
+| **Keep a box sized to the screen on the screen.** A box whose height resolves to the viewport may not draw taller than it | viewport + 1px |
 | **Keep the lines of a block apart.** No descender on one line may reach into an ascender on the next | more than 1px each way |
 
 Three of those carve out the cases that would otherwise make the gate
@@ -553,6 +555,26 @@ stand-in span carrying its computed style. So these are allowed, and are
 shapes the library uses on purpose: words over a photograph or a scrim, a
 badge on a card's picture, text inside a sideways rail, a closed question's
 answer and a label hidden for screen readers.
+
+**Words under an opaque sheet are not text on text either.** Where two runs
+meet, the page's own stacking order is read at the middle and the four corners
+of the meeting: if at every one of those points something between the two
+runs, and not behind the lower one, paints a fully opaque colour with nothing
+over it fading it, the lower run is under a sheet. That is `cta-curtain`'s
+reveal — the covering section slides over the closing headline, which is the
+effect — and a card pulled up over a heading. A translucent sheet does not
+count, nor does one the words reach past, nor a gradient or a picture, and a
+run the page cannot hit-test is reported rather than excused.
+
+**A box sized to the screen is a screen tall, no more.** `height: 100svh`
+sizes the content box unless the box says otherwise, so padding beside it
+lands outside the screen. `cta-curtain`'s pinned panel was a screen and two
+`--space-8` tall, and `pinned-cards`' cards a screen and two paddings: the
+cover started that far down the panel, and the foot of each pinned card's
+panel, where its button sits, was under the fold where nothing could scroll to
+it. The fix is one declaration, `box-sizing: border-box`. The rule reads the
+page, not the source: a box whose content height is the viewport and whose
+drawn height is more.
 
 **The lines of one block are measured the same way, against each other.**
 Each line's box is cut to what the words on that line reach, so a heading
@@ -602,20 +624,49 @@ than hidden by an exclusion nobody can see. **Fixing a pattern means deleting
 its entry** — a run whose baseline matches nothing reports `STALE` and fails,
 because a baseline that has outlived its defect is how a gate goes quiet.
 
-`ci/test_gates.py` proves both halves against synthetic fixtures — eleven
-faults it must catch, twenty valid shapes it must ignore — and then sweeps the
-library.
+`ci/test_gates.py` proves both halves against synthetic fixtures — fifteen
+faults it must catch, one of them only above the breakpoint, and twenty-two
+valid shapes it must ignore — and then sweeps the library at both sets of
+widths.
 Proving it against the real patterns alone would prove nothing about the half
 that matters: a check that never fires passes a clean library perfectly.
 
-**CI runs it twice**, once on `brand` and once on `display`, whose heading face
-is not one this library was designed against. `--tokens` picks the set. The
-baseline is measured on `brand` and stays there, because **every entry in it is
-a pixel size and a pixel size is a size in a particular typeface**: the
-`masthead-nav` login link is 40px tall on Georgia and clears 44px on `display`,
-whose line box is 57% taller. So `STALE` detection is reported only on the
-baseline set — on any other the run says so in its output rather than sending
-you to delete a live entry.
+**CI runs it four times**: at the phone widths and at the desktop ones, each
+on `brand` and on `display`, whose heading face is not one this library was
+designed against. `--tokens` picks the set. The baseline is measured on
+`brand` at 320 and 360 and stays there, because **every entry in it is a pixel
+size and a pixel size is a size in a particular typeface**: the `masthead-nav`
+login link was 40px tall on Georgia and cleared 44px on `display`, whose line
+box is 57% taller. So `STALE` detection is reported only on the baseline set at
+the phone widths — on any other run the output says so rather than sending you
+to delete a live entry.
+
+### Above it
+
+```
+python ci/check_phone.py --desktop                  every pattern, 1024 and 1280
+python ci/check_phone.py --desktop --tokens display
+```
+
+The same rules at 1024 and 1280. **Two defects lived there with every gate
+green**, because neither can happen at a phone width: `cta-curtain` unwinds to
+an ordinary section below 35rem, so its pinned panel was only ever a screen and
+two paddings tall where nothing looked, and `masthead-nav` held its menu to a
+44px target in the drawer and let it fall to 42px, its login link to 40px, in
+the bar above 60rem. 1024 is the narrowest width most patterns lay out wide at
+and a tablet held sideways; 1280 is the commonest laptop. They are the widths
+`ci/check_measures.py` uses, for the same reasons, and 1440 was tried and
+found nothing 1280 had not.
+
+**The target is still 44px up here.** WCAG 2.2 sets 24px at AA and 44px at
+AAA, and this library holds the 44 at a phone width for the reason in the table
+above: it is what a thumb needs. A viewport's width says nothing about what is
+pointing at it — 1024 is a tablet held sideways, and a laptop at 1280 may have a
+touch screen — so the thumb's number is the one that holds. It costs almost
+nothing to meet: `masthead-nav`'s bar on one row is the height its 44px join
+control already made it, and a link grows by the two pixels it was short. The one
+deliberate exception in the library, `listing-rows`' 24px row links, is in the
+baseline with its reason, and is reported as known at these widths too.
 
 ### The brand mark
 

@@ -127,6 +127,14 @@ jobs:
       # a render on a face the CSS had been tuned to.
       - name: Phone widths on the hostile type fixture
         run: python ci/check_phone.py --require-browser --tokens display
+      # The same rules at 1024 and 1280. Two patterns kept a defect above the
+      # breakpoints with every step here green: a pinned panel a screen and two
+      # paddings tall, in a pattern that unwinds to plain flow on a phone, and
+      # a header whose menu fell under its own 44px floor only in the bar.
+      - name: Desktop widths
+        run: python ci/check_phone.py --require-browser --desktop
+      - name: Desktop widths on the hostile type fixture
+        run: python ci/check_phone.py --require-browser --desktop --tokens display
       # A placeholder under a photo scrim has to show, and the copy over it
       # has to hold 4.5:1, on all five sample brands. Then the positive
       # control: faults appended to every pattern, each required to fire.
@@ -165,9 +173,9 @@ jobs:
         run: python ci/check_fold.py --require-browser --broken
       # And again on the sample brand whose heading face this library was not
       # designed against. A header height is a size in a particular typeface:
-      # masthead-nav renders 124px on Georgia and 145px on the display fixture
-      # at the same width, and the allowance the openers ship has to cover the
-      # taller one.
+      # masthead-nav renders 129px on Georgia and up to 181px on the display
+      # fixture at the same laptop width, and the allowance the openers ship
+      # has to cover the taller one.
       - name: The fold on the hostile type fixture
         run: python ci/check_fold.py --require-browser --tokens display
       # The brand mark, rendered as the shapes brands actually ship it in.

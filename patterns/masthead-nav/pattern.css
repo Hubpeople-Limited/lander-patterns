@@ -644,8 +644,17 @@
   }
   .masthead-nav-links > ul > li > a,
   .masthead-nav-links > ul > li > button {
-    min-height: 0;
     white-space: nowrap;
+  }
+  /* The tap floor holds here too: 1024 is a tablet held sideways. Padding
+     inside it, so a one-row bar keeps the join control's height. */
+  .masthead-nav-mark,
+  .masthead-nav-login,
+  .masthead-nav-links > ul > li > a,
+  .masthead-nav-links > ul > li > button {
+    box-sizing: border-box;
+    min-width: var(--masthead-nav-tap);
+    min-height: var(--masthead-nav-tap);
   }
   /* Faded rather than removed: a submenu taken out of the layout cannot be
      focused, so a keyboard could never open it. */

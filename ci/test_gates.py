@@ -1306,6 +1306,32 @@ PHONE_FIRES = [
      " .t-cap { position: absolute; left: 16px; top: 40px; margin: 0; font-size: 18px; }",
      "<div class='t-fig'><p class='t-cap'>Sample caption one</p>"
      "<p class='t-cap'>Sample caption two</p></div>", "lands on text"),
+    # A sheet stacked over a heading hides it only if nothing shows through.
+    # These two are the halves of that rule the quiet case below does not
+    # prove: a sheet that lets the heading through, and an opaque sheet whose
+    # own words run on past its edge and onto the heading.
+    ("words on a translucent sheet pulled over a heading",
+     ".t-stage { padding: 16px; } .t-stage h2 { margin: 0; font-size: 32px; }"
+     " .t-sheet { position: relative; z-index: 1; margin-top: -60px; padding: 0 16px;"
+     " background: rgba(255, 255, 255, 0.6); } .t-sheet p { margin: 0; font-size: 18px; }",
+     "<div class='t-stage'><h2>Sample heading under it</h2></div>"
+     "<div class='t-sheet'><p>Sample copy on a sheet</p></div>", "lands on text"),
+    # Placed, not pulled by a margin, and neither run wraps: where the words
+    # meet the heading has to lie past the sheet's edge in every face, or the
+    # case is a sheet that does hide them and the gate is right to stay quiet.
+    ("words running past the edge of the opaque sheet they sit on",
+     ".t-stage { position: relative; padding: 16px; }"
+     " .t-stage h2 { margin: 0; font-size: 32px; white-space: nowrap; }"
+     " .t-sheet { position: absolute; left: 0; top: 16px; width: 24px; padding: 0 16px;"
+     " background: #fff; } .t-sheet p { margin: 0; font-size: 18px; white-space: nowrap; }",
+     "<div class='t-stage'><h2>Sample heading</h2>"
+     "<div class='t-sheet'><p>Sample copy on a sheet</p></div></div>", "lands on text"),
+    # cta-curtain's and pinned-cards' shape before v13 and v8: a box sized to
+    # the screen whose padding sits outside it, so a pinned panel is taller
+    # than the screen it pins to.
+    ("a box sized to the screen with its padding outside it",
+     ".t-screen { height: 100vh; padding: 24px; background: #eee; }",
+     "<div class='t-screen'>Sample panel</div>", "sized to the screen"),
 ]
 
 # Valid work the gate must not complain about. Half of these are the exact
@@ -1393,7 +1419,29 @@ PHONE_QUIET = {
          " .t-box h2 { margin: 0; font-size: 24px; }",
          "<div class='t-box'><span class='t-sr'>Sample label for a screen reader</span>"
          "<h2>Sample heading</h2></div>"),
+    # cta-curtain's reveal: the covering section is an opaque sheet stacked
+    # over the panel, so the headline is under it, not under its words.
+    "words on an opaque sheet pulled over a heading":
+        (".t-stage { padding: 16px; } .t-stage h2 { margin: 0; font-size: 32px; }"
+         " .t-sheet { position: relative; z-index: 1; margin-top: -60px; padding: 0 16px;"
+         " background: #fff; } .t-sheet p { margin: 0; font-size: 18px; }",
+         "<div class='t-stage'><h2>Sample heading under it</h2></div>"
+         "<div class='t-sheet'><p>Sample copy on a sheet</p></div>"),
+    "a box sized to the screen with its padding inside it":
+        (".t-screen { box-sizing: border-box; height: 100vh; padding: 24px;"
+         " background: #eee; }",
+         "<div class='t-screen'>Sample panel</div>"),
 }
+
+# A fault that exists only above the breakpoint, the shape both desktop
+# defects had. It must fire at the desktop widths and stay quiet at the phone
+# ones, or the desktop run is measuring the phone layout again.
+PHONE_DESKTOP = (
+    "two captions pulled onto each other above 60rem",
+    ".t-cap { margin: 0; padding: 0 16px; font-size: 18px; }"
+    " @media (min-width: 60rem) { .t-cap + .t-cap { margin-top: -28px; } }",
+    "<p class='t-cap'>Sample caption one</p><p class='t-cap'>Sample caption two</p>",
+    "lands on text")
 
 # The lines of one block, against each other. Each case names the sample
 # token set it renders on, because whether two lines touch is a property of
@@ -1492,6 +1540,20 @@ def check_phone():
                 if not found:
                     print("        got: nothing")
 
+    label, css, markup, needle = PHONE_DESKTOP
+    with check_phone.Phone(check_phone.DESKTOP_WIDTHS) as phone:
+        wide = phone.faults("fixture", page(css, markup))
+    with check_phone.Phone(check_phone.WIDTHS) as phone:
+        narrow = phone.faults("fixture", page(css, markup))
+    ok = any(needle in line for line in wide) and not narrow
+    print(f"  {'ok  ' if ok else 'FAIL'} catches at 1024 and 1280, and only there: {label}")
+    if not ok:
+        failures.append(label)
+        for line in wide + narrow:
+            print(f"        got: {line}")
+        if not wide:
+            print("        got: nothing at the desktop widths")
+
     # The skip path, exercised for real rather than asserted about. A shim
     # package on the path makes `import playwright` raise, which is exactly
     # what a machine without it does. Without this case the skip is the one
@@ -1532,6 +1594,18 @@ def check_phone():
         failures.append("stale phone-width baseline entry")
         for line in stale:
             print(f"        baseline entry matched nothing - {line}")
+
+    # And again above the breakpoints, where cta-curtain's panel and
+    # masthead-nav's menu kept their faults while 320 and 360 were clean. No
+    # stale check here: the baseline was taken at the phone widths.
+    new, known, _stale = check_phone.sweep(check_phone.DESKTOP_WIDTHS)
+    ok = not new
+    print(f"  {'ok  ' if ok else 'FAIL'} the library at 1024 and 1280"
+          f"                   {len(new)} new, {len(known)} known")
+    if new:
+        failures.append("new desktop-width fault in the library")
+        for line in new:
+            print(f"        {line}")
 
     return failures
 
