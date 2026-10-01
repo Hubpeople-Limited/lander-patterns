@@ -582,7 +582,7 @@
   "summary": "A full-screen closing call to action, uncovered as the page above it scrolls away.",
   "type": "section",
   "variants": {},
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "cta-image": {
@@ -1436,7 +1436,7 @@
     "labelled"
    ]
   },
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "media-card-grid": {
@@ -1888,7 +1888,7 @@
   "summary": "Full-screen photo cards that stack over one another as you scroll.",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "portrait-prose": {
