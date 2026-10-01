@@ -4213,6 +4213,25 @@ def check_placeholder_scrim():
     return failures
 
 
+def check_placeholder_clear():
+    """ci/check_placeholder_clear.py's positive control: it catches a
+    placeholder's drawing laid over the words and controls of every opener
+    and close. The library run is the workflow's own clear-space step, the
+    same command, so it is not run here a second time. A browser-less run
+    skips, as check_phone does."""
+    print("ci/check_placeholder_clear.py, a placeholder in clear space")
+    failures = []
+    for label, argv in (("the positive control", ["--broken"]),):
+        got = subprocess.run([sys.executable, str(HERE / "check_placeholder_clear.py"), *argv],
+                             capture_output=True, text=True, cwd=HERE.parent)
+        ok = got.returncode == 0
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}: exit={got.returncode} want=0")
+        if not ok:
+            print(got.stdout[-2000:])
+            failures.append(f"placeholder clear: {label}")
+    return failures
+
+
 def check_shell_placeholders():
     """A shell shows a placeholder where a build would put one, marked the
     way a build marks it, and leaves a people slot alone."""
@@ -4444,6 +4463,7 @@ CHECKS = [
     check_masthead_without_portrait,
     check_member_grid_motion,
     check_placeholder_scrim,
+    check_placeholder_clear,
     check_shell_placeholders,
     check_scrollbar_gate,
     check_hero_band,
@@ -4530,7 +4550,7 @@ def main(argv=None):
              + 37 + 4
              + 7
              + 11
-             + 18 + 2)
+             + 18 + 2 + 1)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

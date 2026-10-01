@@ -148,7 +148,8 @@ jobs:
           path: preview/site
 
   # The library at every width and on both type fixtures: phone and desktop,
-  # the fold, the brand mark, and the header's own positive control.
+  # the fold, the brand mark, a placeholder in clear space, and the header's
+  # own positive control.
   widths:
     name: phone, desktop, fold and logo
     runs-on: ubuntu-latest
@@ -227,6 +228,16 @@ jobs:
       # check to fire. Exit 0 here means the defect was detected.
       - name: Confirm the logo gate can still catch a mark that is not drawn
         run: python ci/check_logo.py --require-browser --broken
+      # The placeholder is a picture, so the phone gate's text-on-text rule
+      # cannot see it under the words. This measures the drawing and its
+      # "Photo to come" mark against every line of text and every control in
+      # the openers and closes, at six widths on two sample brands. Then the
+      # positive control: the drawing laid over each whole section, required
+      # to fire on every pattern.
+      - name: A placeholder sits in clear space
+        run: |
+          python ci/check_placeholder_clear.py --require-browser --quiet
+          python ci/check_placeholder_clear.py --require-browser --broken
       # The positive control: the fold is switched off and the check has to
       # fire on the long menu. Exit 0 here means the defect was detected.
       - name: Confirm the header gate can still catch a menu that wraps
