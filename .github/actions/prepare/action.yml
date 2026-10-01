@@ -1,0 +1,31 @@
+name: Prepare a check job
+description: >
+  What every job in the validate workflow starts from, after the checkout:
+  origin/main resolvable, Python, and - for a job that renders - Playwright and
+  the Chromium it drives.
+
+inputs:
+  browser:
+    description: Install Playwright and Chromium, with the system packages Chromium needs.
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    # The version-bump checks compare against the merge base with origin/main,
+    # and a checkout has no origin/main of its own. See the checkout comment
+    # in the workflow.
+    - name: Make origin/main resolvable
+      shell: bash
+      run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install the browser the phone-width gate needs
+      if: inputs.browser == 'true'
+      shell: bash
+      run: |
+        python -m pip install --quiet playwright
+        python -m playwright install --with-deps chromium

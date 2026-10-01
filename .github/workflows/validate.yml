@@ -9,7 +9,16 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  # The checks run as parallel jobs rather than one serial job, so a pull
+  # request waits for the slowest group instead of the sum of all of them.
+  # Every step the single job ran is still here, under the same name and
+  # with its control beside it; `validate` at the bottom is the one job the
+  # release, the bundle and the preview wait on, and it needs every other.
+
+  # Everything that reads source and draws nothing: the metadata, the
+  # generated files, the recipes, the bundle, and the previews built last
+  # from the tree lint has regenerated.
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,13 +26,13 @@ jobs:
           # Full history and all refs. The version-bump check compares each
           # pattern against the merge base with origin/main, and a shallow
           # checkout has no origin/main at all - the check then found no base
-          # and returned silently, so it never ran anywhere it mattered.
+          # and returned silently, so it never ran anywhere it mattered. The
+          # tags matter too: the compatibility check reads patterns as the
+          # last release shipped them.
           fetch-depth: 0
-      - name: Make origin/main resolvable
-        run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
-      - uses: actions/setup-python@v5
+      - uses: ./.github/actions/prepare
         with:
-          python-version: "3.12"
+          browser: "false"
       # Regenerates INDEX.md as part of validation, so a contributor in the
       # web editor never has to touch it - the release job commits the
       # regenerated copy on merge.
@@ -100,24 +109,65 @@ jobs:
       # were detected.
       - name: Confirm the recipe gate can still catch a broken recipe
         run: python ci/check_recipes.py --broken
-      # ci/check_phone.py renders patterns in a real browser. Without one it
-      # skips and exits 0, which is right for a contributor in the web editor
-      # and wrong here - CI is the run that has to actually measure. Install
-      # the browser, and let the step fail loudly if the install does, rather
-      # than sliding into a green build that checked nothing.
-      - name: Install the browser the phone-width gate needs
-        run: |
-          python -m pip install --quiet playwright
-          python -m playwright install --with-deps chromium
-      # The gate tests, both directions: every fault fires and every
-      # valid form stays quiet. Added because the suite existed and
-      # nothing ran it, which is a test file and no test.
-      - name: Check the gates still catch what they claim
-        run: python ci/test_gates.py
-      # Belt and braces on the step above: test_gates.py treats "no browser"
-      # as a skip, so if the install ever degrades, the suite goes green
-      # having measured nothing. --require-browser turns that skip into a
-      # failure, which is the correct reading HERE and only here.
+      - name: Legibility
+        run: python ci/legibility.py
+      # The bundle is the one file here published to a URL rather than copied
+      # into a page, so a change to it has two ways to fail that no other check
+      # can see: it may not minify, and it may name a version already served
+      # with different bytes. Both are settled against a copy, so a pull
+      # request finds out without publishing anything. The real publication is
+      # in the release job, which is also where the tree is regenerated and
+      # committed - minifying needs a toolchain a contributor working in the
+      # web editor does not have, so this is INDEX.md's treatment, not
+      # shells/'s.
+      - name: The behaviour bundle publishes
+        run: python ci/publish_hub.py --dry-run
+      - name: Build previews
+        run: python ci/build_preview.py
+      # The machine-readable bundle, written into the same directory the
+      # previews go to, so Pages serves it from a stable URL with the
+      # `Access-Control-Allow-Origin: *` header it already sends. A consumer in
+      # a browser then makes one fetch instead of thirty, and gets whatever the
+      # current release is without anybody maintaining a copy of this library
+      # somewhere else. Deliberately NOT added to the release zip: everything
+      # in it is derived from files already in that zip, and two copies of one
+      # library are two things free to disagree.
+      - name: Build the configurator bundle
+        run: python ci/build_configurator.py
+      # On a PR the previews are attached as a downloadable artifact so the
+      # contributor can review both feels without local tooling; on main they
+      # go to Pages.
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'pull_request'
+        with:
+          name: pattern-previews
+          path: preview/site
+      - uses: actions/upload-pages-artifact@v3
+        if: github.event_name == 'push'
+        with:
+          path: preview/site
+
+  # The library at every width and on both type fixtures: phone and desktop,
+  # the fold, the brand mark, and the header's own positive control.
+  widths:
+    name: phone, desktop, fold and logo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # see the checks job
+      # ci/check_phone.py and every gate below it render patterns in a real
+      # browser. Without one they skip and exit 0, which is right for a
+      # contributor in the web editor and wrong here - CI is the run that has
+      # to actually measure. The action installs the browser and lets the step
+      # fail loudly if the install does, rather than sliding into a green
+      # build that checked nothing; every job that renders also runs at least
+      # one command with --require-browser, so a degraded install fails there.
+      - uses: ./.github/actions/prepare
+      # The library at 320 and 360 on brand, the set the accepted baseline
+      # was measured on, so this is the run that reports a STALE entry.
+      # --require-browser turns the no-browser skip into a failure, which is
+      # the correct reading HERE and only here.
       - name: Confirm the phone-width gate actually ran
         run: python ci/check_phone.py --require-browser
       # The same patterns again, on the sample brand whose heading face this
@@ -135,27 +185,6 @@ jobs:
         run: python ci/check_phone.py --require-browser --desktop
       - name: Desktop widths on the hostile type fixture
         run: python ci/check_phone.py --require-browser --desktop --tokens display
-      # A placeholder under a photo scrim has to show, and the copy over it
-      # has to hold 4.5:1, on all five sample brands. Then the positive
-      # control: faults appended to every pattern, each required to fire.
-      - name: A placeholder shows through a photo scrim
-        run: |
-          python ci/check_placeholder_scrim.py --require-browser
-          python ci/check_placeholder_scrim.py --broken
-      # Every display measure, on all five sample brands, required to resolve
-      # to the same number of pixels. This is what holds the v57 ch-to-em move
-      # true: `ch` is the advance of zero in whichever face the brand chose,
-      # so a measure written in it is a headline that breaks to a different
-      # number of lines per brand. --require-browser for the same reason as
-      # the step above.
-      - name: Display measures agree across every sample brand
-        run: python ci/check_measures.py --require-browser
-      # The positive control, and it is not optional. The step above passes on
-      # a library where nothing is measured at all, so this one re-renders
-      # every display measure in the pre-v57 `ch` form and requires the check
-      # to fire. Exit 0 here means the defect was detected.
-      - name: Confirm the measure gate can still catch a ch measure
-        run: python ci/check_measures.py --require-browser --as-ch
       # A full-viewport pattern in a page assembled the way the platform
       # serves one: this library's own masthead-nav above it and a stand-in
       # site footer below. Every other gate here measures a pattern alone, and
@@ -198,18 +227,49 @@ jobs:
       # check to fire. Exit 0 here means the defect was detected.
       - name: Confirm the logo gate can still catch a mark that is not drawn
         run: python ci/check_logo.py --require-browser --broken
-      # The header against menus the size real brands have. Every other render
-      # in this workflow carries the same small sample menu, so a header that
-      # wrapped onto a second row with six items - and moved the fold under
-      # every opener with it - passed every step above.
-      - name: The header fits menus the size real brands have
-        run: python ci/check_header.py --require-browser
-      - name: The header on the hostile type fixture
-        run: python ci/check_header.py --require-browser --tokens display
       # The positive control: the fold is switched off and the check has to
       # fire on the long menu. Exit 0 here means the defect was detected.
       - name: Confirm the header gate can still catch a menu that wraps
         run: python ci/check_header.py --require-browser --broken
+
+  scrim-measures:
+    name: scrim and display measures
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # see the checks job
+      - uses: ./.github/actions/prepare  # the browser, see the widths job
+      # A placeholder under a photo scrim has to show, and the copy over it
+      # has to hold 4.5:1, on all five sample brands. Then the positive
+      # control: faults appended to every pattern, each required to fire.
+      - name: A placeholder shows through a photo scrim
+        run: |
+          python ci/check_placeholder_scrim.py --require-browser
+          python ci/check_placeholder_scrim.py --broken
+      # Every display measure, on all five sample brands, required to resolve
+      # to the same number of pixels. This is what holds the v57 ch-to-em move
+      # true: `ch` is the advance of zero in whichever face the brand chose,
+      # so a measure written in it is a headline that breaks to a different
+      # number of lines per brand. --require-browser for the same reason as
+      # the step above.
+      - name: Display measures agree across every sample brand
+        run: python ci/check_measures.py --require-browser
+      # The positive control, and it is not optional. The step above passes on
+      # a library where nothing is measured at all, so this one re-renders
+      # every display measure in the pre-v57 `ch` form and requires the check
+      # to fire. Exit 0 here means the defect was detected.
+      - name: Confirm the measure gate can still catch a ch measure
+        run: python ci/check_measures.py --require-browser --as-ch
+
+  behaviours:
+    name: section behaviours
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # see the checks job
+      - uses: ./.github/actions/prepare  # the browser, see the widths job
       # The section behaviours, run for real: the bundle on the page with file
       # access allowed, and each behaviour held to what its registry row
       # promises - a figure that ends on the authored text, a contents link
@@ -221,6 +281,15 @@ jobs:
       # behaviour turned wrong, and every one of the three checks has to fire.
       - name: Confirm the behaviour gate can still catch a broken behaviour
         run: python ci/check_behaviours.py --require-browser --broken
+
+  compat:
+    name: bundle compatibility
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # see the checks job
+      - uses: ./.github/actions/prepare  # the browser, see the widths job
       # Every live page loads the newest bundle, so a block that sets nothing
       # new has to come out of it exactly as it came out of the last one
       # published, and today's markup has to fall back on that one.
@@ -228,43 +297,79 @@ jobs:
         run: python ci/check_behaviours.py --require-browser --compat
       - name: Confirm the compatibility check can still catch a difference
         run: python ci/check_behaviours.py --require-browser --compat --broken
-      - name: Legibility
-        run: python ci/legibility.py
-      # The bundle is the one file here published to a URL rather than copied
-      # into a page, so a change to it has two ways to fail that no other check
-      # can see: it may not minify, and it may name a version already served
-      # with different bytes. Both are settled against a copy, so a pull
-      # request finds out without publishing anything. The real publication is
-      # in the release job, which is also where the tree is regenerated and
-      # committed - minifying needs a toolchain a contributor working in the
-      # web editor does not have, so this is INDEX.md's treatment, not
-      # shells/'s.
-      - name: The behaviour bundle publishes
-        run: python ci/publish_hub.py --dry-run
-      - name: Build previews
-        run: python ci/build_preview.py
-      # The machine-readable bundle, written into the same directory the
-      # previews go to, so Pages serves it from a stable URL with the
-      # `Access-Control-Allow-Origin: *` header it already sends. A consumer in
-      # a browser then makes one fetch instead of thirty, and gets whatever the
-      # current release is without anybody maintaining a copy of this library
-      # somewhere else. Deliberately NOT added to the release zip: everything
-      # in it is derived from files already in that zip, and two copies of one
-      # library are two things free to disagree.
-      - name: Build the configurator bundle
-        run: python ci/build_configurator.py
-      # On a PR the previews are attached as a downloadable artifact so the
-      # contributor can review both feels without local tooling; on main they
-      # go to Pages.
-      - uses: actions/upload-artifact@v4
-        if: github.event_name == 'pull_request'
+
+  # The header matrix is the longest sweep here, about eight minutes a token
+  # set, so it runs in shares. --shard K/N takes every Nth rung set, with
+  # every menu, mark and width for each; the shares are disjoint and N is the
+  # number of jobs in this matrix, so together they are the whole matrix
+  # whatever the list below is made to hold. Its positive control runs whole,
+  # in the widths job.
+  header:
+    name: header, share ${{ matrix.share }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        share: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
         with:
-          name: pattern-previews
-          path: preview/site
-      - uses: actions/upload-pages-artifact@v3
-        if: github.event_name == 'push'
+          fetch-depth: 0  # see the checks job
+      - uses: ./.github/actions/prepare  # the browser, see the widths job
+      # The header against menus the size real brands have. Every other render
+      # in this workflow carries the same small sample menu, so a header that
+      # wrapped onto a second row with six items - and moved the fold under
+      # every opener with it - passed every step above.
+      - name: The header fits menus the size real brands have
+        run: python ci/check_header.py --require-browser --shard ${{ matrix.share }}/${{ strategy.job-total }}
+      - name: The header on the hostile type fixture
+        run: python ci/check_header.py --require-browser --tokens display --shard ${{ matrix.share }}/${{ strategy.job-total }}
+
+  # The gate tests, both directions: every fault fires and every valid form
+  # stays quiet. In shares for the same reason as the header, and complete
+  # for the same reason: --shard K/N is every Nth check in the suite's own
+  # list, and N is the number of jobs here.
+  test-gates:
+    name: gate tests, share ${{ matrix.share }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        share: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
         with:
-          path: preview/site
+          fetch-depth: 0  # see the checks job
+      - uses: ./.github/actions/prepare  # the browser, see the widths job
+      # The configurator check reads patterns.json, which lint regenerates.
+      # In the single job lint had always run first; here it runs again so
+      # the suite sees the same tree it always did.
+      - name: Lint patterns (regenerates INDEX.md)
+        env:
+          # The same secret and the same fork rule as the lint step in the
+          # checks job, for the same reasons.
+          LANDER_LEAK_NEEDLES: ${{ secrets.LANDER_LEAK_NEEDLES }}
+          LANDER_LEAK_SKIP: ${{ github.event.pull_request.head.repo.fork }}
+        run: python ci/lint.py
+      # Added because the suite existed and nothing ran it, which is a test
+      # file and no test. test_gates.py treats "no browser" as a skip, so
+      # --require-browser makes a degraded install fail here instead of
+      # going green having measured nothing.
+      - name: Check the gates still catch what they claim
+        env:
+          # Each line as it is printed, so the log times every check and a
+          # share that grows slow can be seen and rebalanced.
+          PYTHONUNBUFFERED: "1"
+        run: python ci/test_gates.py --require-browser --shard ${{ matrix.share }}/${{ strategy.job-total }}
+
+  # The one job the release, the bundle and the preview wait on. It needs
+  # every check above, so nothing ships unless all of them passed.
+  validate:
+    needs: [checks, widths, scrim-measures, behaviours, compat, header, test-gates]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every check passed
+        run: echo "Every check job passed."
 
   release:
     # Every merge to main becomes the release agents fetch: regenerate
