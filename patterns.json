@@ -1087,7 +1087,9 @@
    "hero-stated",
    "signup-steps"
   ],
-  "behaviours": [],
+  "behaviours": [
+   "reveal"
+  ],
   "content-shape": "single claim",
   "description": "Conversion opener built to hold signup-card - one large portrait on one side, the headline, one line and the card on the other; the portrait rounded, arched or running to the page edge; on phones a short portrait strip, then the words, then the card.",
   "display-name": "Sign-up beside a portrait",
@@ -1131,6 +1133,10 @@
     "brand",
     "deep"
    ],
+   "motion": [
+    "default",
+    "moving"
+   ],
    "shape": [
     "rounded",
     "arch",
@@ -1141,7 +1147,7 @@
     "end"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "hero-split": {
