@@ -996,7 +996,7 @@
   }
 }
 
-/* ---- hero-overlay v16 ---- */
+/* ---- hero-overlay v17 ---- */
 /* hero-overlay v13 - tokens only, selectors prefixed. Nothing here moves. */
 .hero-overlay {
   /* Contrast floor: the scrim carries it, never the photo. */
@@ -1204,6 +1204,37 @@
   .hero-overlay-copy:has(.signup-card) > .hero-overlay-actions {
     grid-column: 2;
     grid-row: 1 / span 6;
+  }
+}
+
+/* Over the placeholder, the drawing takes a band of its own above the words,
+   never the ground under them; a photograph still fills the section. On a
+   phone the band is at least 16:9, so a cover crop only trims its sides. */
+.hero-overlay:has(> .hero-overlay-img[data-hub-placeholder]) {
+  display: grid;
+  grid-template-rows: minmax(max(10rem, 56.25vw), 1fr) auto;
+}
+.hero-overlay:has(> .hero-overlay-img[data-hub-placeholder])::after {
+  content: none;
+}
+.hero-overlay:has(> .hero-overlay-img[data-hub-placeholder]) > .hero-overlay-img {
+  position: static;
+  box-sizing: border-box;
+  height: 100%;
+  contain: size;
+  aspect-ratio: auto;
+  object-position: 50% 50%;
+}
+.hero-overlay:has(> .hero-overlay-img[data-hub-placeholder]) > .hero-overlay-inner {
+  padding-block: var(--space-6) var(--space-8);
+}
+@media (min-width: 48rem) {
+  .hero-overlay:has(> .hero-overlay-img[data-hub-placeholder]) {
+    grid-template-rows: minmax(clamp(10rem, 30vw, 16rem), 1fr) auto;
+  }
+  .hero-overlay:has(> .hero-overlay-img[data-hub-placeholder]) > .hero-overlay-img {
+    padding: var(--space-4);
+    object-fit: contain;
   }
 }
 

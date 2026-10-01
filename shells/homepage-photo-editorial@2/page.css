@@ -1346,7 +1346,7 @@
   }
 }
 
-/* ---- cta-image v7 ---- */
+/* ---- cta-image v8 ---- */
 /* cta-image v1 - tokens only, selectors prefixed */
 .cta-image {
   /* Contrast floor: the words sit on a photograph, so the scrim carries the
@@ -1466,12 +1466,37 @@
   box-shadow: 0 0 0 7px var(--color-scrim);
 }
 
-/* Lighter only over a placeholder; a photograph keeps the floor above. */
+/* Over a placeholder only: a lighter floor, and the drawing given a band
+   of its own above the words, never the ground under them. A photograph
+   keeps the floor above and fills the section. On a phone the band is at
+   least 16:9, so a cover crop only trims its sides. */
 .cta-image img[data-hub-placeholder] {
   background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
 }
 .cta-image:has(> .cta-image-img[data-hub-placeholder]) {
   --cta-image-scrim-floor: 0.4;
+  grid-template-rows: minmax(max(10rem, 56.25vw), 1fr) auto;
+  row-gap: var(--space-8);
+  padding-top: 0;
+}
+.cta-image:has(> .cta-image-img[data-hub-placeholder]) > .cta-image-img {
+  position: static;
+  box-sizing: border-box;
+  width: calc(100% + 2 * var(--space-4));
+  height: 100%;
+  margin-inline: calc(-1 * var(--space-4));
+  contain: size;
+  aspect-ratio: auto;
+  object-position: 50% 50%;
+}
+@media (min-width: 48rem) {
+  .cta-image:has(> .cta-image-img[data-hub-placeholder]) {
+    grid-template-rows: minmax(clamp(10rem, 28vw, 15rem), 1fr) auto;
+  }
+  .cta-image:has(> .cta-image-img[data-hub-placeholder]) > .cta-image-img {
+    padding: var(--space-4);
+    object-fit: contain;
+  }
 }
 
 /* ---- colophon v2 ---- */
