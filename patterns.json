@@ -848,7 +848,7 @@
   "layout": {
    "opener": "beside"
   },
-  "motion": "none",
+  "motion": "subtle",
   "needs": "one real photograph at least 1600px wide of people or a place the brand can show, with its own alt text; a headline for this page and one supporting sentence that says something the headline does not",
   "one-per-page": true,
   "page-types": [
@@ -878,13 +878,17 @@
     "brand",
     "deep"
    ],
+   "motion": [
+    "default",
+    "moving"
+   ],
    "photo": [
     "end",
     "start",
     "behind"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "hero-centred": {

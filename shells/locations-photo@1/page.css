@@ -996,7 +996,7 @@
   }
 }
 
-/* ---- hero-band v2 ---- */
+/* ---- hero-band v3 ---- */
 /* hero-band v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink; every rule below reads the pair. */
 .hero-band--plain {
@@ -1173,6 +1173,20 @@
 
 .hero-band img[data-hub-placeholder] {
   background: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+}
+
+.hero-band:not(.hero-band--moving) {
+  --hub-motion: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-band--moving .hero-band-img {
+    animation: hero-band-drift 5s ease-out 1 both;
+  }
+  @keyframes hero-band-drift {
+    from {
+      scale: 1.08;
+    }
+  }
 }
 
 /* ---- listing-rows v4 ---- */
