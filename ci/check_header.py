@@ -30,6 +30,9 @@ decide how a long menu behaves. It holds the header to:
     python ci/check_header.py --broken         the positive control, below
     python ci/check_header.py --out /tmp/hdr   keep the rendered pages
     python ci/check_header.py --require-browser
+    python ci/check_header.py --shard 1/4      a quarter of the matrix, as CI
+                                               runs it: every rung set is in
+                                               exactly one share
 
 THE POSITIVE CONTROL. `--broken` appends one rule that switches the fold off
 - the property the overflow behaviour reads is forced to `off` - and requires
@@ -621,7 +624,25 @@ def main():
     ap.add_argument("--out", help="write the rendered pages here")
     ap.add_argument("--require-browser", action="store_true",
                     help="treat a missing browser as a failure, not a skip")
+    ap.add_argument("--shard", metavar="K/N",
+                    help="sweep the K-th of N shares of the rung sets "
+                         "(1-based), every width and menu and mark for each. "
+                         "The shares are disjoint and together are the whole "
+                         "matrix; CI runs them side by side")
     args = ap.parse_args()
+    combos, phone_combos = COMBOS, PHONE_COMBOS
+    if args.shard:
+        if args.broken or args.broken_row:
+            print("check_header: --shard splits the matrix, and the controls "
+                  "are not the matrix; run them whole")
+            return 2
+        got = re.fullmatch(r"(\d+)/(\d+)", args.shard)
+        k, n = (int(got.group(1)), int(got.group(2))) if got else (0, 0)
+        if not 1 <= k <= n:
+            print(f"check_header: --shard takes K/N with 1 <= K <= N, not "
+                  f"{args.shard!r}")
+            return 2
+        combos, phone_combos = COMBOS[k - 1::n], PHONE_COMBOS[k - 1::n]
     try:
         sys.stdout.reconfigure(encoding="utf-8")
     except AttributeError:
@@ -672,25 +693,26 @@ def main():
             print("check_header --broken: the fold was switched off and nothing "
                   "fired - the gate is not measuring")
             return 1
-        faults, count = sweep(shell, tokens, COMBOS, list(MENUS), LOGO_FIXTURES,
+        faults, count = sweep(shell, tokens, combos, list(MENUS), LOGO_FIXTURES,
                               args.widths, [False, True])
         phone_widths = [w for w in args.widths if w in PHONE_WIDTHS]
-        more, extra = sweep(shell, tokens, PHONE_COMBOS, list(MENUS), LOGO_FIXTURES,
+        more, extra = sweep(shell, tokens, phone_combos, list(MENUS), LOGO_FIXTURES,
                             phone_widths, [False, True])
         faults += more
         count += extra
 
     for k in known:
         print("  known " + k)
+    where = args.tokens + (f", share {args.shard}" if args.shard else "")
     if faults:
-        print(f"check_header ({args.tokens}): {len(faults)} fault(s) in {count} renders"
+        print(f"check_header ({where}): {len(faults)} fault(s) in {count} renders"
               + (f", {len(known)} known" if known else ""))
         for f in faults:
             print("  " + f)
         return 1
-    print(f"check_header ({args.tokens}): clean - {count} renders, "
-          f"{len(COMBOS)} rung sets x {len(MENUS)} menus x {len(LOGO_FIXTURES)} marks "
-          f"x {len(args.widths)} widths, and {len(PHONE_COMBOS)} menu button rung sets "
+    print(f"check_header ({where}): clean - {count} renders, "
+          f"{len(combos)} rung sets x {len(MENUS)} menus x {len(LOGO_FIXTURES)} marks "
+          f"x {len(args.widths)} widths, and {len(phone_combos)} menu button rung sets "
           f"at {len(PHONE_WIDTHS)} phone widths, library on and off"
           + (f"; {len(known)} known" if known else ""))
     return 0

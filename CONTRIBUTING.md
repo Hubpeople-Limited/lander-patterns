@@ -633,8 +633,9 @@ because a baseline that has outlived its defect is how a gate goes quiet.
 
 `ci/test_gates.py` proves both halves against synthetic fixtures — fifteen
 faults it must catch, one of them only above the breakpoint, and twenty-two
-valid shapes it must ignore — and then sweeps the library at both sets of
-widths.
+valid shapes it must ignore. The library itself is swept by the four
+`check_phone.py` runs below, not by the suite, so CI renders it once per
+width and token set.
 Proving it against the real patterns alone would prove nothing about the half
 that matters: a check that never fires passes a clean library perfectly.
 
