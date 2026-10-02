@@ -729,6 +729,7 @@
  },
  "gallery-scroll": {
   "avoid-with": [
+   "hero-collage",
    "hero-overlay",
    "hero-split",
    "media-card-grid",
@@ -825,6 +826,7 @@
  },
  "hero-band": {
   "avoid-with": [
+   "hero-collage",
    "hero-stated"
   ],
   "behaviours": [],
@@ -894,6 +896,7 @@
  "hero-bento": {
   "avoid-with": [
    "hero-centred",
+   "hero-collage",
    "hero-overlay",
    "hero-portrait",
    "hero-split",
@@ -976,6 +979,7 @@
   "avoid-with": [
    "article-masthead",
    "hero-bento",
+   "hero-collage",
    "hero-overlay",
    "hero-portrait",
    "hero-split",
@@ -1025,12 +1029,119 @@
   "version": "8",
   "whole-page": false
  },
+ "hero-collage": {
+  "avoid-with": [
+   "gallery-scroll",
+   "hero-band",
+   "hero-bento",
+   "hero-centred",
+   "hero-overlay",
+   "hero-portrait",
+   "hero-split",
+   "hero-squeeze",
+   "hero-stated",
+   "signup-steps"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "single claim",
+  "description": "Opener with the h1, one line and the join button beside a staggered cluster of up to three photographs, the largest at the back, or under a row of up to three framed prints, each turned a little; the words never sit on a photograph; any photograph but the first may be left out and the rest close up; on phones two pictures in a short strip, then the words.",
+  "display-name": "Opener with a collage",
+  "image-slots": [
+   {
+    "crop": "portrait",
+    "focal": "center",
+    "min": 1200,
+    "placeholder": true,
+    "slot": "collage-1",
+    "subjects": [
+     "couple",
+     "person",
+     "group",
+     "place"
+    ]
+   },
+   {
+    "crop": "portrait",
+    "focal": "center",
+    "min": 800,
+    "placeholder": true,
+    "slot": "collage-2",
+    "subjects": [
+     "person",
+     "couple",
+     "group",
+     "place"
+    ]
+   },
+   {
+    "crop": "square",
+    "focal": "center",
+    "min": 800,
+    "placeholder": true,
+    "slot": "collage-3",
+    "subjects": [
+     "group",
+     "couple",
+     "person",
+     "place"
+    ]
+   }
+  ],
+  "layout": {
+   "opener": "collage"
+  },
+  "motion": "none",
+  "needs": "two or three real photographs of the brand's own people or places, the first at least 1200px wide in portrait and the others at least 800px, each with its own alt text, or the library's placeholder until they arrive; a headline and one supporting sentence in the brand's own words",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "about"
+  ],
+  "pairs-with": [
+   "steps-plain",
+   "prose-column",
+   "claim-stack",
+   "faq-details",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "photography",
+  "status": "active",
+  "summary": "An opener with the headline, one line and the join button beside or under a small collage of two or three photographs.",
+  "type": "section",
+  "variants": {
+   "arrange": [
+    "stack",
+    "prints"
+   ],
+   "ground": [
+    "plain",
+    "soft",
+    "brand",
+    "deep"
+   ],
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "side": [
+    "end",
+    "start"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "hero-overlay": {
   "avoid-with": [
    "article-masthead",
    "gallery-scroll",
    "hero-bento",
    "hero-centred",
+   "hero-collage",
    "hero-portrait",
    "hero-split",
    "hero-squeeze",
@@ -1081,6 +1192,7 @@
   "avoid-with": [
    "hero-bento",
    "hero-centred",
+   "hero-collage",
    "hero-overlay",
    "hero-split",
    "hero-squeeze",
@@ -1156,6 +1268,7 @@
    "gallery-scroll",
    "hero-bento",
    "hero-centred",
+   "hero-collage",
    "hero-overlay",
    "hero-portrait",
    "hero-squeeze",
@@ -1213,6 +1326,7 @@
    "article-masthead",
    "hero-bento",
    "hero-centred",
+   "hero-collage",
    "hero-overlay",
    "hero-portrait",
    "hero-split",
@@ -1267,6 +1381,7 @@
    "hero-band",
    "hero-bento",
    "hero-centred",
+   "hero-collage",
    "hero-overlay",
    "hero-portrait",
    "hero-split",
@@ -2480,6 +2595,7 @@
    "article-masthead",
    "hero-bento",
    "hero-centred",
+   "hero-collage",
    "hero-overlay",
    "hero-portrait",
    "hero-split",
