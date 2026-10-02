@@ -1436,6 +1436,71 @@
   "version": "6",
   "whole-page": false
  },
+ "history-timeline": {
+  "avoid-with": [
+   "story-timeline",
+   "zigzag-rows"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "progression",
+  "description": "The brand's own story as three to eight dated moments down a hairline - alternating either side of a centred line on a wide screen, or all on one side - each a date, a title, a line and, where there is one, a photograph. The twin of story-timeline, which tells one couple's story in the same timeline.",
+  "display-name": "Your story in dates",
+  "image-slots": [
+   {
+    "crop": "landscape",
+    "focal": "center",
+    "min": 1200,
+    "placeholder": false,
+    "slot": "moment-image",
+    "subjects": [
+     "place",
+     "group",
+     "object"
+    ]
+   }
+  ],
+  "layout": {
+   "rhythm": "column"
+  },
+  "motion": "none",
+  "needs": "three to eight real moments in the brand's own story - founded, a first event, an app, a place opened - each with the date it happened and a title, a line where there is something true to say, and the brand's own photograph at least 1200px wide in landscape where there is one. A figure in a moment only from the platform's own counts; a couple's story is story-timeline",
+  "one-per-page": true,
+  "page-types": [
+   "about",
+   "landing"
+  ],
+  "pairs-with": [
+   "prose-column",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "The brand's own story as dated moments down a line: when it began, what it has done since, each with its date.",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft"
+   ],
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "photos": [
+    "with",
+    "without"
+   ],
+   "spine": [
+    "centre",
+    "start"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "key-takeaways": {
   "avoid-with": [],
   "behaviours": [],
@@ -2978,6 +3043,70 @@
   "version": "1",
   "whole-page": false
  },
+ "story-timeline": {
+  "avoid-with": [
+   "history-timeline",
+   "zigzag-rows"
+  ],
+  "behaviours": [
+   "reveal"
+  ],
+  "content-shape": "progression",
+  "description": "One couple's story as three to eight dated moments down a hairline - alternating either side of a centred line on a wide screen, or all on one side - each a date, a title, a line in their words and, where they have one, a photograph. The twin of history-timeline, which tells the brand's own story in the same timeline.",
+  "display-name": "A couple's story in dates",
+  "image-slots": [
+   {
+    "crop": "landscape",
+    "focal": "center",
+    "min": 1200,
+    "placeholder": false,
+    "slot": "moment-image",
+    "subjects": [
+     "couple"
+    ]
+   }
+  ],
+  "layout": {
+   "people": "stories",
+   "rhythm": "column"
+  },
+  "motion": "none",
+  "needs": "one couple who met through the brand and gave their story with its dates - three to eight moments, each with a date and a title, a line in their own words where they gave one, and their own photograph at least 1200px wide in landscape where they have one. Works best with the couple's OK to appear on a public page anyone can reach; the brand's own dated story is history-timeline",
+  "one-per-page": true,
+  "page-types": [
+   "about",
+   "landing"
+  ],
+  "pairs-with": [
+   "prose-column",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "consented-people",
+  "status": "active",
+  "summary": "One couple's story as dated moments down a line: each date, what happened and, where they have one, a photograph.",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft"
+   ],
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "photos": [
+    "with",
+    "without"
+   ],
+   "spine": [
+    "centre",
+    "start"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "testimonial-carousel": {
   "avoid-with": [
    "testimonial-grid"
@@ -3119,7 +3248,9 @@
   "avoid-with": [
    "capability-tabs",
    "hero-split",
-   "steps-numbered"
+   "history-timeline",
+   "steps-numbered",
+   "story-timeline"
   ],
   "behaviours": [
    "reveal"
