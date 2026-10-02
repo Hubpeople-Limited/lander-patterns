@@ -175,3 +175,7 @@
     margin-inline-start: auto;
   }
 }
+
+.story-timeline:not(.story-timeline--moving) {
+  --hub-motion: none;
+}

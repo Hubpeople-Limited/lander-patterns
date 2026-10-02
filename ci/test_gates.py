@@ -3820,6 +3820,61 @@ def check_timelines():
     return failures
 
 
+def check_timelines_moving():
+    """With the behaviour library on the page: the still rung reveals nothing
+    on either twin; on the moving rung each moment eases in as the visitor
+    reaches it and none is left hidden once they have scrolled past it;
+    under reduced motion the moving rung hides nothing."""
+    import check_behaviours as cb
+    import check_phone
+    failures = []
+    print("timelines, easing in is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED timelines motion: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"timelines motion: {label}")
+
+    bundle = '<script type="module" src="hub.js"></script></head>'
+    scrolled_js = """async () => {
+        const pause = ms => new Promise(r => setTimeout(r, ms));
+        for (let y = 0; y <= document.documentElement.scrollHeight; y += 200) {
+            scrollTo(0, y);
+            await pause(120);
+        }
+        scrollTo(0, document.documentElement.scrollHeight);
+        await pause(400);
+        return {revealed: document.querySelectorAll('.hub-reveal-pending, .hub-revealed').length,
+                pending: document.querySelectorAll('.hub-reveal-pending').length}; }"""
+
+    def walk(shell, html, stem, reduced=False):
+        tab = shell.open(html.replace("</head>", bundle, 1), stem, reduced=reduced)
+        try:
+            if tab.evaluate(cb.VERSION_JS) != cb.bundle_version():
+                return None
+            return tab.evaluate(scrolled_js)
+        finally:
+            tab.close()
+
+    with cb.Shell(False) as shell:
+        for name in ("story-timeline", "history-timeline"):
+            still = cb.movement(shell, opener_page(name, {}, "brand").replace("</head>", bundle, 1),
+                                f"{name}-still")
+            case(f"{name}: the still rung reveals nothing", still is not None and still["revealed"] == 0)
+            moving = walk(shell, opener_page(name, {"motion": "moving"}, "brand"), f"{name}-moving")
+            case(f"{name}: on the moving rung every moment eases in as it is reached and none "
+                 f"stays hidden", moving is not None and moving["revealed"] >= 3 and moving["pending"] == 0)
+        reduced = walk(shell, opener_page("story-timeline", {"motion": "moving"}, "brand"),
+                       "story-timeline-reduced", reduced=True)
+        case("under reduced motion the moving rung hides nothing",
+             reduced is not None and reduced["revealed"] == 0)
+    return failures
+
+
 # Below a site header on the commonest phone and on a laptop, the sign-up
 # card's first question is on the first screen. 152px is the header allowance
 # hero-overlay subtracts (9.5rem).
@@ -5378,6 +5433,7 @@ CHECKS = [
     check_portrait_row,
     check_portrait_row_motion,
     check_timelines,
+    check_timelines_moving,
     check_words_whole,
 ]
 
@@ -5457,7 +5513,7 @@ def main(argv=None):
              + 2
              + 5
              + 14 + 13
-             + 40)
+             + 40 + 5)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

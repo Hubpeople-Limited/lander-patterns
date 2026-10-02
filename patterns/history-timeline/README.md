@@ -24,13 +24,14 @@ may appear. `ci/test_gates.py` (`check_timelines`) holds the two files
 identical. **A change to one is made to both, in the same commit.** They
 avoid each other: one timeline per page.
 
-**Three axes.**
+**Four axes.**
 
 | Axis | Rungs |
 |---|---|
 | `spine` | `centre`, the moments alternating either side of a centred line from 48rem (the default); `start`, every moment on one side at every width |
 | `photos` | `with`, a photograph beside each moment that has one (the default); `without`, words only, the archive look |
 | `ground` | `plain` (the default) or `soft`: light grounds only, because a hairline and small dates fade on a dark one |
+| `motion` | `default`, still; `moving`, each moment eases in as the visitor reaches it |
 
 **Dates and order.** The moments are an `<ol>` and each date a `<time>`
 whose `datetime` takes the year, the month or the day (`2016`, `2016-05`,
@@ -49,6 +50,11 @@ the page is the same gesture twice.
 **Pairing.** `prose-column` before it for the brand's own account, or after
 a `hero-band` opener; `cta-band` after it. It suits an about page or a
 landing page, not the homepage.
+
+**Movement** (`motion`). Still by default. On `moving` each moment eases in
+through the behaviour library's `reveal` as the visitor reaches it. The line
+never draws itself as the page scrolls, and nothing moves under reduced
+motion.
 
 **Brand adaptability.** As `story-timeline`: `--font-heading` carries the
 heading and the titles, `--color-primary` the dots, `--color-rule` the line,

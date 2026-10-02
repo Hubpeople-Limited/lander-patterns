@@ -15,7 +15,8 @@ needs: three to eight real moments in the brand's own story - founded, a first e
 pairs-with: prose-column, cta-band
 avoid-with: story-timeline, zigzag-rows
 tokens-used: --card-radius, --color-bg, --color-heading, --color-primary, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-2, --space-3, --space-4, --space-6, --space-8, --type-scale, --weight-display
-variants: spine=centre|start; photos=with|without; ground=plain|soft
+variants: spine=centre|start; photos=with|without; ground=plain|soft; motion=default|moving
+behaviours: reveal
 motion: none
 one-per-page: yes
 status: active
@@ -34,7 +35,7 @@ added: 2026-10-02
   <div class="history-timeline-inner">
     <p class="history-timeline-eyebrow"><!-- slot: eyebrow --></p>
     <h2 class="history-timeline-title" id="slot:section-id"><!-- slot: section-title --></h2>
-    <ol class="history-timeline-list" role="list">
+    <ol class="history-timeline-list" role="list" data-hub-module="reveal" data-hub-reveal-children>
       <li class="history-timeline-item">
         <div class="history-timeline-body">
           <time class="history-timeline-num" datetime="slot:moment-datetime"><!-- slot: moment-when --></time>
