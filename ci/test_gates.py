@@ -3970,6 +3970,122 @@ def check_hero_collage():
     return failures
 
 
+# The reveal eases each item in over 0.6s, one after another: the pictures
+# are at rest well inside this, and a moving rung has to be.
+COLLAGE_REST_MS = 1500
+
+
+def check_hero_collage_moving():
+    """Still means still: with the behaviour library on the page, the still
+    rung eases nothing in and draws the same frame throughout; the moving
+    rung eases the smaller pictures in once and briefly and leaves nothing
+    hidden that is on show; reduced motion holds it still. The first picture
+    is the page's largest paint, so it is painted at once on every rung."""
+    import check_behaviours as cb
+    import check_phone
+    failures = []
+    print("hero-collage, easing in is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-collage motion: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-collage motion: {label}")
+
+    look_js = """() => {
+        const first = document.querySelector('.hero-collage-photos > .hero-collage-photo');
+        let shown = 1;
+        for (let el = first; el; el = el.parentElement)
+            shown *= parseFloat(getComputedStyle(el).opacity);
+        const anims = document.getAnimations();
+        return {
+            revealed: document.querySelectorAll('.hub-reveal-pending, .hub-revealed').length,
+            pending: [...document.querySelectorAll('.hub-reveal-pending')]
+                     .filter(e => e.checkVisibility()).length,
+            running: anims.filter(a => a.playState === 'running').length,
+            longest: Math.max(0, ...anims.map(a => {
+                const t = a.effect.getComputedTiming();
+                return t.iterations === Infinity ? Infinity : t.endTime; })),
+            first: {shown, hooked: !!first.closest('[data-hub-module~="reveal"]'),
+                    moving: anims.filter(a => a.effect.target
+                                         && a.effect.target.contains(first)).length},
+            still: getComputedStyle(document.querySelector('.hero-collage'))
+                   .getPropertyValue('--hub-motion').trim()};
+    }"""
+    bundle = '<script type="module" src="hub.js"></script></head>'
+
+    def look(shell, mods, width=1280, reduced=False, extra_css="", swap=None, frames=False):
+        html = opener_page("hero-collage", mods, "brand",
+                           extra_css=extra_css).replace("</head>", bundle, 1)
+        if swap:
+            html = html.replace(*swap, 1)
+        tab = shell.open(html, "collage-motion", width=width, reduced=reduced)
+        try:
+            if tab.evaluate(cb.VERSION_JS) != cb.bundle_version():
+                return None
+            first = tab.evaluate(look_js)
+            shot = tab.screenshot() if frames else None
+            try:
+                tab.wait_for_function("() => ![...document.querySelectorAll('.hub-reveal-pending')]"
+                                      ".some(e => e.checkVisibility())", timeout=COLLAGE_REST_MS)
+            except Exception:
+                pass
+            started = tab.evaluate(look_js)
+            tab.wait_for_timeout(COLLAGE_REST_MS)
+            rest = tab.evaluate(look_js)
+            if frames:
+                return first, started, rest, shot == tab.screenshot()
+            return first, started, rest
+        finally:
+            tab.close()
+
+    def eased_once(got):
+        if got is None:
+            return False
+        first, started, rest = got[:3]
+        return (first["revealed"] == 2 and started["running"] > 0
+                and started["longest"] <= COLLAGE_REST_MS
+                and rest["pending"] == 0 and rest["running"] == 0)
+
+    def painted_at_once(got):
+        return got is not None and all(
+            g["first"]["shown"] == 1 and not g["first"]["hooked"]
+            and g["first"]["moving"] == 0 for g in got[:3])
+
+    with cb.Shell(False) as shell:
+        for width in (390, 1280):
+            still = look(shell, {}, width=width, frames=True)
+            case(f"the still rung at {width}: nothing eases in, it says so to the "
+                 f"behaviours, and the last frame is the first, pixel for pixel",
+                 still is not None and still[0]["revealed"] == 0 and still[2]["running"] == 0
+                 and still[0]["still"] == "none" and still[3])
+            for arrange in ("stack", "prints"):
+                moving = look(shell, {"motion": "moving", "arrange": arrange}, width=width)
+                case(f"arrange={arrange} moving at {width}: the smaller pictures ease in once "
+                     f"and are at rest within {COLLAGE_REST_MS}ms; the first is painted at once",
+                     eased_once(moving) and painted_at_once(moving))
+        calm = look(shell, {"motion": "moving"}, reduced=True)
+        case("the moving rung holds still under reduced motion",
+             calm is not None and calm[0]["revealed"] == 0 and calm[2]["running"] == 0)
+        forced = look(shell, {}, extra_css=".hero-collage:not(.hero-collage--moving) "
+                                           "{ --hub-motion: initial; }")
+        case("catches: a still rung that eases in",
+             forced is not None and forced[0]["revealed"] > 0)
+        slow = look(shell, {"motion": "moving"},
+                    extra_css=".hero-collage--moving .hub-revealed "
+                              "{ transition-duration: 6s; }")
+        case("catches: an ease-in that is still moving after the limit", not eased_once(slow))
+        hooked = look(shell, {"motion": "moving"},
+                      swap=('<div class="hero-collage-photos">',
+                            '<div class="hero-collage-photos" data-hub-module="reveal" '
+                            'data-hub-reveal-children>'))
+        case("catches: a first picture that eases in", not painted_at_once(hooked))
+    return failures
+
+
 # A line may break between words, after a hyphen or a slash, and nowhere
 # else: a figure or a name broken inside a word reads as two words.
 BREAKS_AFTER = "-/‐–—­"
@@ -4656,6 +4772,7 @@ CHECKS = [
     check_hero_bento,
     check_hero_bento_moving,
     check_hero_collage,
+    check_hero_collage_moving,
     check_words_whole,
 ]
 
@@ -4731,7 +4848,7 @@ def main(argv=None):
              + 7
              + 11
              + 18 + 2 + 1
-             + 28)
+             + 28 + 10)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

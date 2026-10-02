@@ -48,5 +48,19 @@
         "note": "A dark band. The boldest option, and the one that loses its impact if you use it more than once."
       }
     }
+  },
+  "motion": {
+    "label": "Movement",
+    "note": "Whether this section moves as the visitor reaches it. Nothing moves for a visitor who has asked their device for less motion, whichever you pick.",
+    "rungs": {
+      "default": {
+        "label": "Still",
+        "note": "Nothing moves. The section is simply there when the visitor arrives, which is the default."
+      },
+      "moving": {
+        "label": "Moves",
+        "note": "The smaller photographs ease in one after another as the page opens, once; the largest is there from the start. It needs the platform's behaviour library; where that is not served the section is simply still."
+      }
+    }
   }
 }

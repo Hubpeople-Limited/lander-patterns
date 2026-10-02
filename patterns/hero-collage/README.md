@@ -52,6 +52,13 @@ either: a second run of photographs reads as the opener said twice.
 `claim-stack` for what it stands for. Take a different ground from the section
 under it.
 
+**Movement** (`motion`). Still by default. On `moving` the smaller
+photographs ease in one after another through the behaviour library's
+`reveal`, once, in under a second. The first never does: it is the page's
+largest paint, so it is there from the first frame on both rungs. No tilt or
+lift moves under the pointer. A visitor who asked for less motion sees the
+still rung.
+
 **Brand adaptability.** Four grounds from the ladder (`plain`, `soft`,
 `brand`, `deep`), each naming its own ink, as in `hero-portrait`; on `plain`
 the title is `--color-heading`. `--card-radius` rounds the stacked
