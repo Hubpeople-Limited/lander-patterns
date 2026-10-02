@@ -587,6 +587,38 @@
         "name": "landing-bento",
         "version": 1
       }
+    },
+    {
+      "page": "homepage",
+      "patterns": [
+        "masthead-nav",
+        "hero-collage",
+        "steps-plain",
+        "faq-details",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The people-led homepage that shows several of the brand's people at once: two or three photographs in a staggered cluster beside the claim and the join button, how joining works, the questions, the ask. For a brand with a few good pictures of its members or its places and no one picture that stands for all; each takes the library's placeholder until it arrives.",
+      "composition": {
+        "name": "homepage-collage",
+        "version": 1
+      }
+    },
+    {
+      "page": "about",
+      "patterns": [
+        "masthead-nav",
+        "hero-collage:arrange=prints,ground=soft",
+        "prose-column",
+        "claim-stack:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The about page that opens on the brand's people: a row of framed prints over the title, the brand's own account, what it stands for set large, the ask. For a brand with a few pictures of its members or its events and no founder to put forward.",
+      "composition": {
+        "name": "about-collage",
+        "version": 1
+      }
     }
   ]
 }
