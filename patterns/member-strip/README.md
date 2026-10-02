@@ -51,7 +51,8 @@ short to put in it.
 
 **Pairing.** Inside `hero-split`, `hero-centred` or `hero-squeeze`; beside
 `cta-band`; with `rating-mark` where the brand publishes an aggregate score as
-well as individual members. `avoid-with` names `portrait-wall` alone.
+well as individual members. `avoid-with` names `portrait-wall` and
+`portrait-row`, the full-width row of the brand's own faces.
 
 **Brand adaptability. It sets no ink of its own**, so it takes the colour of
 whatever it sits in — a page ground, a brand-coloured band or a scrim — which is

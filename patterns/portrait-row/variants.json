@@ -1,0 +1,52 @@
+{
+  "shape": {
+    "label": "Photo shape",
+    "note": "How each face is framed.",
+    "rungs": {
+      "portrait": {
+        "label": "Tall cards",
+        "note": "Each photograph a tall card with rounded corners, the name and place under it. Closest to how a person is photographed, so faces are cropped least. The default."
+      },
+      "round": {
+        "label": "Circles",
+        "note": "Each face in a circle, the name and place centred under it. Lighter, and a little smaller, so more faces show at once."
+      }
+    }
+  },
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind this section. Change it between one section and the next so the page reads as bands instead of one flat colour.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background colour. Quiet, and the right choice for most sections."
+      },
+      "soft": {
+        "label": "Light",
+        "note": "A soft tint. The easiest way to separate one section from the one above it."
+      },
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your brand colour, with text chosen to stay readable on it. Best used once or twice a page, not on everything."
+      },
+      "deep": {
+        "label": "Dark",
+        "note": "A dark band. The boldest option, and the one that loses its impact if you use it more than once."
+      }
+    }
+  },
+  "motion": {
+    "label": "Movement",
+    "note": "Whether this section moves by itself. Nothing moves for a visitor who has asked their device for less motion, whichever you pick.",
+    "rungs": {
+      "default": {
+        "label": "Still",
+        "note": "Nothing moves. The visitor swipes the row, or steps along it with the round arrows that show when there are more faces than fit. The default."
+      },
+      "moving": {
+        "label": "Moves",
+        "note": "The row glides along by itself, with a round button to stop it, and halts while the visitor points at it, uses the keyboard in it or drags it. A row whose faces all fit stays still. It needs the platform's behaviour library; where that is not served the row is simply still."
+      }
+    }
+  }
+}

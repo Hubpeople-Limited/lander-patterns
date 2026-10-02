@@ -4416,6 +4416,255 @@ def check_marquee_fit():
     return failures
 
 
+def portrait_row_page(mods, tokens, faces=8, bundle=False, extra_css=""):
+    """portrait-row on the rungs asked for, holding the sample's eight faces
+    or as many as asked, with the behaviour library on the page when
+    `bundle` is set."""
+    page = opener_page("portrait-row", mods, tokens, extra_css=extra_css)
+    if faces != 8:
+        item = re.search(r'<li class="portrait-row-item">.*?</li>', page, re.S).group(0)
+        page = re.sub(r'(?:<li class="portrait-row-item">.*?</li>\s*)+',
+                      lambda m: (item + "\n") * faces, page, count=1, flags=re.S)
+    if bundle:
+        page = page.replace("</head>", '<script type="module" src="hub.js"></script></head>', 1)
+    return page
+
+
+ROW_LAYOUT_JS = """() => {
+    const list = document.querySelector('.portrait-row-list');
+    const items = [...list.children].map(i => i.getBoundingClientRect());
+    const box = list.getBoundingClientRect();
+    const img = [...list.querySelectorAll('.portrait-row-img')].map(i => i.getBoundingClientRect());
+    return {
+        rows: new Set(items.map(r => Math.round(r.top))).size,
+        past: items.filter(r => r.right > box.right + 1).length,
+        scrolls: list.scrollWidth > list.clientWidth + 1,
+        circles: img.every(r => Math.abs(r.width - r.height) <= 1),
+    };
+}"""
+
+
+def _render_no_script(browser, workdir, html, viewport, js):
+    """As _render, with scripting off, so `@media (scripting: none)` holds."""
+    path = workdir / "opener.html"
+    path.write_text(html, encoding="utf-8", newline="\n")
+    context = browser.new_context(viewport={"width": viewport[0], "height": viewport[1]},
+                                  device_scale_factor=1, java_script_enabled=False)
+    try:
+        tab = context.new_page()
+        tab.goto(path.as_uri())
+        tab.wait_for_load_state("load")
+        return tab.evaluate(js)
+    finally:
+        context.close()
+
+
+def check_portrait_row():
+    """portrait-row: the brand's own consented faces, never a placeholder;
+    one row that scrolls at every width with scripting on and a wrapped
+    grid with it off; circles on the round rung; photographs level with a
+    name left out; no face over words from 320 to 1440; every rung
+    combination through the phone gate."""
+    import check_phone
+    import lint
+    from _placeholders import parse_image_slots
+    failures = []
+    print("portrait-row, a row of the brand's own faces")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED portrait-row: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"portrait-row: {label}")
+
+    folder = HERE.parent / "patterns" / "portrait-row"
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"), folder / "pattern.html")
+    slots = parse_image_slots(meta["image-slots"])
+    case("it shows the brand's own consented people and never a drawn stand-in for one",
+         meta["requires"] == "consented-people" and all(not s["placeholder"] for s in slots))
+    case("its layout line is people=portraits; rhythm=bands",
+         meta["layout"] == "people=portraits; rhythm=bands")
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for shape in ("portrait", "round"):
+                bad = []
+                for w in (320, 390, 1024, 1280, 1440):
+                    got = _render(browser, workdir, portrait_row_page({"shape": shape}, "brand"), (w, 900),
+                                  ROW_LAYOUT_JS)
+                    if got["rows"] != 1 or not got["scrolls"]:
+                        bad.append(w)
+                case(f"shape={shape}: eight faces are one row that scrolls sideways at every width"
+                     + ("" if not bad else f" - not at {bad}"), not bad)
+                bad = []
+                for w in (320, 390, 1280):
+                    got = _render_no_script(browser, workdir, portrait_row_page({"shape": shape}, "brand"),
+                                            (w, 900), ROW_LAYOUT_JS)
+                    if got["rows"] < 2 or got["past"] or got["scrolls"]:
+                        bad.append(f"{w}: {got}")
+                case(f"shape={shape}: with scripting off the row wraps, every face in the column"
+                     + ("" if not bad else " - " + "; ".join(bad)), not bad)
+            stuck = _render_no_script(
+                browser, workdir,
+                portrait_row_page({}, "brand", extra_css="@media (scripting: none) { .portrait-row-list "
+                                                         "{ display: flex !important; overflow-x: auto "
+                                                         "!important; } }"),
+                (390, 900), ROW_LAYOUT_JS)
+            case("catches: a row that stays a scroller with scripting off", stuck["rows"] == 1)
+            circles = [w for w in (320, 1280)
+                       if not _render(browser, workdir, portrait_row_page({"shape": "round"}, "brand"),
+                                      (w, 900), ROW_LAYOUT_JS)["circles"]]
+            case("shape=round draws every face as a circle" + ("" if not circles else f" - not at {circles}"),
+                 not circles)
+            bare = re.sub(r'<p class="portrait-row-(?:name|where)">[^<]*</p>\s*', "",
+                          portrait_row_page({}, "brand"), count=2)
+            tops = _render(browser, workdir, bare, (1280, 900),
+                           "() => [...document.querySelectorAll('.portrait-row-img')]"
+                           ".map(i => Math.round(i.getBoundingClientRect().top))")
+            case("a face with no name or place keeps the photographs level", len(set(tops)) == 1)
+            for shape in ("portrait", "round"):
+                hits = covered_text(browser, workdir, portrait_row_page({"shape": shape}, "brand"),
+                                    ".portrait-row-img")
+                case(f"shape={shape}: no face covers words from 320 to 1440"
+                     + ("" if not hits else " - " + "; ".join(hits[:3])), not hits)
+            pulled = covered_text(browser, workdir,
+                                  portrait_row_page({}, "brand", extra_css=".portrait-row-img "
+                                                    "{ margin-bottom: -3rem !important; }"),
+                                  ".portrait-row-img")
+            case("catches: a face pulled down over its name", bool(pulled))
+        finally:
+            browser.close()
+    with check_phone.Phone() as phone:
+        for tokens in ("brand", "display"):
+            bad = []
+            for mods in _rung_combos(meta):
+                label = "portrait-row " + " ".join(f"{a}={v}" for a, v in mods.items())
+                bad += phone.faults(label, portrait_row_page(mods, tokens))
+            case(f"every rung combination at 320 and 360 on {tokens} passes the phone gate"
+                 + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
+ROW_MOTION_JS = """() => {
+    const rail = document.querySelector('.portrait-row-rail');
+    const list = rail.querySelector('ul');
+    const controls = rail.querySelector('.hub-carousel-controls');
+    const pause = rail.querySelector('.hub-marquee-control');
+    return {
+        version: (window.HubBehaviours && window.HubBehaviours.version) || null,
+        copies: rail.querySelectorAll('[data-hub-marquee-copy]').length,
+        pause: !!pause,
+        roundPause: !!pause && pause.classList.contains('hub-marquee-control--round'),
+        arrows: !!controls && controls.offsetParent !== null,
+        roundArrows: !!controls && controls.classList.contains('hub-carousel-controls--round'),
+        left: Math.round(list.scrollLeft),
+        aligned: Math.round(list.querySelector('.portrait-row-img').getBoundingClientRect().left
+                            - document.querySelector('.portrait-row-title').getBoundingClientRect().left),
+    };
+}"""
+
+
+def _row_reads(shell, html, stem, width=1280, reduced=False, act=None, gap=1200):
+    """Two reads of the row `gap` ms apart, once it has been on screen a
+    moment; `act(tab)` runs between arriving and the first read."""
+    tab = shell.open(html, stem, width=width, reduced=reduced)
+    try:
+        tab.evaluate("() => document.querySelector('.portrait-row').scrollIntoView()")
+        tab.wait_for_timeout(300)
+        if act:
+            act(tab)
+            tab.wait_for_timeout(200)
+        first = tab.evaluate(ROW_MOTION_JS)
+        tab.wait_for_timeout(gap)
+        return first, tab.evaluate(ROW_MOTION_JS)
+    finally:
+        tab.close()
+
+
+def check_portrait_row_motion():
+    """With the behaviour library on the page: the still rung builds no
+    copies and no pause control, holds still, and shows round arrows only
+    while there are more faces than fit; the moving rung glides with a
+    round pause control, halts on hover, on focus and once paused, and does
+    nothing under reduced motion; a row that fits stays still on both
+    rungs, and starts once a narrower screen leaves it too long to fit."""
+    import check_behaviours as cb
+    import check_phone
+    failures = []
+    print("portrait-row, gliding is a choice and a row that fits stays still")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED portrait-row motion: {why}")
+        return failures
+
+    def case(label, ok, got=None):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}" + ("" if ok or got is None else f" - {got}"))
+        if not ok:
+            failures.append(f"portrait-row motion: {label}")
+
+    still, moving = {}, {"motion": "moving"}
+    with cb.Shell(False) as shell:
+        a, b = _row_reads(shell, portrait_row_page(still, "brand", bundle=True), "row-still")
+        case("the still rung: no copies, no pause control, and the row holds still",
+             a["version"] == cb.bundle_version() and not b["copies"] and not b["pause"]
+             and a["left"] == b["left"], b)
+        case("the still rung: round arrows while eight faces are more than fit",
+             b["arrows"] and b["roundArrows"], b)
+        a, b = _row_reads(shell, portrait_row_page(still, "brand", faces=4, bundle=True), "row-still-fits")
+        case("the still rung: no arrows while every face fits", not b["arrows"] and not b["copies"], b)
+        a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=12, bundle=True), "row-moving")
+        case("the moving rung glides, with a round pause control and the arrows put away",
+             b["copies"] == 12 and b["pause"] and b["roundPause"] and not b["arrows"]
+             and b["left"] > a["left"] + 5, (a, b))
+
+        def hover(tab):
+            tab.hover(".portrait-row-list")
+        a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=12, bundle=True), "row-hover",
+                          act=hover, gap=800)
+        case("it halts on hover", b["pause"] and abs(b["left"] - a["left"]) <= 1, (a, b))
+
+        def focus(tab):
+            tab.focus(".hub-marquee-control")
+        a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=12, bundle=True), "row-focus",
+                          act=focus, gap=800)
+        case("it halts on keyboard focus", b["pause"] and abs(b["left"] - a["left"]) <= 1, (a, b))
+
+        def press(tab):
+            tab.evaluate("() => document.querySelector('.hub-marquee-control').click()")
+            tab.mouse.move(0, 0)
+        a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=12, bundle=True), "row-paused",
+                          act=press, gap=800)
+        case("paused, it stays still and the round arrows come back",
+             abs(b["left"] - a["left"]) <= 1 and b["arrows"], (a, b))
+        a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=12, bundle=True), "row-reduced",
+                          reduced=True)
+        case("under reduced motion nothing moves and no pause control is built",
+             not b["copies"] and not b["pause"] and a["left"] == b["left"], b)
+        for width in (1280, 1440):
+            a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=4, bundle=True), "row-fits",
+                              width=width)
+            case(f"the moving rung with four faces at {width}: every face fits, so no copies, no pause "
+                 f"control, no arrows and no movement",
+                 not b["copies"] and not b["pause"] and not b["arrows"] and a["left"] == b["left"] == 0, b)
+        case("the moving rung's four faces at 1440 start on the heading's edge, as the still rung's do",
+             abs(b["aligned"]) <= 1, b)
+        a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=4, bundle=True), "row-narrows",
+                          width=1440, act=lambda tab: tab.set_viewport_size({"width": 390, "height": 800}))
+        case("the same row on a screen narrowed to a phone no longer fits, and glides from then on",
+             b["copies"] == 4 and b["pause"] and b["left"] > a["left"], (a, b))
+        a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=4, bundle=True,
+                                                   extra_css=".portrait-row { --hub-marquee-fit: none; }"),
+                          "row-fits-control")
+        case("catches: without the setting, a row that fits builds the copies and a pause control",
+             b["copies"] and b["pause"], b)
+    return failures
+
+
 # Below a site header on the commonest phone and on a laptop, the sign-up
 # card's first question is on the first screen. 152px is the header allowance
 # hero-overlay subtracts (9.5rem).
@@ -4960,6 +5209,8 @@ CHECKS = [
     check_hero_bento_moving,
     check_hero_collage,
     check_hero_collage_moving,
+    check_portrait_row,
+    check_portrait_row_motion,
     check_words_whole,
 ]
 
@@ -5037,7 +5288,8 @@ def main(argv=None):
              + 18 + 2 + 1
              + 28 + 10
              + 2
-             + 5)
+             + 5
+             + 14 + 13)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

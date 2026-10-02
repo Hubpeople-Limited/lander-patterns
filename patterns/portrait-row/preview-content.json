@@ -1,0 +1,16 @@
+{
+  "section-id": "sample-portrait-row",
+  "eyebrow": "Sample eyebrow",
+  "section-title": "Sample heading for the row of faces",
+  "previous-label": "Previous (sample)",
+  "next-label": "Next (sample)",
+  "pause-label": "Pause (sample)",
+  "face-image": "sample-portrait.svg",
+  "face-image-alt": "Preview placeholder image",
+  "face-name": "Sample",
+  "face-where": "Sample place",
+  "_repeat": {
+    "class": "portrait-row-item",
+    "count": 8
+  }
+}
