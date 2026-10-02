@@ -42,7 +42,9 @@ page, and holds each behaviour to what its row says:
                (its biggest from the first tap) and a small region's as a list,
                narrows the members to the town picked and sends its lat and
                long, and a card whose places will not load simply goes on;
-               the line after an answer goes when the visitor goes back
+               the line after an answer goes when the visitor goes back;
+               a page in another language keeps its answers' capitals in
+               the answers so far
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -160,6 +162,8 @@ CONTROL_SUBSTITUTIONS = {
     "signup-messages": ("const fresh = pool.filter((l) => !saidLines.has(l));",
                         "const fresh = pool;"),
     "signup-messages-back": ("if (dir < 0) cheer.hidden = true;", "if (dir < 0) void cheer;"),
+    "signup-summary-case": ('.map(words).filter(Boolean).join(" & ")[english ? "toLowerCase" : "toString"]() : "";',
+                            '.map(words).filter(Boolean).join(" & ").toLowerCase() : "";'),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1122,6 +1126,23 @@ def check_signup(shell, name, tokens):
             faults.append(f"{where}: a failed member search left the strip showing")
     finally:
         tab.close()
+    # A page in another language keeps its answers' capitals in the line of
+    # answers so far: German nouns are written with a capital.
+    german = html.replace('data-hub-module="signup"', 'data-hub-module="signup" lang="de"', 1)
+    german = german.replace("<span>Sample: men</span>", "<span>Männer</span>", 1)
+    tab = shell.open(german, f"{name}-signup-summary-de", width=PHONE, before=signup_stub(SIGNUP_MEMBERS))
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tab.wait_for_timeout(400)
+        recap = tab.locator(f".{name}-summary").inner_text().strip()
+    finally:
+        tab.close()
+    if "Männer" not in recap:
+        faults.append(f"{where}: a German page's answers so far read {recap!r} - the answer "
+                      f"'Männer' keeps its capital outside English")
     # Reduced motion still moves on, without waiting on a tick nobody sees drawn.
     tab = shell.open(html, f"{name}-signup-reduced", width=PHONE, reduced=True,
                      before=signup_stub([]))
