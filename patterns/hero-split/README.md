@@ -38,6 +38,8 @@ argument on its own.
 
 **Not on a page with `hero-bento`.** That one opens on the words among tiles; a page opens once.
 
+**Not on a page with `hero-collage`.** That one sets the claim beside a cluster of photographs; a page opens once.
+
 **Pairing.** Works ahead of `pricing-tiers` on long pages. Not on a page with
 `gallery-scroll` — two large visual moments compete and neither wins — nor with
 `zigzag-rows`, which is the same image-beside-copy shape further down. Not with

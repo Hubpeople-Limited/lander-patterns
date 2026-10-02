@@ -68,7 +68,7 @@ ONE_PER_PAGE = {"yes", "no"}
 # ITS list. A new value goes into the skill's words first and then here; a
 # value only this library knows is a difference nobody can describe.
 LAYOUT_ROLES = {
-    "opener": ("beside", "over", "above", "words", "cells"),
+    "opener": ("beside", "over", "above", "words", "cells", "collage"),
     "people": ("members", "portraits", "stories", "testimonials"),
     "rhythm": ("bands", "cards", "column"),
     "close": ("band", "photo"),

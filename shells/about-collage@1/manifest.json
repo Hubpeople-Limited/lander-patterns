@@ -1,0 +1,40 @@
+{
+  "composition": "about-collage",
+  "version": 1,
+  "page": "about",
+  "library": "v248",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "12"
+    },
+    {
+      "name": "hero-collage",
+      "version": "1",
+      "variant": {
+        "arrange": "prints",
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "prose-column",
+      "version": "6"
+    },
+    {
+      "name": "claim-stack",
+      "version": "4",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "cta-band",
+      "version": "6"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ]
+}
