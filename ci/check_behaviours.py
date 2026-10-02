@@ -1415,7 +1415,7 @@ draws the new look anyway, and requires the comparison to fire."""
 COMPAT_CONTROL = ('if (round) controls.classList.add("hub-carousel-controls--round");',
                   'controls.classList.add("hub-carousel-controls--round");')
 SETTING_CSS = re.compile(r"--hub-(?:carousel|marquee)-[\w-]+\s*:[^;{}]*;?")
-SETTING_ATTR = re.compile(r'\s+data-hub-(?:carousel-(?:controls|look|phone)|marquee-look)="[^"]*"')
+SETTING_ATTR = re.compile(r'\s+data-hub-(?:carousel-(?:controls|look|phone)|marquee-(?:look|fit))="[^"]*"')
 # (label, pattern, rung class to swap in, or None; module list to swap in, or None)
 COMPAT_BLOCKS = [
     ("gallery-scroll", "gallery-scroll", None, None),

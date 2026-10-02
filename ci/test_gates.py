@@ -4311,6 +4311,111 @@ def check_member_grid_motion():
     return failures
 
 
+MARQUEE_FIT_JS = """() => {
+    const block = document.querySelector('[data-members]');
+    return {
+        version: (window.HubBehaviours && window.HubBehaviours.version) || null,
+        copies: block.querySelectorAll('[data-hub-marquee-copy]').length,
+        pause: !!block.querySelector('.hub-marquee-control'),
+        left: Math.round(block.querySelector('ul').scrollLeft),
+        room: [block.querySelector('ul').scrollWidth, block.querySelector('ul').clientWidth],
+    };
+}"""
+
+
+def check_marquee_fit():
+    """The marquee's setting for a row that fits, on today's member-grid
+    markup as the platform fills it: without the setting the moving row is
+    exactly as before, short or long; with it, as an attribute or from the
+    stylesheet, a row that fits builds nothing and holds still, and a row
+    too long to fit glides as before."""
+    import check_behaviours as cb
+    import check_phone
+    from build_preview import repeat_block
+    failures = []
+    print("the marquee leaves a row that fits still, only where it is asked to")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED marquee fit: {why}")
+        return failures
+
+    def case(label, ok, got=None):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}" + ("" if ok or got is None else f" - {got}"))
+        if not ok:
+            failures.append(f"marquee fit: {label}")
+
+    tokens = (cb.PREVIEW / "tokens-brand.css").read_text(encoding="utf-8")
+    filled, css = cb.filled_markup("member-grid")
+    filled = filled.replace("member-grid--grid", "member-grid--marquee", 1).replace(
+        'data-hub-module="reveal carousel"', 'data-hub-module="marquee carousel"', 1)
+
+    def page(markup, extra_css="", bundle="hub.js"):
+        return cb.SHELL.format(title="marquee fit", tokens=tokens, css=css + "\n" + extra_css,
+                               bundle=bundle, before="", markup=markup,
+                               after='<section class="behaviour-check-section">' + cb.FILLER + "</section>")
+
+    def reads(html, stem):
+        tab = shell.open(html, stem, width=1280)
+        try:
+            # Every picture in, before anything is read: on a loaded runner the
+            # first long row read went on loading its faces while the second
+            # page found them cached, so the two bundles were not compared alike.
+            tab.wait_for_function("() => Array.from(document.images).every(i => i.complete)", timeout=15000)
+            tab.evaluate("() => document.querySelector('[data-members]').scrollIntoView()")
+            tab.wait_for_timeout(300)
+            first = tab.evaluate(MARQUEE_FIT_JS)
+            # A row that glides is given up to six seconds to show it: on a
+            # loaded runner the twelve-member row did not move within a fixed
+            # second, though it glides. A row that stays still is read at the
+            # end of the same wait, so "no movement" is held for the longest.
+            later = first
+            for _ in range(20):
+                tab.wait_for_timeout(300)
+                later = tab.evaluate(MARQUEE_FIT_JS)
+                if later["left"] != first["left"]:
+                    break
+            return first, later
+        finally:
+            tab.close()
+
+    asked_css = ".member-grid { --hub-marquee-fit: still; }"
+    asked_attr = filled.replace('data-hub-module="marquee carousel"',
+                                'data-hub-module="marquee carousel" data-hub-marquee-fit="still"', 1)
+    with cb.Shell(False) as shell:
+        a, b = reads(page(filled), "fit-asis-short")
+        case("member-grid's moving row as it ships, with members that fit: copies, the pause control and "
+             "movement, as before", a["version"] == cb.bundle_version() and b["copies"] and b["pause"]
+             and b["left"] > a["left"], (a, b))
+        long_row = repeat_block(filled, "mem-card", 9)
+        a, b = reads(page(long_row), "fit-asis-long")
+        # "As before" is held to the last published bundle on the same
+        # machine: on a loaded runner the twelve-member row can sit still
+        # for seconds under both, which is the row as it ships, not a change.
+        tag = (cb.ROOT / "LATEST").read_text(encoding="utf-8").strip()
+        old = subprocess.run(["git", "show", f"{tag}:lib/hub.js"], cwd=cb.ROOT, capture_output=True,
+                             text=True, encoding="utf-8")
+        version = tag
+        if old.returncode == 0 and old.stdout:
+            (shell._dir / "hub-previous.js").write_text(old.stdout, encoding="utf-8", newline="\n")
+            oa, ob = reads(page(long_row, bundle="hub-previous.js"), "fit-asis-long-previous")
+            same = (bool(b["copies"]), b["pause"], b["left"] > a["left"]) == (
+                bool(ob["copies"]), ob["pause"], ob["left"] > oa["left"])
+            case(f"as it ships, with twelve members: copies, the pause control and movement as {version} "
+                 "builds them", b["copies"] and b["pause"] and same, (a, b, oa, ob))
+        else:
+            case("as it ships, with twelve members: as before", b["copies"] and b["pause"]
+                 and b["left"] > a["left"], (a, b))
+        a, b = reads(page(filled, asked_css), "fit-css-short")
+        case("asked from the stylesheet, a row that fits: no copies, no pause control, no movement",
+             not b["copies"] and not b["pause"] and a["left"] == b["left"] == 0, (a, b))
+        a, b = reads(page(asked_attr), "fit-attr-short")
+        case("asked by the attribute, the same", not b["copies"] and not b["pause"] and b["left"] == 0, (a, b))
+        a, b = reads(page(repeat_block(filled, "mem-card", 9), asked_css), "fit-css-long")
+        case("asked, a row too long to fit glides with its pause control",
+             b["copies"] and b["pause"] and b["left"] > a["left"], (a, b))
+    return failures
+
+
 # Below a site header on the commonest phone and on a laptop, the sign-up
 # card's first question is on the first screen. 152px is the header allowance
 # hero-overlay subtracts (9.5rem).
@@ -4838,6 +4943,7 @@ CHECKS = [
     check_placeholder_urls_gate,
     check_masthead_without_portrait,
     check_member_grid_motion,
+    check_marquee_fit,
     check_placeholder_scrim,
     check_placeholder_clear,
     check_shell_placeholders,
@@ -4930,7 +5036,8 @@ def main(argv=None):
              + 11
              + 18 + 2 + 1
              + 28 + 10
-             + 2)
+             + 2
+             + 5)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
