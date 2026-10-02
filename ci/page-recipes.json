@@ -635,6 +635,22 @@
         "name": "homepage-faces",
         "version": 1
       }
+    },
+    {
+      "page": "about",
+      "patterns": [
+        "masthead-nav",
+        "hero-band:ground=plain",
+        "prose-column",
+        "history-timeline:ground=soft",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The about page told as the brand's own story in dates: a band of photograph over the title, the brand's own account, the moments that made it, each with its date, the ask. For a brand whose couple has given their story with its dates the building skill sets the same timeline as story-timeline; with no dates on record the timeline waits.",
+      "composition": {
+        "name": "about-timeline",
+        "version": 1
+      }
     }
   ]
 }
