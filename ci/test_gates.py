@@ -472,6 +472,7 @@ LAYOUT_CASES = [
     ("none", 0, "a pattern that takes no layout role"),
     ("opener=beside", 0, "one role"),
     ("opener=cells", 0, "the opener set in tiles, a word the building skill has"),
+    ("opener=collage", 0, "the words beside a collage of photos, a word the building skill has"),
     ("people=members; rhythm=cards", 0, "two roles, the way a people grid is both"),
     ("rhythm=column; reading=picture", 0, "a written piece's two roles"),
     ("", 1, "an empty line"),
