@@ -996,7 +996,7 @@
   }
 }
 
-/* ---- hero-bento v1 ---- */
+/* ---- hero-bento v2 ---- */
 /* hero-bento v1 - tokens only, selectors prefixed.
    .lp-grid and .mem-card* below are the platform's markup, a contract. */
 .hero-bento {
@@ -1027,9 +1027,25 @@
   gap: var(--space-3);
   padding: var(--space-5);
 }
+/* Holding the card, the tile is the card: the form fills it edge to edge and
+   the tile's own edge is the one border. */
 .hero-bento-join:has(.signup-card) {
   align-items: stretch;
-  padding: var(--space-4);
+  padding: 0;
+}
+.hero-bento .hero-bento-join:has(.signup-card) {
+  background: var(--color-surface);
+}
+.hero-bento-join:has(.signup-card) > .hero-bento-join-line {
+  padding: var(--space-4) var(--space-5) 0;
+}
+.hero-bento-join .signup-card {
+  max-width: none;
+}
+.hero-bento-join .signup-card-form {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 .hero-bento-cells {
   grid-area: cells;

@@ -629,7 +629,7 @@
   "summary": "A closing call to action over one full-width photograph.",
   "type": "section",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "cta-sticky": {
@@ -969,7 +969,7 @@
     "top"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "hero-centred": {
@@ -1074,7 +1074,7 @@
   "summary": "One photograph filling the first screen, with the claim over it.",
   "type": "section",
   "variants": {},
-  "version": "16",
+  "version": "17",
   "whole-page": false
  },
  "hero-portrait": {
@@ -1205,7 +1205,7 @@
     "start"
    ]
   },
-  "version": "14",
+  "version": "15",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -1258,7 +1258,7 @@
   "summary": "The whole page in a single screen: a photograph, one claim, one button.",
   "type": "section",
   "variants": {},
-  "version": "14",
+  "version": "15",
   "whole-page": true
  },
  "hero-stated": {

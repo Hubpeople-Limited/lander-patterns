@@ -14,7 +14,7 @@
     },
     {
       "name": "hero-bento",
-      "version": "1",
+      "version": "2",
       "variant": {
         "words": "top",
         "cells": "spaced"

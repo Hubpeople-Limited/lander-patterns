@@ -996,7 +996,7 @@
   }
 }
 
-/* ---- hero-squeeze v14 ---- */
+/* ---- hero-squeeze v15 ---- */
 /* hero-squeeze v10 - tokens only, selectors prefixed */
 .hero-squeeze {
   --hero-squeeze-scrim-floor: clamp(0.86, var(--hero-squeeze-scrim-strength, 0.86), 1);
@@ -1099,13 +1099,6 @@
   margin-top: var(--space-5);
 }
 
-/* Lighter only over a placeholder; a photograph keeps the floor above. */
-.hero-squeeze img[data-hub-placeholder] {
-  background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
-}
-.hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]) {
-  --hero-squeeze-scrim-floor: 0.4;
-}
 
 /* Holding a signup-card in place of the join button. The photograph holds
    still while the card changes height from step to step: a fixed height
@@ -1149,6 +1142,52 @@
     grid-column: 2;
     grid-row: 1 / span 6;
     justify-items: stretch;
+  }
+}
+
+/* Over a placeholder only: a lighter floor, and the drawing given an area of
+   its own - above the words, or beside them on a wide screen with no card -
+   never the ground under them. A photograph keeps the floor above. On a
+   phone the band is at least 16:9, so a cover crop only trims its sides. */
+.hero-squeeze img[data-hub-placeholder] {
+  background: color-mix(in srgb, var(--color-primary) 24%, var(--color-scrim));
+}
+.hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]) {
+  --hero-squeeze-scrim-floor: 0.4;
+  grid-template-rows: minmax(max(9rem, 56.25vw), 1fr) auto;
+  row-gap: var(--space-6);
+  padding-top: 0;
+}
+.hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]) > .hero-squeeze-img {
+  position: static;
+  box-sizing: border-box;
+  width: calc(100% + 2 * var(--space-4));
+  height: 100%;
+  margin-inline: calc(-1 * var(--space-4));
+  contain: size;
+  aspect-ratio: auto;
+  object-position: 50% 50%;
+}
+@media (min-width: 48rem) {
+  .hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]) {
+    grid-template-rows: minmax(clamp(9rem, 28vw, 13rem), 1fr) auto;
+  }
+  .hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]) > .hero-squeeze-img {
+    padding: var(--space-4);
+    object-fit: contain;
+  }
+}
+@media (min-width: 60rem) {
+  .hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]):not(:has(.signup-card)) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 38rem);
+    grid-template-rows: none;
+    column-gap: var(--space-8);
+    padding-top: var(--space-6);
+  }
+  .hero-squeeze:has(> .hero-squeeze-img[data-hub-placeholder]):not(:has(.signup-card)) > .hero-squeeze-img {
+    width: calc(100% + var(--space-4));
+    height: calc(100% + 2 * var(--space-6));
+    margin: calc(-1 * var(--space-6)) 0 calc(-1 * var(--space-6)) calc(-1 * var(--space-4));
   }
 }
 

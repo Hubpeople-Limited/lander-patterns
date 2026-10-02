@@ -996,7 +996,7 @@
   }
 }
 
-/* ---- hero-split v14 ---- */
+/* ---- hero-split v15 ---- */
 /* hero-split v3 - tokens only, selectors prefixed */
 .hero-split {
   padding-block: var(--space-8);
@@ -1152,6 +1152,24 @@
   .hero-split--start .hero-split-inner:has(.signup-card) .hero-split-cta {
     justify-self: end;
     margin-inline: 0 calc(-1 * var(--space-12));
+  }
+  /* Over the placeholder the card sits under the words, beside the drawing
+     rather than over it. */
+  .hero-split-inner:has(.signup-card):has(img[data-hub-placeholder]) {
+    grid-template-areas: ". visual" "title visual" "sub visual" "cta visual" ". visual";
+    grid-template-rows: 1fr auto auto auto 1fr;
+  }
+  .hero-split--start .hero-split-inner:has(.signup-card):has(img[data-hub-placeholder]) {
+    grid-template-areas: "visual ." "visual title" "visual sub" "visual cta" "visual .";
+  }
+  .hero-split-inner:has(.signup-card):has(img[data-hub-placeholder]) .hero-split-visual {
+    margin-inline: 0;
+  }
+  .hero-split-inner:has(.signup-card):has(img[data-hub-placeholder]) .hero-split-cta {
+    grid-area: cta;
+    align-self: start;
+    justify-self: start;
+    margin: var(--space-3) 0 0;
   }
 }
 

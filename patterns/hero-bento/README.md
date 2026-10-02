@@ -42,7 +42,8 @@ lifts a little under the pointer, both inside the reduced-motion guard.
 
 **Holding the card.** Put `signup-card` where the join button is. Its tile
 sits under the headline (beside it on `top`), and on a phone the card's first
-question is on the first screen below the site header.
+question is on the first screen below the site header. The tile is the card:
+the form fills it edge to edge, and the tile's own edge is its one border.
 
 **What it needs.** A headline and one sentence in the brand's words; the
 photographs with alt text; the interest labels; the words for the members

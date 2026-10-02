@@ -36,8 +36,10 @@ The bar sits between the two.
 
 --broken appends two sets of rules and requires each to be caught: one
 gives the scrim its full strength over the old light tint, so the drawing
-must fail; one takes the scrim away over a page-ground tint, so the copy
-must fail. Exit 0 on that run means both were detected.
+must fail; one takes the scrim away over a page-ground tint, its floor set
+to nothing as well as its layer removed, so the copy must fail wherever a
+pattern still sets words over a placeholder. Exit 0 on that run means both
+were detected.
 
 Without a browser this prints SKIPPED and exits 0, unless --require-browser.
 
@@ -129,7 +131,8 @@ BROKEN = {
                 " .{n}, .{n}:has(img[data-hub-placeholder]) "
                 "{{ --{n}-scrim-floor: 1 !important; }}"),
     "copy": (".{n}::after {{ background: none !important; }}"
-             " .{n} {{ background: transparent !important; }}"
+             " .{n} {{ background: transparent !important;"
+             " --{n}-scrim-floor: 0 !important; }}"
              " .{n} img[data-hub-placeholder] {{ background: var(--color-bg) !important; }}"),
 }
 

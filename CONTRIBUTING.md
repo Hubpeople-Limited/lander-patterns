@@ -356,6 +356,14 @@ On every pull request, CI:
   (`ci/check_placeholder_scrim.py`, `--broken`). A placeholder's ground is
   known, which is why a pattern may lighten its scrim over one and never over
   a photograph.
+- renders every opener and close that can carry a placeholder, on every rung,
+  with the sign-up card where one is offered, at 320, 390, 768, 1024, 1280 and
+  1440 on `brand` and `display`, and requires the placeholder's drawing and its
+  "Photo to come" mark to show whole and to meet no line of text and no
+  control; then lays the drawing over each whole section and requires that to
+  fire (`ci/check_placeholder_clear.py`, `--broken`). A placeholder is a
+  picture, so the text-on-text rule cannot see it: give it an area of its own,
+  as `quote-image` and `hero-overlay` do.
 
 A red check names the file and the rule. Fix and push again — nothing merges
 red.
