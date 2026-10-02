@@ -2,7 +2,7 @@
   "composition": "landing-bento",
   "version": 1,
   "page": "landing",
-  "library": "v246",
+  "library": "v248",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
