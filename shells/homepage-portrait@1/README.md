@@ -21,7 +21,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-portrait** v1 (ground=plain) - Conversion opener built to hold signup-card - one large portrait on one side, the headline, one line and the card on the other; the portrait rounded, arched or running to the page edge; on phones a short portrait strip, then the words, then the card.
+2. **hero-portrait** v2 (ground=plain) - Conversion opener built to hold signup-card - one large portrait on one side, the headline, one line and the card on the other; the portrait rounded, arched or running to the page edge; on phones a short portrait strip, then the words, then the card.
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `portrait-image` - attribute (src): real material, or the person/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder

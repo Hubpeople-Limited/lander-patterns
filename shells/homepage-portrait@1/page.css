@@ -996,7 +996,7 @@
   }
 }
 
-/* ---- hero-portrait v1 ---- */
+/* ---- hero-portrait v2 ---- */
 /* hero-portrait v1 - tokens only, selectors prefixed */
 /* Each ground names its own ink; every rule below reads the pair. */
 .hero-portrait--plain {
@@ -1175,6 +1175,10 @@
   .hero-portrait--half-bleed .hero-portrait-inner:has(.signup-card) .hero-portrait-img {
     height: calc(clamp(38rem, 66vw, 50rem) + 2 * var(--space-8));
   }
+}
+
+.hero-portrait:not(.hero-portrait--moving) {
+  --hub-motion: none;
 }
 
 /* ---- heading-block v9 ---- */

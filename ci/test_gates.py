@@ -4041,6 +4041,127 @@ def check_hero_portrait():
     return failures
 
 
+# The reveal eases each item in over 0.6s, one after another: the words and
+# the card are at rest well inside this, and a moving rung has to be.
+PORTRAIT_REST_MS = 1500
+
+
+def check_hero_portrait_moving():
+    """Still means still: with the behaviour library on the page, the still
+    rung eases nothing in; the moving rung eases the words and the card in
+    once and briefly and leaves nothing hidden; reduced motion holds it
+    still. The portrait is the page's largest paint, so it is painted at
+    once on every rung and never eases in."""
+    import check_behaviours as cb
+    import check_phone
+    failures = []
+    print("hero-portrait, easing in is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-portrait motion: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-portrait motion: {label}")
+
+    # The first look after load, then the look once the reveal has had time
+    # to finish: what is hooked, what is still hidden, what is animating and
+    # for how long, and whether anything around the portrait moves.
+    look_js = """() => {
+        const img = document.querySelector('.hero-portrait-img');
+        let shown = 1;
+        for (let el = img; el; el = el.parentElement)
+            shown *= parseFloat(getComputedStyle(el).opacity);
+        const anims = document.getAnimations();
+        const card = document.querySelector('.signup-card');
+        return {
+            revealed: document.querySelectorAll('.hub-reveal-pending, .hub-revealed').length,
+            pending: document.querySelectorAll('.hub-reveal-pending').length,
+            card: card ? !!card.closest('.hub-revealed') : null,
+            running: anims.filter(a => a.playState === 'running').length,
+            longest: Math.max(0, ...anims.map(a => {
+                const t = a.effect.getComputedTiming();
+                return t.iterations === Infinity ? Infinity : t.endTime; })),
+            portrait: {shown, hooked: !!img.closest('[data-hub-module~="reveal"]'),
+                       moving: anims.filter(a => a.effect.target
+                                            && a.effect.target.contains(img)).length},
+            still: getComputedStyle(document.querySelector('.hero-portrait'))
+                   .getPropertyValue('--hub-motion').trim()};
+    }"""
+    bundle = '<script type="module" src="hub.js"></script></head>'
+
+    def look(shell, mods, card=True, width=1280, reduced=False, extra_css="", swap=None):
+        html = opener_page("hero-portrait", mods, "brand", card=card,
+                           extra_css=extra_css).replace("</head>", bundle, 1)
+        if swap:
+            html = html.replace(*swap, 1)
+        tab = shell.open(html, "portrait-motion", width=width, reduced=reduced)
+        try:
+            if tab.evaluate(cb.VERSION_JS) != cb.bundle_version():
+                return None
+            first = tab.evaluate(look_js)
+            # The moment the reveal starts, when its transitions are running.
+            try:
+                tab.wait_for_function("() => !document.querySelector('.hub-reveal-pending')",
+                                      timeout=PORTRAIT_REST_MS)
+            except Exception:
+                pass
+            started = tab.evaluate(look_js)
+            tab.wait_for_timeout(PORTRAIT_REST_MS)
+            return first, started, tab.evaluate(look_js)
+        finally:
+            tab.close()
+
+    def eased_once(got, items):
+        if got is None:
+            return False
+        first, started, rest = got
+        return (first["revealed"] == items and started["running"] > 0
+                and started["longest"] <= PORTRAIT_REST_MS
+                and rest["pending"] == 0 and rest["running"] == 0)
+
+    def painted_at_once(got):
+        return got is not None and all(
+            g["portrait"]["shown"] == 1 and not g["portrait"]["hooked"]
+            and g["portrait"]["moving"] == 0 for g in got)
+
+    with cb.Shell(False) as shell:
+        for width in (390, 1280):
+            still = look(shell, {}, width=width)
+            case(f"the still rung holding the card at {width}: nothing eases in, and it "
+                 f"says so to the behaviours",
+                 still is not None and still[0]["revealed"] == 0 and still[2]["running"] == 0
+                 and still[0]["still"] == "none")
+            moving = look(shell, {"motion": "moving"}, width=width)
+            case(f"the moving rung holding the card at {width}: the headline, the line and "
+                 f"the card ease in once and are at rest within {PORTRAIT_REST_MS}ms",
+                 eased_once(moving, 3) and moving[2]["card"] is True)
+            case(f"the moving rung holding the card at {width}: the portrait is painted at "
+                 f"once and never eases in", painted_at_once(moving))
+        button = look(shell, {"motion": "moving"}, card=False)
+        case("the moving rung with the button eases in once and leaves nothing hidden",
+             eased_once(button, 3) and painted_at_once(button))
+        calm = look(shell, {"motion": "moving"}, reduced=True)
+        case("the moving rung holds still under reduced motion",
+             calm is not None and calm[0]["revealed"] == 0 and calm[2]["running"] == 0)
+        forced = look(shell, {}, extra_css=".hero-portrait:not(.hero-portrait--moving) "
+                                           "{ --hub-motion: initial; }")
+        case("catches: a still rung that eases in",
+             forced is not None and forced[0]["revealed"] > 0)
+        slow = look(shell, {"motion": "moving"},
+                    extra_css=".hero-portrait--moving .hub-revealed "
+                              "{ transition-duration: 6s; }")
+        case("catches: an ease-in that is still moving after the limit",
+             not eased_once(slow, 3))
+        hooked = look(shell, {"motion": "moving"},
+                      swap=('<div class="hero-portrait-visual">',
+                            '<div class="hero-portrait-visual" data-hub-module="reveal">'))
+        case("catches: a portrait that eases in", not painted_at_once(hooked))
+    return failures
+
+
 def check_placeholder_scrim():
     """Both directions of ci/check_placeholder_scrim.py: the library is clean,
     and the positive control catches a drawing the scrim hides and copy the
@@ -4318,6 +4439,8 @@ def main():
     print()
     failures += check_hero_portrait()
     print()
+    failures += check_hero_portrait_moving()
+    print()
     failures += check_quote_image()
     print()
     failures += check_quote_image_drift()
@@ -4360,7 +4483,8 @@ def main():
              + 27 + 5
              + 39 + 6
              + 37 + 4
-             + 7)
+             + 7
+             + 11)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

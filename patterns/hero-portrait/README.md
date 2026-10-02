@@ -49,6 +49,12 @@ says who the brand is for, the members show who is there. `steps-plain` for
 how joining works. It reads better without `picker-chips` while it holds the
 card: two first questions is none.
 
+**Movement** (`motion`). Still by default. On `moving` the headline, the line
+and the card ease in one after another through the behaviour library's
+`reveal`, once, in under a second. The portrait never does: it is the page's
+largest paint, so it is there from the first frame on both rungs. A visitor
+who asked for less motion sees the still rung.
+
 **Brand adaptability.** Each ground names its own ink and every rule reads
 that pair, as in `hero-stated`. On `plain` the title is `--color-heading`,
 held to a clamp floor of 2rem; elsewhere it takes the ground's own ink.
