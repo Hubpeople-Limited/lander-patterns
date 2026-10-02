@@ -1,0 +1,44 @@
+{
+  "spine": {
+    "label": "Layout",
+    "note": "How the moments sit along the line. On a phone they stack down one side of it, whichever you pick.",
+    "rungs": {
+      "centre": {
+        "label": "Either side of the line",
+        "note": "The moments alternate left and right of a line down the middle on a wide screen. The default."
+      },
+      "start": {
+        "label": "All on one side",
+        "note": "Every moment on one side of a line at the left, on every screen."
+      }
+    }
+  },
+  "photos": {
+    "label": "Photographs",
+    "note": "Whether the moments show their photographs.",
+    "rungs": {
+      "with": {
+        "label": "With photographs",
+        "note": "A photograph beside each moment that has one; a moment without one is its words alone. The default."
+      },
+      "without": {
+        "label": "Words only",
+        "note": "Dates, titles and lines only, with no photographs, even for moments that have one."
+      }
+    }
+  },
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind this section. Change it between one section and the next.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background colour."
+      },
+      "soft": {
+        "label": "Light",
+        "note": "A soft tint, to separate this section from the one above."
+      }
+    }
+  }
+}

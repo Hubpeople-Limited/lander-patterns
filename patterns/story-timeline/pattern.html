@@ -1,0 +1,48 @@
+<!--
+name: story-timeline
+display-name: A couple's story in dates
+summary: One couple's story as dated moments down a line: each date, what happened and, where they have one, a photograph.
+version: 1
+type: section
+page-types: about, landing
+requires: consented-people
+image-slots: moment-image subject=couple crop=landscape min=1200 focal=center placeholder=no
+content-shape: progression
+layout: people=stories; rhythm=column
+description: One couple's story as three to eight dated moments down a hairline - alternating either side of a centred line on a wide screen, or all on one side - each a date, a title, a line in their words and, where they have one, a photograph. The twin of history-timeline, which tells the brand's own story in the same timeline.
+keywords: timeline, our story, couple, dates, milestones, how we met
+needs: one couple who met through the brand and gave their story with its dates - three to eight moments, each with a date and a title, a line in their own words where they gave one, and their own photograph at least 1200px wide in landscape where they have one. Works best with the couple's OK to appear on a public page anyone can reach; the brand's own dated story is history-timeline
+pairs-with: prose-column, cta-band
+avoid-with: history-timeline, zigzag-rows
+tokens-used: --card-radius, --color-bg, --color-heading, --color-primary, --color-rule, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-2, --space-3, --space-4, --space-6, --space-8, --type-scale, --weight-display
+variants: spine=centre|start; photos=with|without; ground=plain|soft
+motion: none
+one-per-page: yes
+status: active
+added: 2026-10-02
+-->
+<!-- Layout: --centre or --start.
+     Photographs: --with or --without.
+     Background: --plain or --soft. -->
+<!-- One moment per <li>, in date order: duplicate the whole <li>. Three to
+     eight read best. Each moment is the couple's own, with the date they
+     gave: datetime takes it as 2019, 2019-06 or 2019-06-14, and the date
+     shown is the year alone unless they asked for more. Delete the line
+     when they gave none, and the photograph when there is none: the moment
+     closes up. section-id: draw it from the heading. -->
+<section class="story-timeline story-timeline--centre story-timeline--with story-timeline--plain" aria-labelledby="slot:section-id">
+  <div class="story-timeline-inner">
+    <p class="story-timeline-eyebrow"><!-- slot: eyebrow --></p>
+    <h2 class="story-timeline-title" id="slot:section-id"><!-- slot: section-title --></h2>
+    <ol class="story-timeline-list" role="list">
+      <li class="story-timeline-item">
+        <div class="story-timeline-body">
+          <time class="story-timeline-num" datetime="slot:moment-datetime"><!-- slot: moment-when --></time>
+          <h3 class="story-timeline-name"><!-- slot: moment-title --></h3>
+          <p class="story-timeline-line"><!-- slot: moment-line --></p>
+        </div>
+        <img class="story-timeline-img" src="slot:moment-image" alt="slot:moment-image-alt" width="1200" height="900" loading="lazy" decoding="async">
+      </li>
+    </ol>
+  </div>
+</section>
