@@ -1,0 +1,54 @@
+<!--
+name: hero-collage
+display-name: Opener with a collage
+summary: An opener with the headline, one line and the join button beside or under a small collage of two or three photographs.
+version: 1
+type: section
+page-types: homepage, landing, about
+requires: photography
+image-slots: collage-1 subject=couple|person|group|place crop=portrait min=1200 focal=center placeholder=yes; collage-2 subject=person|couple|group|place crop=portrait min=800 focal=center placeholder=yes; collage-3 subject=group|couple|person|place crop=square min=800 focal=center placeholder=yes
+content-shape: single claim
+layout: opener=collage
+description: Opener with the h1, one line and the join button beside a staggered cluster of up to three photographs, the largest at the back, or under a row of up to three framed prints, each turned a little; the words never sit on a photograph; any photograph but the first may be left out and the rest close up; on phones two pictures in a short strip, then the words.
+keywords: opener, collage, photos, prints, people, hero, homepage, about
+needs: two or three real photographs of the brand's own people or places, the first at least 1200px wide in portrait and the others at least 800px, each with its own alt text, or the library's placeholder until they arrive; a headline and one supporting sentence in the brand's own words
+pairs-with: steps-plain, prose-column, claim-stack, faq-details, cta-band
+avoid-with: gallery-scroll, hero-band, hero-bento, hero-centred, hero-overlay, hero-portrait, hero-split, hero-squeeze, hero-stated, signup-steps
+tokens-used: --btn-radius, --card-border, --card-radius, --card-shadow, --color-bg, --color-focus, --color-heading, --color-on-primary, --color-on-scrim, --color-primary, --color-scrim, --color-surface, --color-surface-soft, --color-text, --color-text-soft, --container-max, --font-heading, --heading-leading, --heading-tracking, --space-2, --space-3, --space-4, --space-5, --space-6, --space-8, --type-scale, --weight-display
+variants: arrange=stack|prints; side=end|start; ground=plain|soft|brand|deep
+motion: none
+one-per-page: yes
+status: active
+added: 2026-10-02
+-->
+<!-- Arrangement: --stack, a staggered cluster, or --prints, framed prints.
+     Side of the cluster on --stack: --end right, --start left.
+     Ground: --plain, --soft, --brand or --deep. -->
+<!-- The first photograph is the largest and the page's largest paint: never
+     lazy-load it. Delete the whole element of a photograph the brand does
+     not have and the rest close up. Set width and height to each file's own
+     pixels. -->
+<section class="hero-collage hero-collage--stack hero-collage--end hero-collage--plain">
+  <div class="hero-collage-inner">
+    <div class="hero-collage-copy">
+      <h1 class="hero-collage-title"><!-- slot: headline --></h1>
+      <p class="hero-collage-sub"><!-- slot: subhead --></p>
+      <div class="hero-collage-cta">
+        <a class="hero-collage-btn" href="{{join.url}}">{{join.text}}</a>
+      </div>
+    </div>
+    <div class="hero-collage-photos">
+      <div class="hero-collage-photo">
+        <img class="hero-collage-img" src="slot:collage-1" alt="slot:collage-1-alt" width="960" height="1200" fetchpriority="high" decoding="async">
+      </div>
+      <div class="hero-collage-front">
+        <div class="hero-collage-photo">
+          <img class="hero-collage-img" src="slot:collage-2" alt="slot:collage-2-alt" width="800" height="1000" decoding="async">
+        </div>
+        <div class="hero-collage-photo">
+          <img class="hero-collage-img" src="slot:collage-3" alt="slot:collage-3-alt" width="800" height="800" loading="lazy" decoding="async">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

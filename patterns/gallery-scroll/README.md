@@ -18,6 +18,8 @@ element otherwise. Duplicate the item element once per image.
 
 **Not on a page with `photo-cards`.** Two runs of photographs competing for the same attention, one of which scrolls sideways, is a page asking a reader to browse twice.
 
+**Not on a page with `hero-collage`.** That one opens on a cluster of photographs, and a second run of them reads as the opener said twice.
+
 **Pairing.** Fine mid-page on a homepage or article. Keep it away from
 `hero-split` and `hero-overlay` — two large visual moments on one page compete
 and neither wins — and off any page carrying `steps-numbered`,

@@ -41,8 +41,8 @@ foot. On a phone the portrait shrinks to a short strip cropped to the face, so
 the card's first question is on the first screen below the site header.
 
 **Not on a page with `hero-split`, `hero-overlay`, `hero-centred`,
-`hero-squeeze`, `hero-stated`, `hero-bento` or `signup-steps`.** Each opens the
-page and carries its `h1`; a page opens once.
+`hero-squeeze`, `hero-stated`, `hero-bento`, `hero-collage` or
+`signup-steps`.** Each opens the page and carries its `h1`; a page opens once.
 
 **Pairing.** `member-grid` below it, under a `heading-block`: the portrait
 says who the brand is for, the members show who is there. `steps-plain` for

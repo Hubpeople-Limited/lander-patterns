@@ -38,9 +38,9 @@ usually its LCP element: it ships `fetchpriority="high"` and never takes
 the brand has a photograph the slot takes the library's placeholder, a line
 drawing, never a picture of a person the page names.
 
-**Not on a page with `hero-stated`.** Both open an inner page and carry its
-`h1`; a page opens once. Pick this one when there is a photograph worth the
-band, that one when there is not.
+**Not on a page with `hero-stated` or `hero-collage`.** Each opens the page
+and carries its `h1`; a page opens once. Pick this one for a band of
+photograph, `hero-collage` for a few pictures, `hero-stated` for none.
 
 **Pairing.** Above whatever the page is for: `prose-column` on about and
 location pages, `listing-rows` on the listings, `pricing-tiers`,

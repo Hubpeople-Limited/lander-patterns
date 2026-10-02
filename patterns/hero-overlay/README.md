@@ -48,8 +48,8 @@ where the photograph *is* the argument; `hero-split` where the words are and
 the image supports them; `hero-centred` where the photograph cannot be read
 through or you do not control it; `hero-squeeze` where the page does not
 continue; `hero-stated` where there is no usable photography; `hero-portrait`
-where one face leads; `hero-bento` where tiles do; `signup-steps` where the
-page opens on its form.
+where one face leads; `hero-bento` where tiles do; `hero-collage` where a few
+pictures do; `signup-steps` where the page opens on its form.
 
 **Pairing.** `stats-band` directly beneath it — the dissolve resolves the hero
 into the page background and the numbers begin with no seam. Avoid

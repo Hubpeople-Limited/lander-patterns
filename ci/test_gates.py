@@ -3792,6 +3792,184 @@ def check_hero_bento_moving():
     return failures
 
 
+# Below a site header on the commonest phone and on a laptop, the join button
+# is on the first screen. 152px is the header allowance hero-overlay
+# subtracts (9.5rem).
+COLLAGE_FIRST_SCREEN = {(390, 844): 844 - 152, (1280, 800): 800 - 152}
+
+# Where a picture's placeholder draws its figures and its "Photo to come"
+# mark, as shares of the picture's box: from a quarter to two thirds of the
+# way down, between three tenths and seven tenths across, on every crop.
+COLLAGE_DRAWING_JS = """() => {
+    const out = [];
+    const pics = [...document.querySelectorAll('.hero-collage-photo')]
+        .filter(p => p.checkVisibility());
+    for (const p of pics) {
+        const img = p.querySelector('img');
+        const r = img.getBoundingClientRect();
+        for (const fx of [0.3, 0.5, 0.7]) {
+            for (const fy of [0.25, 0.45, 0.65]) {
+                const x = r.left + fx * r.width, y = r.top + fy * r.height;
+                const hit = document.elementFromPoint(x, y);
+                if (!hit || !p.contains(hit)) {
+                    out.push(img.getAttribute('data-hub-placeholder') + ' covered at '
+                             + Math.round(fx * 100) + '%/' + Math.round(fy * 100) + '%');
+                }
+            }
+        }
+        if (img.hasAttribute('data-hub-placeholder')
+                && getComputedStyle(img).objectFit !== 'contain') {
+            out.push(img.getAttribute('data-hub-placeholder') + ' cropped, not drawn whole');
+        }
+    }
+    return {shown: pics.length, faults: out.slice(0, 4)};
+}"""
+
+
+def collage_page(mods, tokens, extra_css="", drop=0):
+    """hero-collage on the rungs asked for with the placeholder a build places
+    in every slot, as check_placeholder_clear renders it; `drop` deletes that
+    many photographs from the end, as a build with fewer does."""
+    import check_placeholder_clear as cpc
+    html = cpc.page("hero-collage", tokens, mods, False, extra_css)
+    head, sep, tail = html.partition('<div class="hero-collage-front"')
+    pics = list(re.finditer(r'\s*<div class="hero-collage-photo">\s*<img [^>]*>\s*</div>', tail))
+    for m in reversed(pics[len(pics) - drop:] if drop else []):
+        tail = tail[:m.start()] + tail[m.end():]
+    return head + sep + tail
+
+
+def _collage_workdir(tmp):
+    """The sample images and the placeholder files, side by side."""
+    from _placeholders import file_name, parse_image_slots
+    workdir = _opener_workdir(tmp)
+    line = re.search(r"^image-slots:\s*(.+)$",
+                     (HERE.parent / "patterns" / "hero-collage" / "pattern.html")
+                     .read_text(encoding="utf-8"), re.M)
+    for slot in parse_image_slots(line.group(1)):
+        src = HERE.parent / "lib" / "placeholders" / file_name(slot["subjects"][0], slot["crop"])
+        shutil.copy(src, workdir / f"placeholder-{src.name}")
+    return workdir
+
+
+def check_hero_collage():
+    """hero-collage: the join button on the first screen; no picture over the
+    words from 320 to 1440; every placeholder drawn whole and clear of the
+    pictures in front of it; a photograph left out and the rest close up;
+    every rung combination passes the phone and the desktop gates."""
+    import check_phone
+    import lint
+    failures = []
+    print("hero-collage, the opener with a collage")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED hero-collage: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"hero-collage: {label}")
+
+    folder = HERE.parent / "patterns" / "hero-collage"
+    meta = lint.parse_header((folder / "pattern.html").read_text(encoding="utf-8"),
+                             folder / "pattern.html")
+    join_js = """() => document.querySelector('.hero-collage-btn').getBoundingClientRect().bottom
+                       - document.querySelector('.hero-collage').getBoundingClientRect().top"""
+    lone_js = """() => {
+        const box = document.querySelector('.hero-collage-photos').getBoundingClientRect();
+        const pics = [...document.querySelectorAll('.hero-collage-photo')].map(p => p.getBoundingClientRect());
+        const first = pics[0];
+        return {count: pics.length, fills: Math.abs(first.width - box.width),
+                centred: Math.abs((first.left + first.right) / 2 - (box.left + box.right) / 2)};
+    }"""
+    place_js = """() => [...document.querySelectorAll('.hero-collage-front > .hero-collage-photo')]
+        .map(p => { const r = p.getBoundingClientRect();
+                    return [Math.round(r.left), Math.round(r.top)]; })"""
+    combos = [{"arrange": a, "side": s} for a in ("stack", "prints") for s in ("end", "start")]
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _collage_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for arrange in ("stack", "prints"):
+                for tokens in ("brand", "display"):
+                    for viewport, limit in COLLAGE_FIRST_SCREEN.items():
+                        got = _render(browser, workdir,
+                                      opener_page("hero-collage", {"arrange": arrange}, tokens),
+                                      viewport, join_js)
+                        case(f"arrange={arrange} on {tokens} at {viewport[0]}x{viewport[1]}: the "
+                             f"join button ends {got:.0f}px down, within {limit}", got <= limit)
+            tall = _render(browser, workdir,
+                           opener_page("hero-collage", {}, "brand",
+                                       extra_css=".hero-collage-photos { height: 40rem !important; }"),
+                           (390, 844), join_js)
+            case("catches: a cluster that pushes the join button off the first screen",
+                 tall > COLLAGE_FIRST_SCREEN[(390, 844)])
+            for mods in combos:
+                hits = covered_text(browser, workdir, opener_page("hero-collage", mods, "display"),
+                                    ".hero-collage-photo")
+                case(f"arrange={mods['arrange']} side={mods['side']} on display: no picture "
+                     f"covers the words from 320 to 1440"
+                     + ("" if not hits else " - " + "; ".join(hits[:3])), not hits)
+            over = covered_text(browser, workdir,
+                                opener_page("hero-collage", {"arrange": "prints"}, "brand",
+                                            extra_css=".hero-collage-photos "
+                                                      "{ margin-bottom: -12rem !important; }"),
+                                ".hero-collage-photo")
+            case("catches: prints pulled down over the headline", bool(over))
+            for mods in combos:
+                bad = []
+                for width in COVER_WIDTHS:
+                    got = _render(browser, workdir, collage_page(mods, "brand"), (width, 900),
+                                  COLLAGE_DRAWING_JS)
+                    bad += [f"{width}: {f}" for f in got["faults"]]
+                case(f"arrange={mods['arrange']} side={mods['side']}, a placeholder in every "
+                     f"slot, 320 to 1440: each drawn whole, its figures and mark clear of the "
+                     f"pictures in front" + ("" if not bad else " - " + "; ".join(bad[:3])),
+                     not bad)
+            hidden = _render(browser, workdir,
+                             collage_page({}, "brand", extra_css=".hero-collage--stack "
+                                          ".hero-collage-front > :nth-child(1) { grid-column: "
+                                          "2 / 4 !important; grid-row: 1 / 3 !important; }"),
+                             (1280, 900), COLLAGE_DRAWING_JS)
+            case("catches: a front picture laid over the back one's drawing",
+                 bool(hidden["faults"]))
+            for arrange in ("stack", "prints"):
+                lone = _render(browser, workdir, collage_page({"arrange": arrange}, "brand", drop=2),
+                               (1280, 900), lone_js)
+                ok = lone["count"] == 1 and (lone["fills"] <= 1 if arrange == "stack"
+                                             else lone["centred"] <= 2)
+                case(f"arrange={arrange} with one photograph: it "
+                     f"{'fills the cluster' if arrange == 'stack' else 'sits centred'}", ok)
+                three = _render(browser, workdir, collage_page({"arrange": arrange}, "brand"),
+                                (1280, 900), place_js)
+                two = _render(browser, workdir, collage_page({"arrange": arrange}, "brand", drop=1),
+                              (1280, 900), place_js)
+                case(f"arrange={arrange} with two photographs: the second takes the place "
+                     f"the second had", len(two) == 1 and (arrange == "prints" or two[0] == three[0]))
+            stuck = _render(browser, workdir,
+                            collage_page({}, "brand", drop=2,
+                                         extra_css=".hero-collage--stack .hero-collage-photos > "
+                                                   ".hero-collage-photo { grid-column: 2 / 5 "
+                                                   "!important; grid-row: 1 / 5 !important; }"),
+                            (1280, 900), lone_js)
+            case("catches: a lone photograph left where it stood among three", stuck["fills"] > 1)
+        finally:
+            browser.close()
+    for widths, where in ((check_phone.WIDTHS, "320 and 360"),
+                          (check_phone.DESKTOP_WIDTHS, "1024 and 1280")):
+        with check_phone.Phone(widths) as phone:
+            for tokens in ("brand", "display"):
+                bad = []
+                for mods in _rung_combos(meta):
+                    label = "hero-collage " + " ".join(f"{a}={v}" for a, v in mods.items())
+                    bad += phone.faults(label, opener_page("hero-collage", mods, tokens))
+                case(f"every rung combination at {where} on {tokens} passes the gate"
+                     + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
 # A line may break between words, after a hyphen or a slash, and nowhere
 # else: a figure or a name broken inside a word reads as two words.
 BREAKS_AFTER = "-/‐–—­"
@@ -4477,6 +4655,7 @@ CHECKS = [
     check_story_cards_moving,
     check_hero_bento,
     check_hero_bento_moving,
+    check_hero_collage,
     check_words_whole,
 ]
 
@@ -4551,7 +4730,8 @@ def main(argv=None):
              + 37 + 4
              + 7
              + 11
-             + 18 + 2 + 1)
+             + 18 + 2 + 1
+             + 28)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

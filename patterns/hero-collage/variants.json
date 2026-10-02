@@ -1,0 +1,52 @@
+{
+  "arrange": {
+    "label": "Arrangement",
+    "note": "How the photographs are laid out. On a phone two of them sit in a short strip above the words, whichever you pick.",
+    "rungs": {
+      "stack": {
+        "label": "Stacked",
+        "note": "The photographs overlap in a staggered cluster beside the words, the largest at the back. The default."
+      },
+      "prints": {
+        "label": "Prints",
+        "note": "The photographs sit in a row as framed prints, each turned a little, above the words, which are centred."
+      }
+    }
+  },
+  "side": {
+    "label": "Photo side",
+    "note": "Which side the stacked photographs sit on when there is room for two columns. Prints always sit above the words.",
+    "rungs": {
+      "end": {
+        "label": "Photos on the right",
+        "note": "The words first, then the photographs. The default."
+      },
+      "start": {
+        "label": "Photos on the left",
+        "note": "The photographs first, then the words. Use it to swap sides with a photograph further down the page."
+      }
+    }
+  },
+  "ground": {
+    "label": "Background",
+    "note": "The colour behind this section. Change it between one section and the next so the page reads as bands instead of one flat colour.",
+    "rungs": {
+      "plain": {
+        "label": "Default",
+        "note": "The page's own background colour. Quiet, and the right choice for most pages."
+      },
+      "soft": {
+        "label": "Light",
+        "note": "A soft tint, to set the opener apart from the section under it."
+      },
+      "brand": {
+        "label": "Brand colour",
+        "note": "Your brand colour, with text chosen to stay readable on it. Best used once or twice a page, not on everything."
+      },
+      "deep": {
+        "label": "Dark",
+        "note": "A dark band. The boldest option, and the one that loses its impact if you use it more than once."
+      }
+    }
+  }
+}

@@ -51,9 +51,9 @@ tile's title, its links and its empty state; a figure as above. The first
 photograph ships `fetchpriority="high"` and never takes `loading="lazy"`; set
 `width` and `height` to the files' own pixels.
 
-**Not on a page with another opener** (`hero-centred`, `hero-overlay`,
-`hero-portrait`, `hero-split`, `hero-squeeze`, `hero-stated`, `signup-steps`):
-each opens the page and carries its `h1`; a page opens once.
+**Not on a page with another opener** (`hero-centred`, `hero-collage`,
+`hero-overlay`, `hero-portrait`, `hero-split`, `hero-squeeze`, `hero-stated`,
+`signup-steps`): each opens the page and carries its `h1`; a page opens once.
 
 **Pairing.** `steps-plain` below it for how joining works, `faq-details`,
 `cta-band` to close. On a landing page, `heading-block` and `benefit-tiles`.
