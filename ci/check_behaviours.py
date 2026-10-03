@@ -60,7 +60,8 @@ page, and holds each behaviour to what its row says:
                the members row fills with as many faces as it has room
                for at every width, or members-count sets how many;
                the card carries the step showing and each answered question,
-               and the step event names its step
+               and the step event names its step;
+               and a preview opens on the step its address names
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -197,6 +198,7 @@ CONTROL_SUBSTITUTIONS = {
     "signup-answered": ('parts[k].toggleAttribute("data-hub-signup-answered",',
                         'parts[k].toggleAttribute("data-hub-signup-unanswered",'),
     "signup-at": ('el.setAttribute("data-hub-signup-at", on.join(" "));', 'el.setAttribute("data-hub-signup-at", "");'),
+    "signup-start": ("show(startAt(), 0);", "show(0, 0);"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1292,6 +1294,21 @@ def check_signup_choices(shell, name, tokens):
                       f"'iam' then 'seeking', 'iam' answered")
     if not last or last.get("name") != "seeking" or last.get("step") != 2:
         faults.append(f"{where}: the step event said {last!r} on the second step - step 2, named 'seeking'")
+    # A preview opens on a step named in its address; anything it cannot
+    # find opens on the first step, as with no address.
+    for query, want in (("?hub-signup-step=dob", ["dob"]), ("?hub-signup-step=3", ["dob"]),
+                        ("?hub-signup-step=zzz", ["iam"]), ("?hub-signup-step=0", ["iam"]),
+                        ("?hub-signup-step=99", ["iam"])):
+        tab = open_card(shell, html, f"{name}-signup-preview", query=query)
+        try:
+            tab.wait_for_timeout(300)
+            opened = tab.evaluate(SIGNUP_PARTS_JS)
+            back = tab.evaluate(f"() => getComputedStyle(document.querySelector('.{name}-back')).visibility")
+        finally:
+            tab.close()
+        if opened != want or (want != ["iam"]) != (back == "visible"):
+            faults.append(f"{where}: {query} opened on {opened!r} with Back {back} - {want!r}"
+                          + (", Back showing" if want != ["iam"] else ""))
     return faults
 
 
