@@ -21,7 +21,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-collage** v1 (arrange=prints, ground=soft) - Opener with the h1, one line and the join button beside a staggered cluster of up to three photographs, the largest at the back, or under a row of up to three framed prints, each turned a little; the words never sit on a photograph; any photograph but the first may be left out and the rest close up; on phones two pictures in a short strip, then the words.
+2. **hero-collage** v2 (arrange=prints, ground=soft) - Opener with the h1, one line and the join button beside a staggered cluster of up to three photographs, the largest at the back, or under a row of up to three framed prints, each turned a little; the words never sit on a photograph; any photograph but the first may be left out and the rest close up; on phones two pictures in a short strip, then the words.
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `collage-1` - attribute (src): real material, or the couple/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
