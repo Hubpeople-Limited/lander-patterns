@@ -41,7 +41,8 @@ page, and holds each behaviour to what its row says:
                "looking for", offers a big region's towns as the visitor types
                (its biggest from the first tap) and a small region's as a list,
                narrows the members to the town picked and sends its lat and
-               long, and a card whose places will not load simply goes on
+               long, and a card whose places will not load simply goes on;
+               the line after an answer goes when the visitor goes back
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -158,6 +159,7 @@ CONTROL_SUBSTITUTIONS = {
     "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
     "signup-messages": ("const fresh = pool.filter((l) => !saidLines.has(l));",
                         "const fresh = pool;"),
+    "signup-messages-back": ("if (dir < 0) cheer.hidden = true;", "if (dir < 0) void cheer;"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1328,6 +1330,33 @@ def check_signup_messages(shell, name, tokens):
         tab.close()
     if typed != "Islington it is.":
         faults.append(f"{where}: a town typed in full said {typed!r}, not the page's line for it")
+
+    # Back takes the line away: it answers the step just left, not the one
+    # returned to. On a phone and on a wide screen, where two questions share
+    # a step.
+    for width, label in ((PHONE, "a phone"), (WIDTH, "a wide screen")):
+        tab = shell.open(page(""), f"{name}-signup-messages-back-{width}", width=width,
+                         before=messages_stub(SIGNUP_MEMBERS, platform))
+        try:
+            tab.wait_for_timeout(300)
+            tap(tab, face.format("mt", 2))
+            tab.wait_for_timeout(900)
+            tap(tab, face.format("lf", 1))
+            before_back = said(tab)
+            if width == WIDTH:
+                tap(tab, f".{name}-next")
+                tab.wait_for_timeout(500)
+            tap(tab, f".{name}-back")
+            tab.wait_for_timeout(500)
+            after_back = said(tab)
+            returned = tab.evaluate(SIGNUP_PARTS_JS)
+        finally:
+            tab.close()
+        if before_back is None:
+            faults.append(f"{where}: on {label} 'looking for' said nothing, so Back could not be checked")
+        elif after_back is not None:
+            faults.append(f"{where}: on {label} Back to {returned!r} still showed {after_back!r} - "
+                          f"the line answers the step left, not the one returned to")
 
     # Off is off, and the card still works.
     tab = shell.open(page('data-hub-signup-messages="off"'), f"{name}-signup-messages-off",
