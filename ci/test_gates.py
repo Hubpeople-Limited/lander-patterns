@@ -28,6 +28,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import brand_fit  # noqa: E402
+from _screenshot import capture  # noqa: E402
 
 EVERY = sorted({t for n in brand_fit.pattern_needs().values() for t in n})
 COMPLETE = "".join("%s:#c2185b;" % t for t in EVERY)
@@ -4175,7 +4176,7 @@ def collage_frame(browser, workdir, html):
         tab.goto(path.as_uri())
         tab.wait_for_load_state("load")
         at = tab.evaluate(COLLAGE_FRAME_POINTS_JS)
-        url = "data:image/png;base64," + base64.b64encode(tab.screenshot()).decode()
+        url = "data:image/png;base64," + base64.b64encode(capture(tab)).decode()
         return tab.evaluate(COLLAGE_FRAME_JS, [url, at])
     finally:
         tab.close()
@@ -4466,7 +4467,7 @@ def check_hero_collage_moving():
             if tab.evaluate(cb.VERSION_JS) != cb.bundle_version():
                 return None
             first = tab.evaluate(look_js)
-            shot = tab.screenshot() if frames else None
+            shot = capture(tab) if frames else None
             try:
                 tab.wait_for_function("() => ![...document.querySelectorAll('.hub-reveal-pending')]"
                                       ".some(e => e.checkVisibility())", timeout=COLLAGE_REST_MS)
@@ -4476,7 +4477,7 @@ def check_hero_collage_moving():
             tab.wait_for_timeout(COLLAGE_REST_MS)
             rest = tab.evaluate(look_js)
             if frames:
-                return first, started, rest, shot == tab.screenshot()
+                return first, started, rest, shot == capture(tab)
             return first, started, rest
         finally:
             tab.close()
@@ -5352,6 +5353,140 @@ def check_placeholder_scrim():
     return failures
 
 
+# The error headless Chromium answers a screenshot with, now and then, on a
+# page that is loaded and drawn; the same call a moment later succeeds.
+SHOT_GLITCH = ("Page.screenshot: Protocol error (Page.captureScreenshot): "
+               "Unable to capture screenshot")
+SHOT_OTHER = "Page.screenshot: Target page, context or browser has been closed"
+
+
+class _ShotTab:
+    """A stand-in tab whose screenshot raises each error in `errors` in turn,
+    then returns a picture."""
+    def __init__(self, errors):
+        self.errors, self.calls, self.waited = list(errors), 0, 0
+
+    def screenshot(self, **kwargs):
+        from playwright.sync_api import Error
+        self.calls += 1
+        if self.errors:
+            raise Error(self.errors.pop(0))
+        return b"picture"
+
+    def wait_for_timeout(self, ms):
+        self.waited += ms
+
+
+class _FlakyOnce:
+    """A browser whose tabs answer their first screenshot, across all of them,
+    with `message`, as the runner's Chromium does now and then."""
+    def __init__(self, browser, message):
+        self.browser, self.message, self.raised = browser, message, 0
+
+    def new_page(self, **kwargs):
+        from playwright.sync_api import Error
+        tab = self.browser.new_page(**kwargs)
+        real = tab.screenshot
+
+        def screenshot(**args):
+            if not self.raised:
+                self.raised += 1
+                raise Error(self.message)
+            return real(**args)
+        tab.screenshot = screenshot
+        return tab
+
+
+def check_screenshot_retry():
+    """A screenshot that meets the runner's passing capture glitch is taken
+    again, briefly and a bounded number of times, and says so; every other
+    error is raised at once, and so is the glitch when it persists. Proved on
+    a stand-in tab and through the scrim check's own measure on a real page
+    with the glitch injected once."""
+    import contextlib
+    import io
+    import check_phone
+    failures = []
+    print("ci/_screenshot.py, a screenshot the runner fails to capture once")
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"screenshot retry: {label}")
+
+    try:
+        import _screenshot
+    except ImportError as missing:
+        case(f"the screenshot helper is there to call - {missing}", False)
+        return failures
+
+    def take(tab):
+        log = io.StringIO()
+        with contextlib.redirect_stderr(log):
+            try:
+                return _screenshot.capture(tab, full_page=True), None, log.getvalue()
+            except Exception as error:
+                return None, error, log.getvalue()
+
+    tab = _ShotTab([SHOT_GLITCH])
+    got, error, log = take(tab)
+    case("the glitch once: taken again and returned, after a short wait, and logged",
+         got == b"picture" and error is None and tab.calls == 2
+         and 0 < tab.waited <= 1000 and "Unable to capture screenshot" in log)
+    tab = _ShotTab([SHOT_OTHER])
+    got, error, log = take(tab)
+    case("another error: raised at once, not taken again, nothing logged",
+         got is None and error is not None and SHOT_OTHER in str(error)
+         and tab.calls == 1 and tab.waited == 0 and not log)
+    tab = _ShotTab([SHOT_GLITCH] * 10)
+    got, error, log = take(tab)
+    case(f"the glitch every time: raised after {_screenshot.ATTEMPTS} attempts",
+         got is None and error is not None and "Unable to capture screenshot" in str(error)
+         and tab.calls == _screenshot.ATTEMPTS)
+
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED the scrim check with the glitch injected: {why}")
+        return failures
+    import check_placeholder_scrim as cps
+    from _placeholders import file_name, parse_image_slots
+    from playwright.sync_api import sync_playwright
+    name = "hero-overlay"
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = Path(tmp)
+        line = re.search(r"^image-slots:\s*(.+)$",
+                         (cps.PATTERNS / name / "pattern.html").read_text(encoding="utf-8"), re.M)
+        for slot in parse_image_slots(line.group(1)):
+            src = cps.PLACEHOLDERS / file_name(slot["subjects"][0], slot["crop"])
+            shutil.copy(src, workdir / f"placeholder-{src.name}")
+        browser = p.chromium.launch()
+        try:
+            clean = cps.measure(browser, workdir, name, "brand", (1280, 800))
+            flaky = _FlakyOnce(browser, SHOT_GLITCH)
+            log = io.StringIO()
+            with contextlib.redirect_stderr(log):
+                try:
+                    again = cps.measure(flaky, workdir, name, "brand", (1280, 800))
+                except Exception as error:
+                    again = f"raised {error}"
+            ok = (flaky.raised == 1 and again == clean
+                  and "Unable to capture screenshot" in log.getvalue())
+            case("the scrim check with the glitch injected once: it measures what a clean "
+                 "run measures, and logs the retry"
+                 + ("" if ok else f" - {again} against {clean}"), ok)
+            broken = _FlakyOnce(browser, SHOT_OTHER)
+            try:
+                cps.measure(broken, workdir, name, "brand", (1280, 800))
+                raised = ""
+            except Exception as error:
+                raised = str(error)
+            case("the scrim check with another error injected once: it fails on it",
+                 SHOT_OTHER in raised)
+        finally:
+            browser.close()
+    return failures
+
+
 def check_placeholder_clear():
     """ci/check_placeholder_clear.py's positive control: it catches a
     placeholder's drawing laid over the words and controls of every opener
@@ -5604,6 +5739,7 @@ CHECKS = [
     check_member_grid_motion,
     check_marquee_fit,
     check_placeholder_scrim,
+    check_screenshot_retry,
     check_placeholder_clear,
     check_shell_placeholders,
     check_scrollbar_gate,
@@ -5702,7 +5838,8 @@ def main(argv=None):
              + 2
              + 5
              + 14 + 13
-             + 40 + 5)
+             + 40 + 5
+             + 5)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
