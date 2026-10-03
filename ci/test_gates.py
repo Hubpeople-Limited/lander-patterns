@@ -4668,6 +4668,13 @@ ROW_LAYOUT_JS = """() => {
 }"""
 
 
+# How far the first face starts from the heading's edge, in pixels.
+ROW_INSET_JS = """() => Math.round(
+    document.querySelector('.portrait-row-item .portrait-row-img').getBoundingClientRect().left
+    - document.querySelector('.portrait-row-title').getBoundingClientRect().left)"""
+ROW_INSET_WIDTHS = (1024, 1280, 1440)
+
+
 def _render_no_script(browser, workdir, html, viewport, js):
     """As _render, with scripting off, so `@media (scripting: none)` holds."""
     path = workdir / "opener.html"
@@ -4687,8 +4694,10 @@ def check_portrait_row():
     """portrait-row: the brand's own consented faces, never a placeholder;
     one row that scrolls at every width with scripting on and a wrapped
     grid with it off; circles on the round rung; photographs level with a
-    name left out; no face over words from 320 to 1440; every rung
-    combination through the phone gate."""
+    name left out; no face over words from 320 to 1440; the first face on
+    the heading's edge on a laptop, on both shapes and both motion rungs,
+    with no library and with scripting off; every rung combination through
+    the phone gate."""
     import check_phone
     import lint
     from _placeholders import parse_image_slots
@@ -4761,6 +4770,31 @@ def check_portrait_row():
                                                     "{ margin-bottom: -3rem !important; }"),
                                   ".portrait-row-img")
             case("catches: a face pulled down over its name", bool(pulled))
+            # A row that is not gliding starts on the heading's edge, as the
+            # band's words do; a gliding row moves past it and is not held.
+            for tokens in ("brand", "display"):
+                for shape in ("portrait", "round"):
+                    for motion in ("default", "moving"):
+                        mods = {"shape": shape, "motion": motion}
+                        off = []
+                        for w in ROW_INSET_WIDTHS:
+                            html = portrait_row_page(mods, tokens)
+                            for how, got in (
+                                    ("no library", _render(browser, workdir, html, (w, 900),
+                                                           ROW_INSET_JS)),
+                                    ("scripting off", _render_no_script(browser, workdir, html,
+                                                                        (w, 900), ROW_INSET_JS))):
+                                if abs(got) > 1:
+                                    off.append(f"{w} {how}: {got:+d}px")
+                        case(f"shape={shape} motion={motion} on {tokens}: the first face starts on "
+                             f"the heading's edge from 1024 to 1440"
+                             + ("" if not off else " - " + "; ".join(off[:4])), not off)
+            hugs = _render(browser, workdir,
+                           portrait_row_page({"motion": "moving"}, "brand",
+                                             extra_css=".portrait-row-list { padding-inline: "
+                                                       "calc(var(--portrait-row-gap) / 2) !important; }"),
+                           (1440, 900), ROW_INSET_JS)
+            case("catches: a row that starts at the screen's edge under an inset heading", abs(hugs) > 1)
         finally:
             browser.close()
     with check_phone.Phone() as phone:
@@ -4869,6 +4903,16 @@ def check_portrait_row_motion():
                           reduced=True)
         case("under reduced motion nothing moves and no pause control is built",
              not b["copies"] and not b["pause"] and a["left"] == b["left"], b)
+        off = []
+        for shape in ("portrait", "round"):
+            for width in ROW_INSET_WIDTHS:
+                a, b = _row_reads(shell, portrait_row_page({**moving, "shape": shape}, "brand",
+                                                           faces=12, bundle=True),
+                                  "row-reduced-inset", width=width, reduced=True, gap=0)
+                if abs(b["aligned"]) > 1:
+                    off.append(f"{shape} {width}: {b['aligned']:+d}px")
+        case("under reduced motion the moving rung's twelve faces start on the heading's edge"
+             + ("" if not off else " - " + "; ".join(off)), not off)
         for width in (1280, 1440):
             a, b = _row_reads(shell, portrait_row_page(moving, "brand", faces=4, bundle=True), "row-fits",
                               width=width)

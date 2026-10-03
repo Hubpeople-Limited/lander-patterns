@@ -49,7 +49,9 @@ the row wraps into a grid, so a mouse always has a way to every face.
 **Moving** glides through the behaviour library's `marquee` with a round
 pause control beside the arrows, and halts on hover, on keyboard focus,
 while dragged and off screen; the arrows show once it is paused. Nothing
-moves under reduced motion and no control appears. Both rungs hook
+moves under reduced motion and no control appears. A row that is not
+gliding - under reduced motion, with no behaviour library, or with every
+face fitting - starts on the heading's edge, as the still rung does. Both rungs hook
 `marquee carousel`; the still rung's `--hub-motion: none` keeps the marquee
 from starting, so Movement is one class and no markup swap. Never a CSS
 keyframe loop: only the behaviour builds the stop control a moving row

@@ -27,7 +27,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `hero-image` - attribute (src): real material, or the couple/portrait placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **portrait-row** v1 (ground=soft) - A full-width band of the brand's own people under a heading - six to twelve photographs in one row, tall cards or circles, each with an optional first name and place under it. Still by default, a row the visitor swipes or steps through with round arrows; on the moving rung it glides by itself with a round pause control. The curated sibling of member-grid's moving row, for pictures the brand chose.
+3. **portrait-row** v2 (ground=soft) - A full-width band of the brand's own people under a heading - six to twelve photographs in one row, tall cards or circles, each with an optional first name and place under it. Still by default, a row the visitor swipes or steps through with round arrows; on the moving rung it glides by itself with a round pause control. The curated sibling of member-grid's moving row, for pictures the brand chose.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `section-title` - text, about 7 word(s). Sample: Sample heading for the row of faces
