@@ -159,6 +159,8 @@ CONTROL_SUBSTITUTIONS = {
                ".reduce((sum, r) => Number(r.value), 0)"),
     "signup-attribution": ("new URLSearchParams(location.search).forEach((v, k) => first(k, v));",
                            "void first;"),
+    "signup-pn": ('params.set("pn", `${kind}${name}~${info.page_guid}~${location.pathname}`);',
+                  'params.set("pn", new URLSearchParams(location.search).get("pn") || "");'),
     "signup-location": ('else if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
                         "else void where;"),
     "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
@@ -822,13 +824,51 @@ def tap(tab, selector):
     tab.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
 
 
+def with_settings(html, attrs):
+    """The card with `attrs` on it, each replacing any value the sample gave
+    the same setting: a browser keeps the first of two equal attributes."""
+    for setting in re.findall(r"(data-hub-signup-[\w-]+)=", attrs):
+        html = re.sub(rf'\s{setting}="[^"]*"', "", html, count=1)
+    return html.replace('data-hub-module="signup"', f'data-hub-module="signup" {attrs}', 1) if attrs else html
+
+
+def answer_part(tab, name, part):
+    """One question answered as a visitor answers it, the same way on any
+    bundle: a woman, looking for men, a town typed in full, a date typed into
+    the boxes (a wheel, where one shows, writes into the same boxes), the
+    first interest, and a name and email with the box ticked."""
+    face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
+    if part == "iam":
+        tap(tab, face.format("mt", 2))
+    elif part == "seeking":
+        tap(tab, face.format("lf", 1))
+    elif part == "location":
+        town = tab.locator('[data-hub-signup-part="location"] input[role="combobox"]')
+        if town.count() and town.is_visible():
+            town.focus()
+            town.press_sequentially("Islington", delay=20)
+            tab.wait_for_timeout(300)
+    elif part == "dob":
+        tab.evaluate("""() => [['dd', '14'], ['dm', '8'], ['dy', '1992']].forEach(([n, v]) => {
+          const box = document.querySelector(`input[name="${n}"]`);
+          box.value = v;
+          box.dispatchEvent(new Event('input', { bubbles: true }));
+        })""")
+    elif part in ("intent", "enjoy"):
+        tap(tab, f'[data-hub-signup-part="{part}"] .{name}-chip')
+    elif part == "email":
+        tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam Lee")
+        tab.fill('input[name="em"]', "sam@example.com")
+        tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+
+
 def check_signup(shell, name, tokens):
     where = f"{name} signup"
     faults = []
     html = page_for(name, "signup", tokens, "hub.js", PHONE)
     face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
     tab = shell.open(html, f"{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS),
-                     query="?utm_source=s&utm_medium=m&cmp=abc&gclid=g&cmp=second")
+                     query="?utm_source=s&utm_medium=m&cmp=abc&gclid=g&cmp=second&pn=incoming")
     try:
         tab.wait_for_timeout(300)
         version = tab.evaluate(VERSION_JS)
@@ -908,7 +948,8 @@ def check_signup(shell, name, tokens):
                       f"on as it came, the first of each")
     if not fields.get("pn", "").startswith("ai~canvas-studio~abc123def456~/") or "%2F" in fields.get("pn", ""):
         faults.append(f"{where}: pn sent as {fields.get('pn')!r} - ai~<template>~<page>~<path>, "
-                      f"as the platform writes it on every join link")
+                      f"as the platform writes it on every join link, in place of any pn the "
+                      f"visitor arrived with")
     # A brand with one possible answer to each: the questions are hidden
     # values, nobody is asked them, and each value is sent once.
     single = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="(iam|seeking)">.*?</fieldset>',
@@ -1596,14 +1637,15 @@ def check_compat(shell, tokens, broken):
     moving = "hub.js"
     if broken:
         source = (shell._dir / "hub.js").read_text(encoding="utf-8")
-        for control in (COMPAT_CONTROL, MOTION_COMPAT_CONTROL):
+        for control in (COMPAT_CONTROL, MOTION_COMPAT_CONTROL, SIGNUP_COMPAT_CONTROL):
             if control[0] not in source:
                 raise SystemExit(f"control: the compat substitution {control[0]!r} no "
                                  f"longer matches lib/hub.js")
         moving = "hub-still.js"
         (shell._dir / moving).write_text(source.replace(*MOTION_COMPAT_CONTROL, 1),
                                          encoding="utf-8", newline="\n")
-        (shell._dir / "hub.js").write_text(source.replace(*COMPAT_CONTROL, 1),
+        (shell._dir / "hub.js").write_text(source.replace(*COMPAT_CONTROL, 1)
+                                           .replace(*SIGNUP_COMPAT_CONTROL, 1),
                                            encoding="utf-8", newline="\n")
     faults, count = [], 0
     for label, name, rung, module in COMPAT_BLOCKS:
@@ -1655,7 +1697,8 @@ def check_compat(shell, tokens, broken):
                 if not built:
                     faults.append(f"{where}: no controls were built")
     more, renders = check_motion_compat(shell, tokens, version, moving)
-    return faults + more, count + renders
+    card, walks = check_signup_compat(shell, tokens, version, old.read_text(encoding="utf-8"))
+    return faults + more + card, count + renders + walks
 
 
 # ------------------------------------------------ compatibility: motion
@@ -1775,6 +1818,177 @@ def check_motion_compat(shell, tokens, version, bundle):
     return faults, count
 
 
+# ------------------------------------------ compatibility: the sign-up card
+
+"""THE LIVE CARDS. Every live sign-up card loads the newest bundle from the
+floating URL, so a card that sets none of the settings added since the last
+published bundle has to step through on this bundle exactly as it stepped
+through on that one: the same questions on each screen, the same words, the
+same answers kept, the same line after an answer, the same members, and the
+same hand-off. Each card - as LATEST released it, and as it stands with each
+setting live cards carry - is answered screen by screen on a phone and a wide
+screen, Back once and on again, and sent, with a snapshot after every move;
+the two bundles' snapshots must match. Under reduced motion, so nothing is
+caught mid-animation, and with one seeded Math.random on both pages, so the
+line drawn after an answer is the same draw.
+
+SIGNUP_ADDED names the attributes this bundle adds to every card by design,
+which no stylesheet draws: they are left out of the comparison, and the check
+proves no released signup-card stylesheet names them.
+
+--compat --broken also moves the card's first-step mark by one step, and
+requires the walk to fire."""
+
+SIGNUP_ADDED = ("data-hub-signup-at", "data-hub-signup-answered")
+SIGNUP_COMPAT_CONTROL = ('el.classList.toggle("hub-signup-first", at === 0);',
+                         'el.classList.toggle("hub-signup-first", at <= 1);')
+# The settings live cards carry, each walked apart; "" is a card with none.
+# A setting the previous bundle does not know yet is skipped until it does.
+SIGNUP_COMPAT_SETTINGS = [
+    "",
+    'data-hub-signup-dob="wheel"',
+    'data-hub-signup-dob="wheel" data-hub-signup-dob-wide="boxes" data-hub-signup-dob-start="30"',
+    'data-hub-signup-messages="off" data-hub-signup-reward="age"',
+    'data-hub-signup-seeking="opposite" data-hub-signup-settle="off"',
+    f'data-hub-signup-places="UK/England: Greater London" data-hub-signup-places-from="{SIGNUP_PLACES}"',
+]
+SIGNUP_COMPAT_QUERY = "?utm_source=s&cmp=abc&pn=incoming"
+SEEDED_RANDOM = ("(() => { let s = 42; Math.random = () => "
+                 "((s = (s * 16807) % 2147483647) - 1) / 2147483646; })();")
+SIGNUP_SNAPSHOT_JS = """
+(added) => {
+  const card = document.querySelector('[data-hub-module~="signup"]');
+  const copy = card.cloneNode(true);
+  [copy, ...copy.querySelectorAll('*')].forEach((n) => added.forEach((a) => n.removeAttribute(a)));
+  return {
+    html: copy.outerHTML.replace(/hub-signup-places-[a-z0-9]{1,6}/g, 'hub-signup-places-x'),
+    shown: Array.from(card.querySelectorAll('[data-hub-signup-part]'))
+      .filter((p) => p.offsetParent !== null).map((p) => p.getAttribute('data-hub-signup-part')),
+    text: card.innerText,
+    values: Array.from(card.querySelectorAll('input, select'))
+      .map((i) => (i.type === 'checkbox' || i.type === 'radio') ? i.checked : i.value),
+  };
+}
+"""
+
+
+def where_apart(a, b):
+    """The first place two snapshots part, with a little either side."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        key = next((k for k in a if a.get(k) != b.get(k)), None)
+        if key is None:
+            return f"{sorted(set(b) - set(a))} only on the earlier bundle"
+        a, b, label = a[key], b.get(key), f"{key}: "
+    else:
+        label = ""
+    x = json.dumps(a, ensure_ascii=False)
+    y = json.dumps(b, ensure_ascii=False)
+    i = next((n for n, (p, q) in enumerate(zip(x, y)) if p != q), min(len(x), len(y)))
+    return f"{label}...{x[max(0, i - 80):i + 120]}... against ...{y[max(0, i - 80):i + 120]}..."
+
+
+def signup_compat_page(h, c, sample, tokens, bundle, attrs):
+    """A card's markup and styles, filled with its sample, on `bundle`."""
+    markup = fill(re.sub(r"\s*<!--\n.*?\n-->", "", h, count=1, flags=re.S), sample)
+    markup = re.sub(r'(<form class="(?:signup-steps-card|signup-card-form)"[^>]*action=")[^"]*"',
+                    lambda m: m.group(1) + SIGNUP_JOIN + '"', markup, count=1)
+    return SHELL.format(title="compat signup", tokens=tokens, css=c, bundle=bundle, before="",
+                        markup=with_settings(markup, attrs),
+                        after='<section class="behaviour-check-section">' + FILLER + "</section>")
+
+
+def signup_walk(shell, html, stem, width):
+    """Step a card through as a visitor does: each screen's questions
+    answered, Back once and on again on the second screen, then the
+    hand-off; a snapshot after every move. (snapshots, errors thrown)."""
+    errors, snaps = [], []
+
+    def before(tab):
+        signup_stub(SIGNUP_MEMBERS)(tab)
+        tab.add_init_script(SEEDED_RANDOM)
+        tab.on("pageerror", lambda e: errors.append(str(e)))
+    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=SIGNUP_COMPAT_QUERY)
+
+    def snap(label):
+        tab.wait_for_timeout(600)
+        snaps.append((label, tab.evaluate(SIGNUP_SNAPSHOT_JS, list(SIGNUP_ADDED))))
+    try:
+        snap("arrival")
+        for n in range(1, 11):
+            parts = tab.evaluate(SIGNUP_PARTS_JS)
+            if not parts:
+                break
+            for part in parts:
+                answer_part(tab, "signup-card", part)
+                snap(f"screen {n}, {part} answered")
+            if n == 2:
+                tap(tab, ".signup-card-back")
+                snap(f"screen {n}, back")
+                tap(tab, ".signup-card-next")
+                snap(f"screen {n}, on again")
+            if "email" in parts:
+                tap(tab, ".signup-card-submit")
+                # Read at once: under reduced motion the card leaves for the
+                # join link 200ms after the hand-off, and the page with it.
+                tab.wait_for_timeout(100)
+                snaps.append(("hand-off", tab.evaluate("() => window.__signupHandoff || ''")))
+                break
+            if tab.evaluate(SIGNUP_PARTS_JS) == parts:
+                tap(tab, ".signup-card-next")
+            snap(f"screen {n}, next")
+    except Exception as e:
+        # The page left mid-walk (a bundle that hands off early goes to the
+        # join link); where it stopped is compared like any other snapshot.
+        snaps.append(("stopped", type(e).__name__))
+    finally:
+        tab.close()
+    return snaps, errors
+
+
+def check_signup_compat(shell, tokens, version, old_source):
+    """The sign-up card with no setting newer than `version`, walked on this
+    bundle and on that one; (faults, walks)."""
+    faults, count = [], 0
+    folder = PATTERNS / "signup-card"
+    now_css = (folder / "pattern.css").read_text(encoding="utf-8")
+    forms = [("as it stands", (folder / "pattern.html").read_text(encoding="utf-8"), now_css,
+              json.loads((folder / "preview-content.json").read_text(encoding="utf-8")))]
+    rel = released("signup-card")
+    if rel:
+        tag, (h, c, j) = rel
+        forms.insert(0, (f"as released in {tag}", h, c, json.loads(j)))
+    else:
+        faults.append("compat signup: signup-card could not be read at the release LATEST names")
+    for label, h, c, _ in forms:
+        for added in SIGNUP_ADDED:
+            if added in c:
+                faults.append(f"compat signup: the signup-card stylesheet {label} names {added}, which "
+                              f"every live card gains unasked")
+    for label, h, c, sample in forms:
+        for attrs in (SIGNUP_COMPAT_SETTINGS if label == "as it stands" else [""]):
+            if any(f'"{n}"' not in old_source for n in re.findall(r"data-hub-signup-([\w-]+)=", attrs)):
+                continue
+            for width in (PHONE, WIDTH):
+                # One file name for both pages: the pn handed off carries the
+                # page's path, and it must be the same path on both bundles.
+                a, a_err = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub.js", attrs),
+                                       "compat-signup", width)
+                b, _ = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub-previous.js", attrs),
+                                   "compat-signup", width)
+                count += 1
+                where = f"compat signup: {label}, {attrs or 'no settings'}, {width}px"
+                if a_err:
+                    faults.append(f"{where}: the bundle threw {a_err[0]}")
+                if len(a) != len(b):
+                    faults.append(f"{where}: {len(a)} moves on this bundle and {len(b)} on {version}")
+                for (at_a, snap_a), (_, snap_b) in zip(a, b):
+                    if snap_a != snap_b:
+                        faults.append(f"{where}: at '{at_a}' the card differs from {version}'s - "
+                                      + where_apart(snap_a, snap_b))
+                        break
+    return faults, count
+
+
 CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel,
           "signup": check_signup, "reveal": check_reveal}
 
@@ -1821,22 +2035,26 @@ def main():
             print(f"  FAIL  {line}")
         version = previous_bundle()[0]
         if args.broken:
-            look = [f for f in faults if not f.startswith("compat motion:")]
+            look = [f for f in faults if not f.startswith(("compat motion:", "compat signup:"))]
             still = [f for f in faults if f.startswith("compat motion:")]
-            if look and still:
+            card = [f for f in faults if f.startswith("compat signup:")]
+            if look and still and card:
                 print(f"  control: {len(look)} fault(s) caught with the new look forced on "
-                      f"a block that asked for none, and {len(still)} with every block "
-                      f"{LIVE_REF} shipped held still. The gate fires.")
+                      f"a block that asked for none, {len(still)} with every block "
+                      f"{LIVE_REF} shipped held still, and {len(card)} with the sign-up card's "
+                      f"first-step mark moved. The gate fires.")
                 return 0
             print("  CONTROL FAILED: " + ("the new look was forced on" if not look
-                                         else f"every block {LIVE_REF} shipped was held still")
+                                         else f"every block {LIVE_REF} shipped was held still" if not still
+                                         else "the sign-up card's first-step mark was moved")
                   + " and nothing fired.")
             return 1
         if faults:
             return 1
         print(f"  clean: {count} render(s) - with no new setting the bundle builds what "
-              f"{version} built, today's markup falls back on {version}, and every "
-              f"block {LIVE_REF} shipped moves as {version} moved it")
+              f"{version} built, today's markup falls back on {version}, every "
+              f"block {LIVE_REF} shipped moves as {version} moved it, and the sign-up card "
+              f"steps through as it did on {version}")
         return 0
     print(f"behaviours: {len(names)} pattern(s) on the {args.tokens} tokens, bundle "
           f"{bundle_version()}" + ("  [control: one line of each turned wrong]" if args.broken else ""))

@@ -2463,6 +2463,9 @@ def _behaviours_control(label, argv):
     print(f"  {'ok  ' if ok else 'FAIL'} {label} exit={got.returncode} want=0")
     if not ok:
         print("      " + (got.stdout.strip().splitlines() or ["(no output)"])[-1])
+        # A control that stops part way says why.
+        for line in got.stderr.strip().splitlines()[-6:]:
+            print("      " + line)
         failures.append(label)
     return failures
 
