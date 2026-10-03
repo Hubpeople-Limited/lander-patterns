@@ -4101,9 +4101,22 @@ COLLAGE_FIRST_SCREEN = {(390, 844): 844 - 152, (1280, 800): 800 - 152}
 # has to measure on each: larger than 9rem wherever the first screen has the
 # room for it, and never at the cost of the join button. The display set's
 # header is 12rem rather than 9.5, so its prints have less room: none to grow
-# into at 1280 by 800.
-COLLAGE_LAPTOPS = {(1280, 800): 150, (1440, 900): 220, (1536, 864): 195}
-COLLAGE_LAPTOPS_TALL_HEADER = {(1280, 800): 128, (1440, 900): 195, (1536, 864): 165}
+# into at 1280 by 800. 1280 by 720 is a 1080p laptop at 150% and 1366 by 768
+# the commonest small one: there the prints give way so the join button stays
+# on the first screen, and never below COLLAGE_LEAST_PRINT.
+COLLAGE_LAPTOPS = {(1280, 720): 120, (1366, 768): 140,
+                   (1280, 800): 150, (1440, 900): 220, (1536, 864): 195}
+COLLAGE_LAPTOPS_TALL_HEADER = {(1280, 720): 88, (1366, 768): 125,
+                               (1280, 800): 128, (1440, 900): 195, (1536, 864): 165}
+COLLAGE_LEAST_PRINT = 88
+# The front print where the first screen has the room, in px, which giving way
+# on a short screen must leave as it was: {tokens: {viewport: px}}.
+COLLAGE_PRINTS_KEPT = {
+    "brand": {(1280, 800): 154, (1440, 900): 234, (1536, 864): 205,
+              (1024, 768): 128, (1366, 768): 144, (1920, 1080): 240},
+    "display": {(1280, 800): 141, (1440, 900): 202, (1536, 864): 173,
+                (1024, 768): 128, (1920, 1080): 240},
+}
 COLLAGE_TOKEN_SETS = ("brand", "dark", "display", "sharp", "soft")
 
 
@@ -4238,7 +4251,8 @@ def _collage_workdir(tmp):
 def check_hero_collage():
     """hero-collage: the join button on the first screen; the framed prints
     larger on a laptop with the join button still on the first screen on
-    every sample token set, in its own fonts and the CI runner's; frames that
+    every sample token set, in its own fonts and the CI runner's, smaller on
+    a short laptop for the same reason and never below 5.5rem; frames that
     stand off a dark ground and are the card surface on a light brand; no
     picture over the words from 320 to 1440; every placeholder drawn whole and clear of the
     pictures in front of it; a photograph left out and the rest close up;
@@ -4311,6 +4325,24 @@ def check_hero_collage():
                 case(f"arrange=prints on {tokens}, on a laptop: the front print at least "
                      + ", ".join(f"{v}px at {w}x{h}" for (w, h), v in floors.items())
                      + ("" if not small else " - " + "; ".join(small[:3])), not small)
+            for tokens, kept in COLLAGE_PRINTS_KEPT.items():
+                moved = []
+                for viewport, want in kept.items():
+                    got = _render(browser, workdir,
+                                  opener_page("hero-collage", {"arrange": "prints"}, tokens),
+                                  viewport, collage_print_js)
+                    if abs(got["front"] - want) > 1:
+                        moved.append(f"{viewport[0]}x{viewport[1]}: {got['front']}px, not {want}")
+                case(f"arrange=prints on {tokens}: where the first screen has the room, the "
+                     f"front print is the size it was"
+                     + ("" if not moved else " - " + "; ".join(moved)), not moved)
+            for tokens in ("brand", "display"):
+                got = _render(browser, workdir,
+                              opener_page("hero-collage", {"arrange": "prints"}, tokens),
+                              (1280, 600), collage_print_js)
+                case(f"arrange=prints on {tokens} at 1280x600, too short for the join button: "
+                     f"the front print stops at {COLLAGE_LEAST_PRINT}px: {got['front']}px",
+                     abs(got["front"] - COLLAGE_LEAST_PRINT) <= 1)
             pushed = _render(browser, workdir,
                              runner_fonts(opener_page("hero-collage", {"arrange": "prints"}, "display",
                                                       extra_css=".hero-collage--prints .hero-collage-"
@@ -5698,7 +5730,7 @@ def main(argv=None):
              + 7
              + 11
              + 18 + 2 + 1
-             + 28 + 10
+             + 46 + 10
              + 2
              + 5
              + 14 + 13
