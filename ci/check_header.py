@@ -10,7 +10,8 @@ out with one. Above `60rem` the items wrapped onto a second row, the bar grew,
 full-viewport opener slid below the fold - with every gate green, because
 every gate rendered the sample menu.
 
-So this gate renders the header with three menus - short, typical and long -
+So this gate renders the header with four menus - short, typical, long, and
+one three levels deep, the way a brand groups its places by region -
 beside a ratio-only wordmark and a ratio-only square, at eight widths across
 the `60rem` line, with the behaviour library on and off, on the rungs that
 decide how a long menu behaves. It holds the header to:
@@ -20,6 +21,11 @@ decide how a long menu behaves. It holds the header to:
     NO OVERLAP     the brand mark never sits on a menu item or a control
     IN VIEW        every submenu opened, and the folded item's own list, stay
                    inside the viewport
+    SHUT IS SHUT   a shut panel takes no pointer: nothing in it - a third
+                   level included, and an item folded into the last one - can
+                   be hovered from the empty page under the bar, which would
+                   open the panel the visitor cannot see; and every link in a
+                   panel that is open is the thing a pointer at it reaches
     REACHABLE      the join control is on top and in view - with the drawer
                    open below the line, and on the bar above it
     THUMB-SIZED    every control is 44px at phone widths
@@ -28,6 +34,7 @@ decide how a long menu behaves. It holds the header to:
     python ci/check_header.py                  the matrix, brand tokens
     python ci/check_header.py --tokens display
     python ci/check_header.py --broken         the positive control, below
+    python ci/check_header.py --broken-shut    the shut-panel control, below
     python ci/check_header.py --out /tmp/hdr   keep the rendered pages
     python ci/check_header.py --require-browser
     python ci/check_header.py --shard 1/4      a quarter of the matrix, as CI
@@ -40,6 +47,10 @@ the one-row check to fire on the long menu. A gate that has only ever run
 against code that passes has not been shown to catch anything. Exit 0 on that
 run means the defect was detected. Appended rather than spliced, so rewording
 the shipped rule cannot quietly disarm it.
+
+`--broken-shut` appends a third level that takes the pointer on its own, and
+requires the shut-panel check to fire on the deep menu and on the long menu
+folded into the last item, with the library and without it.
 
 Exit codes: 0 clean, or skipped because no browser is available; 1 at least one
 render is at fault; 2 the request itself is unusable.
@@ -96,6 +107,13 @@ def group(label, children, cls="canvas-navigation-submenu"):
     return f'<li class="has-submenu"><a>{label}</a><ul class="{cls}">{inner}</ul></li>'
 
 
+def deep_group(label, groups):
+    inner = "".join(group(name, children, cls="canvas-navigation-submenu-deep")
+                    for name, children in groups.items())
+    return (f'<li class="has-submenu"><a>{label}</a>'
+            f'<ul class="canvas-navigation-submenu">{inner}</ul></li>')
+
+
 MENUS = {
     "short": '<ul class="canvas-navigation-menu">'
              + item("Home") + item("Features") + item("Pricing")
@@ -114,6 +132,17 @@ MENUS = {
             + item("Safety")
             + item("Advice") + group("Advice", ["First dates", "Profiles"])
             + item("Events") + item("Stories") + item("Contact")
+            + "</ul>",
+    # Three levels: groups of groups, as a brand with places by region has
+    # them. Above the line the groups sit at the end of the row, so on
+    # overflow=more they fold into the last item, a level deeper again.
+    "deep": '<ul class="canvas-navigation-menu">'
+            + item("Home") + item("How it works") + item("Pricing")
+            + item("Safety") + item("Stories")
+            + deep_group("Places", {"North": ["Manchester", "Leeds", "Newcastle"],
+                                    "South": ["Bristol", "Brighton", "Exeter"]})
+            + deep_group("Groups", {"By age": ["Over 40", "Over 50", "Over 60"],
+                                    "By interest": ["Walking", "Music", "Food"]})
             + "</ul>",
 }
 
@@ -162,6 +191,15 @@ ROW_REGRESSION = '''
 }
 '''
 PHONE_WIDTHS = (320, 360, 390)
+# A third level that takes the pointer on its own, inside a panel that does
+# not. The shut-panel control appends it and requires the check to fire.
+SHUT_REGRESSION = '''
+@media (width >= 60rem) {
+  .masthead-nav-links ul ul ul {
+    pointer-events: auto;
+  }
+}
+'''
 
 FILLER = "  <p>More sample copy, so the page is tall enough to scroll.</p>\n" * 30
 
@@ -345,11 +383,55 @@ PANEL = r"""
   const s = getComputedStyle(sub);
   const r = sub.getBoundingClientRect();
   const W = document.documentElement.clientWidth;
-  return { opacity: parseFloat(s.opacity), left: round(r.left), right: round(r.right),
+  // A link in the open panel, in view, that the pointer cannot reach at its
+  // centre: something else - another panel - lies over it.
+  const covered = Array.from(sub.querySelectorAll('a[href]')).filter(a => {
+    const b = a.getBoundingClientRect();
+    const x = b.left + b.width / 2, y = b.top + b.height / 2;
+    if (b.width < 1 || b.height < 1 || x < 0 || y < 0 || x >= innerWidth
+        || y >= innerHeight) return false;
+    const top = document.elementFromPoint(x, y);
+    return !(top && (top === a || a.contains(top)));
+  }).map(a => a.textContent.trim().slice(0, 24));
+  return { opacity: parseFloat(s.opacity), covered, left: round(r.left), right: round(r.right),
            width: round(r.width), inView: r.left >= -1 && r.right <= W + 1,
            positioned: /absolute|fixed/.test(s.position),
            items: Array.from(sub.querySelectorAll('a')).filter(a => {
              const b = a.getBoundingClientRect(); return b.width > 0 && b.height > 0; }).length };
+}
+"""
+
+# A shut panel is faded rather than removed, so it still lies under the bar.
+# Anything in it that takes the pointer is hovered from what looks like the
+# empty page, and the hover opens the panel. Every list and control in every
+# shut panel, at its centre, has to let the pointer through.
+SHUT = r"""
+() => {
+  const round = n => Math.round(n * 10) / 10;
+  const list = document.querySelector('.masthead-nav-links > ul, .masthead-nav-links > ol');
+  const found = [];
+  if (!list) return found;
+  for (const li of Array.from(list.children)) {
+    const sub = li.querySelector(':scope > ul, :scope > ol');
+    if (!sub || getComputedStyle(li).display === 'none') continue;
+    const s = getComputedStyle(sub);
+    if (!/absolute|fixed/.test(s.position) || parseFloat(s.opacity) > 0.01) continue;
+    const label = (li.querySelector(':scope > a, :scope > button') || li)
+                    .textContent.trim().slice(0, 30);
+    for (const el of sub.querySelectorAll('ul, ol, a, button')) {
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      const x = r.left + r.width / 2, y = r.top + r.height / 2;
+      if (x < 0 || y < 0 || x >= innerWidth || y >= innerHeight) continue;
+      const top = document.elementFromPoint(x, y);
+      if (top && sub.contains(top)) {
+        found.push({ label, x: round(x), y: round(y),
+                     what: (top.textContent || top.tagName).trim().slice(0, 24) });
+        break;
+      }
+    }
+  }
+  return found;
 }
 """
 
@@ -393,6 +475,8 @@ def page(combo, menu, logo_fixture, tokens, script, broken=False):
     css = (PATTERN / "pattern.css").read_text(encoding="utf-8")
     if broken == "row":
         css += ROW_REGRESSION
+    elif broken == "shut":
+        css += SHUT_REGRESSION
     elif broken:
         css += "\n.masthead-nav-links > ul { --hub-overflow: off !important; }\n"
     tag = '<script type="module" src="hub.js"></script>' if script else ""
@@ -474,6 +558,12 @@ def measure_render(tab, combo, script):
             if r["left"] < -1 or r["right"] > width + 1:
                 faults.append(f"the folded item is outside the viewport "
                               f"({r['left']}..{r['right']} of {width})")
+        # Before anything is opened: every shut panel lets the pointer through.
+        tab.mouse.move(0, HEIGHT - 1)
+        for ghost in tab.evaluate(SHUT):
+            faults.append(f"the shut panel under '{ghost['label']}' takes the pointer at "
+                          f"{ghost['x']},{ghost['y']} ('{ghost['what']}') - hovering the "
+                          f"page under the bar opens it")
         # Every parent's panel, opened the way a pointer and a finger open it.
         for parent in got["parents"]:
             index = parent["index"]
@@ -504,6 +594,10 @@ def measure_render(tab, combo, script):
                                   f"viewport ({panel['left']}..{panel['right']} of {width})")
                 elif panel["items"] == 0:
                     faults.append(f"the panel under '{parent['label']}' has no items in it")
+                elif panel["covered"]:
+                    faults.append(f"the panel under '{parent['label']}' is open but a "
+                                  f"pointer cannot reach "
+                                  + ", ".join(f"'{c}'" for c in panel["covered"][:3]))
             if panel["positioned"] and script:
                 # The press path, which a finger and a keyboard take: shut it
                 # from the keyboard, then press the control and expect it open
@@ -570,6 +664,14 @@ KNOWN = [
     (lambda combo, script, fault: (not script and combo.get("overflow") in ("wrap", "more")
                                    and "leaves the viewport" in fault),
      "a wrapped row's edge parent with no bundle on the page"),
+    # With the bundle, a panel is turned round only when it would leave by
+    # the end edge. One of the last two items hangs its panel from its end
+    # edge, and where a wrapped row puts that item first on its line, the
+    # panel leaves by the start edge instead, which the bundle does not yet
+    # turn round. The three-level menu is the one that puts a parent there.
+    (lambda combo, script, fault: (script and combo.get("overflow") == "wrap"
+                                   and "leaves the viewport (-" in fault),
+     "a wrapped row's last-two parent first on its line, leaving by the start edge"),
 ]
 known = []
 
@@ -620,6 +722,10 @@ def main():
     ap.add_argument("--broken-row", action="store_true",
                     help="the one-row control: quiet on the menu-free bar as it "
                          "ships, and firing with the bar as it broke put back")
+    ap.add_argument("--broken-shut", action="store_true",
+                    help="the shut-panel control: a third level that takes the "
+                         "pointer on its own is put back, and the check has to "
+                         "fire")
     ap.add_argument("--widths", type=int, nargs="*", default=list(WIDTHS))
     ap.add_argument("--out", help="write the rendered pages here")
     ap.add_argument("--require-browser", action="store_true",
@@ -632,7 +738,7 @@ def main():
     args = ap.parse_args()
     combos, phone_combos = COMBOS, PHONE_COMBOS
     if args.shard:
-        if args.broken or args.broken_row:
+        if args.broken or args.broken_row or args.broken_shut:
             print("check_header: --shard splits the matrix, and the controls "
                   "are not the matrix; run them whole")
             return 2
@@ -677,6 +783,31 @@ def main():
                 return 1
             print(f"check_header --broken-row: quiet on the shipped bar ({n} renders), "
                   f"fires on the bar as it broke ({len(fired)} of {m} renders)")
+            return 0
+        if args.broken_shut:
+            # The deep menu on the row that wraps and the row that folds, and
+            # the long menu folded into the last item, at a laptop width.
+            cases = [({"overflow": "wrap", "submenu": "dropdown", "layout": "inline"},
+                      "deep", [False, True]),
+                     ({"overflow": "more", "submenu": "mega", "layout": "inline"},
+                      "deep", [False, True]),
+                     ({"overflow": "more", "submenu": "dropdown", "layout": "inline"},
+                      "long", [True])]
+            missed = []
+            for combo, menu, modes in cases:
+                for script in modes:
+                    fired, _ = sweep(shell, tokens, [combo], [menu],
+                                     ["wordmark-ratio-only"], [1280], [script],
+                                     broken="shut")
+                    if not any("shut panel" in f for f in fired):
+                        missed.append(f"{combo['overflow']}/{combo['submenu']} {menu} "
+                                      f"{'library' if script else 'no library'}")
+            if missed:
+                print("check_header --broken-shut: a third level that takes the "
+                      "pointer was put back and nothing fired on: " + "; ".join(missed))
+                return 1
+            print(f"check_header --broken-shut: the gate fires on all "
+                  f"{sum(len(m) for _, _, m in cases)} renders - the control holds")
             return 0
         if args.broken:
             # The narrowest claim that must fail: the long menu, the fold rung,

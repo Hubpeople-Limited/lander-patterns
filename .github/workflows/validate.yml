@@ -242,6 +242,11 @@ jobs:
       # fire on the long menu. Exit 0 here means the defect was detected.
       - name: Confirm the header gate can still catch a menu that wraps
         run: python ci/check_header.py --require-browser --broken
+      # A shut panel is faded, not removed: a third level that takes the
+      # pointer on its own opens it from the empty page under the bar. This
+      # puts that back and the check has to fire.
+      - name: Confirm the header gate can still catch a shut panel that takes the pointer
+        run: python ci/check_header.py --require-browser --broken-shut
 
   scrim-measures:
     name: scrim and display measures

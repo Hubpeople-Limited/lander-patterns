@@ -690,7 +690,8 @@
     min-height: var(--masthead-nav-tap);
     padding-inline: var(--space-2);
   }
-  /* A third level sits inside its parent's panel rather than beside it. */
+  /* A third level sits inside its parent's panel, and takes the pointer
+     only when that panel does. */
   .masthead-nav-links ul ul ul {
     position: static;
     min-width: 0;
@@ -700,7 +701,7 @@
     border-radius: 0;
     box-shadow: none;
     opacity: 1;
-    pointer-events: auto;
+    pointer-events: inherit;
   }
   /* A chevron marks the items that carry children. */
   .masthead-nav-links > ul > li:has(> ul) > a::after,
