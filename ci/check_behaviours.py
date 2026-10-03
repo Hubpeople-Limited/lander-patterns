@@ -52,7 +52,9 @@ page, and holds each behaviour to what its row says:
                grouping, a question left out is neither asked nor sent,
                a grouping that breaks the rules is ignored whole, a
                visitor widened mid-way stays with their question, and the
-               members wait for "looking for" wherever it is asked
+               members wait for "looking for" wherever it is asked;
+               messages names the moments that speak, and messages-keep=step
+               lets a line last the step it leads into and no longer
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -179,6 +181,10 @@ CONTROL_SUBSTITUTIONS = {
     "signup-screens": ('const plan = () => (ownScreens(optAt("screens")) ||', "const plan = () => (null ||"),
     "signup-dob-left": ("if (age() != null) {", "if (true) {"),
     "signup-seeking-wait": ("const seekingSettled = () =>", "const seekingSettled = () => true ||"),
+    "signup-moments": ("if (!talk || (moments.length && !moments.includes(moment))) return;",
+                       "if (!talk) return;"),
+    "signup-keep": ("if (keepStep && dir > 0 && at > saidAt + 1) cheer.hidden = true;",
+                    "if (keepStep && dir > 0 && at > saidAt + 1) void cheer;"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1042,6 +1048,74 @@ def check_signup_choices(shell, name, tokens):
         if not shown:
             faults.append(f"{where}: with 'looking for' last and {label}, the members waited - they show "
                           f"from the start")
+    # The line after an answer: only the moments messages names, and with
+    # messages-keep="step" one step only. Without either, as live cards show it.
+    quiet = re.sub(r'\sdata-hub-signup-(platform|say-[a-z]+|messages[a-z-]*)="[^"]*"', "", html)
+
+    def lines_page(attrs):
+        return with_settings(quiet, f'data-hub-signup-messages-from="{SIGNUP_MESSAGES}" {attrs}'.strip())
+
+    def cheer(tab):
+        tab.wait_for_timeout(400)
+        box = tab.locator(f".{name}-cheer")
+        return box.inner_text().strip() if box.count() and box.is_visible() else None
+
+    for attrs, want_iam, label in (('data-hub-signup-messages="seeking"', False, "messages='seeking'"),
+                                   ('data-hub-signup-messages="Seeking  bogus"', True,
+                                    "messages naming no moment it knows")):
+        tab = open_card(shell, lines_page(attrs), f"{name}-signup-moments", stub=messages_stub(SIGNUP_MEMBERS, None))
+        try:
+            answer_part(tab, name, "iam")
+            after_iam = cheer(tab)
+            answer_part(tab, name, "seeking")
+            after_seeking = cheer(tab)
+        finally:
+            tab.close()
+        if (after_iam is not None) != want_iam or after_seeking is None:
+            faults.append(f"{where}: {label} said {after_iam!r} after 'I am' and {after_seeking!r} after "
+                          f"'looking for' - " + ("every moment speaks, as with on" if want_iam
+                                                  else "nothing after 'I am', a line after 'looking for'"))
+    for keep, gone in (("", False), ('data-hub-signup-messages-keep="step"', True)):
+        tab = open_card(shell, lines_page(keep), f"{name}-signup-keep-{int(gone)}",
+                        stub=messages_stub(SIGNUP_MEMBERS, None))
+        try:
+            walk_to(tab, name, "seeking")
+            answer_part(tab, name, "seeking")
+            said = cheer(tab)
+            tap(tab, f".{name}-next")
+            one_on = cheer(tab)
+            answer_part(tab, name, "dob")
+            tap(tab, f".{name}-next")
+            two_on = cheer(tab)
+        finally:
+            tab.close()
+        label = "messages-keep=step" if keep else "with no messages-keep"
+        if said is None or one_on != said:
+            faults.append(f"{where}: {label} the line after 'looking for' ({said!r}) read {one_on!r} one "
+                          f"step on - it stays for the step it leads into")
+        elif (two_on is None) != gone:
+            faults.append(f"{where}: {label} two steps on the line read {two_on!r} - "
+                          + ("gone: one step only" if gone else "still there until the next answer, as before"))
+    # A tapped "I am" moves the card on before the lines have loaded: with
+    # messages-keep="step" its line still shows on the step it leads into,
+    # and goes after it.
+    tab = open_card(shell, lines_page('data-hub-signup-messages="iam" data-hub-signup-messages-keep="step"'),
+                    f"{name}-signup-keep-first", stub=messages_stub(SIGNUP_MEMBERS, None))
+    try:
+        answer_part(tab, name, "iam")
+        first = cheer(tab)
+        on_seeking = tab.evaluate(SIGNUP_PARTS_JS)
+        answer_part(tab, name, "seeking")
+        tap(tab, f".{name}-next")
+        after = cheer(tab)
+    finally:
+        tab.close()
+    if first is None or on_seeking != ["seeking"]:
+        faults.append(f"{where}: messages-keep=step said {first!r} on {on_seeking!r} after a tapped 'I am' - "
+                      f"its line on the step it leads into")
+    elif after is not None:
+        faults.append(f"{where}: messages-keep=step still showed {after!r} a step after the one the "
+                      f"line led into")
     return faults
 
 

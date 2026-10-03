@@ -70,7 +70,8 @@ brand with no members yet) and the page's own: `-say-iam`, `-say-seeking`,
 `{place}`, `{interest}` fill from the answers), `-say-labels` (`Label: line |
 line; Label: line`). `-say-mode="replace"`: only the page's where it has some.
 `-platform` (`excite`, `affinity`) adds that platform's lines per interest. A
-page in another language uses only its own; `-messages="off"` stops them.
+page in another language uses only its own. `-messages`: `off`, or the moments
+that speak (`iam last`); `-messages-keep="step"` lets a line last one step.
 
 **Brand adaptability.** `--btn-radius` shapes rows, fields and buttons;
 `--chip-radius` the pills, progress bar and member strip; `--color-primary`
