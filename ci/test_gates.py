@@ -4093,6 +4093,88 @@ def check_hero_bento_moving():
 # is on the first screen. 152px is the header allowance hero-overlay
 # subtracts (9.5rem).
 COLLAGE_FIRST_SCREEN = {(390, 844): 844 - 152, (1280, 800): 800 - 152}
+# The laptops the framed prints are measured on, and the least the front print
+# has to measure on each: larger than 9rem wherever the first screen has the
+# room for it, and never at the cost of the join button. The display set's
+# header is 12rem rather than 9.5, so its prints have less room: none to grow
+# into at 1280 by 800.
+COLLAGE_LAPTOPS = {(1280, 800): 150, (1440, 900): 220, (1536, 864): 195}
+COLLAGE_LAPTOPS_TALL_HEADER = {(1280, 800): 128, (1440, 900): 195, (1536, 864): 165}
+COLLAGE_TOKEN_SETS = ("brand", "dark", "display", "sharp", "soft")
+
+
+def runner_fonts(html):
+    """The page as the CI runner draws it, which has no Georgia, Helvetica,
+    Arial or Segoe UI: a serif heading lands on DejaVu Serif, everything else
+    on DejaVu Sans, and the display set's local() chain on DejaVu Serif Bold,
+    which takes the sample headline to three lines at 1280. Where DejaVu is
+    not installed it falls to the generic family, a narrower test."""
+    html = re.sub(r'local\("Georgia(?: Bold)?"\),\s*', "", html)
+
+    def family(m):
+        value = m.group(2).strip()
+        if "Lander Display Fixture" in value:
+            return m.group(1) + value
+        if re.search(r"(^|[\s,])serif$", value):
+            return m.group(1) + '"DejaVu Serif", serif'
+        return m.group(1) + '"DejaVu Sans", sans-serif'
+    return re.sub(r"(--font-(?:heading|body):\s*)([^;]+)", family, html)
+
+
+# The front print's frame, read off the painted page: a pixel in the middle of
+# its deep lower edge and one of the ground beside the section's corner, each
+# taken from a screenshot handed back in, so the colour is what was painted
+# whatever paints it. `surface` is --color-surface through a canvas.
+COLLAGE_FRAME_POINTS_JS = """() => {
+    const img = document.querySelector('.hero-collage-photos > .hero-collage-photo .hero-collage-img');
+    const cs = getComputedStyle(img);
+    const r = img.getBoundingClientRect();
+    const band = parseFloat(cs.paddingBottom) + parseFloat(cs.borderBottomWidth);
+    const turn = (parseFloat(cs.rotate) || 0) * Math.PI / 180;
+    const down = img.offsetHeight / 2 - band / 2;
+    const s = document.querySelector('.hero-collage').getBoundingClientRect();
+    return {fx: Math.round((r.left + r.right) / 2 - down * Math.sin(turn)),
+            fy: Math.round((r.top + r.bottom) / 2 + down * Math.cos(turn)),
+            gx: Math.round(s.left + 4), gy: Math.round(Math.max(s.top, 0) + 4)};
+}"""
+COLLAGE_FRAME_JS = """async ([url, at]) => {
+    const pic = new Image();
+    pic.src = url;
+    await pic.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = pic.width; canvas.height = pic.height;
+    const ctx = canvas.getContext('2d', {willReadFrequently: true});
+    ctx.drawImage(pic, 0, 0);
+    const px = (x, y) => [...ctx.getImageData(x, y, 1, 1).data].slice(0, 3);
+    const swatch = document.createElement('canvas').getContext('2d', {willReadFrequently: true});
+    const rgb = c => { swatch.clearRect(0, 0, 1, 1); swatch.fillStyle = c; swatch.fillRect(0, 0, 1, 1);
+                       return [...swatch.getImageData(0, 0, 1, 1).data].slice(0, 3); };
+    const lum = ([r, g, b]) => [r, g, b].map(v => { v /= 255;
+        return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; })
+        .reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
+    const ratio = (a, b) => { const x = lum(a), y = lum(b);
+                              return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    const frame = px(at.fx, at.fy), ground = px(at.gx, at.gy);
+    const surface = rgb(getComputedStyle(document.documentElement).getPropertyValue('--color-surface'));
+    return {ground: lum(ground), surface: lum(surface), contrast: ratio(frame, ground),
+            fromSurface: ratio(frame, surface)};
+}"""
+
+
+def collage_frame(browser, workdir, html):
+    """COLLAGE_FRAME_JS's reading of the page at 1280 by 800."""
+    import base64
+    path = workdir / "opener.html"
+    path.write_text(html, encoding="utf-8", newline="\n")
+    tab = browser.new_page(viewport={"width": 1280, "height": 800}, device_scale_factor=1)
+    try:
+        tab.goto(path.as_uri())
+        tab.wait_for_load_state("load")
+        at = tab.evaluate(COLLAGE_FRAME_POINTS_JS)
+        url = "data:image/png;base64," + base64.b64encode(tab.screenshot()).decode()
+        return tab.evaluate(COLLAGE_FRAME_JS, [url, at])
+    finally:
+        tab.close()
 
 # Where a picture's placeholder draws its figures and its "Photo to come"
 # mark, as shares of the picture's box: from a quarter to two thirds of the
@@ -4150,8 +4232,11 @@ def _collage_workdir(tmp):
 
 
 def check_hero_collage():
-    """hero-collage: the join button on the first screen; no picture over the
-    words from 320 to 1440; every placeholder drawn whole and clear of the
+    """hero-collage: the join button on the first screen; the framed prints
+    larger on a laptop with the join button still on the first screen on
+    every sample token set, in its own fonts and the CI runner's; frames that
+    stand off a dark ground and are the card surface on a light brand; no
+    picture over the words from 320 to 1440; every placeholder drawn whole and clear of the
     pictures in front of it; a photograph left out and the rest close up;
     every rung combination passes the phone and the desktop gates."""
     import check_phone
@@ -4180,6 +4265,11 @@ def check_hero_collage():
         return {count: pics.length, fills: Math.abs(first.width - box.width),
                 centred: Math.abs((first.left + first.right) / 2 - (box.left + box.right) / 2)};
     }"""
+    collage_print_js = """() => ({
+        join: Math.round(document.querySelector('.hero-collage-btn').getBoundingClientRect().bottom
+                         - document.querySelector('.hero-collage').getBoundingClientRect().top),
+        front: Math.round(document.querySelector('.hero-collage-photos > .hero-collage-photo')
+                          .getBoundingClientRect().width)})"""
     place_js = """() => [...document.querySelectorAll('.hero-collage-front > .hero-collage-photo')]
         .map(p => { const r = p.getBoundingClientRect();
                     return [Math.round(r.left), Math.round(r.top)]; })"""
@@ -4197,6 +4287,54 @@ def check_hero_collage():
                                       viewport, join_js)
                         case(f"arrange={arrange} on {tokens} at {viewport[0]}x{viewport[1]}: the "
                              f"join button ends {got:.0f}px down, within {limit}", got <= limit)
+            for tokens in COLLAGE_TOKEN_SETS:
+                late, small = [], []
+                floors = COLLAGE_LAPTOPS_TALL_HEADER if tokens == "display" else COLLAGE_LAPTOPS
+                for viewport, least in floors.items():
+                    limit = viewport[1] - 152
+                    for fonts in ("its own fonts", "the CI runner's fonts"):
+                        html = opener_page("hero-collage", {"arrange": "prints"}, tokens)
+                        if fonts != "its own fonts":
+                            html = runner_fonts(html)
+                        got = _render(browser, workdir, html, viewport, collage_print_js)
+                        if got["join"] > limit:
+                            late.append(f"{viewport[0]}x{viewport[1]} {fonts}: {got['join']} > {limit}")
+                        if got["front"] < least:
+                            small.append(f"{viewport[0]}x{viewport[1]} {fonts}: {got['front']}px")
+                case(f"arrange=prints on {tokens}, on a laptop with its own fonts and the CI "
+                     f"runner's: the join button on the first screen"
+                     + ("" if not late else " - " + "; ".join(late[:3])), not late)
+                case(f"arrange=prints on {tokens}, on a laptop: the front print at least "
+                     + ", ".join(f"{v}px at {w}x{h}" for (w, h), v in floors.items())
+                     + ("" if not small else " - " + "; ".join(small[:3])), not small)
+            pushed = _render(browser, workdir,
+                             runner_fonts(opener_page("hero-collage", {"arrange": "prints"}, "display",
+                                                      extra_css=".hero-collage--prints .hero-collage-"
+                                                                "photos > .hero-collage-photo "
+                                                                "{ width: 15rem !important; }")),
+                             (1280, 800), collage_print_js)
+            case("catches: a front print that pushes the join button off a laptop's first "
+                 "screen in the CI runner's fonts", pushed["join"] > 800 - 152)
+            dull, moved = [], []
+            for tokens in COLLAGE_TOKEN_SETS:
+                for ground in ("plain", "soft", "brand", "deep"):
+                    got = collage_frame(browser, workdir,
+                                        opener_page("hero-collage",
+                                                    {"arrange": "prints", "ground": ground}, tokens))
+                    if got["ground"] < 0.18 and got["contrast"] < 3:
+                        dull.append(f"{tokens} {ground}: {got['contrast']:.2f}:1")
+                    if got["surface"] >= 0.5 and got["fromSurface"] > 1.03:
+                        moved.append(f"{tokens} {ground}: {got['fromSurface']:.2f}:1 from the surface")
+            case("arrange=prints: on every dark ground the frames stand 3:1 off it"
+                 + ("" if not dull else " - " + "; ".join(dull)), not dull)
+            case("arrange=prints: on a brand whose card surface is light the frames are that surface, "
+                 "on every ground" + ("" if not moved else " - " + "; ".join(moved)), not moved)
+            sunk = collage_frame(browser, workdir,
+                                 opener_page("hero-collage", {"arrange": "prints", "ground": "deep"},
+                                             "brand",
+                                             extra_css=".hero-collage--prints .hero-collage-img "
+                                                       "{ background: var(--color-scrim) !important; }"))
+            case("catches: a frame the colour of the dark ground under it", sunk["contrast"] < 3)
             tall = _render(browser, workdir,
                            opener_page("hero-collage", {}, "brand",
                                        extra_css=".hero-collage-photos { height: 40rem !important; }"),

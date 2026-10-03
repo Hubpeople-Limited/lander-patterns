@@ -63,7 +63,14 @@ still rung.
 `brand`, `deep`), each naming its own ink, as in `hero-portrait`; on `plain`
 the title is `--color-heading`. `--card-radius` rounds the stacked
 photographs, and each front one is ringed in the ground's own colour so it
-reads as laid on top. The prints are framed in `--color-surface` with
-`--card-border` and `--card-shadow`, the same on every ground. `--font-heading`
-carries the title at up to 3.5rem, its leading floored at 1.45 cap heights.
-Heights come from the width, never the viewport height.
+reads as laid on top. The prints are framed like paper, in the lighter of
+`--color-surface` and `--color-on-scrim`: the surface on a light brand, and
+on a dark brand a light frame that stands off the dark ground; on `brand`
+the surface alone, which stands off a brand colour of either depth. Each has
+`--card-border` and `--card-shadow`. `--font-heading` carries the title at up to 3.5rem, its
+leading floored at 1.45 cap heights. Heights come from the width, never the
+viewport height, with one exception: from `48rem` the prints take the room
+the first screen leaves under `--page-header-height` once a three-line
+headline, its line and the join button are in, from 8 to 9rem up to 15rem
+wide, so they grow on a taller laptop and the join button stays on the first
+screen.
