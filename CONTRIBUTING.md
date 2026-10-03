@@ -884,7 +884,11 @@ contribution — the JS goes into `lib/hub.js`, a row into `lib/REGISTRY.md`,
 and a pattern demonstrates it — and it must obey five rules:
 
 1. **The HTML must already work.** The behaviour may only enhance; if the
-   no-JS render is broken, the contribution is rejected.
+   no-JS render is broken, the contribution is rejected. One pattern holds
+   something back for its behaviour: `signup-card` draws only its first step
+   while it waits for the library, so a phone's page does not jump when the
+   library takes it over - only where scripts run, and for three seconds at
+   most, after which every question shows.
 2. **Markup is the API.** Activated only by `data-hub-module`; configured
    only by `data-hub-*` attributes; never reaches outside its own element.
 3. **Own nothing global.** No new globals (the library owns

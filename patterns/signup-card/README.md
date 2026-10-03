@@ -12,9 +12,10 @@ words one side and card the other on a wide screen, the first step above a
 laptop's fold; on a phone it follows the headline. Anything beside it goes.
 
 With the behaviour library it asks **one question at a time** (two from
-`60rem`), adds interest steps and a first name, shows live members; without it,
-it is a plain form that still submits. **It sends only what the visitor gave**,
-and the join flow asks for the password itself.
+`60rem`), adds interest steps and a first name, shows live members; it is drawn
+at that first step from the start, so nothing jumps when the library arrives,
+and shows every question if it has not come in three seconds. Without scripts
+it is a plain form that still submits. **It sends only what the visitor gave**.
 
 **What it needs.** An opener; the card's title; the brand's wording for every
 answer; the age-limit and password-next lines; HubPeople's consent sentence

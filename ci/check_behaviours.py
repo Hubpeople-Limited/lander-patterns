@@ -63,7 +63,11 @@ page, and holds each behaviour to what its row says:
                and the step event names its step;
                and a preview opens on the step its address names;
                two long "I am" answers sit one above the other on a phone,
-               short ones side by side, and no answer spills its tile
+               short ones side by side, and no answer spills its tile;
+               the card is drawn at its first step before the bundle
+               arrives, so nothing moves when it takes over, and shows
+               every question if the bundle has not come in three seconds
+               or scripting is off
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -1365,6 +1369,105 @@ def check_signup_choices(shell, name, tokens):
     return faults
 
 
+# The card as it is drawn: the questions showing, the card's height and where
+# its first question and its button sit.
+FIRST_PAINT_JS = """
+(name) => {
+  const top = (sel) => { const n = Array.from(document.querySelectorAll(sel)).find((e) => e.offsetParent);
+                         return n ? Math.round(n.getBoundingClientRect().top) : null; };
+  return {
+    parts: Array.from(document.querySelectorAll('[data-hub-signup-part]'))
+      .filter((p) => p.offsetParent !== null).map((p) => p.getAttribute('data-hub-signup-part')),
+    height: Math.round(document.querySelector(`.${name}`).getBoundingClientRect().height),
+    question: top(`.${name}-q`),
+    button: top(`.${name}-next, .${name}-submit`),
+  };
+}
+"""
+# How long a card waits for the bundle before it shows every question, and a
+# little past it.
+FIRST_PAINT_FALLBACK_MS = 3300
+
+
+def check_signup_first_paint(shell, name, tokens):
+    """The card is drawn at its first step before the bundle arrives, where
+    scripts run, so nothing moves when the bundle takes it over: the same
+    questions, the same height, the question and the button in the same
+    place. A bundle that never arrives leaves every question showing after
+    a few seconds, and with scripting off they show at once. The same page
+    with the first-step look taken away must fail, or the check cannot see
+    what it is for."""
+    where = f"{name} first paint"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    german = (html.replace('data-hub-module="signup"', 'data-hub-module="signup" lang="de"', 1)
+              .replace("<span>Sample: a man</span>", "<span>Ein alleinstehender Mann</span>", 1)
+              .replace("<span>Sample: a woman</span>", "<span>Eine Lebensabschnittsgefährtin</span>", 1))
+    fixed_mt = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="iam">.*?</fieldset>',
+                      '<input type="hidden" name="mt" value="2">', html, count=1, flags=re.S)
+    unstyled = html.replace("</style>", f".{name} :is(*, *::before) {{ animation: none !important; }}\n</style>", 1)
+
+    tag = '<script type="module" src="hub.js"></script>'
+
+    def takeover(page, width, stem):
+        """The card before the bundle arrives and once it has taken over: the
+        page is opened without the bundle, which is added a moment later, as
+        a slow connection delivers it."""
+        tab = shell.open(page.replace(tag, ""), f"{name}-first-{stem}-{width}", width=width,
+                         before=signup_stub([]))
+        try:
+            tab.wait_for_timeout(400)
+            early = tab.evaluate(FIRST_PAINT_JS, name)
+            tab.add_script_tag(url=(shell._dir / "hub.js").as_uri(), type="module")
+            tab.wait_for_function("() => !!document.querySelector('.hub-signup-live')", timeout=5000)
+            tab.wait_for_timeout(500)
+            late = tab.evaluate(FIRST_PAINT_JS, name)
+        finally:
+            tab.close()
+        return early, late
+
+    def moved(early, late):
+        return (early["parts"] != late["parts"] or abs(early["height"] - late["height"]) > 2
+                or abs((early["question"] or 0) - (late["question"] or 0)) > 2
+                or abs((early["button"] or 0) - (late["button"] or 0)) > 2)
+    for label, page, width in (("English", html, 320), ("English", html, PHONE), ("English", html, 390),
+                               ("German", german, 320), ("German", german, 390),
+                               ("English", html, WIDTH), ("a fixed 'I am'", fixed_mt, PHONE)):
+        early, late = takeover(page, width, label.replace(" ", "-").replace("'", ""))
+        if moved(early, late):
+            faults.append(f"{where}: {label} at {width}px drew {early} before the bundle and {late} once it "
+                          f"took over - the first step, the same height, nothing moved")
+    early, late = takeover(unstyled, PHONE, "control")
+    if not moved(early, late):
+        faults.append(f"{where}: the control - the card without its first-step look - did not move when "
+                      f"the bundle took over, so this check cannot see a card that jumps")
+    # No bundle at all: the first step, then every question.
+    tab = shell.open(html.replace(tag, ""), f"{name}-first-none", width=PHONE, before=signup_stub([]))
+    try:
+        tab.wait_for_timeout(400)
+        waiting = tab.evaluate(FIRST_PAINT_JS, name)["parts"]
+        tab.wait_for_timeout(FIRST_PAINT_FALLBACK_MS)
+        given_up = tab.evaluate(FIRST_PAINT_JS, name)["parts"]
+    finally:
+        tab.close()
+    if waiting != ["iam"] or given_up != ["iam", "seeking", "dob", "email"]:
+        faults.append(f"{where}: with no bundle the card showed {waiting!r}, then {given_up!r} - the first "
+                      f"step while it may still come, then every question")
+    # Scripting off: every question from the start.
+    path = shell._dir / f"{name}-first-off.html"
+    path.write_text(html, encoding="utf-8", newline="\n")
+    context = shell._browser.new_context(viewport={"width": PHONE, "height": HEIGHT}, java_script_enabled=False)
+    try:
+        tab = context.new_page()
+        tab.goto(path.as_uri())
+        off = tab.evaluate(FIRST_PAINT_JS, name)["parts"]
+    finally:
+        context.close()
+    if off != ["iam", "seeking", "dob", "email"]:
+        faults.append(f"{where}: with scripting off the card showed {off!r} - every question, at once")
+    return faults
+
+
 def check_signup(shell, name, tokens):
     where = f"{name} signup"
     faults = []
@@ -1760,6 +1863,7 @@ def check_signup(shell, name, tokens):
     # The lines after an answer and the batch-one settings are the card's;
     # the older block has neither.
     return faults + (check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
+                     + check_signup_first_paint(shell, name, tokens)
                      if name == "signup-card" else [])
 
 

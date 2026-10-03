@@ -658,16 +658,17 @@ class Phone:
             shutil.rmtree(self._dir, ignore_errors=True)
         return False
 
-    def measure(self, html, width):
+    def measure(self, html, width, scripting=True):
         page = self._dir / f"m-{width}.html"
         page.write_text(html, encoding="utf-8", newline="\n")
-        tab = self._browser.new_page(viewport={"width": width, "height": 760},
-                                     device_scale_factor=1)
+        context = self._browser.new_context(viewport={"width": width, "height": 760},
+                                            device_scale_factor=1, java_script_enabled=scripting)
         try:
+            tab = context.new_page()
             tab.goto(page.as_uri())
             return tab.evaluate(MEASURE)
         finally:
-            tab.close()
+            context.close()
 
     def faults(self, name, html, exempt_overflow=False):
         """Every fault for one document, as sentences, folded by width.
@@ -681,11 +682,19 @@ class Phone:
         the widths rather than once per width.
         """
         seen = {}
+        # A pattern drawn differently while it waits for scripts - the
+        # sign-up card shows only its first step - is measured with scripting
+        # off as well, so what it holds back is measured too.
+        states = (True, False) if "scripting: enabled" in html else (True,)
         for width in self.widths:
-            got = self.measure(html, width)
             tally = {}
-            for line in self._verdict(name, got, exempt_overflow):
-                tally[line] = tally.get(line, 0) + 1
+            for scripting in states:
+                got = self.measure(html, width, scripting)
+                here = {}
+                for line in self._verdict(name, got, exempt_overflow):
+                    here[line] = here.get(line, 0) + 1
+                for line, count in here.items():
+                    tally[line] = max(tally.get(line, 0), count)
             for line, count in tally.items():
                 seen.setdefault(line, {})[width] = count
         out = []

@@ -1347,6 +1347,13 @@ def check_pages():
 # fires passes a clean library perfectly.
 
 PHONE_FIRES = [
+    # Held back while scripts are awaited, as the sign-up card holds its
+    # later steps: a fault there is still a fault.
+    ("small print held back while scripts are awaited",
+     "@media (scripting: enabled) { .t-later { animation: t-wait 0s 3s backwards; } }"
+     " @keyframes t-wait { from { display: none; } } .t-later { font-size: 9px; }",
+     "<p>Sample first step.</p><p class='t-later'>Sample small print held back.</p>",
+     "renders at"),
     ("a fixed width wider than the phone",
      ".t-box { width: 400px; background: #eee; }",
      "<div class='t-box'>Sample</div>", "scrolls sideways"),
