@@ -43,7 +43,9 @@ its values and default in `settings.json` beside this file, every word too
 (its English default and the `{tokens}` it may carry): the date of birth as
 `boxes` or a `wheel` (a `-wide` twin from `60rem`), where the year wheel
 opens, what a complete date shows (`reward`), whether "looking for" starts
-ticked. Interest labels and place names stay as the join flow spells them.
+ticked, and `screens`, the order and grouping (`iam seeking | dob | email`;
+a step left out, the join flow asks). Interest labels and place names stay
+as the join flow spells them.
 
 **Where the visitor lives.** `data-hub-signup-places` says where the page's
 visitors are, in the platform's own location names: `world`, a country (`UK`),

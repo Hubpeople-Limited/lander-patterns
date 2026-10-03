@@ -47,7 +47,12 @@ page, and holds each behaviour to what its row says:
                the answers so far;
                dob and dob-wide give the wheel at one width and the boxes at
                the other, keeping a date across the switch, and dob-start
-               opens the year wheel at an age with day and month blank
+               opens the year wheel at an age with day and month blank;
+               screens (and screens-wide from 60rem) set the order and
+               grouping, a question left out is neither asked nor sent,
+               a grouping that breaks the rules is ignored whole, a
+               visitor widened mid-way stays with their question, and the
+               members wait for "looking for" wherever it is asked
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -171,6 +176,9 @@ CONTROL_SUBSTITUTIONS = {
                             '.map(words).filter(Boolean).join(" & ").toLowerCase() : "";'),
     "signup-dob-wide": ('const dobWay = () => (optAt("dob") === "wheel" ? "wheel" : "boxes");',
                         'const dobWay = () => (opt("dob") === "wheel" ? "wheel" : "boxes");'),
+    "signup-screens": ('const plan = () => (ownScreens(optAt("screens")) ||', "const plan = () => (null ||"),
+    "signup-dob-left": ("if (age() != null) {", "if (true) {"),
+    "signup-seeking-wait": ("const seekingSettled = () =>", "const seekingSettled = () => true ||"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -815,12 +823,21 @@ def tap(tab, selector):
     whatever slid under it."""
     target = tab.locator(selector).first
     box = target.bounding_box()
+    # Off the screen, a finger scrolls to it first; a press at coordinates
+    # past the viewport lands on nothing.
+    if box and (box["y"] < 0 or box["y"] + box["height"] > (tab.viewport_size or {}).get("height", HEIGHT)):
+        target.evaluate("e => e.scrollIntoView({ block: 'center' })")
+        box = target.bounding_box()
     for _ in range(40):
         tab.wait_for_timeout(50)
         again = target.bounding_box()
         if again == box:
             break
         box = again
+    # Nothing showing to press: the press is not made, and whatever the check
+    # reads next says what the card did instead.
+    if box is None:
+        return
     tab.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
 
 
@@ -860,6 +877,172 @@ def answer_part(tab, name, part):
         tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam Lee")
         tab.fill('input[name="em"]', "sam@example.com")
         tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+
+
+def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None):
+    """A card page opened under reduced motion - a tapped answer moves on at
+    once, so a walk never races the card - with the member search, places and
+    hand-off stubbed and every step event kept in window.__signupSteps."""
+    def before(tab):
+        (stub or signup_stub(SIGNUP_MEMBERS, searches))(tab)
+        tab.add_init_script("window.__signupSteps = []; addEventListener('hub:signup:step', "
+                            "e => window.__signupSteps.push(e.detail))")
+    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=query)
+    tab.wait_for_timeout(300)
+    return tab
+
+
+def walk_to(tab, name, stop):
+    """Answer each screen as it comes and go on, until a screen holds `stop`;
+    every screen's questions on the way, in order, the last one included."""
+    seen = []
+    for _ in range(10):
+        parts = tab.evaluate(SIGNUP_PARTS_JS)
+        seen.append(parts)
+        if stop in parts or not parts:
+            break
+        for part in parts:
+            answer_part(tab, name, part)
+        tab.wait_for_timeout(300)
+        if tab.evaluate(SIGNUP_PARTS_JS) == parts:
+            # The last screen has no Next: a walk that reaches it stops.
+            if not tab.locator(f".{name}-next").is_visible():
+                break
+            tap(tab, f".{name}-next")
+            tab.wait_for_timeout(400)
+    return seen
+
+
+def hand_off(tab, name):
+    """Answer the email step, send the card, and the hand-off's fields."""
+    answer_part(tab, name, "email")
+    tap(tab, f".{name}-submit")
+    # Read at once: under reduced motion the card leaves for the join link
+    # 200ms after the hand-off, and the page with it.
+    tab.wait_for_timeout(100)
+    url = tab.evaluate("() => window.__signupHandoff || ''")
+    return dict(p.split("=", 1) for p in url.split("?", 1)[-1].split("&") if "=" in p) if url else {}
+
+
+def check_signup_choices(shell, name, tokens):
+    """The card's batch-one settings, each set and each checked against what
+    it promises: screens, the line after an answer, the members row, the
+    markers, the preview step and the long-answer layout."""
+    where = f"{name} signup settings"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+
+    def walk(attrs, width=PHONE, stem="screens"):
+        tab = open_card(shell, with_settings(html, attrs), f"{name}-signup-{stem}-{width}", width=width)
+        try:
+            seen = walk_to(tab, name, "email")
+            fields = hand_off(tab, name) if seen and "email" in seen[-1] else {}
+        finally:
+            tab.close()
+        return seen, fields
+
+    # The sample's places do not load, so its location step drops.
+    today = [["iam"], ["seeking"], ["dob"], ["intent"], ["enjoy"], ["email"]]
+    seen, fields = walk('data-hub-signup-screens="iam seeking | dob | email"')
+    if seen != [["iam", "seeking"], ["dob"], ["email"]]:
+        faults.append(f"{where}: screens='iam seeking | dob | email' showed {seen!r}")
+    elif fields.get("mt") != "2" or "interests" in fields:
+        faults.append(f"{where}: with the interest steps left out of screens the hand-off sent 'I am' "
+                      f"{fields.get('mt')!r} and interests {fields.get('interests')!r} - the answers given, "
+                      f"and no interests")
+    seen, fields = walk('data-hub-signup-screens="iam | seeking | email"', stem="no-dob")
+    if seen != [["iam"], ["seeking"], ["email"]] or {"dd", "dm", "dy"} & set(fields) or fields.get("mt") != "2":
+        faults.append(f"{where}: a date of birth left to the join flow showed {seen!r} and sent "
+                      f"{ {k: fields.get(k) for k in ('mt', 'dd', 'dm', 'dy')} } - not asked and not sent, "
+                      f"the other answers sent")
+    # "Looking for" may come anywhere; the members wait for it (below).
+    seen, fields = walk('data-hub-signup-screens="iam dob | seeking | email"', stem="seeking-late")
+    if seen != [["iam", "dob"], ["seeking"], ["email"]] or fields.get("lf") != "1":
+        faults.append(f"{where}: screens='iam dob | seeking | email' showed {seen!r} and sent lf="
+                      f"{fields.get('lf')!r} - 'looking for' after the date of birth, as written")
+    for bad, why in (("email | iam seeking", "email not in the last screen"),
+                     ("Iam seeking | dob | email", "a step it does not know"),
+                     ("iam | iam seeking | email", "a step named twice")):
+        seen, _ = walk(f'data-hub-signup-screens="{bad}"', stem="bad")
+        if seen != today:
+            faults.append(f"{where}: screens='{bad}' ({why}) showed {seen!r} - ignored whole, for today's grouping")
+    seen, _ = walk('data-hub-signup-screens="  iam   seeking |dob| email | "', stem="loose")
+    if seen != [["iam", "seeking"], ["dob"], ["email"]]:
+        faults.append(f"{where}: screens with stray spaces and a trailing '|' showed {seen!r}")
+    seen, _ = walk('data-hub-signup-screens="iam | seeking location | dob | email"', stem="no-places")
+    if seen != [["iam"], ["seeking"], ["dob"], ["email"]]:
+        faults.append(f"{where}: places that would not load beside 'looking for' showed {seen!r} - the "
+                      f"location goes and 'looking for' keeps its screen")
+    seen, _ = walk('data-hub-signup-screens="iam | seeking | dob | email" '
+                   'data-hub-signup-screens-wide="iam seeking dob email"', width=WIDTH, stem="wide")
+    if seen != [["iam", "seeking", "dob", "email"]]:
+        faults.append(f"{where}: screens-wide with every question on one screen showed {seen!r} at {WIDTH}px")
+    # A screen of the page's own asks its questions in the order written.
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-screens="iam | seeking | intent dob | enjoy | email"'),
+                    f"{name}-signup-screens-order")
+    try:
+        walk_to(tab, name, "dob")
+        intent_first = tab.evaluate(
+            "() => !!(document.querySelector('[data-hub-signup-part=\"intent\"]').compareDocumentPosition("
+            "document.querySelector('[data-hub-signup-part=\"dob\"]')) & Node.DOCUMENT_POSITION_FOLLOWING)")
+    finally:
+        tab.close()
+    if not intent_first:
+        faults.append(f"{where}: screens 'intent dob' put the date of birth first - the order written is the order asked")
+    # Across 60rem the visitor stays with the question they were on.
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-screens="iam | seeking | dob | intent | email" '
+                                                'data-hub-signup-screens-wide="iam seeking | dob intent | email"'),
+                    f"{name}-signup-screens-resize")
+    try:
+        walk_to(tab, name, "dob")
+        tab.set_viewport_size({"width": WIDTH, "height": HEIGHT})
+        tab.wait_for_timeout(500)
+        wide_parts = tab.evaluate(SIGNUP_PARTS_JS)
+        kept = tab.evaluate("() => (document.querySelector('input[name=\"mt\"]:checked') || {}).value || ''")
+    finally:
+        tab.close()
+    if wide_parts != ["dob", "intent"] or kept != "2":
+        faults.append(f"{where}: widened on the date of birth, the card showed {wide_parts!r} with 'I am' "
+                      f"{kept!r} - the date of birth beside the first interest step, every answer kept")
+    # With its own order, "looking for" may come last: the members wait for
+    # it, no search made before, then show the members it asks for. A fixed
+    # answer, or one ticked from "I am", does not wait.
+    late = 'data-hub-signup-screens="iam | dob | seeking email"'
+    searches = []
+    tab = open_card(shell, with_settings(html, late), f"{name}-signup-members-late", searches=searches)
+    try:
+        held = []
+        for part in ("iam", "dob"):
+            held.append(tab.locator(f".{name}-members").is_visible())
+            walk_to(tab, name, "seeking" if part == "dob" else "dob")
+        held.append(tab.locator(f".{name}-members").is_visible())
+        asked_before = len(searches)
+        answer_part(tab, name, "seeking")
+        tab.wait_for_timeout(800)
+        shown = tab.locator(f".{name}-members").is_visible()
+        faces = tab.locator(f".{name}-members img:visible").count()
+    finally:
+        tab.close()
+    if any(held) or asked_before or not shown or not faces or not searches or \
+            "membertypes=male" not in searches[-1]:
+        faults.append(f"{where}: with 'looking for' last the members showed {held!r} before it was answered "
+                      f"({asked_before} search(es)), then {faces} face(s) from "
+                      f"{searches[-1] if searches else None!r} - none and no search until it is answered, "
+                      f"then the men it asked for")
+    fixed_lf = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="seeking">.*?</fieldset>',
+                      '<input type="hidden" name="lf" value="1">', html, count=1, flags=re.S)
+    for label, attrs, page in (("seeking=opposite", late + ' data-hub-signup-seeking="opposite"', html),
+                               ("a fixed 'looking for'", late, fixed_lf)):
+        tab = open_card(shell, with_settings(page, attrs), f"{name}-signup-members-settled")
+        try:
+            tab.wait_for_timeout(600)
+            shown = tab.locator(f".{name}-members").is_visible()
+        finally:
+            tab.close()
+        if not shown:
+            faults.append(f"{where}: with 'looking for' last and {label}, the members waited - they show "
+                          f"from the start")
+    return faults
 
 
 def check_signup(shell, name, tokens):
@@ -1249,8 +1432,10 @@ def check_signup(shell, name, tokens):
     if opened != ["", "", year]:
         faults.append(f"{where}: dob-start=30 opened the wheels on {opened!r} - the year {year}, "
                       f"day and month blank")
-    # The lines after an answer are the card's; the older block has none.
-    return faults + (check_signup_messages(shell, name, tokens) if name == "signup-card" else [])
+    # The lines after an answer and the batch-one settings are the card's;
+    # the older block has neither.
+    return faults + (check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
+                     if name == "signup-card" else [])
 
 
 def messages_stub(members, platform_file):
