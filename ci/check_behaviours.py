@@ -58,7 +58,9 @@ page, and holds each behaviour to what its row says:
                members-from holds the members row until a named answer,
                or for good, and members-caption=off shows the faces alone;
                the members row fills with as many faces as it has room
-               for at every width, or members-count sets how many
+               for at every width, or members-count sets how many;
+               the card carries the step showing and each answered question,
+               and the step event names its step
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -192,6 +194,9 @@ CONTROL_SUBSTITUTIONS = {
     "signup-members-from": ('if (from === "off") return false;', "if (false) return false;"),
     "signup-caption": ('const captionOn = opt("members-caption") !== "off";', "const captionOn = true;"),
     "signup-fill": ("if (!fill || !line || k <= 4 || lines() <= 2) break;", "break;"),
+    "signup-answered": ('parts[k].toggleAttribute("data-hub-signup-answered",',
+                        'parts[k].toggleAttribute("data-hub-signup-unanswered",'),
+    "signup-at": ('el.setAttribute("data-hub-signup-at", on.join(" "));', 'el.setAttribute("data-hub-signup-at", "");'),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1269,6 +1274,24 @@ def check_signup_choices(shell, name, tokens):
         if not got or (want and got["faces"] != want) or (not want and (fill_fault(got) or got["faces"] <= 2)):
             faults.append(f"{where}: members-count=2 members-count-wide=fill at {width}px showed "
                           f"{got and got['faces']} faces - " + ("two" if want else "as many as fit"))
+    # Markers: the step showing on the card, each answered question, and the
+    # step's name in the step event, so a report survives a page's own order.
+    tab = open_card(shell, html, f"{name}-signup-marks")
+    try:
+        at_first = tab.evaluate(f"() => document.querySelector('.{name}').getAttribute('data-hub-signup-at')")
+        answer_part(tab, name, "iam")
+        tab.wait_for_timeout(400)
+        marked = tab.evaluate("() => Array.from(document.querySelectorAll('[data-hub-signup-answered]'))"
+                              ".map((p) => p.getAttribute('data-hub-signup-part'))")
+        at_now = tab.evaluate(f"() => document.querySelector('.{name}').getAttribute('data-hub-signup-at')")
+        last = tab.evaluate("() => window.__signupSteps.slice(-1)[0] || null")
+    finally:
+        tab.close()
+    if (at_first, at_now) != ("iam", "seeking") or marked != ["iam"]:
+        faults.append(f"{where}: the card was marked at {at_first!r} then {at_now!r}, answered {marked!r} - "
+                      f"'iam' then 'seeking', 'iam' answered")
+    if not last or last.get("name") != "seeking" or last.get("step") != 2:
+        faults.append(f"{where}: the step event said {last!r} on the second step - step 2, named 'seeking'")
     return faults
 
 
