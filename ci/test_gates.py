@@ -2415,8 +2415,9 @@ def check_recipes():
 
 def check_header_fit():
     """ci/check_header.py's positive controls: the gate fires when the fold is
-    switched off, and the one-row check is quiet on the menu-free bar as it
-    ships and fires with the bar as it broke. The shipped header itself is
+    switched off, the one-row check is quiet on the menu-free bar as it ships
+    and fires with the bar as it broke, and the shut-panel check fires when a
+    third level takes the pointer on its own. The shipped header itself is
     swept by the workflow's own check_header steps, at every width this ran
     at and more, so it is not rendered here a second time. Skips, and says
     so, without a browser."""
@@ -2429,7 +2430,9 @@ def check_header_fit():
     for label, argv, want in (
             ("header gate fires with the fold switched off", ["--broken"], 0),
             ("header gate holds the menu-free bar to one row, and fires with the "
-             "bar as it broke put back", ["--broken-row"], 0)):
+             "bar as it broke put back", ["--broken-row"], 0),
+            ("header gate fires when a third level in a shut panel takes the "
+             "pointer", ["--broken-shut"], 0)):
         got = subprocess.run([sys.executable, str(HERE / "check_header.py")] + argv,
                              capture_output=True, text=True, encoding="utf-8")
         ok = got.returncode == want

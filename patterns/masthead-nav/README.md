@@ -64,8 +64,8 @@ almost twice as often. **`icon` is the default**: on a phone the bars alone are 
 visitors expect. **`edge` costs no height.**
 
 **No script, at any width.** The menu is a native `<details>`/`<summary>`; a shut drawer is
-`visibility: hidden`. Submenus open on hover and `:focus-within`; the bar clips sideways, so a
-faded panel never widens the page, and the last two items hang their panels from the end edge.
+`visibility: hidden`. Submenus open on hover and `:focus-within`; a shut one is faded, takes no
+pointer down to its third level, and never widens the page; the last two hang from the end edge.
 One limit stays without the library: on a row that has wrapped, a parent at a row's right edge
 has its panel clipped at the bar, because CSS cannot tell which item ends a row; `menu` measures
 it and turns the panel round, and every shell carries the bundle. **The four behaviours add**:
