@@ -73,4 +73,6 @@ viewport height, with one exception: from `48rem` the prints take the room
 the first screen leaves under `--page-header-height` once a three-line
 headline, its line and the join button are in, from 8 to 9rem up to 15rem
 wide, so they grow on a taller laptop and the join button stays on the first
-screen.
+screen. On a laptop 720 or 768px tall, where 8rem would push the join button
+below the first screen, they give way to the room left, and never go below
+5.5rem.
