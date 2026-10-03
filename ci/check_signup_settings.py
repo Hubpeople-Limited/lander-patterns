@@ -18,8 +18,9 @@ set, so this compares the two:
             interest step (chipStep), or as a moment's own lines (say-<moment>
             for each moment speak() is called with)
   twins     the settings marked wide are exactly the ones read with optAt()
-  values    every value a choice takes other than its default is a word the
-            bundle names (a value nothing names does nothing); a screens
+  values    every value a choice (or a count's word, such as fill) takes
+            other than its default is a word the bundle names (a value
+            nothing names does nothing); a screens
             setting's steps are SIGNUP_STEPS, a moments setting's moments
             SIGNUP_MOMENTS
   shape     every row has a kind the toolkit knows, and the fields that kind
@@ -45,6 +46,7 @@ BUNDLE = ROOT / "lib" / "hub.js"
 # toolkit checks a page's value by kind, so a kind it does not know is a
 # setting it cannot check.
 KINDS = {"choice": ("values", "default"), "age": ("values", "min", "max", "default"),
+         "count": ("values", "min", "max", "default"),
          "labels": (), "places": (), "guid": (), "url": (), "lines": ("tokens",),
          "label-lines": ("tokens",), "screens": ("steps",), "moments": ("values", "moments", "default")}
 READ = re.compile(r'\bopt(?:At)?\("([a-z][\w-]*)"\)')
@@ -113,7 +115,7 @@ def faults(table, js):
         for f in KINDS[kind]:
             if f not in row:
                 out.append(f"settings: {n!r} ({kind}) has no {f!r}")
-        if kind in ("choice", "moments"):
+        if kind in ("choice", "moments", "count"):
             for v in row.get("values") or []:
                 if v != row.get("default") and v not in words_named:
                     out.append(f"settings: {n!r} takes {v!r}, which hub.js never names, so it would do nothing")

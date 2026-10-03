@@ -56,7 +56,9 @@ page, and holds each behaviour to what its row says:
                messages names the moments that speak, and messages-keep=step
                lets a line last the step it leads into and no longer;
                members-from holds the members row until a named answer,
-               or for good, and members-caption=off shows the faces alone
+               or for good, and members-caption=off shows the faces alone;
+               the members row fills with as many faces as it has room
+               for at every width, or members-count sets how many
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -189,6 +191,7 @@ CONTROL_SUBSTITUTIONS = {
                     "if (keepStep && dir > 0 && at > saidAt + 1) void cheer;"),
     "signup-members-from": ('if (from === "off") return false;', "if (false) return false;"),
     "signup-caption": ('const captionOn = opt("members-caption") !== "off";', "const captionOn = true;"),
+    "signup-fill": ("if (!fill || !line || k <= 4 || lines() <= 2) break;", "break;"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -792,6 +795,54 @@ SIGNUP_PARTS_JS = """
 """
 
 
+# The members row as it stands: the faces showing and built, whether the row
+# spills, how many lines its caption takes, and the same with one more face
+# showed - the face a row that fills would have taken if it had room.
+FILL_JS = """
+(name) => {
+  const strip = document.querySelector(`.${name}-members`);
+  if (!strip || strip.offsetParent === null) return null;
+  const faces = Array.from(strip.querySelectorAll(`.${name}-face`));
+  const line = strip.querySelector('p');
+  const lines = () => {
+    if (!line) return 0;
+    const r = document.createRange();
+    r.selectNodeContents(line);
+    return new Set(Array.from(r.getClientRects()).map((b) => Math.round(b.bottom))).size;
+  };
+  const over = () => strip.scrollWidth > strip.clientWidth + 1;
+  const now = { faces: faces.filter((f) => !f.hidden).length, built: faces.length, over: over(),
+                lines: lines(), caption: !!line, more: null };
+  const next = faces.find((f) => f.hidden);
+  if (next) {
+    next.hidden = false;
+    now.more = { over: over(), lines: lines() };
+    next.hidden = true;
+  }
+  return now;
+}
+"""
+
+
+def fill_fault(got, found=None):
+    """What is wrong with a members row that should fill, or None. `found`,
+    the members the search answered with: a row that builds fewer than that
+    cannot show more as it widens."""
+    found = len(SIGNUP_MEMBERS) if found is None else found
+    if not got:
+        return "no members row showed"
+    if got["built"] < found:
+        return f"{got['built']} of the {found} members found were built, {got['faces']} showing"
+    if got["over"]:
+        return f"{got['faces']} faces spill out of the row"
+    if got["caption"] and got["faces"] > 4 and got["lines"] > 2:
+        return f"{got['faces']} faces left the line {got['lines']} lines - two at most past four faces"
+    more = got["more"]
+    if more and not more["over"] and not (got["caption"] and got["faces"] + 1 > 4 and more["lines"] > 2):
+        return f"{got['faces']} of {got['built']} faces left room for another"
+    return None
+
+
 def signup_stub(members, searches=None):
     """Answer the member search, serve the places, and keep the hand-off instead
     of following it. `searches`, a list, collects every member search made."""
@@ -1181,6 +1232,43 @@ def check_signup_choices(shell, name, tokens):
     if not shown:
         faults.append(f"{where}: members-from=dob on a card that leaves the date of birth to the join flow "
                       f"showed no row - a step no screen asks counts as answered")
+    # How many faces: fill, the default, takes as many as the row has room
+    # for, beside a line of two lines at most, at every width and when the
+    # width changes; a number takes that many, with a -wide twin from 60rem.
+    german = with_settings(html, 'lang="de" data-hub-signup-members="{who} im Alter von {ages}, gerade online" '
+                                 'data-hub-signup-who="Männer;Frauen;Paare;Nichtbinäre Mitglieder;Mitglieder"')
+
+    def row_at(page, width, stem, resize=None):
+        tab = open_card(shell, page, f"{name}-signup-count-{stem}-{width}", width=width)
+        try:
+            tab.wait_for_timeout(700)
+            if resize:
+                tab.set_viewport_size({"width": resize, "height": HEIGHT})
+                tab.wait_for_timeout(700)
+            return tab.evaluate(FILL_JS, name)
+        finally:
+            tab.close()
+    wider = html.replace("</style>", f".{name} {{ max-width: none; }}\n</style>", 1)
+    for width in (320, 390, 768, 1280):
+        for label, page in (("English", html), ("German", german),
+                            ("no line", with_settings(html, 'data-hub-signup-members-caption="off"')),
+                            ("a card as wide as its column", wider)):
+            got = row_at(page, width, re.sub(r"\W+", "-", label))
+            fault = fill_fault(got)
+            if fault or (got and got["faces"] > got["built"]):
+                faults.append(f"{where}: members at {width}px, {label}: {fault or 'more faces than found'}")
+            elif label == "a card as wide as its column" and width >= 768 and got["faces"] <= 6:
+                faults.append(f"{where}: a card {width}px wide showed {got['faces']} faces - the row fills")
+    narrow = row_at(wider, PHONE, "resized", resize=768)
+    if fill_fault(narrow) or not narrow or narrow["faces"] <= 6:
+        faults.append(f"{where}: a row widened from {PHONE}px to 768px showed {narrow and narrow['faces']} "
+                      f"faces ({fill_fault(narrow)}) - measured again at its new width")
+    twin = with_settings(html, 'data-hub-signup-members-count="2" data-hub-signup-members-count-wide="fill"')
+    for width, want in ((390, 2), (WIDTH, None)):
+        got = row_at(twin, width, "twin")
+        if not got or (want and got["faces"] != want) or (not want and (fill_fault(got) or got["faces"] <= 2)):
+            faults.append(f"{where}: members-count=2 members-count-wide=fill at {width}px showed "
+                          f"{got and got['faces']} faces - " + ("two" if want else "as many as fit"))
     return faults
 
 
@@ -1208,15 +1296,20 @@ def check_signup(shell, name, tokens):
         tab.wait_for_timeout(900)
         if tab.evaluate(SIGNUP_PARTS_JS) != ["seeking"]:
             faults.append(f"{where}: a tapped single answer did not move on by itself")
-        before = tab.locator(f".{name}-members img").evaluate_all("els => els.map(e => e.src)")
+        showing = f".{name}-members .{name}-face:not([hidden]) img"
+        before = tab.locator(showing).evaluate_all("els => els.map(e => e.src)")
         tap(tab, face.format("lf", 1))
+        tab.wait_for_timeout(600)
+        # Read after one answer: a row that shows half the members found has
+        # shown them all after two, and goes back to the first it showed.
+        after = tab.locator(showing).evaluate_all("els => els.map(e => e.src)")
         tap(tab, face.format("lf", 2))
         tab.wait_for_timeout(600)
-        after = tab.locator(f".{name}-members img").evaluate_all("els => els.map(e => e.src)")
-        if len(after) != 4:
-            faults.append(f"{where}: four members should show once 'looking for' is answered")
+        row = fill_fault(tab.evaluate(FILL_JS, name))
+        if row:
+            faults.append(f"{where}: once 'looking for' is answered the members row should fill - {row}")
         elif before and not set(after) - set(before):
-            faults.append(f"{where}: answering 'looking for' showed the same four faces again, with "
+            faults.append(f"{where}: answering 'looking for' showed the same faces again, with "
                           f"unseen members in the results")
         tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
@@ -2184,11 +2277,15 @@ SIGNUP_SNAPSHOT_JS = """
   const card = document.querySelector('[data-hub-module~="signup"]');
   const copy = card.cloneNode(true);
   [copy, ...copy.querySelectorAll('*')].forEach((n) => added.forEach((a) => n.removeAttribute(a)));
+  // The members row fills to its width on this bundle and held four on the
+  // last: whether it shows is compared, and what it holds is checked apart.
+  const strip = card.querySelector('.signup-card-members');
+  copy.querySelectorAll('.signup-card-members').forEach((n) => n.replaceChildren());
   return {
     html: copy.outerHTML.replace(/hub-signup-places-[a-z0-9]{1,6}/g, 'hub-signup-places-x'),
     shown: Array.from(card.querySelectorAll('[data-hub-signup-part]'))
       .filter((p) => p.offsetParent !== null).map((p) => p.getAttribute('data-hub-signup-part')),
-    text: card.innerText,
+    text: card.innerText.replace(strip ? strip.innerText : '', ''),
     values: Array.from(card.querySelectorAll('input, select'))
       .map((i) => (i.type === 'checkbox' || i.type === 'radio') ? i.checked : i.value),
   };
@@ -2225,7 +2322,7 @@ def signup_walk(shell, html, stem, width):
     """Step a card through as a visitor does: each screen's questions
     answered, Back once and on again on the second screen, then the
     hand-off; a snapshot after every move. (snapshots, errors thrown)."""
-    errors, snaps = [], []
+    errors, snaps, rows = [], [], []
 
     def before(tab):
         signup_stub(SIGNUP_MEMBERS)(tab)
@@ -2235,7 +2332,9 @@ def signup_walk(shell, html, stem, width):
 
     def snap(label):
         tab.wait_for_timeout(600)
-        snaps.append((label, tab.evaluate(SIGNUP_SNAPSHOT_JS, list(SIGNUP_ADDED))))
+        got = tab.evaluate(SIGNUP_SNAPSHOT_JS, list(SIGNUP_ADDED))
+        rows.append((label, tab.evaluate(FILL_JS, "signup-card")))
+        snaps.append((label, got))
     try:
         snap("arrival")
         for n in range(1, 11):
@@ -2266,7 +2365,7 @@ def signup_walk(shell, html, stem, width):
         snaps.append(("stopped", type(e).__name__))
     finally:
         tab.close()
-    return snaps, errors
+    return snaps, errors, rows
 
 
 def check_signup_compat(shell, tokens, version, old_source):
@@ -2295,10 +2394,10 @@ def check_signup_compat(shell, tokens, version, old_source):
             for width in (PHONE, WIDTH):
                 # One file name for both pages: the pn handed off carries the
                 # page's path, and it must be the same path on both bundles.
-                a, a_err = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub.js", attrs),
-                                       "compat-signup", width)
-                b, _ = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub-previous.js", attrs),
-                                   "compat-signup", width)
+                a, a_err, a_rows = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub.js", attrs),
+                                               "compat-signup", width)
+                b, _, _ = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub-previous.js", attrs),
+                                      "compat-signup", width)
                 count += 1
                 where = f"compat signup: {label}, {attrs or 'no settings'}, {width}px"
                 if a_err:
@@ -2309,6 +2408,12 @@ def check_signup_compat(shell, tokens, version, old_source):
                     if snap_a != snap_b:
                         faults.append(f"{where}: at '{at_a}' the card differs from {version}'s - "
                                       + where_apart(snap_a, snap_b))
+                        break
+                # Every card's members fill their row on this bundle.
+                for at_a, row in a_rows:
+                    if row and fill_fault(row):
+                        faults.append(f"{where}: at '{at_a}' {fill_fault(row)} - every card's members "
+                                      f"fill their row")
                         break
     return faults, count
 
