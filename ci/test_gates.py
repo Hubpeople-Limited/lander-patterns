@@ -934,6 +934,11 @@ MARQUEE_SLOW_JS = """() => {
 }"""
 
 
+# The fix's one line, turned back: the position read from the scroller each
+# frame, which holds only whole pixels.
+MARQUEE_SLOW_CONTROL = ("        at += speed * ((now - last) / 1000);",
+                        "        at = track.scrollLeft + speed * ((now - last) / 1000);")
+
 def check_marquee_slow_glide():
     """A gliding row moves however small its step a frame. The browser keeps
     a scroller's offset in whole pixels, so a step under half a pixel (the
@@ -985,20 +990,21 @@ def check_marquee_slow_glide():
         finally:
             tab.close()
 
-    tag = (cb.ROOT / "LATEST").read_text(encoding="utf-8").strip()
-    old = subprocess.run(["git", "show", f"{tag}:lib/hub.js"], cwd=cb.ROOT, capture_output=True,
-                         text=True, encoding="utf-8")
     with cb.Shell(False) as shell:
         a, b = glide(page("hub.js"), "slow-glide")
         case("today's member-grid row at ten pixels a second moves", a["version"] == cb.bundle_version()
              and b["copies"] and b["left"] - a["left"] >= 10, (a, b))
-        if old.returncode == 0 and "let at = track.scrollLeft" not in old.stdout:
-            (shell._dir / "hub-previous.js").write_text(old.stdout, encoding="utf-8", newline="\n")
-            a, b = glide(page("hub-previous.js"), "slow-glide-previous")
-            case(f"control: the {tag} bundle, which rounds the step away, does not",
+        # The control is this bundle with the step taken from the scroller
+        # each frame again, as it was before 1.12.3: it rounds the step away.
+        source = (shell._dir / "hub.js").read_text(encoding="utf-8")
+        if MARQUEE_SLOW_CONTROL[0] in source:
+            (shell._dir / "hub-rounding.js").write_text(source.replace(*MARQUEE_SLOW_CONTROL, 1),
+                                                        encoding="utf-8", newline="\n")
+            a, b = glide(page("hub-rounding.js"), "slow-glide-rounding")
+            case("control: the step read back from the scroller each frame is rounded away",
                  b["copies"] and b["left"] - a["left"] < 1, (a, b))
         else:
-            case(f"control: the {tag} bundle is the one before the fix", False, tag)
+            case("control: the substitution still matches lib/hub.js", False, MARQUEE_SLOW_CONTROL[0])
     return failures
 
 
@@ -4361,7 +4367,14 @@ def check_marquee_fit():
             # first long row read went on loading its faces while the second
             # page found them cached, so the two bundles were not compared alike.
             tab.wait_for_function("() => Array.from(document.images).every(i => i.complete)", timeout=15000)
-            tab.evaluate("() => document.querySelector('[data-members]').scrollIntoView()")
+            tab.evaluate("() => document.querySelector('[data-members]').scrollIntoView({block: 'center'})")
+            # The row halts under a pointer, as it should for a visitor; the
+            # test's pointer is put where the row is not (as the slow-glide
+            # gate does), so a runner that leaves it over the row does not
+            # read as a row that cannot move.
+            box = tab.evaluate("() => { const r = document.querySelector('[data-members]')"
+                               ".getBoundingClientRect(); return [r.top, r.bottom]; }")
+            tab.mouse.move(2, 2 if box[0] > 10 else min(box[1] + 5, 795))
             tab.wait_for_timeout(300)
             first = tab.evaluate(MARQUEE_FIT_JS)
             # A row that glides is given up to six seconds to show it: on a
