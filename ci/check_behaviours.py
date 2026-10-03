@@ -54,7 +54,9 @@ page, and holds each behaviour to what its row says:
                visitor widened mid-way stays with their question, and the
                members wait for "looking for" wherever it is asked;
                messages names the moments that speak, and messages-keep=step
-               lets a line last the step it leads into and no longer
+               lets a line last the step it leads into and no longer;
+               members-from holds the members row until a named answer,
+               or for good, and members-caption=off shows the faces alone
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -185,6 +187,8 @@ CONTROL_SUBSTITUTIONS = {
                        "if (!talk) return;"),
     "signup-keep": ("if (keepStep && dir > 0 && at > saidAt + 1) cheer.hidden = true;",
                     "if (keepStep && dir > 0 && at > saidAt + 1) void cheer;"),
+    "signup-members-from": ('if (from === "off") return false;', "if (false) return false;"),
+    "signup-caption": ('const captionOn = opt("members-caption") !== "off";', "const captionOn = true;"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1116,6 +1120,67 @@ def check_signup_choices(shell, name, tokens):
     elif after is not None:
         faults.append(f"{where}: messages-keep=step still showed {after!r} a step after the one the "
                       f"line led into")
+    # The members row: when it shows (members-from) and whether its line
+    # shows (members-caption).
+    searches = []
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="seeking"'),
+                    f"{name}-signup-members-from", searches=searches)
+    try:
+        tab.wait_for_timeout(400)
+        at_first, asked_first = tab.locator(f".{name}-members").is_visible(), len(searches)
+        answer_part(tab, name, "iam")
+        tab.wait_for_timeout(500)
+        after_iam = tab.locator(f".{name}-members").is_visible()
+        answer_part(tab, name, "seeking")
+        tab.wait_for_timeout(700)
+        faces = tab.locator(f".{name}-members img:visible").count()
+    finally:
+        tab.close()
+    if at_first or asked_first or after_iam or not faces:
+        faults.append(f"{where}: members-from=seeking showed the row on arrival {at_first} (searches "
+                      f"{asked_first}), after 'I am' {after_iam}, and {faces} faces after 'looking for' - "
+                      f"none until 'looking for' is answered, then the members")
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="seeking" '
+                                                'data-hub-signup-seeking="opposite"'),
+                    f"{name}-signup-members-from-ticked")
+    try:
+        tab.wait_for_timeout(600)
+        ticked = tab.locator(f".{name}-members").is_visible()
+    finally:
+        tab.close()
+    if not ticked:
+        faults.append(f"{where}: members-from=seeking with seeking=opposite waited - an answer ticked "
+                      f"from 'I am' shows the row from the start")
+    searches = []
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="off"'),
+                    f"{name}-signup-members-off", searches=searches)
+    try:
+        walk_to(tab, name, "email")
+        shown = tab.locator(f".{name}-members").is_visible()
+    finally:
+        tab.close()
+    if shown or searches:
+        faults.append(f"{where}: members-from=off showed the row ({shown}) or searched ({len(searches)}) - never")
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-caption="off"'), f"{name}-signup-caption")
+    try:
+        tab.wait_for_timeout(600)
+        faces = tab.locator(f".{name}-members img:visible").count()
+        lines = tab.locator(f".{name}-members p").count()
+    finally:
+        tab.close()
+    if not faces or lines:
+        faults.append(f"{where}: members-caption=off showed {faces} faces and {lines} line(s) - the faces, no line")
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="dob" '
+                                                'data-hub-signup-screens="iam | seeking | email"'),
+                    f"{name}-signup-members-unasked")
+    try:
+        tab.wait_for_timeout(600)
+        shown = tab.locator(f".{name}-members").is_visible()
+    finally:
+        tab.close()
+    if not shown:
+        faults.append(f"{where}: members-from=dob on a card that leaves the date of birth to the join flow "
+                      f"showed no row - a step no screen asks counts as answered")
     return faults
 
 
