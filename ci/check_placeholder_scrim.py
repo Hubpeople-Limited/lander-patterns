@@ -58,6 +58,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 from _placeholders import file_name, parse_image_slots          # noqa: E402
+from _screenshot import capture                                 # noqa: E402
 from build_preview import fill, swap_in_placeholders            # noqa: E402
 from check_phone import SHELL, browser_unavailable, token_set   # noqa: E402
 
@@ -208,13 +209,13 @@ def measure(browser, workdir, name, tokens_name, viewport, extra_css="", mods=No
             }}
             return out;
         }}""")
-        with_drawing = tab.screenshot(clip=box, full_page=True)
+        with_drawing = capture(tab, clip=box, full_page=True)
         tab.evaluate(f"""() => {{
             for (const i of document.querySelectorAll('.{name} img[data-hub-placeholder]'))
                 i.src = "{BLANK}";
         }}""")
         tab.wait_for_timeout(50)
-        without = tab.screenshot(clip=box, full_page=True)
+        without = capture(tab, clip=box, full_page=True)
         to_url = lambda b: "data:image/png;base64," + base64.b64encode(b).decode()
         return tab.evaluate(MEASURE, [to_url(with_drawing), to_url(without), rects])
     finally:
