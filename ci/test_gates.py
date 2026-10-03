@@ -922,6 +922,86 @@ def check_motion_switch_gate():
     return failures
 
 
+MARQUEE_SLOW_JS = """() => {
+    const block = document.querySelector('[data-members]');
+    return {
+        version: (window.HubBehaviours && window.HubBehaviours.version) || null,
+        copies: block.querySelectorAll('[data-hub-marquee-copy]').length,
+        left: block.querySelector('ul').scrollLeft,
+        hovered: block.matches(':hover'),
+        seen: document.visibilityState,
+    };
+}"""
+
+
+def check_marquee_slow_glide():
+    """A gliding row moves however small its step a frame. The browser keeps
+    a scroller's offset in whole pixels, so a step under half a pixel (the
+    default 30 pixels a second on a 120Hz screen) rounded back and the row
+    never moved. At the slowest speed the bundle allows, a sixth of a pixel a
+    frame here, today's member-grid row has to move; the last published
+    bundle, which lost those steps, is the control and must not."""
+    import check_behaviours as cb
+    import check_phone
+    from build_preview import repeat_block
+    failures = []
+    print("the marquee moves at any speed, however small its step a frame")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED marquee slow glide: {why}")
+        return failures
+
+    def case(label, ok, got=None):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}" + ("" if ok or got is None else f" - {got}"))
+        if not ok:
+            failures.append(f"marquee slow glide: {label}")
+
+    tokens = (cb.PREVIEW / "tokens-brand.css").read_text(encoding="utf-8")
+    filled, css = cb.filled_markup("member-grid")
+    filled = repeat_block(filled.replace("member-grid--grid", "member-grid--marquee", 1).replace(
+        'data-hub-module="reveal carousel"',
+        'data-hub-module="marquee carousel" data-hub-marquee-speed="10"', 1), "mem-card", 9)
+
+    def page(bundle):
+        return cb.SHELL.format(title="marquee slow glide", tokens=tokens, css=css, bundle=bundle,
+                               before="", markup=filled,
+                               after='<section class="behaviour-check-section">' + cb.FILLER + "</section>")
+
+    def glide(html, stem):
+        tab = shell.open(html, stem, width=1280)
+        try:
+            tab.wait_for_function("() => Array.from(document.images).every(i => i.complete)", timeout=15000)
+            tab.evaluate("() => document.querySelector('[data-members]').scrollIntoView({block: 'center'})")
+            # The row halts under a pointer, as it should for a visitor; the
+            # test's pointer is put where the row is not, so a runner that
+            # leaves it over the row does not read as a row that cannot move.
+            box = tab.evaluate("() => { const r = document.querySelector('[data-members]')"
+                               ".getBoundingClientRect(); return [r.top, r.bottom]; }")
+            tab.mouse.move(2, 2 if box[0] > 10 else min(box[1] + 5, 795))
+            tab.wait_for_timeout(300)
+            first = tab.evaluate(MARQUEE_SLOW_JS)
+            tab.wait_for_timeout(2500)
+            return first, tab.evaluate(MARQUEE_SLOW_JS)
+        finally:
+            tab.close()
+
+    tag = (cb.ROOT / "LATEST").read_text(encoding="utf-8").strip()
+    old = subprocess.run(["git", "show", f"{tag}:lib/hub.js"], cwd=cb.ROOT, capture_output=True,
+                         text=True, encoding="utf-8")
+    with cb.Shell(False) as shell:
+        a, b = glide(page("hub.js"), "slow-glide")
+        case("today's member-grid row at ten pixels a second moves", a["version"] == cb.bundle_version()
+             and b["copies"] and b["left"] - a["left"] >= 10, (a, b))
+        if old.returncode == 0 and "let at = track.scrollLeft" not in old.stdout:
+            (shell._dir / "hub-previous.js").write_text(old.stdout, encoding="utf-8", newline="\n")
+            a, b = glide(page("hub-previous.js"), "slow-glide-previous")
+            case(f"control: the {tag} bundle, which rounds the step away, does not",
+                 b["copies"] and b["left"] - a["left"] < 1, (a, b))
+        else:
+            case(f"control: the {tag} bundle is the one before the fix", False, tag)
+    return failures
+
+
 def check_variant_notes():
     """The words beside a rung, held to the rungs the pattern actually offers."""
     import lint
@@ -4737,6 +4817,7 @@ CHECKS = [
     check_every_rung_applies,
     check_variant_notes,
     check_motion_switch_gate,
+    check_marquee_slow_glide,
     check_type_pairings,
     check_pages,
     check_phone,
@@ -4848,7 +4929,8 @@ def main(argv=None):
              + 7
              + 11
              + 18 + 2 + 1
-             + 28 + 10)
+             + 28 + 10
+             + 2)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 
