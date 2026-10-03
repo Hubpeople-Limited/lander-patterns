@@ -1,0 +1,36 @@
+{
+  "composition": "homepage-faces",
+  "version": 1,
+  "page": "homepage",
+  "library": "v259",
+  "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
+  "patterns": [
+    {
+      "name": "masthead-nav",
+      "version": "12"
+    },
+    {
+      "name": "hero-split",
+      "version": "15"
+    },
+    {
+      "name": "portrait-row",
+      "version": "1",
+      "variant": {
+        "ground": "soft"
+      }
+    },
+    {
+      "name": "steps-plain",
+      "version": "6"
+    },
+    {
+      "name": "cta-band",
+      "version": "6"
+    },
+    {
+      "name": "colophon",
+      "version": "2"
+    }
+  ]
+}

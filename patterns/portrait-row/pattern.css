@@ -1,0 +1,198 @@
+/* portrait-row v1 - tokens only, selectors prefixed */
+/* Each ground names its own inks, and every rule below reads them. */
+.portrait-row,
+.portrait-row--plain {
+  --portrait-row-ground: var(--color-bg);
+  --portrait-row-heading: var(--color-heading);
+  --portrait-row-ink: var(--color-text);
+  --portrait-row-quiet: var(--color-text-soft);
+}
+.portrait-row--soft {
+  --portrait-row-ground: var(--color-surface-soft);
+  --portrait-row-heading: var(--color-text);
+  --portrait-row-ink: var(--color-text);
+  --portrait-row-quiet: var(--color-text-soft);
+}
+.portrait-row--brand {
+  --portrait-row-ground: var(--color-primary);
+  --portrait-row-heading: var(--color-on-primary, var(--color-surface));
+  --portrait-row-ink: var(--color-on-primary, var(--color-surface));
+  --portrait-row-quiet: color-mix(in srgb, var(--color-on-primary, var(--color-surface)) 78%, var(--color-primary));
+}
+.portrait-row--deep {
+  --portrait-row-ground: var(--color-scrim, var(--color-text));
+  --portrait-row-heading: var(--color-on-scrim, var(--color-bg));
+  --portrait-row-ink: var(--color-on-scrim, var(--color-bg));
+  --portrait-row-quiet: color-mix(in srgb, var(--color-on-scrim, var(--color-bg)) 78%, var(--color-scrim, var(--color-text)));
+}
+.portrait-row {
+  /* Read by the behaviour library: round arrows above the row, a round
+     pause control, and a row that fits its band left still. */
+  --hub-carousel-controls: top;
+  --hub-carousel-look: round;
+  --hub-marquee-look: round;
+  --hub-marquee-fit: still;
+  --portrait-row-gap: var(--space-4);
+  --portrait-row-edge: max(var(--space-4), (100% - var(--container-max)) / 2);
+  padding-block: var(--space-8);
+  background: var(--portrait-row-ground);
+  color: var(--portrait-row-ink);
+}
+.portrait-row:not(.portrait-row--moving) {
+  --hub-motion: none;
+}
+.portrait-row-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.portrait-row-eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--portrait-row-quiet);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.portrait-row-title {
+  max-width: 20em;
+  margin: 0 0 var(--space-5);
+  font-family: var(--font-heading);
+  color: var(--portrait-row-heading);
+  font-size: calc(clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.1 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .portrait-row-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.portrait-row-rail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+.portrait-row-list {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 100%;
+  gap: var(--portrait-row-gap);
+  margin: 0;
+  padding-block: var(--space-2);
+  padding-inline: var(--portrait-row-edge);
+  list-style: none;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--portrait-row-edge);
+  scrollbar-width: none;
+}
+.portrait-row-list::-webkit-scrollbar {
+  display: none;
+}
+.portrait-row-list:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.portrait-row-item {
+  flex: 0 0 auto;
+  width: min(42vw, 11rem);
+  scroll-snap-align: start;
+}
+.portrait-row-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: 50% 30%;
+  background: var(--color-surface);
+}
+.portrait-row--portrait .portrait-row-img {
+  border-radius: var(--card-radius);
+}
+.portrait-row-name {
+  margin: var(--space-2) 0 0;
+  color: var(--portrait-row-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+.portrait-row-where {
+  margin: 0;
+  color: var(--portrait-row-quiet);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+}
+.portrait-row--round .portrait-row-item {
+  width: min(34vw, 9rem);
+  text-align: center;
+}
+.portrait-row--round .portrait-row-img {
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-position: 50% 25%;
+}
+/* Half a gap each side: at the loop's reset the copy lands where the first
+   face started, so the glide never jumps. */
+.portrait-row--moving .portrait-row-list {
+  padding-inline: calc(var(--portrait-row-gap) / 2);
+  scroll-padding-inline: calc(var(--portrait-row-gap) / 2);
+}
+/* Lines a row that fits up with the heading, and shrinks to nothing once
+   the faces are more than fit, so the glide's width never changes. */
+@media (scripting: enabled) {
+  .portrait-row--moving .portrait-row-list::before {
+    content: "";
+    flex: 0 1 max(0px, var(--space-4) - var(--portrait-row-gap) / 2,
+                  (100% - var(--container-max)) / 2);
+    min-width: 0;
+    margin-inline-end: calc(-1 * var(--portrait-row-gap));
+  }
+}
+.portrait-row .hub-carousel-controls--top,
+.portrait-row .hub-marquee-control {
+  margin-block: 0 var(--space-3);
+  margin-inline: 0 var(--portrait-row-edge);
+}
+.portrait-row-rail:has(.hub-marquee-control) .hub-carousel-controls--top {
+  margin-inline-end: var(--space-2);
+}
+.portrait-row-rail:has(.hub-marquee-running):not(:has(.hub-marquee-control[aria-pressed="true"])) .hub-carousel-controls {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .portrait-row {
+    --portrait-row-gap: var(--space-5);
+    padding-block: var(--space-12);
+  }
+  .portrait-row-item {
+    width: 13rem;
+  }
+  .portrait-row--round .portrait-row-item {
+    width: 10rem;
+  }
+}
+/* With scripting off nothing can build the arrows, and the hidden scroll
+   bar would leave a mouse no way along, so the row wraps. */
+@media (scripting: none) {
+  .portrait-row-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    overflow-x: visible;
+  }
+  .portrait-row-item,
+  .portrait-row--round .portrait-row-item {
+    width: auto;
+  }
+  .portrait-row--round .portrait-row-img {
+    width: min(100%, 10rem);
+    margin-inline: auto;
+  }
+}

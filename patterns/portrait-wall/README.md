@@ -41,7 +41,7 @@ screen reader announces the wall once, in the terms the design actually means â€
 "members of <brand>" â€” and moves on. Keep `wall-label` filled: an `img` role
 with no accessible name is worse than no role at all.
 
-**Not on a page with `member-strip`.** That pattern is these specific people by name, beside the ask; this one is scale and atmosphere with every face anonymous. A page carrying both makes the same gesture twice, and the anonymous version undercuts the named one.
+**Not on a page with `member-strip` or `portrait-row`.** Those are faces too: `member-strip` these specific people by name, beside the ask, and `portrait-row` a row of the brand's own people. This one is scale and atmosphere with every face anonymous. A page carrying two makes the same gesture twice, and the anonymous version undercuts the named one.
 
 **Pairing.** `heading-block` directly above it is the intended shape: the
 heading makes the claim, the wall is the evidence. It sits equally well

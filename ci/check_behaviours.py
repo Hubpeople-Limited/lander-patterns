@@ -182,6 +182,9 @@ CAROUSEL_RUNGS = {
     "member-grid": ("member-grid--grid", "member-grid--rail", "mem-card", 12),
 }
 CAROUSEL_HOOK = re.compile(r'data-hub-module="[^"]*\bcarousel\b[^"]*"')
+# A pattern whose moving rung glides by itself is measured on its still rung,
+# the row the visitor drives with the controls; its glide is test_gates.py's.
+CAROUSEL_MOTION = {"portrait-row": "default"}
 SIGNUP_MEMBERS = [{"MemberName": f"Sample {i}", "MemberImage": f"sample-portrait.svg?m={i}",
                    "MemberAge": 28 + i, "Interests": ""} for i in range(12)]
 
@@ -559,7 +562,7 @@ def press(tab, which):
 def check_carousel(shell, name, tokens):
     where = f"{name} carousel"
     faults = []
-    html = page_for(name, "carousel", tokens, "hub.js", WIDTH)
+    html = page_for(name, "carousel", tokens, "hub.js", WIDTH, rung=CAROUSEL_MOTION.get(name, "moving"))
     tab = shell.open(html, f"{name}-carousel")
     try:
         version = tab.evaluate(VERSION_JS)
@@ -1415,7 +1418,7 @@ draws the new look anyway, and requires the comparison to fire."""
 COMPAT_CONTROL = ('if (round) controls.classList.add("hub-carousel-controls--round");',
                   'controls.classList.add("hub-carousel-controls--round");')
 SETTING_CSS = re.compile(r"--hub-(?:carousel|marquee)-[\w-]+\s*:[^;{}]*;?")
-SETTING_ATTR = re.compile(r'\s+data-hub-(?:carousel-(?:controls|look|phone)|marquee-look)="[^"]*"')
+SETTING_ATTR = re.compile(r'\s+data-hub-(?:carousel-(?:controls|look|phone)|marquee-(?:look|fit))="[^"]*"')
 # (label, pattern, rung class to swap in, or None; module list to swap in, or None)
 COMPAT_BLOCKS = [
     ("gallery-scroll", "gallery-scroll", None, None),

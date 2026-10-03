@@ -619,6 +619,22 @@
         "name": "about-collage",
         "version": 1
       }
+    },
+    {
+      "page": "homepage",
+      "patterns": [
+        "masthead-nav",
+        "hero-split",
+        "portrait-row:ground=soft",
+        "steps-plain",
+        "cta-band",
+        "colophon"
+      ],
+      "why": "The homepage with the brand's own people in it: the split opener, a row of faces the brand chose under its own heading, how joining works, the ask. For a brand with eight or more photographs of its people, each shown with their OK.",
+      "composition": {
+        "name": "homepage-faces",
+        "version": 1
+      }
     }
   ]
 }

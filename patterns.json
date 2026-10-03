@@ -1799,6 +1799,7 @@
  },
  "member-strip": {
   "avoid-with": [
+   "portrait-row",
    "portrait-wall"
   ],
   "behaviours": [],
@@ -2154,11 +2155,78 @@
   "version": "3",
   "whole-page": false
  },
+ "portrait-row": {
+  "avoid-with": [
+   "member-strip",
+   "portrait-wall"
+  ],
+  "behaviours": [
+   "marquee",
+   "carousel"
+  ],
+  "content-shape": "peer set",
+  "description": "A full-width band of the brand's own people under a heading - six to twelve photographs in one row, tall cards or circles, each with an optional first name and place under it. Still by default, a row the visitor swipes or steps through with round arrows; on the moving rung it glides by itself with a round pause control. The curated sibling of member-grid's moving row, for pictures the brand chose.",
+  "display-name": "Row of faces",
+  "image-slots": [
+   {
+    "crop": "portrait",
+    "focal": "top",
+    "min": 480,
+    "placeholder": false,
+    "slot": "face-image",
+    "subjects": [
+     "person",
+     "couple"
+    ]
+   }
+  ],
+  "layout": {
+   "people": "portraits",
+   "rhythm": "bands"
+  },
+  "motion": "none",
+  "needs": "six to twelve photographs of the brand's own people - eight or more for a row that glides - each the person's own photograph at least 480px wide in portrait, each face once, with alt text saying who is in it; a first name and a place only where the person gave them; a heading for the band. Works best with each person's OK to appear on a public page anyone can reach",
+  "one-per-page": true,
+  "page-types": [
+   "homepage",
+   "landing",
+   "about"
+  ],
+  "pairs-with": [
+   "hero-split",
+   "steps-plain",
+   "cta-band"
+  ],
+  "replaced-by": "",
+  "requires": "consented-people",
+  "status": "active",
+  "summary": "A row of photographs of your own people, each with a first name and place if they gave them; still, or gliding if you choose.",
+  "type": "section",
+  "variants": {
+   "ground": [
+    "plain",
+    "soft",
+    "brand",
+    "deep"
+   ],
+   "motion": [
+    "default",
+    "moving"
+   ],
+   "shape": [
+    "portrait",
+    "round"
+   ]
+  },
+  "version": "1",
+  "whole-page": false
+ },
  "portrait-wall": {
   "avoid-with": [
    "gallery-scroll",
    "media-card-grid",
    "member-strip",
+   "portrait-row",
    "steps-numbered",
    "testimonial-grid"
   ],
