@@ -14,12 +14,12 @@ The page carries its own site footer: this shell closes with the `colophon` patt
 
 ## Sections, in order
 
-1. **masthead-nav** v13 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
+1. **masthead-nav** v14 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **article-masthead** v13 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
+2. **article-masthead** v14 - Bylined article header - metadata eyebrow over a hairline, display h1, a lede held to a short measure, and an author row under a second hairline.
    - `tag` - text, about 2 word(s). Sample: Sample category
    - `read-time` - text, about 4 word(s). Sample: 6 min sample read
    - `publish-datetime` - attribute (datetime): a short label, about 1 word(s)
@@ -30,11 +30,11 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `author-portrait-alt` - attribute (alt): what the image shows, in words
    - `author-name` - text, about 2 word(s). Sample: Sample Author
    - `author-role` - text, about 6 word(s). Sample: Sample role line for the preview
-3. **article-toc** v3 - In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away; with the behaviour library the link for the section being read is marked, and without it the list is the list.
+3. **article-toc** v4 - In-page contents for a long piece - a short list of anchor links to the sections below, inside a native disclosure so a reader can put it away; with the behaviour library the link for the section being read is marked, and without it the list is the list.
    - `contents-label` - text, about 2 word(s). Sample: Sample contents
    - `section-anchor` - attribute (href): a short label, about 1 word(s)
    - `section-title` - text, about 11 word(s). Sample: A sample section heading, as it is worded in the body
-4. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+4. **prose-column** v7 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -47,9 +47,9 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-5. **pull-quote** v2 - A line lifted out of the running text and set large between two runs of body copy - the article's own words, repeated for emphasis, with no attribution and no ask.
+5. **pull-quote** v3 - A line lifted out of the running text and set large between two runs of body copy - the article's own words, repeated for emphasis, with no attribution and no ask.
    - `quote` - text, about 12 word(s). Sample: A sample sentence lifted out of the preview copy and se...
-6. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+6. **prose-column** v7 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -62,19 +62,19 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-7. **author-note** v2 - The block at the foot of a written piece - the writer's name, their standing, one paragraph of biography and an optional link to more of their work, on a panel that carries its weight without a portrait.
+7. **author-note** v3 - The block at the foot of a written piece - the writer's name, their standing, one paragraph of biography and an optional link to more of their work, on a panel that carries its weight without a portrait.
    - `block-heading` - text, about 4 word(s). Sample: About the sample author
    - `author-name` - text, about 3 word(s). Sample: Sample Author Name
    - `author-role` - text, about 8 word(s). Sample: Sample standing line, for the preview render only
    - `author-bio` - text, about 37 word(s). Sample: A sample paragraph of preview biography, long enough to...
    - `author-url` - attribute (href): a short label, about 1 word(s)
    - `author-link-text` - text, about 6 word(s). Sample: More sample writing from this author
-8. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+8. **cta-band** v7 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview
    - `lead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-9. **colophon** v2 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+9. **colophon** v3 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 

@@ -1,5 +1,17 @@
 /* media-card-grid v5 - tokens only, selectors prefixed */
 .media-card-grid {
+  overflow-wrap: var(--long-words, break-word);
+}
+.media-card-grid :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .media-card-grid {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.media-card-grid {
   /* Contrast floor. The words sit on a photograph, so the scrim carries the
    contrast; clamp() holds it whatever the dial is set to. */
   --media-card-grid-scrim-floor: clamp(0.92, var(--media-card-grid-scrim-strength, 0.92), 1);

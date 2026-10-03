@@ -1,5 +1,17 @@
 /* quote-feature v1 - tokens only, selectors prefixed */
 .quote-feature {
+  overflow-wrap: var(--long-words, break-word);
+}
+.quote-feature :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .quote-feature {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.quote-feature {
   background: var(--color-surface-soft);
   color: var(--color-text);
   padding-block: var(--space-8);

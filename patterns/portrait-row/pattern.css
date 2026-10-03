@@ -1,4 +1,16 @@
-/* portrait-row v2 - tokens only, selectors prefixed */
+/* portrait-row v3 - tokens only, selectors prefixed */
+.portrait-row {
+  overflow-wrap: var(--long-words, break-word);
+}
+.portrait-row :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .portrait-row {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Each ground names its own inks, and every rule below reads them. */
 .portrait-row,
 .portrait-row--plain {

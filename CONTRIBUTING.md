@@ -130,6 +130,23 @@ Then the markup. Three rules:
   halves. CI holds the first half to every rule that sets `overflow-x`,
   `overflow` or `overflow-inline` to `auto` or `scroll`; the two data tables
   it allows to keep a bar are named, with the reason, in `ci/_scrollbars.py`.
+- **A word longer than its line breaks, and no other word does.** A long
+  compound in German or Spanish runs off a phone otherwise. A pattern opens
+  its stylesheet with three rules, its own name in each selector - copy them
+  from any pattern: `overflow-wrap: var(--long-words, break-word)` on its
+  root, which breaks a word only where it cannot fit on a line of its own;
+  `overflow-wrap: var(--long-words, anywhere)` on its `h1` to `h4`, so a
+  heading in a grid or flex item narrows to the screen rather than being
+  pushed wider by the word; and, under
+  `@supports (hyphenate-limit-chars: 20 8 8)`,
+  `hyphens: var(--long-word-hyphens, manual)` with that limit. A brand or a
+  page that would rather keep every word whole sets `--long-words: normal`;
+  one that wants a hyphen at the break sets `--long-word-hyphens: auto`, and
+  TOKENS.md says what that costs. `ci/test_gates.py` sets every opener's
+  headline in long German and Spanish words at 320, 360 and 390 and fails a
+  word broken that would have fitted on a line of its own and a word that
+  runs off its box; every English sample in the library breaks no word at
+  all.
 
 ### The ground ladder — one vocabulary, four rungs
 
@@ -615,11 +632,10 @@ reading the output — and this repo has learnt that once already.
 - **Content bleeding off the *left* edge.** Genuinely unreachable when it
   happens, but a deliberate left bleed is a real technique and nothing in the
   render tells the two apart.
-- **Long unbreakable words.** Not a gate, and the reason is worth stating: 36
-  of the 45 patterns break out of 320px on one, because only two patterns in the
-  library set `overflow-wrap` at all. A rule failing four fifths of the
-  library on the day it lands is a rule that gets switched off. The defence
-  belongs once in the brand's base stylesheet, not forty-five times here.
+- **Long words.** The samples are English, which makes no word longer than
+  a phone's line, so nothing here can run off on one. `ci/test_gates.py`
+  sets the openers' headlines in long German and Spanish words instead: see
+  *A word longer than its line breaks* under pattern.css.
 - **Anything landing on text that is not itself text.** The header logo
   painting over the first menu link is a picture on words, and it is caught
   by the header gate rather than here: a picture under words is what every

@@ -1,4 +1,16 @@
 /* rating-mark v1 - tokens only, selectors prefixed */
+.rating-mark {
+  overflow-wrap: var(--long-words, break-word);
+}
+.rating-mark :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .rating-mark {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Sets no colour: it inherits the ink it sits in. See the README. */
 .rating-mark {
   display: inline-flex;

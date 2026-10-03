@@ -2,6 +2,18 @@
    Nothing here hides a panel: with no behaviour library every panel renders,
    stacked, under its own heading. */
 .capability-tabs {
+  overflow-wrap: var(--long-words, break-word);
+}
+.capability-tabs :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .capability-tabs {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.capability-tabs {
   /* The page gutter. The rail's bleed below is this value three times over -
      negative margin, padding, scroll padding - so change them together. */
   --capability-tabs-gutter: var(--space-4);

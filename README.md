@@ -42,6 +42,13 @@ Rules that hold for every consumer:
 - **`one-per-page: yes` means exactly that.** Two heroes, two sticky bars or
   two full-screen finales are a mistake rather than a layout choice, and
   `INDEX.md` marks them so the limit is visible while shortlisting.
+- **A long word breaks; a partner can ask otherwise.** A word longer than its
+  line, such as a long German compound in a headline on a phone, breaks where
+  it reaches the edge rather than running off the screen, and every other
+  word stays whole. Where a partner would rather a word never split,
+  `style="--long-words: normal"` on that section keeps every word whole;
+  `--long-word-hyphens: auto` adds a hyphen at the break on a page that names
+  its language. Both are in [TOKENS.md](TOKENS.md).
 - **`needs` gates use.** If the metadata says a pattern needs six real
   testimonials and you have three, it is the wrong pattern. Never invent
   content to fill one.

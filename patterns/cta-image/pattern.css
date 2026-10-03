@@ -1,5 +1,17 @@
 /* cta-image v1 - tokens only, selectors prefixed */
 .cta-image {
+  overflow-wrap: var(--long-words, break-word);
+}
+.cta-image :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .cta-image {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.cta-image {
   /* Contrast floor: the words sit on a photograph, so the scrim carries the
    contrast and clamp() holds it whatever the dial is set to. */
   --cta-image-scrim-floor: clamp(0.92, var(--cta-image-scrim-strength, 0.92), 1);

@@ -7,39 +7,39 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "hero-stated",
-      "version": "6",
+      "version": "7",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "claim-stack",
-      "version": "4",
+      "version": "5",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "portrait-prose",
-      "version": "3"
+      "version": "4"
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ],
   "slot-support": [
     {
       "name": "cta-assurance",
-      "version": "2",
+      "version": "3",
       "for-slot": "assurance",
       "of": "hero-stated"
     }
