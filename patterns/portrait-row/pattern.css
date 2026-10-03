@@ -1,4 +1,4 @@
-/* portrait-row v1 - tokens only, selectors prefixed */
+/* portrait-row v2 - tokens only, selectors prefixed */
 /* Each ground names its own inks, and every rule below reads them. */
 .portrait-row,
 .portrait-row--plain {
@@ -139,22 +139,13 @@
   border-radius: 50%;
   object-position: 50% 25%;
 }
-/* Half a gap each side: at the loop's reset the copy lands where the first
-   face started, so the glide never jumps. */
-.portrait-row--moving .portrait-row-list {
+/* While the row glides, half a gap each side: at the loop's reset the copy
+   lands where the first face started, so the glide never jumps. A row that
+   is not gliding - one that fits, under reduced motion, or with no
+   behaviour library - starts on the heading's edge, as the still rung does. */
+.portrait-row--moving .portrait-row-list.hub-marquee-running {
   padding-inline: calc(var(--portrait-row-gap) / 2);
   scroll-padding-inline: calc(var(--portrait-row-gap) / 2);
-}
-/* Lines a row that fits up with the heading, and shrinks to nothing once
-   the faces are more than fit, so the glide's width never changes. */
-@media (scripting: enabled) {
-  .portrait-row--moving .portrait-row-list::before {
-    content: "";
-    flex: 0 1 max(0px, var(--space-4) - var(--portrait-row-gap) / 2,
-                  (100% - var(--container-max)) / 2);
-    min-width: 0;
-    margin-inline-end: calc(-1 * var(--portrait-row-gap));
-  }
 }
 .portrait-row .hub-carousel-controls--top,
 .portrait-row .hub-marquee-control {
