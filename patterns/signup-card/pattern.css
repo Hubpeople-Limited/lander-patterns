@@ -1,4 +1,4 @@
-/* signup-card v6 - tokens only, selectors prefixed */
+/* signup-card v8 - tokens only, selectors prefixed */
 /* The card sits in an opener's call-to-action place: it takes a width of its
    own and leaves the page's layout to the opener. */
 .signup-card {
@@ -69,11 +69,25 @@ so it draws no ring. */
   padding: 0;
   list-style: none;
 }
+/* Two "I am" answers side by side while both fit; an answer whose longest
+   word is wider than half the card takes the whole row, and so does the
+   other. width: 100% is not the width: it caps the automatic minimum at the
+   row, so a word wider than the row breaks inside its tile. Each half gives
+   up half the gap and 1px, or two halves rounded up wrap. */
 .signup-card-opts--two {
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
 }
 .signup-card-opt {
   min-width: 0;
+}
+.signup-card-opts--two > .signup-card-opt {
+  flex: 1 1 calc(50% - var(--space-3) / 2 - 1px);
+  width: 100%;
+  min-width: auto;
+}
+.signup-card-opts--two .signup-card-opt-face {
+  gap: var(--space-2);
 }
 .signup-card-opt label {
   position: relative;
@@ -107,6 +121,11 @@ still announced. display: none would remove both. */
   border-radius: var(--btn-radius);
   font-weight: 700;
   line-height: 1.25;
+}
+/* A word wider than a whole row breaks rather than leave its tile. */
+.signup-card-opt-face > span:first-child {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 .signup-card-opt:hover .signup-card-opt-face {
   border-color: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface));

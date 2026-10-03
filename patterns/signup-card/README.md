@@ -75,4 +75,5 @@ that speak (`iam last`); `-messages-keep="step"` lets a line last one step.
 
 **Brand adaptability.** `--btn-radius` shapes rows, fields and buttons;
 `--chip-radius` the pills, progress bar and member strip; `--color-primary`
-marks chosen answers; every ink is `--color-text` on `--color-surface`.
+marks chosen answers; every ink is `--color-text` on `--color-surface`. Two
+"I am" answers sit side by side while both fit, one above the other if not.

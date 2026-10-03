@@ -61,7 +61,9 @@ page, and holds each behaviour to what its row says:
                for at every width, or members-count sets how many;
                the card carries the step showing and each answered question,
                and the step event names its step;
-               and a preview opens on the step its address names
+               and a preview opens on the step its address names;
+               two long "I am" answers sit one above the other on a phone,
+               short ones side by side, and no answer spills its tile
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -1309,6 +1311,57 @@ def check_signup_choices(shell, name, tokens):
         if opened != want or (want != ["iam"]) != (back == "visible"):
             faults.append(f"{where}: {query} opened on {opened!r} with Back {back} - {want!r}"
                           + (", Back showing" if want != ["iam"] else ""))
+    # Long answers: two "I am" answers side by side while both fit, one above
+    # the other when a long word does not, and never a word out of its tile -
+    # in German and Spanish as in English. The same page drawn on the
+    # two-column grid the tiles had before must fail the check, or the check
+    # cannot see what it is for.
+    tiles_js = ("() => { const opts = Array.from(document.querySelectorAll("
+                f"'[data-hub-signup-part=\"iam\"] .{name}-opt'));"
+                " const faces = Array.from(document.querySelectorAll("
+                f"'[data-hub-signup-part=\"iam\"] .{name}-opt-face'));"
+                " return { tops: opts.map((o) => Math.round(o.getBoundingClientRect().top)),"
+                " spill: faces.some((f) => f.scrollWidth > f.clientWidth + 1"
+                " || Array.from(f.children).some((c) => c.getBoundingClientRect().right"
+                " > f.getBoundingClientRect().right + 1)) }; }")
+
+    def answers(lang, man, woman):
+        return (html.replace('data-hub-module="signup"', f'data-hub-module="signup" lang="{lang}"', 1)
+                .replace("<span>Sample: a man</span>", f"<span>{man}</span>", 1)
+                .replace("<span>Sample: a woman</span>", f"<span>{woman}</span>", 1))
+    german = answers("de", "Ein alleinstehender Mann", "Eine Lebensabschnittsgefährtin")
+    spanish = answers("es", "Un hombre soltero", "Una mujer soltera")
+    # Real short answers: the sample's "Sample: a woman" is wider than half
+    # the card in some faces, which a real answer is not.
+    english = answers("en", "A man", "A woman")
+    gridded = german.replace("</style>", f".{name}-opts--two {{ display: grid; grid-template-columns: 1fr 1fr; }}\n"
+                                         f".{name}-opts--two > .{name}-opt {{ min-width: 0; }}\n</style>", 1)
+
+    def tiles(page, width):
+        tab = open_card(shell, page, f"{name}-signup-tiles-{width}", width=width)
+        try:
+            return tab.evaluate(tiles_js)
+        finally:
+            tab.close()
+    for width in (320, PHONE, 390):
+        got = tiles(german, width)
+        if len(set(got["tops"])) != 2 or got["spill"]:
+            faults.append(f"{where}: long German 'I am' answers at {width}px sat at {got['tops']!r}, "
+                          f"spilling {got['spill']} - one above the other, nothing spilling")
+        # Spanish answers sit near half the card at 320 and 360, where the
+        # face decides; at 390 they fit beside each other in any face here.
+        for label, page, beside in (("short", english, True), ("Spanish", spanish, width >= 390)):
+            got = tiles(page, width)
+            if (beside and len(set(got["tops"])) != 1) or got["spill"]:
+                faults.append(f"{where}: {label} 'I am' answers at {width}px sat at {got['tops']!r}, spilling "
+                              f"{got['spill']} - " + ("side by side, " if beside else "") + "nothing spilling")
+    for page, label in ((german, "German"), (spanish, "Spanish")):
+        if tiles(page, WIDTH)["spill"]:
+            faults.append(f"{where}: long {label} 'I am' answers spill out of their tiles at {WIDTH}px")
+    control = tiles(gridded, PHONE)
+    if len(set(control["tops"])) == 2 and not control["spill"]:
+        faults.append(f"{where}: the control - long answers on the old two-column grid - passed the check "
+                      f"above, so it cannot see a card that keeps two columns")
     return faults
 
 
