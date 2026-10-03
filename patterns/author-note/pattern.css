@@ -1,5 +1,17 @@
 /* author-note v1 - tokens only, selectors prefixed */
 .author-note {
+  overflow-wrap: var(--long-words, break-word);
+}
+.author-note :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .author-note {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.author-note {
   /* Required: it holds the padding below inside this width, not outside it. */
   box-sizing: border-box;
   width: min(100% - 2 * var(--space-4), 52rem);

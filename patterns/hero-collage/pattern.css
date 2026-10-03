@@ -1,4 +1,16 @@
 /* hero-collage v3 - tokens only, selectors prefixed */
+.hero-collage {
+  overflow-wrap: var(--long-words, break-word);
+}
+.hero-collage :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .hero-collage {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Each ground names its own ink; every rule below reads the pair. A print's
    paper is the lighter of the card surface and the ground's paper light; on
    the brand ground that is the surface alone, which stands off a brand

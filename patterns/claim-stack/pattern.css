@@ -1,4 +1,16 @@
 /* claim-stack v2 - tokens only, selectors prefixed */
+.claim-stack {
+  overflow-wrap: var(--long-words, break-word);
+}
+.claim-stack :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .claim-stack {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Each ground names its own ink pair, and every rule below reads the pair.
    The base carries the plain ground's values, so a copy that loses its
    modifier still has a ground, a hairline and its inks. */

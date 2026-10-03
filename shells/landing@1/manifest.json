@@ -7,34 +7,34 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13",
+      "version": "14",
       "variant": {
         "nav": "minimal"
       }
     },
     {
       "name": "hero-split",
-      "version": "15"
+      "version": "16"
     },
     {
       "name": "heading-block",
-      "version": "9"
+      "version": "10"
     },
     {
       "name": "benefit-tiles",
-      "version": "9"
+      "version": "10"
     },
     {
       "name": "testimonial-grid",
-      "version": "12"
+      "version": "13"
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ]
 }

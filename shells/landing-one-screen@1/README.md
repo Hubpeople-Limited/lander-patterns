@@ -16,12 +16,12 @@ This shell needs photography. A photography slot may take the shared placeholder
 
 ## Sections, in order
 
-1. **masthead-nav** v13 (nav=minimal) - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
+1. **masthead-nav** v14 (nav=minimal) - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-squeeze** v15 - The whole page in one viewport - a photograph, one claim, one control, the reassurance under it and one piece of proof, with nothing below the fold at all.
+2. **hero-squeeze** v16 - The whole page in one viewport - a photograph, one claim, one control, the reassurance under it and one piece of proof, with nothing below the fold at all.
    - `hero-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 2 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
@@ -29,11 +29,11 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
    - `proof` - markup, about 6 words of copy; uses rating-mark, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **colophon** v2 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+3. **colophon** v3 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 
-Also in `page.css`: **cta-assurance** v2, carried for hero-squeeze's `assurance` slot; **rating-mark** v5, carried for hero-squeeze's `proof` slot.
+Also in `page.css`: **cta-assurance** v3, carried for hero-squeeze's `assurance` slot; **rating-mark** v6, carried for hero-squeeze's `proof` slot.
 
 ## Regions
 

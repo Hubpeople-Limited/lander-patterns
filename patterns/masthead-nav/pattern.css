@@ -2,6 +2,18 @@
    .masthead-nav-links is styled by structure - ul, li, a - so the list the
    platform generates for {{menu.navigation}} and a list written by hand take
    the same rules. */
+.masthead-nav {
+  overflow-wrap: var(--long-words, break-word);
+}
+.masthead-nav :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .masthead-nav {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 
 /* Each ground names its own inks, and every rule below reads the pair rather
    than a token, so nothing here knows which ground it is on. */

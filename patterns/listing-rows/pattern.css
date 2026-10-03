@@ -1,4 +1,16 @@
 /* listing-rows v2 - tokens only, selectors prefixed */
+.listing-rows {
+  overflow-wrap: var(--long-words, break-word);
+}
+.listing-rows :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .listing-rows {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Each ground names its own ink set, and every rule below reads that set. The
    base carries the plain ground's values, so a copy that loses its modifier
    still has a ground, a hairline and a focus ring. */

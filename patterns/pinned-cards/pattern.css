@@ -1,5 +1,17 @@
 /* pinned-cards - tokens only, selectors prefixed */
 .pinned-cards {
+  overflow-wrap: var(--long-words, break-word);
+}
+.pinned-cards :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .pinned-cards {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.pinned-cards {
   --pinned-cards-panel-max: 34rem;
   --pinned-cards-step: 6vh;
   padding-block: var(--space-8);

@@ -1,4 +1,16 @@
-/* announcement-bar v1 - tokens only, selectors prefixed */
+/* announcement-bar v2 - tokens only, selectors prefixed */
+.announcement-bar {
+  overflow-wrap: var(--long-words, break-word);
+}
+.announcement-bar :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .announcement-bar {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 
 /* Each rung names its ground and ink; every rule below reads those, so
    nothing here knows which ground it is on. The ring is the ink rather than

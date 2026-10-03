@@ -1,4 +1,16 @@
-/* crumb-trail v1 - tokens only, selectors prefixed */
+/* crumb-trail v2 - tokens only, selectors prefixed */
+.crumb-trail {
+  overflow-wrap: var(--long-words, break-word);
+}
+.crumb-trail :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .crumb-trail {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 .crumb-trail {
   box-sizing: border-box;
   margin-inline: auto;

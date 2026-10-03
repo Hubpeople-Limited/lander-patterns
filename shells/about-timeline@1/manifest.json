@@ -7,33 +7,33 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "hero-band",
-      "version": "3",
+      "version": "4",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "prose-column",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "history-timeline",
-      "version": "1",
+      "version": "2",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ]
 }

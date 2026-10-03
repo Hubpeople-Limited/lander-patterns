@@ -1,5 +1,17 @@
 /* signup-steps v3 - tokens only, selectors prefixed */
 .signup-steps {
+  overflow-wrap: var(--long-words, break-word);
+}
+.signup-steps :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .signup-steps {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.signup-steps {
   /* Answer rows: over the 44px floor, sized for a thumb. */
   --signup-steps-target: 56px;
   padding-block: var(--space-5) var(--space-8);

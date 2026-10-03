@@ -1,5 +1,17 @@
 /* article-figure v1 - tokens only, selectors prefixed */
 .article-figure {
+  overflow-wrap: var(--long-words, break-word);
+}
+.article-figure :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .article-figure {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.article-figure {
   box-sizing: border-box;
   /* 52rem is the article shell, held by the masthead, the contents list and
      the author block. Any other number puts a third left edge on the page. */

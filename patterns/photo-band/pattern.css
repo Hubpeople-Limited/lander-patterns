@@ -1,5 +1,17 @@
 /* photo-band v1 - tokens only, selectors prefixed */
 .photo-band {
+  overflow-wrap: var(--long-words, break-word);
+}
+.photo-band :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .photo-band {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.photo-band {
   display: block;
   width: 100%;
   background: var(--color-surface-soft);

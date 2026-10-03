@@ -7,27 +7,27 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
-    },
-    {
-      "name": "hero-overlay",
-      "version": "17"
-    },
-    {
-      "name": "steps-numbered",
       "version": "14"
     },
     {
+      "name": "hero-overlay",
+      "version": "18"
+    },
+    {
+      "name": "steps-numbered",
+      "version": "15"
+    },
+    {
       "name": "faq-details",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ]
 }

@@ -7,45 +7,45 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "hero-band",
-      "version": "3",
+      "version": "4",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "prose-column",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "heading-block",
-      "version": "9"
+      "version": "10"
     },
     {
       "name": "member-grid",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "source-note",
-      "version": "1"
+      "version": "2"
     },
     {
       "name": "link-cluster",
-      "version": "7",
+      "version": "8",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ]
 }

@@ -1,5 +1,17 @@
 /* zigzag-rows v4 - tokens only, selectors prefixed */
 .zigzag-rows {
+  overflow-wrap: var(--long-words, break-word);
+}
+.zigzag-rows :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .zigzag-rows {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.zigzag-rows {
   /* One ratio for every media box, set once: equal-height rows are what hold
    the rhythm down the page. */
   --zigzag-rows-media-ratio: 1 / 1;

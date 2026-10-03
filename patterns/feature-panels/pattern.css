@@ -1,5 +1,17 @@
 /* feature-panels v1 - tokens only, selectors prefixed */
 .feature-panels {
+  overflow-wrap: var(--long-words, break-word);
+}
+.feature-panels :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .feature-panels {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.feature-panels {
   --feature-panels-min: 20rem;
   --feature-panels-height: clamp(24rem, 46vh, 34rem);
   padding-block: var(--space-8) 0;
