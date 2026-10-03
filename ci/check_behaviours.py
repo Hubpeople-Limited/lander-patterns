@@ -44,7 +44,10 @@ page, and holds each behaviour to what its row says:
                long, and a card whose places will not load simply goes on;
                the line after an answer goes when the visitor goes back;
                a page in another language keeps its answers' capitals in
-               the answers so far
+               the answers so far;
+               dob and dob-wide give the wheel at one width and the boxes at
+               the other, keeping a date across the switch, and dob-start
+               opens the year wheel at an age with day and month blank
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -164,6 +167,8 @@ CONTROL_SUBSTITUTIONS = {
     "signup-messages-back": ("if (dir < 0) cheer.hidden = true;", "if (dir < 0) void cheer;"),
     "signup-summary-case": ('.map(words).filter(Boolean).join(" & ")[english ? "toLowerCase" : "toString"]() : "";',
                             '.map(words).filter(Boolean).join(" & ").toLowerCase() : "";'),
+    "signup-dob-wide": ('const dobWay = () => (optAt("dob") === "wheel" ? "wheel" : "boxes");',
+                        'const dobWay = () => (opt("dob") === "wheel" ? "wheel" : "boxes");'),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1157,6 +1162,52 @@ def check_signup(shell, name, tokens):
             faults.append(f"{where}: under reduced motion a tapped answer did not move on")
     finally:
         tab.close()
+    # The date of birth by width: wheel on a phone and boxes from 60rem, a
+    # date typed wide turning the wheels when the screen narrows; and a year
+    # wheel asked to open at 30 opens there with day and month still blank.
+    dob_js = (f"() => ({{ wheels: !!(document.querySelector('.{name}-wheels') || {{}}).offsetParent, "
+              f"boxes: !!document.querySelector('.{name}-dob').offsetParent, "
+              "values: ['dd', 'dm', 'dy'].map(n => document.forms[0].elements[n].value) })")
+
+    def to_dob(attrs, width):
+        tab = shell.open(html.replace('data-hub-module="signup"', f'data-hub-module="signup" {attrs}', 1),
+                         f"{name}-signup-dob-{width}", width=width, before=signup_stub(SIGNUP_MEMBERS))
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(700)
+        return tab
+    by_width = 'data-hub-signup-dob="wheel" data-hub-signup-dob-wide="boxes"'
+    for width, want in ((PHONE, (True, False)), (WIDTH, (False, True))):
+        tab = to_dob(by_width, width)
+        try:
+            got = tab.evaluate(dob_js)
+            if (got["wheels"], got["boxes"]) != want:
+                faults.append(f"{where}: dob=wheel dob-wide=boxes at {width}px showed wheels {got['wheels']}, "
+                              f"boxes {got['boxes']} - wheels on a phone, boxes from 60rem")
+            if width == WIDTH and got["boxes"]:
+                for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+                    tab.fill(f'input[name="{field}"]', value)
+                tab.set_viewport_size({"width": PHONE, "height": HEIGHT})
+                tab.wait_for_timeout(700)
+                turned = tab.evaluate(f"() => Array.from(document.querySelectorAll('.{name}-wheel "
+                                      "[aria-selected=true]')).map(li => li.dataset.hubSignupValue)")
+                if turned != ["14", "8", "1992"] or tab.evaluate(dob_js)["values"] != ["14", "8", "1992"]:
+                    faults.append(f"{where}: a date typed wide read {turned!r} on the wheels once the screen "
+                                  f"narrowed - the wheels turn to what was typed, and keep it")
+        finally:
+            tab.close()
+    tab = to_dob('data-hub-signup-dob="wheel" data-hub-signup-dob-start="30"', PHONE)
+    try:
+        opened = tab.evaluate(dob_js)["values"]
+    finally:
+        tab.close()
+    year = str(__import__("datetime").date.today().year - 30)
+    if opened != ["", "", year]:
+        faults.append(f"{where}: dob-start=30 opened the wheels on {opened!r} - the year {year}, "
+                      f"day and month blank")
     # The lines after an answer are the card's; the older block has none.
     return faults + (check_signup_messages(shell, name, tokens) if name == "signup-card" else [])
 

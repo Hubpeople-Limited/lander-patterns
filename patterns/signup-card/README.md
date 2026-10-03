@@ -39,16 +39,16 @@ with a hidden `mt` or `lf` input: nobody is asked it, the value is sent, and wit
 `culture` is the join flow's language — `en`, `es`, `pt`, `fr` or `de`.
 
 **Options on the card**, all `data-hub-signup-*`: `seeking` — `none`, the
-default, leaves "looking for" empty; `opposite` ticks it from "I am" (a woman,
-men), and `same` does so for a brand whose members meet their own sex; the
-visitor's own tick always wins. `dob` — `boxes`, the default, or `wheel`;
-`reward` for a complete date — `sign` (age and star sign, the default), `age`
-or `none`; `settle="off"` stops the card scrolling into view at a step; `guid`
-where the join link carries no site GUID, without which there are no members.
-Every visible word has an English default and an option of its own, named in
-`lib/hub.js`'s `SIGNUP_WORDS`, so a page in another language sets them all. The
-interest labels and place names are the exception: they stay as the join flow
-spells them.
+default, leaves "looking for" empty; `opposite` ticks it from "I am", and `same`
+does so for a brand whose members meet their own sex; the visitor's tick wins.
+`dob` — `boxes`, the default, or `wheel`; `dob-wide` the same from `60rem` (a
+wheel on a phone, boxes on a laptop); `dob-start` opens the year wheel at an
+age, day and month still blank (default `blank`); `reward` for a complete date —
+`sign` (age and star sign, the default), `age` or `none`; `settle="off"` stops
+the card scrolling into view at a step; `guid` where the join link carries no
+site GUID, without which there are no members. Every visible word has an English
+default and its own option, named in `lib/hub.js`'s `SIGNUP_WORDS`; interest
+labels and place names stay as the join flow spells them.
 
 **Where the visitor lives.** `data-hub-signup-places` says where the page's
 visitors are, in the platform's own location names: `world`, a country (`UK`),
