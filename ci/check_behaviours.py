@@ -42,6 +42,8 @@ page, and holds each behaviour to what its row says:
                (its biggest from the first tap) and a small region's as a list,
                narrows the members to the town picked and sends its lat and
                long, and a card whose places will not load simply goes on;
+               the town field is a named combobox over its own list, with an
+               autocomplete word a browser's address autofill does not take;
                the line after an answer goes when the visitor goes back;
                a page in another language keeps its answers' capitals in
                the answers so far;
@@ -162,6 +164,8 @@ CONTROL_SUBSTITUTIONS = {
     "signup-location": ('else if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
                         "else void where;"),
     "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
+    "signup-town-autofill": ('town.setAttribute("autocomplete", "none");',
+                             'town.setAttribute("autocomplete", "off");'),
     "signup-messages": ("const fresh = pool.filter((l) => !saidLines.has(l));",
                         "const fresh = pool;"),
     "signup-messages-back": ("if (dir < 0) cheer.hidden = true;", "if (dir < 0) void cheer;"),
@@ -190,6 +194,29 @@ CAROUSEL_HOOK = re.compile(r'data-hub-module="[^"]*\bcarousel\b[^"]*"')
 # A pattern whose moving rung glides by itself is measured on its still rung,
 # the row the visitor drives with the controls; its glide is test_gates.py's.
 CAROUSEL_MOTION = {"portrait-row": "default"}
+# The town field's autocomplete word. Chrome treats `on`, `off` and `false` as
+# no word at all and goes on to guess the field from its label - "Town or
+# city" reads as an address, so the visitor's saved addresses cover the
+# card's own list - while a word it does not recognise turns its address
+# suggestions and filling off for that field (components/autofill:
+# FieldTypeFromAutocompleteAttributeValue, ShouldSuppressSuggestionsAnd-
+# FillingByDefault). It must also be one an accessibility checker accepts as
+# a state rather than flagging it as a misspelt purpose: axe-core's
+# autocomplete-valid takes these.
+TOWN_AUTOCOMPLETE_IGNORED = {"", "on", "off", "false"}
+TOWN_AUTOCOMPLETE_ACCEPTED = {"none", "disabled", "xoff", "true", "enabled", "undefined",
+                              "null", "xon"}
+TOWN_JS = """
+el => {
+  const list = document.getElementById(el.getAttribute('aria-controls') || '');
+  return { role: el.getAttribute('role'), autocomplete: el.getAttribute('autocomplete'),
+           ariaAutocomplete: el.getAttribute('aria-autocomplete'),
+           expanded: el.getAttribute('aria-expanded'),
+           listRole: list ? list.getAttribute('role') : null,
+           name: el.getAttribute('name'), id: el.id,
+           label: el.labels && el.labels.length ? el.labels[0].textContent.trim() : '' };
+}
+"""
 SIGNUP_MEMBERS = [{"MemberName": f"Sample {i}", "MemberImage": f"sample-portrait.svg?m={i}",
                    "MemberAge": 28 + i, "Interests": ""} for i in range(12)]
 
@@ -963,8 +990,9 @@ def check_signup(shell, name, tokens):
         tab.wait_for_timeout(700)
         asked_where = tab.evaluate(SIGNUP_PARTS_JS)
         town = f'[data-hub-signup-part="location"] input[role="combobox"]'
-        offered, first_tap = [], []
+        offered, first_tap, town_attrs = [], [], {}
         if asked_where == ["location"]:
+            town_attrs = tab.locator(town).evaluate(TOWN_JS)
             tab.locator(town).focus()
             tab.wait_for_timeout(300)
             first_tap = tab.locator(f".{name}-places [role=option]").all_inner_texts()
@@ -999,6 +1027,20 @@ def check_signup(shell, name, tokens):
     uk = json.loads((ROOT / "lib" / "places" / "uk.json").read_text(encoding="utf-8"))["regions"]
     london = uk["England: Greater London"]["London"]
     sent = dict(x.split("=", 1) for x in placed_url.split("?", 1)[-1].split("&") if "=" in x)
+    if asked_where == ["location"]:
+        ac = (town_attrs.get("autocomplete") or "").strip().lower()
+        if ac in TOWN_AUTOCOMPLETE_IGNORED or ac not in TOWN_AUTOCOMPLETE_ACCEPTED:
+            faults.append(f"{where}: the town field says autocomplete={town_attrs.get('autocomplete')!r} - "
+                          f"Chrome reads that as no word and offers saved addresses over the "
+                          f"card's list; one of {sorted(TOWN_AUTOCOMPLETE_ACCEPTED)}")
+        if town_attrs.get("name") or town_attrs.get("id"):
+            faults.append(f"{where}: the town field carries name={town_attrs.get('name')!r} "
+                          f"id={town_attrs.get('id')!r}, which browsers match to an address")
+        if (town_attrs.get("role"), town_attrs.get("ariaAutocomplete"), town_attrs.get("listRole")) \
+                != ("combobox", "list", "listbox") or town_attrs.get("expanded") not in ("true", "false") \
+                or not town_attrs.get("label"):
+            faults.append(f"{where}: the town field is no longer a labelled combobox over a "
+                          f"listbox: {town_attrs!r}")
     if asked_where != ["location"]:
         faults.append(f"{where}: with places the step after 'looking for' was {asked_where!r}, not where they live")
     elif not first_tap or first_tap[0] != "London":
