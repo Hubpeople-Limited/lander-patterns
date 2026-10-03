@@ -35,6 +35,7 @@ decide how a long menu behaves. It holds the header to:
     python ci/check_header.py --tokens display
     python ci/check_header.py --broken         the positive control, below
     python ci/check_header.py --broken-shut    the shut-panel control, below
+    python ci/check_header.py --broken-edge    the start-edge control, below
     python ci/check_header.py --out /tmp/hdr   keep the rendered pages
     python ci/check_header.py --require-browser
     python ci/check_header.py --shard 1/4      a quarter of the matrix, as CI
@@ -51,6 +52,14 @@ the shipped rule cannot quietly disarm it.
 `--broken-shut` appends a third level that takes the pointer on its own, and
 requires the shut-panel check to fire on the deep menu and on the long menu
 folded into the last item, with the library and without it.
+
+`--broken-edge` breaks a three-level menu's row before its last parent, so
+the parent whose panel hangs from its end edge starts a line on the centred
+layout, where a line starts at the bar's inner edge, and requires
+that panel to stay in view with the library; then it undoes the library's
+turn at the start edge and requires the in-view check to fire. The break is
+the fixture's own, so the case does not wait on a font putting an item
+there.
 
 Exit codes: 0 clean, or skipped because no browser is available; 1 at least one
 render is at fault; 2 the request itself is unusable.
@@ -146,6 +155,21 @@ MENUS = {
             + "</ul>",
 }
 
+# The start-edge control's menu: three levels, its row broken before the last
+# parent so that parent starts a line whatever the fonts. That parent's panel
+# hangs from its end edge, and on the centred layout a line starts at the
+# bar's inner edge, so the panel reaches past the screen's start.
+CONTROL_MENUS = {
+    "edge": '<ul class="canvas-navigation-menu">'
+            + item("Home") + item("How it works") + item("Pricing")
+            + deep_group("Places", {"North": ["Manchester", "Leeds", "Newcastle"],
+                                    "South": ["Bristol", "Brighton", "Exeter"]})
+            + '<li class="header-check-break"></li>'
+            + deep_group("Groups", {"By age": ["Over 40", "Over 50", "Over 60"],
+                                    "By interest": ["Walking", "Music", "Food"]})
+            + "</ul>",
+}
+
 LOGO_FIXTURES = ("wordmark-ratio-only", "square-ratio-only")
 
 # The rungs that decide what a long menu does, crossed; every other axis at
@@ -198,6 +222,22 @@ SHUT_REGRESSION = '''
   .masthead-nav-links ul ul ul {
     pointer-events: auto;
   }
+}
+'''
+
+# The start-edge control's line break, and the library's turn at the start
+# edge undone. The undo is one class more specific than the bundle's own
+# rule, which the bundle appends after the page's styles.
+EDGE_BREAK = '''
+.masthead-nav-links > ul > .header-check-break {
+  flex-basis: 100%;
+  height: 0;
+}
+'''
+EDGE_REGRESSION = '''
+.masthead-nav-links .hub-menu-parent[data-hub-menu-flip="start"] > ul {
+  inset-inline-start: auto !important;
+  inset-inline-end: 0 !important;
 }
 '''
 
@@ -453,7 +493,7 @@ def markup_for(combo, menu, logo_fixture):
     sample = json.loads((PATTERN / "preview-content.json").read_text(encoding="utf-8"))
     # The fixture menu goes in before the sample furniture does, or fill()
     # puts the small sample menu there and the whole point is lost.
-    html = html.replace("{{menu.navigation}}", MENUS[menu])
+    html = html.replace("{{menu.navigation}}", {**MENUS, **CONTROL_MENUS}[menu])
     html = fill(html, sample)
     html = re.sub(r"<!--(?!\s*slot\s*:).*?-->", "", html, flags=re.S).strip()
     html = apply_variants("masthead-nav", META, html, combo)
@@ -477,6 +517,10 @@ def page(combo, menu, logo_fixture, tokens, script, broken=False):
         css += ROW_REGRESSION
     elif broken == "shut":
         css += SHUT_REGRESSION
+    elif broken == "edge":
+        css += EDGE_BREAK
+    elif broken == "edge-undone":
+        css += EDGE_BREAK + EDGE_REGRESSION
     elif broken:
         css += "\n.masthead-nav-links > ul { --hub-overflow: off !important; }\n"
     tag = '<script type="module" src="hub.js"></script>' if script else ""
@@ -656,22 +700,15 @@ def measure_render(tab, combo, script):
 
 # What the library is known to do today, and why it is not failing the build
 # over it: without the behaviour bundle, on a row that has wrapped, a parent
-# that lands at the right edge of a row has its panel clipped at the bar's
-# edge. Nothing in CSS can tell which item ends a row; the bundle measures
-# it and turns the panel round, and every shell carries the bundle. Reported
-# as KNOWN, never hidden, so the day CSS can do it the entry is deleted.
+# that lands at either end of a line has its panel clipped at the screen's
+# edge. Nothing in CSS can tell which item ends or starts a line; the bundle
+# measures the panel and turns it round, and every shell carries the bundle.
+# Reported as KNOWN, never hidden, so the day CSS can do it the entry is
+# deleted.
 KNOWN = [
     (lambda combo, script, fault: (not script and combo.get("overflow") in ("wrap", "more")
                                    and "leaves the viewport" in fault),
      "a wrapped row's edge parent with no bundle on the page"),
-    # With the bundle, a panel is turned round only when it would leave by
-    # the end edge. One of the last two items hangs its panel from its end
-    # edge, and where a wrapped row puts that item first on its line, the
-    # panel leaves by the start edge instead, which the bundle does not yet
-    # turn round. The three-level menu is the one that puts a parent there.
-    (lambda combo, script, fault: (script and combo.get("overflow") == "wrap"
-                                   and "leaves the viewport (-" in fault),
-     "a wrapped row's last-two parent first on its line, leaving by the start edge"),
 ]
 known = []
 
@@ -726,6 +763,10 @@ def main():
                     help="the shut-panel control: a third level that takes the "
                          "pointer on its own is put back, and the check has to "
                          "fire")
+    ap.add_argument("--broken-edge", action="store_true",
+                    help="the start-edge control: a panel hung from its end "
+                         "edge at the start of a line stays in view, and the "
+                         "check has to fire with the library's turn undone")
     ap.add_argument("--widths", type=int, nargs="*", default=list(WIDTHS))
     ap.add_argument("--out", help="write the rendered pages here")
     ap.add_argument("--require-browser", action="store_true",
@@ -738,7 +779,7 @@ def main():
     args = ap.parse_args()
     combos, phone_combos = COMBOS, PHONE_COMBOS
     if args.shard:
-        if args.broken or args.broken_row or args.broken_shut:
+        if args.broken or args.broken_row or args.broken_shut or args.broken_edge:
             print("check_header: --shard splits the matrix, and the controls "
                   "are not the matrix; run them whole")
             return 2
@@ -783,6 +824,28 @@ def main():
                 return 1
             print(f"check_header --broken-row: quiet on the shipped bar ({n} renders), "
                   f"fires on the bar as it broke ({len(fired)} of {m} renders)")
+            return 0
+        if args.broken_edge:
+            combos = [{"overflow": "wrap", "submenu": "dropdown", "layout": "centred"}]
+            widths = [960, 1280]
+            quiet, n = sweep(shell, tokens, combos, ["edge"], LOGO_FIXTURES,
+                             widths, [True], broken="edge")
+            fired, m = sweep(shell, tokens, combos, ["edge"], LOGO_FIXTURES,
+                             widths, [True], broken="edge-undone")
+            fired = [f for f in fired if "under 'Groups' leaves the viewport (-" in f]
+            if quiet:
+                print(f"check_header --broken-edge: a panel at the start of a line "
+                      f"is not kept in view ({len(quiet)} of {n} renders)")
+                for f in quiet:
+                    print("  " + f)
+                return 1
+            if len(fired) < m:
+                print(f"check_header --broken-edge: the turn at the start edge was "
+                      f"undone and the in-view check fired on {len(fired)} of {m} "
+                      f"renders - the fixture no longer puts the panel there")
+                return 1
+            print(f"check_header --broken-edge: in view as shipped ({n} renders), "
+                  f"fires with the turn undone ({len(fired)} of {m} renders)")
             return 0
         if args.broken_shut:
             # The deep menu on the row that wraps and the row that folds, and
