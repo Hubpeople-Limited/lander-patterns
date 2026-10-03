@@ -1,5 +1,17 @@
 /* hero-centred v1 - tokens only, selectors prefixed */
 .hero-centred {
+  overflow-wrap: var(--long-words, break-word);
+}
+.hero-centred :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .hero-centred {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.hero-centred {
   --hero-centred-title-measure: 9.4em;
   --hero-centred-sub-measure: 50ch;
   /* Portrait on phones, letterbox from the tablet band: a landscape crop

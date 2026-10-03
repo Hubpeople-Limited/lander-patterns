@@ -7,11 +7,11 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "hero-collage",
-      "version": "2",
+      "version": "3",
       "variant": {
         "arrange": "prints",
         "ground": "soft"
@@ -19,22 +19,22 @@
     },
     {
       "name": "prose-column",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "claim-stack",
-      "version": "4",
+      "version": "5",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ]
 }

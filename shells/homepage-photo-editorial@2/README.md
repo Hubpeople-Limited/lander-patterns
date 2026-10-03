@@ -16,18 +16,18 @@ This shell needs photography. A photography slot may take the shared placeholder
 
 ## Sections, in order
 
-1. **masthead-nav** v13 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
+1. **masthead-nav** v14 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-centred** v8 - Opener with the claim centred above a wide cropped photograph in its own band - the one hero that never lays a word over an image, so no scrim has to carry a ratio.
+2. **hero-centred** v9 - Opener with the claim centred above a wide cropped photograph in its own band - the one hero that never lays a word over an image, so no scrim has to carry a ratio.
    - `headline` - text, about 4 word(s). Sample: Sample headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-srcset` - attribute (srcset): a short label, about 4 word(s)
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **zigzag-rows** v12 - Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.
+3. **zigzag-rows** v13 - Alternating image-and-copy rows down the middle of a page - the image side swaps row to row through an explicit modifier class, and only the image ever moves.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample section title
    - `row-1-image` - attribute (src): real material, or the couple/square placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
@@ -42,11 +42,11 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `row-2-body` - text, about 14 word(s). Sample: The second sample row, which mirrors the first so the p...
    - `row-2-link-url` - attribute (href): a short label, about 1 word(s)
    - `row-2-link-text` - text, about 3 word(s). Sample: Sample link text
-4. **faq-details** v6 - Zero-JavaScript FAQ accordion on native details/summary - hairline rows, a plus that turns into a cross when the row opens.
+4. **faq-details** v7 - Zero-JavaScript FAQ accordion on native details/summary - hairline rows, a plus that turns into a cross when the row opens.
    - `section-title` - text, about 3 word(s). Sample: Sample questions heading
    - `question` - text, about 11 word(s). Sample: A sample question, phrased the way a visitor would ask it?
    - `answer` - markup, about 22 words of copy; its sample shape is printed in page.html's banner
-5. **cta-image** v8 - Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
+5. **cta-image** v9 - Full-bleed photographic closing call to action - one landscape image, a scrim carrying the contrast, and a centred claim with both platform controls over it.
    - `cta-image-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `background-image` - attribute (src): real material, or the couple/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `background-image-srcset` - attribute (srcset): a short label, about 4 word(s)
@@ -54,7 +54,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview
    - `lead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-6. **colophon** v2 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+6. **colophon** v3 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 

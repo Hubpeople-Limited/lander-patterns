@@ -38,7 +38,7 @@
     "soft"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "announcement-bar": {
@@ -76,7 +76,7 @@
     "deep"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "article-figure": {
@@ -119,7 +119,7 @@
   "summary": "One picture inside a piece of writing, with its caption and credit.",
   "type": "component",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "article-masthead": {
@@ -165,7 +165,7 @@
   "summary": "The top of a written piece: the title, who wrote it and when.",
   "type": "section",
   "variants": {},
-  "version": "13",
+  "version": "14",
   "whole-page": false
  },
  "article-toc": {
@@ -195,7 +195,7 @@
   "summary": "A short list of links to the sections of a long piece, which a reader can put away.",
   "type": "component",
   "variants": {},
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "author-note": {
@@ -222,7 +222,7 @@
   "summary": "The block at the end of a piece saying who wrote it and why they know the subject.",
   "type": "component",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "benefit-tiles": {
@@ -258,7 +258,7 @@
     "moving"
    ]
   },
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "capability-tabs": {
@@ -305,7 +305,7 @@
   "summary": "A row of tabs, each showing one feature in a panel below.",
   "type": "section",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "claim-stack": {
@@ -348,7 +348,7 @@
     "deep"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "colophon": {
@@ -394,7 +394,7 @@
     "logo"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "comparison-table": {
@@ -427,7 +427,7 @@
   "summary": "Three things compared against the same list of criteria.",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "crumb-trail": {
@@ -463,7 +463,7 @@
     "column"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "cta-assurance": {
@@ -497,7 +497,7 @@
   "summary": "The short run of reassurances that sits under a join button.",
   "type": "component",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "cta-band": {
@@ -546,7 +546,7 @@
     "deep"
    ]
   },
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "cta-curtain": {
@@ -582,7 +582,7 @@
   "summary": "A full-screen closing call to action, uncovered as the page above it scrolls away.",
   "type": "section",
   "variants": {},
-  "version": "13",
+  "version": "14",
   "whole-page": false
  },
  "cta-image": {
@@ -629,7 +629,7 @@
   "summary": "A closing call to action over one full-width photograph.",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "cta-sticky": {
@@ -658,7 +658,7 @@
   "summary": "A join button fixed to the bottom of the screen on a phone.",
   "type": "component",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "faq-details": {
@@ -690,7 +690,7 @@
   "summary": "Common questions, each opening to its answer when tapped.",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "feature-panels": {
@@ -724,7 +724,7 @@
   "summary": "A run of full-width panels, each a shade stronger than the last.",
   "type": "section",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "gallery-scroll": {
@@ -788,7 +788,7 @@
     "swipe"
    ]
   },
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "heading-block": {
@@ -821,7 +821,7 @@
   "summary": "A heading and one supporting line, to introduce what follows.",
   "type": "component",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "hero-band": {
@@ -890,7 +890,7 @@
     "behind"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "hero-bento": {
@@ -972,7 +972,7 @@
     "top"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "hero-centred": {
@@ -1026,7 +1026,7 @@
   "summary": "An opening claim centred above a wide photograph.",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "hero-collage": {
@@ -1132,7 +1132,7 @@
     "start"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "hero-overlay": {
@@ -1185,7 +1185,7 @@
   "summary": "One photograph filling the first screen, with the claim over it.",
   "type": "section",
   "variants": {},
-  "version": "17",
+  "version": "18",
   "whole-page": false
  },
  "hero-portrait": {
@@ -1259,7 +1259,7 @@
     "end"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "hero-split": {
@@ -1318,7 +1318,7 @@
     "start"
    ]
   },
-  "version": "15",
+  "version": "16",
   "whole-page": false
  },
  "hero-squeeze": {
@@ -1372,7 +1372,7 @@
   "summary": "The whole page in a single screen: a photograph, one claim, one button.",
   "type": "section",
   "variants": {},
-  "version": "15",
+  "version": "16",
   "whole-page": true
  },
  "hero-stated": {
@@ -1433,7 +1433,7 @@
     "deep"
    ]
   },
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "history-timeline": {
@@ -1498,7 +1498,7 @@
     "start"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "key-takeaways": {
@@ -1526,7 +1526,7 @@
   "summary": "A short box near the top saying what the piece tells you.",
   "type": "component",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "link-cluster": {
@@ -1569,7 +1569,7 @@
     "brand"
    ]
   },
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "listing-rows": {
@@ -1613,7 +1613,7 @@
     "brand"
    ]
   },
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "masthead-nav": {
@@ -1713,7 +1713,7 @@
     "labelled"
    ]
   },
-  "version": "13",
+  "version": "14",
   "whole-page": false
  },
  "media-card-grid": {
@@ -1768,7 +1768,7 @@
     "moving"
    ]
   },
-  "version": "14",
+  "version": "15",
   "whole-page": false
  },
  "member-filter": {
@@ -1800,7 +1800,7 @@
   "summary": "Pills that switch between two or three sets of live members, with no script.",
   "type": "section",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "member-grid": {
@@ -1859,7 +1859,7 @@
     "swipe"
    ]
   },
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "member-strip": {
@@ -1907,7 +1907,7 @@
   "summary": "A short row of real members, with a photograph and a line each.",
   "type": "component",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "offer-split": {
@@ -1939,7 +1939,7 @@
   "summary": "A conversion beat with no photography: the argument on one side, the offer on the other.",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "opener-split": {
@@ -1979,7 +1979,7 @@
     "ruled"
    ]
   },
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "photo-band": {
@@ -2033,7 +2033,7 @@
     "tall"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "photo-cards": {
@@ -2092,7 +2092,7 @@
     "moving"
    ]
   },
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "picker-chips": {
@@ -2122,7 +2122,7 @@
   "summary": "The first sign-up decision as one tap: a question and a row of choices.",
   "type": "component",
   "variants": {},
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "pinned-cards": {
@@ -2168,7 +2168,7 @@
   "summary": "Full-screen photo cards that stack over one another as you scroll.",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "portrait-prose": {
@@ -2217,7 +2217,7 @@
     "end"
    ]
   },
-  "version": "3",
+  "version": "4",
   "whole-page": false
  },
  "portrait-row": {
@@ -2283,7 +2283,7 @@
     "round"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "portrait-wall": {
@@ -2348,7 +2348,7 @@
     "moving"
    ]
   },
-  "version": "9",
+  "version": "10",
   "whole-page": false
  },
  "pricing-tiers": {
@@ -2383,7 +2383,7 @@
     "moving"
    ]
   },
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "prose-column": {
@@ -2419,7 +2419,7 @@
   "summary": "The body of a written piece, held to a readable width.",
   "type": "component",
   "variants": {},
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "pull-quote": {
@@ -2447,7 +2447,7 @@
   "summary": "One line from the article, set large to break up a long read.",
   "type": "component",
   "variants": {},
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "quote-feature": {
@@ -2489,7 +2489,7 @@
   "summary": "One oversized testimonial on a full-width tinted stage.",
   "type": "section",
   "variants": {},
-  "version": "8",
+  "version": "9",
   "whole-page": false
  },
  "quote-image": {
@@ -2553,7 +2553,7 @@
     "end"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "rating-mark": {
@@ -2585,7 +2585,7 @@
   "summary": "A published rating shown as whole stars beside the figure.",
   "type": "component",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "safety-protections": {
@@ -2617,7 +2617,7 @@
   "summary": "Safety measures as cards, grouped by what they protect against.",
   "type": "section",
   "variants": {},
-  "version": "5",
+  "version": "6",
   "whole-page": false
  },
  "scene-cards": {
@@ -2681,7 +2681,7 @@
     "over"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "signup-card": {
@@ -2763,7 +2763,7 @@
   "summary": "An opening that asks the first sign-up questions on the page itself.",
   "type": "section",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "source-note": {
@@ -2800,7 +2800,7 @@
   "summary": "The line under a claim saying where the figure came from.",
   "type": "component",
   "variants": {},
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "stat-rows": {
@@ -2839,7 +2839,7 @@
     "moving"
    ]
   },
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "stats-band": {
@@ -2881,7 +2881,7 @@
     "moving"
    ]
   },
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "steps-numbered": {
@@ -2936,7 +2936,7 @@
     "moving"
    ]
   },
-  "version": "14",
+  "version": "15",
   "whole-page": false
  },
  "steps-plain": {
@@ -2978,7 +2978,7 @@
     "moving"
    ]
   },
-  "version": "6",
+  "version": "7",
   "whole-page": false
  },
  "story-cards": {
@@ -3040,7 +3040,7 @@
     "over"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "story-timeline": {
@@ -3104,7 +3104,7 @@
     "start"
    ]
   },
-  "version": "1",
+  "version": "2",
   "whole-page": false
  },
  "testimonial-carousel": {
@@ -3155,7 +3155,7 @@
     "dots"
    ]
   },
-  "version": "11",
+  "version": "12",
   "whole-page": false
  },
  "testimonial-grid": {
@@ -3200,7 +3200,7 @@
   "summary": "Three testimonial cards side by side, with portraits.",
   "type": "section",
   "variants": {},
-  "version": "12",
+  "version": "13",
   "whole-page": false
  },
  "trust-row": {
@@ -3241,7 +3241,7 @@
   "summary": "A strip of assurance marks: a membership lockup and a row of guarantees.",
   "type": "component",
   "variants": {},
-  "version": "4",
+  "version": "5",
   "whole-page": false
  },
  "zigzag-rows": {
@@ -3298,7 +3298,7 @@
     "moving"
    ]
   },
-  "version": "12",
+  "version": "13",
   "whole-page": false
  }
 }

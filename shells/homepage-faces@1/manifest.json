@@ -7,30 +7,30 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "hero-split",
-      "version": "15"
+      "version": "16"
     },
     {
       "name": "portrait-row",
-      "version": "2",
+      "version": "3",
       "variant": {
         "ground": "soft"
       }
     },
     {
       "name": "steps-plain",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ]
 }

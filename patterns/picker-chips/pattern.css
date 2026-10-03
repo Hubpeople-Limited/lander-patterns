@@ -1,5 +1,17 @@
 /* picker-chips v5 - tokens only, selectors prefixed */
 .picker-chips {
+  overflow-wrap: var(--long-words, break-word);
+}
+.picker-chips :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .picker-chips {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.picker-chips {
   /* The touch-target floor. Every pill is at least this tall and wide. */
   --picker-chips-target: 48px;
   max-width: 32rem;

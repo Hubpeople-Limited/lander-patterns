@@ -1,5 +1,17 @@
 /* offer-split v1 - tokens only, selectors prefixed */
 .offer-split {
+  overflow-wrap: var(--long-words, break-word);
+}
+.offer-split :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .offer-split {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.offer-split {
   --offer-split-panel-min: 18rem;
   padding-block: var(--space-8);
   padding-inline: var(--space-4);

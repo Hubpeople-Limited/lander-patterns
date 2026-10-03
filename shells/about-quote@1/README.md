@@ -16,18 +16,18 @@ This shell needs photography. A photography slot may take the shared placeholder
 
 ## Sections, in order
 
-1. **masthead-nav** v13 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
+1. **masthead-nav** v14 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-band** v3 (ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
+2. **hero-band** v4 (ground=plain) - Inner-page opener - the page's h1 and one supporting line with a photograph beside them, or behind them on a panel of the ground, one band tall rather than a screen so the page's own content starts on the first screen.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 5 word(s). Sample: Sample page headline for preview
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `hero-image` - attribute (src): real material, or the group/landscape placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `hero-image-alt` - attribute (alt): what the image shows, in words
-3. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+3. **prose-column** v7 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -40,19 +40,19 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-4. **quote-image** v1 - One real quote at display size over a full-width photograph - the words on a soft-edged shade of the scrim that carries their contrast, placed in the middle, on the left or on the right, with the rest of the photograph clear or evenly darkened.
+4. **quote-image** v2 - One real quote at display size over a full-width photograph - the words on a soft-edged shade of the scrim that carries their contrast, placed in the middle, on the left or on the right, with the rest of the photograph clear or evenly darkened.
    - `quote-backdrop` - attribute (src): real material, or the place/wide placeholder from lib/placeholders/placeholders.json, referenced by its CDN URL and marked data-hub-placeholder
    - `quote-backdrop-alt` - attribute (alt): what the image shows, in words
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `quote` - text, about 22 word(s). Sample: A sample quote of about twenty words, set here only so ...
    - `person-name` - text, about 2 word(s). Sample: Sample Name
    - `person-role` - text, about 3 word(s). Sample: Sample detail line
-5. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+5. **cta-band** v7 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview
    - `lead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-6. **colophon** v2 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+6. **colophon** v3 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 

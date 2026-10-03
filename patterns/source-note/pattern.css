@@ -1,4 +1,16 @@
-/* source-note v1 - tokens only, selectors prefixed */
+/* source-note v2 - tokens only, selectors prefixed */
+.source-note {
+  overflow-wrap: var(--long-words, break-word);
+}
+.source-note :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .source-note {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 .source-note {
   margin: var(--space-2) 0 var(--space-4);
   font-size: 0.75rem;

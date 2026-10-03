@@ -7,30 +7,30 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13",
+      "version": "14",
       "variant": {
         "nav": "minimal"
       }
     },
     {
       "name": "hero-squeeze",
-      "version": "15"
+      "version": "16"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ],
   "slot-support": [
     {
       "name": "cta-assurance",
-      "version": "2",
+      "version": "3",
       "for-slot": "assurance",
       "of": "hero-squeeze"
     },
     {
       "name": "rating-mark",
-      "version": "5",
+      "version": "6",
       "for-slot": "proof",
       "of": "hero-squeeze"
     }

@@ -4525,55 +4525,182 @@ def check_hero_collage_moving():
     return failures
 
 
-# A line may break between words, after a hyphen or a slash, and nowhere
-# else: a figure or a name broken inside a word reads as two words.
+# A line breaks between words, after a hyphen or a slash, and inside a word
+# only where the word is longer than the line: a word that would have fitted
+# on a line of its own and is broken reads as two words, and a word longer
+# than its line that is kept whole runs off the screen.
 BREAKS_AFTER = "-/‐–—­"
 
 
-def split_words_js(selector):
-    """JavaScript for _render: the words broken across two lines inside any
-    visible element matching `selector`, each as "word in .class"."""
+def words_js(selector):
+    """JavaScript for _render: every word inside a visible element matching
+    `selector`, read where its characters land. Returns {faults, broken}:
+    `faults` a word broken across lines that would have fitted on a line of
+    its own, or a word whose glyphs run past the box its lines are set in;
+    `broken` every word broken inside, fitted or not, each as
+    "word in .class"."""
     return """() => {
-        const found = [];
+        const BREAKS = %s;
+        const faults = new Set(), broken = new Set();
+        const where = el => {
+            for (let p = el; p; p = p.parentElement)
+                if (p.classList && p.classList.length) return '.' + p.classList[0];
+            return el.tagName.toLowerCase();
+        };
+        // The box a run of text is set in: the nearest ancestor that is not
+        // an inline box. Text straight inside a flex or grid container sits
+        // in an anonymous item, whose width is not the container's.
+        const boxOf = el => {
+            for (let p = el; p; p = p.parentElement) {
+                const cs = getComputedStyle(p);
+                if (cs.display === 'inline' || cs.display === 'contents') continue;
+                const r = p.getBoundingClientRect();
+                const left = r.left + parseFloat(cs.borderLeftWidth) + parseFloat(cs.paddingLeft);
+                const right = r.right - parseFloat(cs.borderRightWidth) - parseFloat(cs.paddingRight);
+                return {el: p, left, right, anonymous: /flex|grid/.test(cs.display),
+                        oneLine: cs.textOverflow === 'ellipsis' || /nowrap|pre$/.test(cs.whiteSpace)};
+            }
+            return null;
+        };
+        // A box can itself be pushed wider than the screen by a word it will
+        // not break, so the screen bounds a word too - except inside a row
+        // that scrolls or clips, where a word past the edge is one the row
+        // has not brought into view.
+        const screen = document.documentElement.clientWidth;
+        const inRow = el => {
+            for (let p = el; p && p !== document.body; p = p.parentElement)
+                if (getComputedStyle(p).overflowX !== 'visible') return true;
+            return false;
+        };
         for (const el of document.querySelectorAll(%s)) {
             if (!el.checkVisibility()) continue;
             const chars = [];
+            let last = null;
             const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
             for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+                const parent = n.parentElement;
+                if (!parent || !parent.checkVisibility()) continue;
+                const box = boxOf(parent);
+                // Text in another box is another run: the last word of one
+                // heading and the first of the next are two words.
+                if (box && last && box.el !== last) chars.push({c: ' ', top: null});
+                last = box ? box.el : null;
+                if (box) {
+                    const row = inRow(parent);
+                    box.right = row ? box.right : Math.min(box.right, screen);
+                    box.left = row ? box.left : Math.max(box.left, 0);
+                }
+                // Text in a box a pixel or two wide is there for a screen
+                // reader, not set for the eye; a one-line box clips on purpose.
+                if (!box || box.right - box.left < 4 || box.oneLine) {
+                    chars.push({c: ' ', top: null});
+                    continue;
+                }
+                const whole = document.createRange();
+                whole.selectNodeContents(n);
+                const widest = Math.max(0, ...[...whole.getClientRects()].map(r => r.width));
+                const room = box.anonymous ? widest : Math.max(widest, box.right - box.left);
                 for (let i = 0; i < n.length; i++) {
                     const range = document.createRange();
                     range.setStart(n, i);
                     range.setEnd(n, i + 1);
                     const r = range.getClientRects()[0];
-                    chars.push({c: n.data[i], top: r ? r.top : null});
+                    chars.push({c: n.data[i], top: r ? r.top : null, left: r ? r.left : 0,
+                                right: r ? r.right : 0, box, room, at: parent});
                 }
             }
-            for (let i = 1; i < chars.length; i++) {
-                const a = chars[i - 1], b = chars[i];
-                if (/\\s/.test(a.c) || /\\s/.test(b.c) || %s.includes(a.c)) continue;
-                if (a.top === null || b.top === null || Math.abs(a.top - b.top) < 2) continue;
-                let s = i - 1, e = i;
-                while (s > 0 && !/\\s/.test(chars[s - 1].c)) s--;
-                while (e < chars.length - 1 && !/\\s/.test(chars[e + 1].c)) e++;
-                found.push(chars.slice(s, e + 1).map(x => x.c).join('') + ' in .' + el.classList[0]);
+            for (let s = 0; s < chars.length; s++) {
+                if (/\\s/.test(chars[s].c)) continue;
+                let e = s;
+                while (e + 1 < chars.length && !/\\s/.test(chars[e + 1].c)) e++;
+                const word = chars.slice(s, e + 1).filter(x => x.top !== null);
+                s = e;
+                if (!word.length) continue;
+                const text = word.map(x => x.c).join('');
+                let inside = false;
+                for (let i = 1; i < word.length; i++) {
+                    const a = word[i - 1], b = word[i];
+                    if (Math.abs(a.top - b.top) >= 2 && !BREAKS.includes(a.c)) inside = true;
+                }
+                const width = word.reduce((t, x) => t + (x.right - x.left), 0);
+                const room = Math.max(...word.map(x => x.room));
+                const label = text + ' in ' + where(word[0].at);
+                if (inside) broken.add(label);
+                // Within a pixel of the room is the browser's call: the sum
+                // of the glyphs' boxes is not the word's advance to the pixel.
+                if (inside && width < room - 1)
+                    faults.add('broken though it fits (' + Math.round(width) + 'px in '
+                               + Math.round(room) + 'px): ' + label);
+                if (word.some(x => x.right > x.box.right + 1 || x.left < x.box.left - 1))
+                    faults.add('runs off its box: ' + label);
             }
         }
-        return [...new Set(found)].slice(0, 4);
-    }""" % (json.dumps(selector), json.dumps(BREAKS_AFTER))
+        return {faults: [...faults].slice(0, 6), broken: [...broken].slice(0, 6)};
+    }""" % (json.dumps(BREAKS_AFTER), json.dumps(selector))
 
 
-# Every heading and figure in the library, at the phone gate's widths.
-WHOLE_WORD_SELECTOR = "h1, h2, h3, h4, dt, [class$='-num'], [class*='-figure']"
+# The openers' headlines, set in the long words German and Spanish make, with
+# the page in that language so the browser can hyphenate. No English sample
+# has a word this long, so these are the words the library's own samples
+# cannot show breaking.
+LONG_HEADLINES = (
+    ("de", "Willkommen in der Nachbarschaftsgemeinschaft"),
+    ("de", "Lebensabschnittsgefährten und Partnervermittlungsagenturen"),
+    ("es", "Conoce a otorrinolaringólogos y electroencefalografistas"),
+    ("es", "Anticonstitucionalmente internacionalizados"),
+)
+LONG_WIDTHS = (320, 360, 390)
+
+
+def opener_headlines():
+    """{pattern: the tag of its headline}: every pattern that opens a page
+    with an h1, and every one whose layout line names it an opener."""
+    out = {}
+    for folder in sorted(d for d in (HERE.parent / "patterns").iterdir() if d.is_dir()):
+        html = (folder / "pattern.html").read_text(encoding="utf-8")
+        if re.search(r"<h1[\s>]", html):
+            out[folder.name] = "h1"
+        elif re.search(r"^layout:\s*opener=", html, re.M):
+            out[folder.name] = "h2"
+    return out
+
+
+def long_headline_page(name, tag, lang, headline, tokens, section_style=""):
+    """`name` with its headline set to `headline` and the page in `lang`;
+    `section_style` goes on the pattern's own element as a style attribute,
+    as a page sets a custom property on one section."""
+    import check_phone
+    page = check_phone.pattern_page(name, 390, check_phone.token_set(tokens))
+    page = page.replace('<html lang="en">', f'<html lang="{lang}">', 1)
+    page, swapped = re.subn(rf"(<{tag}\b[^>]*>).*?(</{tag}>)",
+                            lambda m: m.group(1) + headline + m.group(2), page,
+                            count=1, flags=re.S)
+    if swapped != 1:
+        raise SystemExit(f"{name} has no <{tag}> headline to set")
+    if section_style:
+        page, swapped = re.subn(rf'(<\w+ class="{re.escape(name)}[\s"][^>]*)>',
+                                lambda m: m.group(1) + f' style="{section_style}">',
+                                page, count=1)
+        if swapped != 1:
+            raise SystemExit(f"{name} has no element of its own to set a style on")
+    return page
+
+
+# Every piece of text in the library, at the phone gate's widths.
+WORDS_SELECTOR = "body"
 
 
 def check_words_whole():
-    """No line breaks inside a word: in every tile of hero-bento at every
-    width from 320 to 1440 on every rung, and in every heading and figure in
-    the library at 320 and 360."""
+    """A word breaks across a line only where it is longer than the line,
+    and no word runs off its box: in every tile of hero-bento at every width
+    from 320 to 1440 on every rung; every opener's headline set in long
+    German and Spanish words at 320, 360 and 390; and every piece of text in
+    the library at 320 and 360, where no English sample word breaks at all.
+    A section's own `--long-words: normal` keeps every word whole."""
     import check_phone
     import lint
     failures = []
-    print("words whole, a line breaks only between words")
+    print("words whole, a word breaks only where it is longer than the line")
     why = check_phone.browser_unavailable()
     if why:
         print(f"  SKIPPED words whole: {why}")
@@ -4600,29 +4727,61 @@ def check_words_whole():
                 for mods in _rung_combos(meta):
                     page = opener_page("hero-bento", mods, tokens)
                     for width in COVER_WIDTHS:
-                        for hit in _render(browser, workdir, page, (width, 900),
-                                           split_words_js(tiles)):
-                            split.append(f"{' '.join(f'{a}={v}' for a, v in mods.items())} "
-                                         f"at {width}: {hit}")
-                case(f"hero-bento on {tokens}: no word in a tile breaks across lines, every rung, "
-                     f"320 to 1440" + ("" if not split else " - " + "; ".join(split[:3])),
-                     not split)
-            broken = opener_page("hero-bento", {}, "display",
-                                 extra_css=".hero-bento-figure-num { overflow-wrap: anywhere "
-                                           "!important; font-size: 4rem !important; }")
-            case("catches: a figure broken inside a word",
-                 bool(_render(browser, workdir, broken, (1280, 900), split_words_js(tiles))))
+                        got = _render(browser, workdir, page, (width, 900), words_js(tiles))
+                        split += [f"{' '.join(f'{a}={v}' for a, v in mods.items())} "
+                                  f"at {width}: {hit}" for hit in got["faults"] + got["broken"]]
+                case(f"hero-bento on {tokens}: no word in a tile breaks across lines or runs "
+                     f"off, every rung, 320 to 1440"
+                     + ("" if not split else " - " + "; ".join(split[:3])), not split)
+            forced = _render(browser, workdir,
+                             opener_page("hero-bento", {}, "display",
+                                         extra_css=".hero-bento-title { word-break: break-all "
+                                                   "!important; }"),
+                             (390, 900), words_js(tiles))
+            case("catches: a word in a tile broken that would have fitted",
+                 any(f.startswith("broken though it fits") for f in forced["faults"]))
+
+            headlines = opener_headlines()
+            for tokens in ("brand", "display"):
+                bad = []
+                for name, tag in headlines.items():
+                    for lang, headline in LONG_HEADLINES:
+                        page = long_headline_page(name, tag, lang, headline, tokens)
+                        for width in LONG_WIDTHS:
+                            got = _render(browser, workdir, page, (width, 900), words_js(tag))
+                            bad += [f"{name} {lang} at {width}: {f}" for f in got["faults"]]
+                case(f"every opener's headline on {tokens} in long German and Spanish words at "
+                     f"{', '.join(map(str, LONG_WIDTHS))}: a word longer than the line breaks, "
+                     f"no other does, none runs off ({len(headlines)} openers)"
+                     + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+            kept = long_headline_page("hero-split", "h1", "de", LONG_HEADLINES[0][1], "brand",
+                                      section_style="--long-words: normal")
+            got = _render(browser, workdir, kept, (320, 900), words_js("h1"))
+            case("a section's own --long-words: normal keeps every word whole, as before: "
+                 "nothing breaks and the long word runs off",
+                 not got["broken"]
+                 and any(f.startswith("runs off its box") for f in got["faults"]))
+            forced = _render(browser, workdir,
+                             opener_page("hero-split", {}, "brand",
+                                         extra_css=".hero-split-title { word-break: break-all "
+                                                   "!important; }"),
+                             (390, 900), words_js("h1"))
+            case("catches: a headline word broken that would have fitted",
+                 any(f.startswith("broken though it fits") for f in forced["faults"]))
+
             for tokens in ("brand", "display"):
                 split = []
-                for name in sorted(d.name for d in (HERE.parent / "patterns").iterdir() if d.is_dir()):
+                for name in sorted(d.name for d in (HERE.parent / "patterns").iterdir()
+                                   if d.is_dir()):
                     page = check_phone.pattern_page(name, 390, check_phone.token_set(tokens))
                     for width in (320, 360):
-                        for hit in _render(browser, workdir, page, (width, 900),
-                                           split_words_js(WHOLE_WORD_SELECTOR)):
-                            split.append(f"{name} at {width}: {hit}")
-                case(f"every heading and figure in the library on {tokens} at 320 and 360 keeps "
-                     f"its words whole" + ("" if not split else " - " + "; ".join(split[:4])),
-                     not split)
+                        got = _render(browser, workdir, page, (width, 900),
+                                      words_js(WORDS_SELECTOR))
+                        split += [f"{name} at {width}: {hit}"
+                                  for hit in got["faults"] + got["broken"]]
+                case(f"every piece of text in the library on {tokens} at 320 and 360 keeps its "
+                     f"words whole and inside its box"
+                     + ("" if not split else " - " + "; ".join(split[:4])), not split)
         finally:
             browser.close()
     return failures
@@ -5695,7 +5854,7 @@ def main(argv=None):
              + 27 + 5
              + 39 + 6
              + 37 + 4
-             + 7
+             + 11
              + 11
              + 18 + 2 + 1
              + 28 + 10
