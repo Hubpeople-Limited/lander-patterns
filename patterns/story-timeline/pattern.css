@@ -1,0 +1,181 @@
+/* story-timeline v1 - tokens only, selectors prefixed */
+/* Its twin's stylesheet is this file with the name swapped: change both. */
+.story-timeline,
+.story-timeline--plain {
+  --story-timeline-ground: var(--color-bg);
+  --story-timeline-title-ink: var(--color-heading, var(--color-text));
+}
+.story-timeline--soft {
+  --story-timeline-ground: var(--color-surface-soft);
+  --story-timeline-title-ink: var(--color-text);
+}
+.story-timeline {
+  --story-timeline-rail: var(--space-6);
+  --story-timeline-dot: 0.75rem;
+  --story-timeline-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 24%, transparent));
+  padding-block: var(--space-8);
+  background: var(--story-timeline-ground);
+  color: var(--color-text);
+}
+.story-timeline-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.story-timeline-eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.story-timeline-title {
+  max-width: 20em;
+  margin: 0 0 var(--space-8);
+  font-family: var(--font-heading);
+  color: var(--story-timeline-title-ink);
+  font-size: calc(clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.1 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .story-timeline-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.story-timeline-list {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  padding-inline-start: var(--story-timeline-rail);
+  list-style: none;
+}
+/* The line and the dots are drawing only: the list's order and each
+   <time> carry the sequence. */
+.story-timeline-list::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--story-timeline-dot) / 2 - 1px);
+  width: 2px;
+  background: var(--story-timeline-edge);
+}
+.story-timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* Centred on the date's first line: keep in step with .story-timeline-num. */
+.story-timeline-item::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc((0.9375rem * 1.5 - var(--story-timeline-dot)) / 2);
+  inset-inline-start: calc(-1 * var(--story-timeline-rail));
+  width: var(--story-timeline-dot);
+  height: var(--story-timeline-dot);
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+.story-timeline-body {
+  min-width: 0;
+}
+.story-timeline-num {
+  display: block;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+@supports (line-height: 1cap) {
+  .story-timeline-num {
+    line-height: max(1.5em, 1.45cap);
+  }
+}
+.story-timeline-name {
+  margin: 0;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-size: calc(clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .story-timeline-name {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.story-timeline-line {
+  max-width: 40ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-soft);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.story-timeline-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--card-radius);
+  background: var(--color-surface);
+}
+.story-timeline--with .story-timeline-img {
+  display: block;
+}
+.story-timeline--without .story-timeline-img {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .story-timeline--start.story-timeline--with .story-timeline-item {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    column-gap: var(--space-8);
+  }
+  .story-timeline--centre .story-timeline-list {
+    padding-inline-start: 0;
+  }
+  .story-timeline--centre .story-timeline-list::before {
+    inset-inline-start: calc(50% - 1px);
+  }
+  .story-timeline--centre .story-timeline-item {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "words photo";
+    column-gap: calc(2 * var(--space-8));
+  }
+  .story-timeline--centre .story-timeline-item:nth-child(even) {
+    grid-template-areas: "photo words";
+  }
+  .story-timeline--centre .story-timeline-item::before {
+    inset-inline-start: calc(50% - var(--story-timeline-dot) / 2);
+  }
+  .story-timeline--centre .story-timeline-body {
+    grid-area: words;
+  }
+  .story-timeline--centre .story-timeline-img {
+    grid-area: photo;
+  }
+  .story-timeline--centre .story-timeline-item:nth-child(odd) .story-timeline-body {
+    text-align: end;
+  }
+  .story-timeline--centre .story-timeline-item:nth-child(odd) .story-timeline-line {
+    margin-inline-start: auto;
+  }
+}
+
+.story-timeline:not(.story-timeline--moving) {
+  --hub-motion: none;
+}

@@ -3667,6 +3667,214 @@ def check_story_cards_moving():
     return failures
 
 
+def check_timelines():
+    """story-timeline and history-timeline: one timeline in two files, held
+    identical, each with the header its use needs; the moments alternate
+    either side of the line from 48rem and sit on one side below it, or on
+    one side at every width on start; a moment with no photograph closes up;
+    nothing covers a moment's words from 320 to 1440; the year stays whole;
+    every rung combination of both passes the phone gate."""
+    import check_phone
+    import lint
+    from _placeholders import parse_image_slots
+    failures = []
+    print("story-timeline and history-timeline, one timeline with two uses")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED timelines: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"timelines: {label}")
+
+    story, history = "story-timeline", "history-timeline"
+
+    def read(name, file):
+        return (HERE.parent / "patterns" / name / file).read_text(encoding="utf-8")
+
+    def same(a, b):
+        return a.replace(story, "X") == b.replace(history, "X")
+
+    case("the two files' markup is one timeline",
+         same(_strip_notes(read(story, "pattern.html")), _strip_notes(read(history, "pattern.html"))))
+    case("the two stylesheets are one stylesheet",
+         same(read(story, "pattern.css"), read(history, "pattern.css")))
+    case("the two files offer the same rungs in the same words",
+         read(story, "variants.json") == read(history, "variants.json"))
+    drifted = read(history, "pattern.css").replace("aspect-ratio: 4 / 3;", "aspect-ratio: 3 / 2;", 1)
+    case("catches: one stylesheet changed without the other",
+         drifted != read(history, "pattern.css") and not same(read(story, "pattern.css"), drifted))
+    metas = {n: lint.parse_header(read(n, "pattern.html"), HERE.parent / "patterns" / n / "pattern.html")
+             for n in (story, history)}
+    story_slots = parse_image_slots(metas[story]["image-slots"])
+    history_slots = parse_image_slots(metas[history]["image-slots"])
+    case("story-timeline shows one couple and never a drawn stand-in for them",
+         metas[story]["requires"] == "consented-people"
+         and all(not s["placeholder"] and set(s["subjects"]) <= {"couple", "person"} for s in story_slots))
+    case("history-timeline needs no picture, takes no stand-in and shows no couple",
+         metas[history]["requires"] == "none"
+         and all(not s["placeholder"] and not {"couple", "person"} & set(s["subjects"])
+                 for s in history_slots))
+    case("both are an ordered list whose every date is a time element",
+         all(f'<ol class="{n}-list"' in read(n, "pattern.html")
+             and f'<time class="{n}-num" datetime="slot:moment-datetime">' in read(n, "pattern.html")
+             for n in (story, history)))
+    case("the couple's carries people and the brand's does not, in the building skill's words",
+         metas[story]["layout"] == "people=stories; rhythm=column"
+         and metas[history]["layout"] == "rhythm=column")
+
+    sides_js = """() => {
+        const l = document.querySelector('.story-timeline-list').getBoundingClientRect();
+        const mid = l.left + l.width / 2;
+        const b = [...document.querySelectorAll('.story-timeline-body')].map(e => e.getBoundingClientRect());
+        return {alternate: b.every((r, i) => i % 2 ? r.left >= mid - 1 : r.right <= mid + 1),
+                oneSide: b.every(r => Math.abs(r.left - b[0].left) <= 1 && r.left > l.left + 1)}; }"""
+    close_js = """() => {
+        const i = document.querySelectorAll('.story-timeline-item')[1];
+        return Math.abs(i.getBoundingClientRect().height
+                        - i.querySelector('.story-timeline-body').getBoundingClientRect().height); }"""
+    lines_js = """() => [...document.querySelectorAll('.story-timeline-num')].map(t => {
+        const r = document.createRange();
+        r.selectNodeContents(t);
+        return new Set([...r.getClientRects()].map(x => Math.round(x.top))).size; })"""
+
+    def no_second_photo(html):
+        found = list(re.finditer(r'\s*<img class="story-timeline-img"[^>]*>', html))
+        return html[:found[1].start()] + html[found[1].end():]
+
+    from playwright.sync_api import sync_playwright
+    with tempfile.TemporaryDirectory() as tmp, sync_playwright() as p:
+        workdir = _opener_workdir(tmp)
+        browser = p.chromium.launch()
+        try:
+            for tokens in ("brand", "display"):
+                centre = opener_page(story, {"spine": "centre"}, tokens)
+                for width in (768, 1280):
+                    got = _render(browser, workdir, centre, (width, 900), sides_js)
+                    case(f"spine=centre on {tokens} at {width}: the moments alternate either side "
+                         f"of the line", got["alternate"])
+                for width in (390, 767):
+                    got = _render(browser, workdir, centre, (width, 900), sides_js)
+                    case(f"spine=centre on {tokens} at {width}: below the breakpoint every moment "
+                         f"sits on one side of the line", got["oneSide"])
+                got = _render(browser, workdir, opener_page(story, {"spine": "start"}, tokens),
+                              (1280, 900), sides_js)
+                case(f"spine=start on {tokens} at 1280: every moment on one side of the line",
+                     got["oneSide"])
+            stuck = _render(browser, workdir,
+                            opener_page(story, {"spine": "centre"}, "brand",
+                                        extra_css=".story-timeline--centre .story-timeline-item:nth-child(even) "
+                                                  "{ grid-template-areas: \"words photo\" !important; }"),
+                            (1280, 900), sides_js)
+            case("catches: moments that all sit on one side on centre", not stuck["alternate"])
+            for tokens in ("brand", "display"):
+                for width in (390, 1280):
+                    gap = _render(browser, workdir,
+                                  no_second_photo(opener_page(story, {"photos": "with"}, tokens)),
+                                  (width, 900), close_js)
+                    case(f"photos=with on {tokens} at {width}: a moment with no photograph closes up "
+                         f"to its words ({gap:.1f}px over)", gap <= 1)
+            held = _render(browser, workdir,
+                           no_second_photo(opener_page(story, {}, "brand",
+                                                       extra_css=".story-timeline-item "
+                                                                 "{ min-height: 24rem !important; }")),
+                           (1280, 900), close_js)
+            case("catches: a moment that keeps the photograph's room", held > 1)
+            for tokens in ("brand", "display"):
+                for mods in _rung_combos(metas[story], skip=("motion", "ground")):
+                    hits = covered_text(browser, workdir, opener_page(story, mods, tokens),
+                                        ".story-timeline-item, .story-timeline-img, .story-timeline-num")
+                    case(f"{' '.join(f'{a}={v}' for a, v in mods.items())} on {tokens}: no moment, "
+                         f"photograph or date covers words from 320 to 1440"
+                         + ("" if not hits else " - " + "; ".join(hits[:3])), not hits)
+            pulled = covered_text(browser, workdir,
+                                  opener_page(story, {}, "brand",
+                                              extra_css=".story-timeline-item:nth-child(2) "
+                                                        "{ margin-top: -12rem !important; }"),
+                                  ".story-timeline-item, .story-timeline-img, .story-timeline-num")
+            case("catches: a moment pulled up over the one before", bool(pulled))
+            for tokens in ("brand", "display"):
+                page = opener_page(story, {}, tokens).replace("Sample year", "2019")
+                lines = _render(browser, workdir, page, (320, 900), lines_js)
+                case(f"on {tokens} at 320 the year '2019' stays on one line, every moment",
+                     bool(lines) and all(n == 1 for n in lines))
+            split = _render(browser, workdir,
+                            opener_page(story, {}, "display",
+                                        extra_css=".story-timeline-num { font-size: 9rem !important; "
+                                                  "overflow-wrap: anywhere !important; }")
+                            .replace("Sample year", "2019"), (320, 900), lines_js)
+            case("catches: a year broken across lines", any(n > 1 for n in split))
+        finally:
+            browser.close()
+    with check_phone.Phone() as phone:
+        for name in (story, history):
+            for tokens in ("brand", "display"):
+                bad = []
+                for mods in _rung_combos(metas[name]):
+                    label = f"{name} " + " ".join(f"{a}={v}" for a, v in mods.items())
+                    bad += phone.faults(label, opener_page(name, mods, tokens))
+                case(f"{name}: every rung combination at 320 and 360 on {tokens} passes the "
+                     f"phone gate" + ("" if not bad else " - " + "; ".join(bad[:4])), not bad)
+    return failures
+
+
+def check_timelines_moving():
+    """With the behaviour library on the page: the still rung reveals nothing
+    on either twin; on the moving rung each moment eases in as the visitor
+    reaches it and none is left hidden once they have scrolled past it;
+    under reduced motion the moving rung hides nothing."""
+    import check_behaviours as cb
+    import check_phone
+    failures = []
+    print("timelines, easing in is a choice")
+    why = check_phone.browser_unavailable()
+    if why:
+        print(f"  SKIPPED timelines motion: {why}")
+        return failures
+
+    def case(label, ok):
+        print(f"  {'ok  ' if ok else 'FAIL'} {label}")
+        if not ok:
+            failures.append(f"timelines motion: {label}")
+
+    bundle = '<script type="module" src="hub.js"></script></head>'
+    scrolled_js = """async () => {
+        const pause = ms => new Promise(r => setTimeout(r, ms));
+        for (let y = 0; y <= document.documentElement.scrollHeight; y += 200) {
+            scrollTo(0, y);
+            await pause(120);
+        }
+        scrollTo(0, document.documentElement.scrollHeight);
+        await pause(400);
+        return {revealed: document.querySelectorAll('.hub-reveal-pending, .hub-revealed').length,
+                pending: document.querySelectorAll('.hub-reveal-pending').length}; }"""
+
+    def walk(shell, html, stem, reduced=False):
+        tab = shell.open(html.replace("</head>", bundle, 1), stem, reduced=reduced)
+        try:
+            if tab.evaluate(cb.VERSION_JS) != cb.bundle_version():
+                return None
+            return tab.evaluate(scrolled_js)
+        finally:
+            tab.close()
+
+    with cb.Shell(False) as shell:
+        for name in ("story-timeline", "history-timeline"):
+            still = cb.movement(shell, opener_page(name, {}, "brand").replace("</head>", bundle, 1),
+                                f"{name}-still")
+            case(f"{name}: the still rung reveals nothing", still is not None and still["revealed"] == 0)
+            moving = walk(shell, opener_page(name, {"motion": "moving"}, "brand"), f"{name}-moving")
+            case(f"{name}: on the moving rung every moment eases in as it is reached and none "
+                 f"stays hidden", moving is not None and moving["revealed"] >= 3 and moving["pending"] == 0)
+        reduced = walk(shell, opener_page("story-timeline", {"motion": "moving"}, "brand"),
+                       "story-timeline-reduced", reduced=True)
+        case("under reduced motion the moving rung hides nothing",
+             reduced is not None and reduced["revealed"] == 0)
+    return failures
+
+
 # Below a site header on the commonest phone and on a laptop, the sign-up
 # card's first question is on the first screen. 152px is the header allowance
 # hero-overlay subtracts (9.5rem).
@@ -5224,6 +5432,8 @@ CHECKS = [
     check_hero_collage_moving,
     check_portrait_row,
     check_portrait_row_motion,
+    check_timelines,
+    check_timelines_moving,
     check_words_whole,
 ]
 
@@ -5302,7 +5512,8 @@ def main(argv=None):
              + 28 + 10
              + 2
              + 5
-             + 14 + 13)
+             + 14 + 13
+             + 40 + 5)
     print(f"clean: {total} gate cases across thirteen modules behave as documented.")
     return 0
 

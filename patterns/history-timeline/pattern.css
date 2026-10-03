@@ -1,0 +1,181 @@
+/* history-timeline v1 - tokens only, selectors prefixed */
+/* Its twin's stylesheet is this file with the name swapped: change both. */
+.history-timeline,
+.history-timeline--plain {
+  --history-timeline-ground: var(--color-bg);
+  --history-timeline-title-ink: var(--color-heading, var(--color-text));
+}
+.history-timeline--soft {
+  --history-timeline-ground: var(--color-surface-soft);
+  --history-timeline-title-ink: var(--color-text);
+}
+.history-timeline {
+  --history-timeline-rail: var(--space-6);
+  --history-timeline-dot: 0.75rem;
+  --history-timeline-edge: var(--color-rule, color-mix(in srgb, var(--color-text) 24%, transparent));
+  padding-block: var(--space-8);
+  background: var(--history-timeline-ground);
+  color: var(--color-text);
+}
+.history-timeline-inner {
+  width: min(100% - 2 * var(--space-4), var(--container-max));
+  margin-inline: auto;
+}
+.history-timeline-eyebrow {
+  margin: 0 0 var(--space-3);
+  color: var(--color-text-soft);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.history-timeline-title {
+  max-width: 20em;
+  margin: 0 0 var(--space-8);
+  font-family: var(--font-heading);
+  color: var(--history-timeline-title-ink);
+  font-size: calc(clamp(1.75rem, 1.2rem + 2.2vw, 2.75rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.02em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.1 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .history-timeline-title {
+    line-height: calc(max(1.1em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.history-timeline-list {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+  margin: 0;
+  padding: 0;
+  padding-inline-start: var(--history-timeline-rail);
+  list-style: none;
+}
+/* The line and the dots are drawing only: the list's order and each
+   <time> carry the sequence. */
+.history-timeline-list::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--history-timeline-dot) / 2 - 1px);
+  width: 2px;
+  background: var(--history-timeline-edge);
+}
+.history-timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* Centred on the date's first line: keep in step with .history-timeline-num. */
+.history-timeline-item::before {
+  content: "";
+  position: absolute;
+  inset-block-start: calc((0.9375rem * 1.5 - var(--history-timeline-dot)) / 2);
+  inset-inline-start: calc(-1 * var(--history-timeline-rail));
+  width: var(--history-timeline-dot);
+  height: var(--history-timeline-dot);
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+.history-timeline-body {
+  min-width: 0;
+}
+.history-timeline-num {
+  display: block;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-soft);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+}
+@supports (line-height: 1cap) {
+  .history-timeline-num {
+    line-height: max(1.5em, 1.45cap);
+  }
+}
+.history-timeline-name {
+  margin: 0;
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-size: calc(clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem) * var(--type-scale, 1));
+  font-weight: var(--weight-display, 700);
+  letter-spacing: calc(-0.01em + var(--heading-tracking, 0) * 1em);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  text-wrap: balance;
+}
+@supports (line-height: 1cap) {
+  .history-timeline-name {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.history-timeline-line {
+  max-width: 40ch;
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-soft);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+.history-timeline-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--card-radius);
+  background: var(--color-surface);
+}
+.history-timeline--with .history-timeline-img {
+  display: block;
+}
+.history-timeline--without .history-timeline-img {
+  display: none;
+}
+@media (min-width: 48rem) {
+  .history-timeline--start.history-timeline--with .history-timeline-item {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    column-gap: var(--space-8);
+  }
+  .history-timeline--centre .history-timeline-list {
+    padding-inline-start: 0;
+  }
+  .history-timeline--centre .history-timeline-list::before {
+    inset-inline-start: calc(50% - 1px);
+  }
+  .history-timeline--centre .history-timeline-item {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "words photo";
+    column-gap: calc(2 * var(--space-8));
+  }
+  .history-timeline--centre .history-timeline-item:nth-child(even) {
+    grid-template-areas: "photo words";
+  }
+  .history-timeline--centre .history-timeline-item::before {
+    inset-inline-start: calc(50% - var(--history-timeline-dot) / 2);
+  }
+  .history-timeline--centre .history-timeline-body {
+    grid-area: words;
+  }
+  .history-timeline--centre .history-timeline-img {
+    grid-area: photo;
+  }
+  .history-timeline--centre .history-timeline-item:nth-child(odd) .history-timeline-body {
+    text-align: end;
+  }
+  .history-timeline--centre .history-timeline-item:nth-child(odd) .history-timeline-line {
+    margin-inline-start: auto;
+  }
+}
+
+.history-timeline:not(.history-timeline--moving) {
+  --hub-motion: none;
+}

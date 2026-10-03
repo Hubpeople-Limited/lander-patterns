@@ -53,7 +53,8 @@ Avoid `steps-numbered` on the same page — two image-led runs and the reader
 stops telling them apart. Not with `hero-split` either, which is the same
 image-beside-copy shape at the top of the page, nor `capability-tabs`, which
 answers the same "what you get" question with different furniture — one of
-them is doing the other's job.
+them is doing the other's job. Nor `story-timeline` or `history-timeline`,
+whose moments alternate photograph and words down a line: the same gesture.
 
 **Brand adaptability.** `--card-radius` and `--card-shadow` do most of the
 work — square and flat reads editorial, rounded and shadowed reads warm — and

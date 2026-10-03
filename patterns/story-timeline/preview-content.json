@@ -1,0 +1,15 @@
+{
+  "section-id": "sample-story-timeline",
+  "eyebrow": "Sample eyebrow",
+  "section-title": "Sample heading for the timeline",
+  "moment-datetime": "2026-01-01",
+  "moment-when": "Sample year",
+  "moment-title": "Sample moment title",
+  "moment-line": "One or two sample lines about this moment, here only to render the preview.",
+  "moment-image": "sample-wide.svg",
+  "moment-image-alt": "Preview placeholder image",
+  "_repeat": {
+    "class": "story-timeline-item",
+    "count": 3
+  }
+}
