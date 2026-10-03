@@ -2,7 +2,7 @@
   "composition": "homepage-faces",
   "version": 1,
   "page": "homepage",
-  "library": "v281",
+  "library": "v283",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
