@@ -2549,6 +2549,45 @@ def check_hub_version():
     return failures
 
 
+def check_signup_settings_gate():
+    """ci/check_signup_settings.py: quiet on the list and the bundle as they
+    ship, and firing on each way the two can drift apart."""
+    import copy
+    import check_signup_settings as gate
+    table = json.loads((HERE.parent / "patterns" / "signup-card" / "settings.json").read_text(encoding="utf-8"))
+    js = (HERE.parent / "lib" / "hub.js").read_text(encoding="utf-8")
+
+    def changed(edit):
+        t = copy.deepcopy(table)
+        edit(t)
+        return t
+    cases = [
+        ("the list and the bundle as they ship", table, js, 0),
+        ("a word the list leaves out", changed(lambda t: t["words"].pop("next")), js, 1),
+        ("a word's default reworded", changed(lambda t: t["words"]["next"].update(default="Onward")), js, 1),
+        ("a token the default does not carry", changed(lambda t: t["words"]["next"].update(tokens=["n"])), js, 1),
+        ("a list word's count", changed(lambda t: t["words"]["who"].update(list=4)), js, 1),
+        ("a setting the bundle never reads",
+         changed(lambda t: t["settings"].update(fancy={"kind": "choice", "values": ["on"], "default": "on"})), js, 1),
+        ("a setting the bundle reads, left out", changed(lambda t: t["settings"].pop("settle")), js, 1),
+        ("a value the bundle never names",
+         changed(lambda t: t["settings"]["dob"]["values"].append("spinner")), js, 1),
+        ("a twin the list does not mark", changed(lambda t: t["settings"]["dob"].pop("wide")), js, 1),
+        ("a kind the toolkit does not know", changed(lambda t: t["settings"]["dob"].update(kind="dial")), js, 1),
+        ("a word added to the bundle only", table,
+         js.replace('"next": "Next",', '"next": "Next", "later": "Later",', 1), 1),
+    ]
+    failures = []
+    print("ci/check_signup_settings.py, the card's list against the bundle")
+    for label, t, source, want in cases:
+        got = len(gate.faults(t, source))
+        ok = got == 0 if want == 0 else got >= 1
+        print(f"  {'ok  ' if ok else 'FAIL'} {label:<46} faults={got} want={'0' if want == 0 else '1+'}")
+        if not ok:
+            failures.append(label)
+    return failures
+
+
 def check_hub_publish():
     """ci/publish_hub.py, and the two properties the delivery rests on.
 
@@ -5734,6 +5773,7 @@ CHECKS = [
     check_compat_control,
     check_hub_version,
     check_hub_publish,
+    check_signup_settings_gate,
     check_placeholder_set,
     check_image_slots_gate,
     check_placeholder_manifest_gate,
@@ -5842,8 +5882,9 @@ def main(argv=None):
              + 5
              + 14 + 13
              + 40 + 5
-             + 5)
-    print(f"clean: {total} gate cases across thirteen modules behave as documented.")
+             + 5
+             + 11)
+    print(f"clean: {total} gate cases across fourteen modules behave as documented.")
     return 0
 
 
