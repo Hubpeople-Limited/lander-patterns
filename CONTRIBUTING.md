@@ -759,6 +759,7 @@ python ci/check_header.py --tokens display
 python ci/check_header.py --broken         the positive control
 python ci/check_header.py --out /tmp/hdr   keep the rendered pages
 python ci/check_header.py --broken-shut    the shut-panel control
+python ci/check_header.py --broken-edge    the start-edge control
 ```
 
 It renders the header with four menus — short, typical, long, and one three
@@ -774,7 +775,11 @@ phone widths; and no sideways scroll. **`--broken` is the positive control and
 CI runs it**: it forces the property the overflow behaviour reads to `off` and
 requires the one-row check to fire on the long menu. **`--broken-shut`** puts
 back a third level that takes the pointer on its own and requires the shut-panel
-check to fire, with the library and without it.
+check to fire, with the library and without it. **`--broken-edge`** breaks a
+three-level menu's row before its last parent, whose panel hangs from its end
+edge, so on the centred layout that panel reaches past the screen's start; it
+requires the panel in view with the library, then undoes the library's turn at
+the start edge and requires the in-view check to fire.
 
 A header pattern that folds, scrolls or wraps its menu differently is welcome;
 it is measured here the moment its name is `masthead-nav`, and a second header

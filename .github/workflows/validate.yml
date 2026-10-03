@@ -247,6 +247,12 @@ jobs:
       # puts that back and the check has to fire.
       - name: Confirm the header gate can still catch a shut panel that takes the pointer
         run: python ci/check_header.py --require-browser --broken-shut
+      # A panel hangs from its end edge on the last items, and where a wrapped
+      # row starts a line with one, it reaches past the screen's start. With
+      # the library it is kept in view; this undoes the library's turn and
+      # the check has to fire.
+      - name: Confirm the header gate can still catch a panel past the start edge
+        run: python ci/check_header.py --require-browser --broken-edge
 
   scrim-measures:
     name: scrim and display measures
