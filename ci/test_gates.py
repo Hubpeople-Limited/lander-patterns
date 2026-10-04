@@ -5416,7 +5416,8 @@ class _ShotTab:
         self.errors, self.calls, self.waited = list(errors), 0, 0
 
     def screenshot(self, **kwargs):
-        from playwright.sync_api import Error
+        import _screenshot
+        Error = _screenshot.capture_error()
         self.calls += 1
         if self.errors:
             raise Error(self.errors.pop(0))
