@@ -1,5 +1,17 @@
-/* member-filter v1 - tokens only, selectors prefixed.
+/* member-filter v2 - tokens only, selectors prefixed.
    The panels below are filled by member-grid, which owns their look. */
+.member-filter {
+  overflow-wrap: var(--long-words, break-word);
+}
+.member-filter :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .member-filter {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 .member-filter {
   min-inline-size: 0;
   margin: 0;

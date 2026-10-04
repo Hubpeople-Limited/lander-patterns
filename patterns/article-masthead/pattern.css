@@ -1,5 +1,17 @@
 /* article-masthead v2 - tokens only, selectors prefixed */
 .article-masthead {
+  overflow-wrap: var(--long-words, break-word);
+}
+.article-masthead :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .article-masthead {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.article-masthead {
   display: flex;
   flex-direction: column;
   align-items: flex-start;

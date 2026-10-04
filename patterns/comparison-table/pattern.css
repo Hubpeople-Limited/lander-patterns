@@ -1,5 +1,17 @@
 /* comparison-table v2 - tokens only, selectors prefixed */
 .comparison-table {
+  overflow-wrap: var(--long-words, break-word);
+}
+.comparison-table :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .comparison-table {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.comparison-table {
   padding-block: var(--space-8);
   padding-inline: var(--space-4);
   background: var(--color-bg);

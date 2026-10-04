@@ -14,17 +14,17 @@ The page carries its own site footer: this shell closes with the `colophon` patt
 
 ## Sections, in order
 
-1. **masthead-nav** v13 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
+1. **masthead-nav** v14 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-stated** v6 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
+2. **hero-stated** v7 (ground=plain) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **prose-column** v6 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
+3. **prose-column** v7 - The body of a piece of writing - one column held to a readable measure, with the headings, paragraphs, lists and quotes an article actually uses already set.
    - `opening-paragraph` - text, about 22 word(s). Sample: A sample opening paragraph, used only to render this pr...
    - `section-heading` - text, about 3 word(s). Sample: Sample section heading
    - `section-opening-sentence-then-the-rest` - text, about 24 word(s). Sample: A sample section opening with a complete first sentence...
@@ -37,7 +37,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `column-heading-2` - text, about 3 word(s). Sample: Sample column two
    - `row-heading` - text, about 2 word(s). Sample: Sample row
    - `cell` - text, about 2 word(s). Sample: Sample cell
-4. **steps-plain** v6 - How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.
+4. **steps-plain** v7 - How-it-works steps as a hairline lattice of text cells - a counter numeral, a title and a line of copy per step, with no photography anywhere in it.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `section-title` - text, about 3 word(s). Sample: Sample steps heading
@@ -45,7 +45,7 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `step-title` - text, about 3 word(s). Sample: Sample step title
    - `step-body` - text, about 13 word(s). Sample: One or two sentences of sample copy, here only to rende...
    - `note` - text, about 4 word(s). Sample: One sample closing line.
-5. **trust-row** v4 - Hairline-bracketed strip of assurance marks - a membership lockup beside a row of icon-over-label compliance badges, answering whether the brand is legitimate at the point of sign-up.
+5. **trust-row** v5 - Hairline-bracketed strip of assurance marks - a membership lockup beside a row of icon-over-label compliance badges, answering whether the brand is legitimate at the point of sign-up.
    - `membership-mark` - attribute (src): real material, or delete the image - it is optional here; never a placeholder
    - `membership-mark-alt` - attribute (alt): what the image shows, in words
    - `membership-name` - text, about 3 word(s). Sample: Sample Association Name
@@ -53,16 +53,16 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `badge-1-label` - text, about 3 word(s). Sample: Sample mark one
    - `badge-2-label` - text, about 3 word(s). Sample: Sample mark two
    - `badge-3-label` - text, about 3 word(s). Sample: Sample mark three
-6. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+6. **cta-band** v7 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview
    - `lead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-7. **colophon** v2 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+7. **colophon** v3 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 
-Also in `page.css`: **cta-assurance** v2, carried for hero-stated's `assurance` slot.
+Also in `page.css`: **cta-assurance** v3, carried for hero-stated's `assurance` slot.
 
 ## Regions
 

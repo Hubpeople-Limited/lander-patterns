@@ -1,4 +1,16 @@
 /* stat-rows v10 - tokens only, selectors prefixed */
+.stat-rows {
+  overflow-wrap: var(--long-words, break-word);
+}
+.stat-rows :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .stat-rows {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Dials, never declared here so a brand's :root reaches them:
    --stat-rows-weight (300), --stat-rows-row-height (9.6875rem). */
 .stat-rows {

@@ -7,39 +7,39 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "article-masthead",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "key-takeaways",
-      "version": "2"
+      "version": "3"
     },
     {
       "name": "prose-column",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "article-figure",
-      "version": "2"
+      "version": "3"
     },
     {
       "name": "prose-column",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "author-note",
-      "version": "2"
+      "version": "3"
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ]
 }

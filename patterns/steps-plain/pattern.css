@@ -1,5 +1,17 @@
 /* steps-plain v1 - tokens only, selectors prefixed */
 .steps-plain {
+  overflow-wrap: var(--long-words, break-word);
+}
+.steps-plain :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .steps-plain {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.steps-plain {
   --steps-plain-cell-min: 15rem;
   --steps-plain-badge-size: 2.75rem;
   padding-block: var(--space-8);

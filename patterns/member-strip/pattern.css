@@ -1,5 +1,17 @@
 /* member-strip v1 - tokens only, selectors prefixed */
 .member-strip {
+  overflow-wrap: var(--long-words, break-word);
+}
+.member-strip :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .member-strip {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.member-strip {
   --member-strip-photo: 3.5rem;
 }
 /* No colour of its own: it inherits the ink of whatever it sits in. */

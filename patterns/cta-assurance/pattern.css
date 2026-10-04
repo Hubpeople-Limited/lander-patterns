@@ -1,4 +1,16 @@
 /* cta-assurance v1 - tokens only, selectors prefixed */
+.cta-assurance {
+  overflow-wrap: var(--long-words, break-word);
+}
+.cta-assurance :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .cta-assurance {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Sets no colour: it inherits the ink above it. See the README. */
 .cta-assurance {
   display: flex;

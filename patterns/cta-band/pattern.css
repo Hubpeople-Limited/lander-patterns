@@ -1,4 +1,16 @@
 /* cta-band - tokens only, selectors prefixed */
+.cta-band {
+  overflow-wrap: var(--long-words, break-word);
+}
+.cta-band :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .cta-band {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 
 /* Each rung names its own ground, ink, control pair and ring, and every rule
    below reads those rather than a token, so nothing here knows which ground it

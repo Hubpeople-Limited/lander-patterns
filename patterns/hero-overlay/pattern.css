@@ -1,5 +1,17 @@
 /* hero-overlay v13 - tokens only, selectors prefixed. Nothing here moves. */
 .hero-overlay {
+  overflow-wrap: var(--long-words, break-word);
+}
+.hero-overlay :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .hero-overlay {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.hero-overlay {
   /* Contrast floor: the scrim carries it, never the photo. */
   --hero-overlay-scrim-floor: clamp(0.92, var(--hero-overlay-scrim-strength, 0.92), 1);
   position: relative;

@@ -1,6 +1,18 @@
 /* hero-bento v1 - tokens only, selectors prefixed.
    .lp-grid and .mem-card* below are the platform's markup, a contract. */
 .hero-bento {
+  overflow-wrap: var(--long-words, break-word);
+}
+.hero-bento :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .hero-bento {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.hero-bento {
   padding-block: var(--space-5) var(--space-8);
   background: var(--color-bg);
   color: var(--color-text);

@@ -7,43 +7,43 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13",
+      "version": "14",
       "variant": {
         "nav": "minimal"
       }
     },
     {
       "name": "hero-stated",
-      "version": "6",
+      "version": "7",
       "variant": {
         "ground": "brand"
       }
     },
     {
       "name": "heading-block",
-      "version": "9"
+      "version": "10"
     },
     {
       "name": "benefit-tiles",
-      "version": "9"
+      "version": "10"
     },
     {
       "name": "testimonial-grid",
-      "version": "12"
+      "version": "13"
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ],
   "slot-support": [
     {
       "name": "cta-assurance",
-      "version": "2",
+      "version": "3",
       "for-slot": "assurance",
       "of": "hero-stated"
     }

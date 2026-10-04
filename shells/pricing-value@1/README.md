@@ -14,29 +14,29 @@ The page carries its own site footer: this shell closes with the `colophon` patt
 
 ## Sections, in order
 
-1. **masthead-nav** v13 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
+1. **masthead-nav** v14 - The site header the platform menu placeholder has no styling for - brand mark, the generated primary navigation and the login and join controls, on a choice of ground, two desktop arrangements, three small-screen behaviours, three answers for a menu too long for its row, a dropdown or a full-width panel for submenus, a bar that stays and shrinks as the page scrolls, a menu-free rung for a campaign page, three ways the mark meets its ground, a menu button with or without its word and its bars drawn four ways, and three bottom edges.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-stated** v6 (ground=brand) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
+2. **hero-stated** v7 (ground=brand) - An opener made of words - a display claim, one supporting line and the join control - on a choice of three grounds and two alignments, with no photograph anywhere in it.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: A sample headline for preview, set large
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
    - `assurance` - markup, about 4 words of copy; uses cta-assurance, whose CSS is in page.css; its sample shape is printed in page.html's banner
-3. **offer-split** v5 - A mid-page conversion beat with no photography in it - the argument set as prose on one side, the offer as a filled panel carrying its own heading and control on the other.
+3. **offer-split** v6 - A mid-page conversion beat with no photography in it - the argument set as prose on one side, the offer as a filled panel carrying its own heading and control on the other.
    - `section-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `section-title` - text, about 3 word(s). Sample: Sample offer heading
    - `body` - text, about 13 word(s). Sample: One or two sentences of sample copy, used only to rende...
    - `panel-title` - text, about 3 word(s). Sample: Sample panel heading
    - `panel-body` - text, about 11 word(s). Sample: One line of sample copy saying plainly what is on offer.
-4. **pricing-tiers** v11 - Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.
+4. **pricing-tiers** v12 - Two or three equal-height tier cards with aligned CTAs; the recommended tier named in words, never colour alone.
    - `section-title` - text, about 3 word(s). Sample: Sample plans heading
    - `recommended-label` - text, about 2 word(s). Sample: Sample flag
    - `tier-name` - text, about 2 word(s). Sample: Sample tier
    - `tier-price` - text, about 2 word(s). Sample: 0.00 preview
    - `tier-features` - markup, about 12 words of copy; its sample shape is printed in page.html's banner
-5. **trust-row** v4 - Hairline-bracketed strip of assurance marks - a membership lockup beside a row of icon-over-label compliance badges, answering whether the brand is legitimate at the point of sign-up.
+5. **trust-row** v5 - Hairline-bracketed strip of assurance marks - a membership lockup beside a row of icon-over-label compliance badges, answering whether the brand is legitimate at the point of sign-up.
    - `membership-mark` - attribute (src): real material, or delete the image - it is optional here; never a placeholder
    - `membership-mark-alt` - attribute (alt): what the image shows, in words
    - `membership-name` - text, about 3 word(s). Sample: Sample Association Name
@@ -44,16 +44,16 @@ The page carries its own site footer: this shell closes with the `colophon` patt
    - `badge-1-label` - text, about 3 word(s). Sample: Sample mark one
    - `badge-2-label` - text, about 3 word(s). Sample: Sample mark two
    - `badge-3-label` - text, about 3 word(s). Sample: Sample mark three
-6. **cta-band** v6 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
+6. **cta-band** v7 - Plain full-bleed closing call to action on a choice of four grounds - a centred claim, one supporting line and one control; the ordinary page finale, and the section most pages on a brand have in common.
    - `cta-band-id` - attribute (aria-labelledby/id): a page-unique id drawn from the heading
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `title` - text, about 5 word(s). Sample: Sample closing headline for preview
    - `lead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
-7. **colophon** v2 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
+7. **colophon** v3 - The site footer a page carries itself - the brand's footer menu, the four legal links and a copyright line, set small on a quiet ground, centred on one line or laid out in columns, with the brand mark above them or not; the platform fills every link, the page owns the markup.
    - `home-url` - attribute (href): a short label, about 1 word(s)
    - `copyright` - text, about 7 word(s). Sample: © 2026 Sample Brand. All rights reserved.
 
-Also in `page.css`: **cta-assurance** v2, carried for hero-stated's `assurance` slot.
+Also in `page.css`: **cta-assurance** v3, carried for hero-stated's `assurance` slot.
 
 ## Regions
 

@@ -1,4 +1,16 @@
-/* story-cards v1 - tokens only, selectors prefixed */
+/* story-cards v2 - tokens only, selectors prefixed */
+.story-cards {
+  overflow-wrap: var(--long-words, break-word);
+}
+.story-cards :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .story-cards {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Its twin's stylesheet is this file with the name swapped: change both. */
 .story-cards {
   --story-cards-scrim-floor: clamp(0.92, var(--story-cards-scrim-strength, 0.92), 1);

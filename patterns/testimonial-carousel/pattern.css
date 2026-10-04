@@ -1,5 +1,17 @@
 /* testimonial-carousel v8 - tokens only, selectors prefixed. */
 .testimonial-carousel {
+  overflow-wrap: var(--long-words, break-word);
+}
+.testimonial-carousel :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .testimonial-carousel {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.testimonial-carousel {
   /* Phones show the active card alone; the three-up stage starts at 60rem.
      Two numbers place all three cards - change these, not the transforms. */
   --testimonial-carousel-card-w: min(100vw - 2 * var(--space-5), 34rem);

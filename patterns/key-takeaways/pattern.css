@@ -1,5 +1,17 @@
 /* key-takeaways v1 - tokens only, selectors prefixed */
 .key-takeaways {
+  overflow-wrap: var(--long-words, break-word);
+}
+.key-takeaways :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .key-takeaways {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.key-takeaways {
   --key-takeaways-measure: 68ch;
   box-sizing: border-box;
   width: min(100% - 2 * var(--space-4), var(--key-takeaways-measure));

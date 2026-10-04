@@ -1,4 +1,16 @@
 /* hero-stated v1 - tokens only, selectors prefixed */
+.hero-stated {
+  overflow-wrap: var(--long-words, break-word);
+}
+.hero-stated :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .hero-stated {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
 /* Each ground names its own ink, and every rule below reads the pair rather
    than a token, so nothing here knows which ground it is on. */
 .hero-stated--plain {

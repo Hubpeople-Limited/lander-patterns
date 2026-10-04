@@ -71,6 +71,8 @@ literals.
 | `--font-heading`, `--font-body` | The two typefaces (with real fallback stacks). **Each must supply 400 and 700** — see *What a face has to supply* below |
 | `--space-1` `-2` `-3` `-4` `-5` `-6` `-8` `-12` | The spacing scale. Eight steps, not twelve — the gaps are deliberate, and a step that is not on this list is not defined on any brand |
 | `--container-max` | Content max width (commonly `72rem`) |
+| `--long-words` | Optional. Unset, a word longer than its line breaks where it reaches the edge and every other word stays whole. `normal` keeps every word whole, for a name a brand never splits; on `:root` it holds for the whole site, and `style="--long-words: normal"` on a section holds for that section |
+| `--long-word-hyphens` | Optional. `auto` puts a hyphen at the break of a word of 20 letters or more, where the page names its language (`<html lang>`) and the browser can hold hyphens to long words. The browser then also hyphenates such a word at a line's end that would have fitted on the next line, so it suits a language with long compounds, such as German. Unset, nothing is hyphenated |
 
 ### What a face has to supply
 

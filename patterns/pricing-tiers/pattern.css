@@ -1,5 +1,17 @@
 /* pricing-tiers v5 - tokens only, selectors prefixed */
 .pricing-tiers {
+  overflow-wrap: var(--long-words, break-word);
+}
+.pricing-tiers :is(h1, h2, h3, h4) {
+  overflow-wrap: var(--long-words, anywhere);
+}
+@supports (hyphenate-limit-chars: 20 8 8) {
+  .pricing-tiers {
+    hyphens: var(--long-word-hyphens, manual);
+    hyphenate-limit-chars: 20 8 8;
+  }
+}
+.pricing-tiers {
   padding-block: var(--space-8);
 }
 .pricing-tiers-inner {

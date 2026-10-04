@@ -7,40 +7,40 @@
   "patterns": [
     {
       "name": "masthead-nav",
-      "version": "13"
+      "version": "14"
     },
     {
       "name": "hero-stated",
-      "version": "6",
+      "version": "7",
       "variant": {
         "ground": "plain"
       }
     },
     {
       "name": "feature-panels",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "comparison-table",
-      "version": "5"
+      "version": "6"
     },
     {
       "name": "faq-details",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "cta-band",
-      "version": "6"
+      "version": "7"
     },
     {
       "name": "colophon",
-      "version": "2"
+      "version": "3"
     }
   ],
   "slot-support": [
     {
       "name": "cta-assurance",
-      "version": "2",
+      "version": "3",
       "for-slot": "assurance",
       "of": "hero-stated"
     }
