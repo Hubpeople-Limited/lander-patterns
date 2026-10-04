@@ -39,14 +39,13 @@ with a hidden `mt` or `lf` input: nobody is asked it, the value is sent, and wit
 `seeking` set a fixed "I am" ticks "looking for" before the visitor arrives.
 `culture` is the join flow's language — `en`, `es`, `pt`, `fr` or `de`.
 
-**Options on the card** are `data-hub-signup-*` attributes, each listed with
-its values and default in `settings.json` beside this file, every word too
-(its English default and the `{tokens}` it may carry): the date of birth as
-`boxes` or a `wheel` (a `-wide` twin from `60rem`), where the year wheel
-opens, what a complete date shows (`reward`), whether "looking for" starts
-ticked, and `screens`, the order and grouping (`iam seeking | dob | email`;
-a step left out, the join flow asks). Interest labels and place names stay
-as the join flow spells them.
+**Options on the card** are `data-hub-signup-*` attributes, each listed with its
+values and default in this folder's `settings.json`, every word too (its English
+default and the `{tokens}` it may carry): date of birth as `boxes` or a `wheel`
+(a `-wide` twin from `60rem`), where the year wheel opens, what a complete date
+shows (`reward`), whether "looking for" starts ticked, and `screens`, the order
+and grouping (`iam seeking | dob | email`; a step left out, the join flow asks).
+Interest labels and place names stay as the join flow spells them.
 
 **Where the visitor lives.** `data-hub-signup-places` says where the page's
 visitors are, in the platform's own location names: `world`, a country (`UK`),
@@ -60,9 +59,10 @@ places cannot be reached, there is no location step.
 
 **The members are the brand's own, fetched live**, never stored: faces from
 arrival, narrowed as the visitor answers; none when there are none. Under the
-progress bar a line gathers the answers so far. **Pairing.**
-`member-grid` below the opener, `steps-plain` for how joining works. It refuses
-`signup-steps`, the block it replaces, and `picker-chips`.
+progress bar a line gathers the answers so far. **Pairing.** `member-grid` below
+the opener, `steps-plain` for how joining works. It refuses `signup-steps`, the
+block it replaces, and `picker-chips`. Leave `cta-sticky` off its page: the card
+is the page's one ask, and a bar that goes straight to the join flow skips it.
 
 **A line after each answer**, under the answers so far, drawn at random and
 never repeated in a visit: the library's (`lib/messages/`, English, true on a

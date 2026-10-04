@@ -634,7 +634,8 @@
  },
  "cta-sticky": {
   "avoid-with": [
-   "cta-curtain"
+   "cta-curtain",
+   "signup-card"
   ],
   "behaviours": [],
   "content-shape": "single claim",
@@ -2686,6 +2687,7 @@
  },
  "signup-card": {
   "avoid-with": [
+   "cta-sticky",
    "picker-chips",
    "signup-steps"
   ],
