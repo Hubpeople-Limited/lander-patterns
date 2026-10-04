@@ -21,7 +21,7 @@ This shell needs photography. A photography slot may take the shared placeholder
    - `menu-label` - text, about 2 word(s). Sample: Menu (sample)
    - `close-label` - text, about 2 word(s). Sample: Close (sample)
    - `more-label` - attribute (data-hub-overflow-label): a short label, about 2 word(s)
-2. **hero-bento** v2 (words=top, cells=spaced) - Opener set in a ruled or spaced grid of tiles - the h1 and one line, the join button or the sign-up card, a photograph, a few live members, the brand's own interest labels, a second photograph and the brand's membership figure - where any tile but the headline and the join may be left out and the rest close up with no gap.
+2. **hero-bento** v3 (words=top, cells=spaced) - Opener set in a ruled or spaced grid of tiles - the h1 and one line, the join button or the sign-up card, a photograph, a few live members, the brand's own interest labels, a second photograph and the brand's membership figure - where any tile but the headline and the join may be left out and the rest close up with no gap.
    - `eyebrow` - text, about 2 word(s). Sample: Sample eyebrow
    - `headline` - text, about 7 word(s). Sample: Sample headline for the opener in tiles
    - `subhead` - text, about 9 word(s). Sample: One supporting sentence, used only to render this preview.
