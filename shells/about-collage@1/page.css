@@ -997,8 +997,8 @@
   }
 }
 
-/* ---- hero-collage v2 ---- */
-/* hero-collage v2 - tokens only, selectors prefixed */
+/* ---- hero-collage v3 ---- */
+/* hero-collage v3 - tokens only, selectors prefixed */
 /* Each ground names its own ink; every rule below reads the pair. A print's
    paper is the lighter of the card surface and the ground's paper light; on
    the brand ground that is the surface alone, which stands off a brand
@@ -1252,11 +1252,17 @@
   /* The front print takes what the first screen leaves under the header
      once a three-line headline, its line and the join button are in: a
      4 by 5 print is a quarter taller than it is wide, so its width is four
-     fifths of that room. Never smaller than 8 to 9rem, never past 15rem;
-     the other two are seven eighths of it and never set the row's height. */
+     fifths of that room. Never past 15rem, and never smaller than 8 to
+     9rem until the screen is too short for that: on a laptop 720 or 768px
+     tall the least gives way to four fifths of the room left once 26rem of
+     words are in, so the join button stays on the first screen, and never
+     goes below 5.5rem. The other two are seven eighths of it and never set
+     the row's height. */
   .hero-collage--prints {
-    --hero-collage-print: max(clamp(8rem, 11vw, 9rem),
-                              min(0.8 * (100svh - var(--page-header-height, 9.5rem) - 28.5rem), 15rem));
+    --hero-collage-room: calc(100svh - var(--page-header-height, 9.5rem));
+    --hero-collage-print: max(min(clamp(8rem, 11vw, 9rem),
+                                  max(5.5rem, 0.8 * (var(--hero-collage-room) - 26rem))),
+                              min(0.8 * (var(--hero-collage-room) - 28.5rem), 15rem));
     padding-block-start: var(--space-6);
   }
   .hero-collage--prints .hero-collage-photos {
