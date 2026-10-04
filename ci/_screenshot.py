@@ -23,9 +23,20 @@ ATTEMPTS = 3
 WAIT_MS = 250
 
 
+def capture_error():
+    """The error a screenshot raises: the browser package's own, or, where the
+    package is not installed (the release job), a plain one the stand-in tabs
+    in test_gates.py raise, so the retry is still proved there."""
+    try:
+        from playwright.sync_api import Error
+    except ImportError:
+        return RuntimeError
+    return Error
+
+
 def capture(tab, **kwargs):
     """tab.screenshot(**kwargs), taken again on the capture glitch alone."""
-    from playwright.sync_api import Error
+    Error = capture_error()
     for attempt in range(1, ATTEMPTS + 1):
         try:
             return tab.screenshot(**kwargs)
