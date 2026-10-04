@@ -15,10 +15,12 @@ ships in the CSS so the bar never covers the footer's last links.
 
 **Pairing.** This is page furniture, not a section: it is decided once for any
 page longer than about two screens, rather than chosen to follow something. It
-carries no `pairs-with` for that reason. The one thing it cannot share a page
-with is `cta-curtain` — a full-screen finale and a fixed bar fight for the same
-moment and the same thumb. Only one fixed bottom element per page in general,
-so if the site adds a cookie bar, one of them has to move.
+carries no `pairs-with` for that reason. It cannot share a page with
+`cta-curtain` — a full-screen finale and a fixed bar fight for the same moment
+and the same thumb. Leave it off a page whose opener carries `signup-card`: the
+card is the page's one ask, and a bar that goes straight to the join flow skips
+it. Only one fixed bottom element per page in general, so if the site adds a
+cookie bar, one of them has to move.
 
 **Brand adaptability.** `--btn-radius` and the primary-colour pair are the
 whole look. The bar sits on `--color-surface` and is separated from the

@@ -1174,6 +1174,8 @@ def run(base):
 PAGE_FIRES = [
     ("two openers that name each other",
      ["homepage", "hero-overlay", "hero-split"], "avoid-with"),
+    ("a sticky join bar under the sign-up card",
+     ["landing", "hero-squeeze", "signup-card", "cta-sticky"], "avoid-with"),
     ("the same one-per-page section twice",
      ["homepage", "hero-overlay", "hero-overlay", "stats-band"], "one per page"),
     ("a pricing section on a homepage",
