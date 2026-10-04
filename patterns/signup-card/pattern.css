@@ -1,4 +1,4 @@
-/* signup-card v6 - tokens only, selectors prefixed */
+/* signup-card v8 - tokens only, selectors prefixed */
 /* The card sits in an opener's call-to-action place: it takes a width of its
    own and leaves the page's layout to the opener. */
 .signup-card {
@@ -69,11 +69,25 @@ so it draws no ring. */
   padding: 0;
   list-style: none;
 }
+/* Two "I am" answers side by side while both fit; an answer whose longest
+   word is wider than half the card takes the whole row, and so does the
+   other. width: 100% is not the width: it caps the automatic minimum at the
+   row, so a word wider than the row breaks inside its tile. Each half gives
+   up half the gap and 1px, or two halves rounded up wrap. */
 .signup-card-opts--two {
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
 }
 .signup-card-opt {
   min-width: 0;
+}
+.signup-card-opts--two > .signup-card-opt {
+  flex: 1 1 calc(50% - var(--space-3) / 2 - 1px);
+  width: 100%;
+  min-width: auto;
+}
+.signup-card-opts--two .signup-card-opt-face {
+  gap: var(--space-2);
 }
 .signup-card-opt label {
   position: relative;
@@ -107,6 +121,11 @@ still announced. display: none would remove both. */
   border-radius: var(--btn-radius);
   font-weight: 700;
   line-height: 1.25;
+}
+/* A word wider than a whole row breaks rather than leave its tile. */
+.signup-card-opt-face > span:first-child {
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 .signup-card-opt:hover .signup-card-opt-face {
   border-color: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface));
@@ -807,5 +826,67 @@ and 132px in step with that. */
   .signup-card-foot {
     margin-top: var(--space-3);
     padding-top: var(--space-3);
+  }
+}
+/* Before the behaviour library takes the card over, the card is drawn at
+   its first step where scripts run, so the page does not jump when it does.
+   The animations move nothing: each holds a state for 3s, and if the library
+   has not come by then every question shows. */
+@media (scripting: enabled) {
+  .signup-card:not(.hub-signup-live) :is(.signup-card-title, .signup-card-note, fieldset.signup-card-step:not(:first-of-type)) {
+    animation: signup-card-wait 0s 3s backwards;
+  }
+  /* The row the progress bar takes. */
+  .signup-card:not(.hub-signup-live) .signup-card-form::before {
+    content: "";
+    display: block;
+    animation: signup-card-bar 0s 3s backwards;
+  }
+  /* "Looking for" first: its help line, and no summed answer. */
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="seeking"]:first-of-type::before {
+    content: "";
+    display: block;
+    font-size: .9375rem;
+    animation: signup-card-help 0s 3s backwards;
+  }
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="seeking"]:first-of-type .signup-card-opt:has(input[name="lf"]:is([value="3"], [value="5"], [value="6"], [value="7"], [value="17"], [value="18"], [value="19"], [value="20"], [value="21"], [value="22"], [value="23"])) {
+    animation: signup-card-wait 0s 3s backwards;
+  }
+}
+/* From 60rem "I am" and "looking for" are the first step together. */
+@media (scripting: enabled) and (min-width: 60rem) {
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="iam"]:first-of-type + [data-hub-signup-part="seeking"] {
+    animation: none;
+  }
+  .signup-card:not(.hub-signup-live) :is([data-hub-signup-part="seeking"]:first-of-type, [data-hub-signup-part="iam"]:first-of-type + [data-hub-signup-part="seeking"])::before {
+    content: "";
+    display: block;
+    font-size: .9375rem;
+    animation: signup-card-help-wide 0s 3s backwards;
+  }
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="iam"]:first-of-type + [data-hub-signup-part="seeking"] .signup-card-opt:has(input[name="lf"]:is([value="3"], [value="5"], [value="6"], [value="7"], [value="17"], [value="18"], [value="19"], [value="20"], [value="21"], [value="22"], [value="23"])) {
+    animation: signup-card-wait 0s 3s backwards;
+  }
+}
+@keyframes signup-card-wait {
+  from {
+    display: none;
+  }
+}
+@keyframes signup-card-bar {
+  from {
+    min-height: 44px;
+  }
+}
+@keyframes signup-card-help {
+  from {
+    content: "\a0";
+    margin: calc(-1 * var(--space-2)) 0 var(--space-3);
+  }
+}
+@keyframes signup-card-help-wide {
+  from {
+    content: "\a0";
+    margin: calc(-1 * var(--space-2)) 0 var(--space-2);
   }
 }

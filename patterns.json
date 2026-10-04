@@ -972,7 +972,7 @@
     "top"
    ]
   },
-  "version": "2",
+  "version": "3",
   "whole-page": false
  },
  "hero-centred": {
@@ -2720,7 +2720,7 @@
   "summary": "A short sign-up card that sits in an opener in place of its join button.",
   "type": "component",
   "variants": {},
-  "version": "7",
+  "version": "8",
   "whole-page": false
  },
  "signup-steps": {

@@ -41,9 +41,13 @@
   padding: var(--space-4) var(--space-5) 0;
 }
 .hero-bento-join .signup-card {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
   max-width: none;
 }
 .hero-bento-join .signup-card-form {
+  flex: 1 0 auto;
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -355,8 +359,17 @@
   .hero-bento-lead {
     padding: var(--space-6);
   }
-  /* Holding the card beside the tiles, the headline steps down a size so
-     the card's first question stays on the first screen. */
+  /* Holding the card beside the tiles, the headline keeps its own height
+     and the card's tile takes the rest, the card at its top: its first
+     question stays on the first screen and holds still from step to step.
+     The headline steps down a size for the same reason. */
+  .hero-bento--start .hero-bento-grid:has(.signup-card),
+  .hero-bento--end .hero-bento-grid:has(.signup-card) {
+    grid-template-rows: auto 1fr;
+  }
+  .hero-bento-join:has(.signup-card) {
+    justify-content: flex-start;
+  }
   .hero-bento--start .hero-bento-grid:has(.signup-card) .hero-bento-title,
   .hero-bento--end .hero-bento-grid:has(.signup-card) .hero-bento-title {
     font-size: calc(clamp(2rem, 1.2rem + 2vw, 2.75rem) * var(--type-scale, 1));

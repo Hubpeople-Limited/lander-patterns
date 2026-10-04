@@ -54,6 +54,8 @@ jobs:
         run: python ci/make_places.py --check
       - name: Sign-up lines hold to their rule
         run: python ci/make_messages.py --check
+      - name: The sign-up card's settings list matches the bundle
+        run: python ci/check_signup_settings.py
       - name: Lint patterns (regenerates INDEX.md)
         env:
           # The strings that must never reach a public file are not in this

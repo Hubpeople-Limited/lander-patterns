@@ -12,9 +12,10 @@ words one side and card the other on a wide screen, the first step above a
 laptop's fold; on a phone it follows the headline. Anything beside it goes.
 
 With the behaviour library it asks **one question at a time** (two from
-`60rem`), adds interest steps and a first name, shows live members; without it,
-it is a plain form that still submits. **It sends only what the visitor gave**,
-and the join flow asks for the password itself.
+`60rem`), adds interest steps and a first name, shows live members; it is drawn
+at that first step from the start, so nothing jumps when the library arrives,
+and shows every question if it has not come in three seconds. Without scripts
+it is a plain form that still submits. **It sends only what the visitor gave**.
 
 **What it needs.** An opener; the card's title; the brand's wording for every
 answer; the age-limit and password-next lines; HubPeople's consent sentence
@@ -38,17 +39,14 @@ with a hidden `mt` or `lf` input: nobody is asked it, the value is sent, and wit
 `seeking` set a fixed "I am" ticks "looking for" before the visitor arrives.
 `culture` is the join flow's language — `en`, `es`, `pt`, `fr` or `de`.
 
-**Options on the card**, all `data-hub-signup-*`: `seeking` — `none`, the
-default, leaves "looking for" empty; `opposite` ticks it from "I am", and `same`
-does so for a brand whose members meet their own sex; the visitor's tick wins.
-`dob` — `boxes`, the default, or `wheel`; `dob-wide` the same from `60rem` (a
-wheel on a phone, boxes on a laptop); `dob-start` opens the year wheel at an
-age, day and month still blank (default `blank`); `reward` for a complete date —
-`sign` (age and star sign, the default), `age` or `none`; `settle="off"` stops
-the card scrolling into view at a step; `guid` where the join link carries no
-site GUID, without which there are no members. Every visible word has an English
-default and its own option, named in `lib/hub.js`'s `SIGNUP_WORDS`; interest
-labels and place names stay as the join flow spells them.
+**Options on the card** are `data-hub-signup-*` attributes, each listed with
+its values and default in `settings.json` beside this file, every word too
+(its English default and the `{tokens}` it may carry): the date of birth as
+`boxes` or a `wheel` (a `-wide` twin from `60rem`), where the year wheel
+opens, what a complete date shows (`reward`), whether "looking for" starts
+ticked, and `screens`, the order and grouping (`iam seeking | dob | email`;
+a step left out, the join flow asks). Interest labels and place names stay
+as the join flow spells them.
 
 **Where the visitor lives.** `data-hub-signup-places` says where the page's
 visitors are, in the platform's own location names: `world`, a country (`UK`),
@@ -73,8 +71,10 @@ brand with no members yet) and the page's own: `-say-iam`, `-say-seeking`,
 `{place}`, `{interest}` fill from the answers), `-say-labels` (`Label: line |
 line; Label: line`). `-say-mode="replace"`: only the page's where it has some.
 `-platform` (`excite`, `affinity`) adds that platform's lines per interest. A
-page in another language uses only its own; `-messages="off"` stops them.
+page in another language uses only its own. `-messages`: `off`, or the moments
+that speak (`iam last`); `-messages-keep="step"` lets a line last one step.
 
 **Brand adaptability.** `--btn-radius` shapes rows, fields and buttons;
 `--chip-radius` the pills, progress bar and member strip; `--color-primary`
-marks chosen answers; every ink is `--color-text` on `--color-surface`.
+marks chosen answers; every ink is `--color-text` on `--color-surface`. Two
+"I am" answers sit side by side while both fit, one above the other if not.

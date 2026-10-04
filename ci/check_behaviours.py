@@ -47,7 +47,27 @@ page, and holds each behaviour to what its row says:
                the answers so far;
                dob and dob-wide give the wheel at one width and the boxes at
                the other, keeping a date across the switch, and dob-start
-               opens the year wheel at an age with day and month blank
+               opens the year wheel at an age with day and month blank;
+               screens (and screens-wide from 60rem) set the order and
+               grouping, a question left out is neither asked nor sent,
+               a grouping that breaks the rules is ignored whole, a
+               visitor widened mid-way stays with their question, and the
+               members wait for "looking for" wherever it is asked;
+               messages names the moments that speak, and messages-keep=step
+               lets a line last the step it leads into and no longer;
+               members-from holds the members row until a named answer,
+               or for good, and members-caption=off shows the faces alone;
+               the members row fills with as many faces as it has room
+               for at every width, or members-count sets how many;
+               the card carries the step showing and each answered question,
+               and the step event names its step;
+               and a preview opens on the step its address names;
+               two long "I am" answers sit one above the other on a phone,
+               short ones side by side, and no answer spills its tile;
+               the card is drawn at its first step before the bundle
+               arrives, so nothing moves when it takes over, and shows
+               every question if the bundle has not come in three seconds
+               or scripting is off
 
     python ci/check_behaviours.py                  every pattern declaring one
     python ci/check_behaviours.py stats-band
@@ -159,6 +179,8 @@ CONTROL_SUBSTITUTIONS = {
                ".reduce((sum, r) => Number(r.value), 0)"),
     "signup-attribution": ("new URLSearchParams(location.search).forEach((v, k) => first(k, v));",
                            "void first;"),
+    "signup-pn": ('params.set("pn", `${kind}${name}~${info.page_guid}~${location.pathname}`);',
+                  'params.set("pn", new URLSearchParams(location.search).get("pn") || "");'),
     "signup-location": ('else if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
                         "else void where;"),
     "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
@@ -169,6 +191,20 @@ CONTROL_SUBSTITUTIONS = {
                             '.map(words).filter(Boolean).join(" & ").toLowerCase() : "";'),
     "signup-dob-wide": ('const dobWay = () => (optAt("dob") === "wheel" ? "wheel" : "boxes");',
                         'const dobWay = () => (opt("dob") === "wheel" ? "wheel" : "boxes");'),
+    "signup-screens": ('const plan = () => (ownScreens(optAt("screens")) ||', "const plan = () => (null ||"),
+    "signup-dob-left": ("if (age() != null) {", "if (true) {"),
+    "signup-seeking-wait": ("const seekingSettled = () =>", "const seekingSettled = () => true ||"),
+    "signup-moments": ("if (!talk || (moments.length && !moments.includes(moment))) return;",
+                       "if (!talk) return;"),
+    "signup-keep": ("if (keepStep && dir > 0 && at > saidAt + 1) cheer.hidden = true;",
+                    "if (keepStep && dir > 0 && at > saidAt + 1) void cheer;"),
+    "signup-members-from": ('if (from === "off") return false;', "if (false) return false;"),
+    "signup-caption": ('const captionOn = opt("members-caption") !== "off";', "const captionOn = true;"),
+    "signup-fill": ("if (!fill || !line || k <= 4 || lines() <= 2) break;", "break;"),
+    "signup-answered": ('parts[k].toggleAttribute("data-hub-signup-answered",',
+                        'parts[k].toggleAttribute("data-hub-signup-unanswered",'),
+    "signup-at": ('el.setAttribute("data-hub-signup-at", on.join(" "));', 'el.setAttribute("data-hub-signup-at", "");'),
+    "signup-start": ("show(startAt(), 0);", "show(0, 0);"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -772,6 +808,54 @@ SIGNUP_PARTS_JS = """
 """
 
 
+# The members row as it stands: the faces showing and built, whether the row
+# spills, how many lines its caption takes, and the same with one more face
+# showed - the face a row that fills would have taken if it had room.
+FILL_JS = """
+(name) => {
+  const strip = document.querySelector(`.${name}-members`);
+  if (!strip || strip.offsetParent === null) return null;
+  const faces = Array.from(strip.querySelectorAll(`.${name}-face`));
+  const line = strip.querySelector('p');
+  const lines = () => {
+    if (!line) return 0;
+    const r = document.createRange();
+    r.selectNodeContents(line);
+    return new Set(Array.from(r.getClientRects()).map((b) => Math.round(b.bottom))).size;
+  };
+  const over = () => strip.scrollWidth > strip.clientWidth + 1;
+  const now = { faces: faces.filter((f) => !f.hidden).length, built: faces.length, over: over(),
+                lines: lines(), caption: !!line, more: null };
+  const next = faces.find((f) => f.hidden);
+  if (next) {
+    next.hidden = false;
+    now.more = { over: over(), lines: lines() };
+    next.hidden = true;
+  }
+  return now;
+}
+"""
+
+
+def fill_fault(got, found=None):
+    """What is wrong with a members row that should fill, or None. `found`,
+    the members the search answered with: a row that builds fewer than that
+    cannot show more as it widens."""
+    found = len(SIGNUP_MEMBERS) if found is None else found
+    if not got:
+        return "no members row showed"
+    if got["built"] < found:
+        return f"{got['built']} of the {found} members found were built, {got['faces']} showing"
+    if got["over"]:
+        return f"{got['faces']} faces spill out of the row"
+    if got["caption"] and got["faces"] > 4 and got["lines"] > 2:
+        return f"{got['faces']} faces left the line {got['lines']} lines - two at most past four faces"
+    more = got["more"]
+    if more and not more["over"] and not (got["caption"] and got["faces"] + 1 > 4 and more["lines"] > 2):
+        return f"{got['faces']} of {got['built']} faces left room for another"
+    return None
+
+
 def signup_stub(members, searches=None):
     """Answer the member search, serve the places, and keep the hand-off instead
     of following it. `searches`, a list, collects every member search made."""
@@ -813,13 +897,575 @@ def tap(tab, selector):
     whatever slid under it."""
     target = tab.locator(selector).first
     box = target.bounding_box()
+    # Off the screen, a finger scrolls to it first; a press at coordinates
+    # past the viewport lands on nothing.
+    if box and (box["y"] < 0 or box["y"] + box["height"] > (tab.viewport_size or {}).get("height", HEIGHT)):
+        target.evaluate("e => e.scrollIntoView({ block: 'center' })")
+        box = target.bounding_box()
     for _ in range(40):
         tab.wait_for_timeout(50)
         again = target.bounding_box()
         if again == box:
             break
         box = again
+    # Nothing showing to press: the press is not made, and whatever the check
+    # reads next says what the card did instead.
+    if box is None:
+        return
     tab.mouse.click(box["x"] + box["width"] / 2, box["y"] + box["height"] / 2)
+
+
+def with_settings(html, attrs):
+    """The card with `attrs` on it, each replacing any value the sample gave
+    the same setting: a browser keeps the first of two equal attributes."""
+    for setting in re.findall(r"(data-hub-signup-[\w-]+)=", attrs):
+        html = re.sub(rf'\s{setting}="[^"]*"', "", html, count=1)
+    return html.replace('data-hub-module="signup"', f'data-hub-module="signup" {attrs}', 1) if attrs else html
+
+
+def answer_part(tab, name, part):
+    """One question answered as a visitor answers it, the same way on any
+    bundle: a woman, looking for men, a town typed in full, a date typed into
+    the boxes (a wheel, where one shows, writes into the same boxes), the
+    first interest, and a name and email with the box ticked."""
+    face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
+    if part == "iam":
+        tap(tab, face.format("mt", 2))
+    elif part == "seeking":
+        tap(tab, face.format("lf", 1))
+    elif part == "location":
+        town = tab.locator('[data-hub-signup-part="location"] input[role="combobox"]')
+        if town.count() and town.is_visible():
+            town.focus()
+            town.press_sequentially("Islington", delay=20)
+            tab.wait_for_timeout(300)
+    elif part == "dob":
+        tab.evaluate("""() => [['dd', '14'], ['dm', '8'], ['dy', '1992']].forEach(([n, v]) => {
+          const box = document.querySelector(`input[name="${n}"]`);
+          box.value = v;
+          box.dispatchEvent(new Event('input', { bubbles: true }));
+        })""")
+    elif part in ("intent", "enjoy"):
+        tap(tab, f'[data-hub-signup-part="{part}"] .{name}-chip')
+    elif part == "email":
+        tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam Lee")
+        tab.fill('input[name="em"]', "sam@example.com")
+        tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+
+
+def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None):
+    """A card page opened under reduced motion - a tapped answer moves on at
+    once, so a walk never races the card - with the member search, places and
+    hand-off stubbed and every step event kept in window.__signupSteps."""
+    def before(tab):
+        (stub or signup_stub(SIGNUP_MEMBERS, searches))(tab)
+        tab.add_init_script("window.__signupSteps = []; addEventListener('hub:signup:step', "
+                            "e => window.__signupSteps.push(e.detail))")
+    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=query)
+    tab.wait_for_timeout(300)
+    return tab
+
+
+def walk_to(tab, name, stop):
+    """Answer each screen as it comes and go on, until a screen holds `stop`;
+    every screen's questions on the way, in order, the last one included."""
+    seen = []
+    for _ in range(10):
+        parts = tab.evaluate(SIGNUP_PARTS_JS)
+        seen.append(parts)
+        if stop in parts or not parts:
+            break
+        for part in parts:
+            answer_part(tab, name, part)
+        tab.wait_for_timeout(300)
+        if tab.evaluate(SIGNUP_PARTS_JS) == parts:
+            # The last screen has no Next: a walk that reaches it stops.
+            if not tab.locator(f".{name}-next").is_visible():
+                break
+            tap(tab, f".{name}-next")
+            tab.wait_for_timeout(400)
+    return seen
+
+
+def hand_off(tab, name):
+    """Answer the email step, send the card, and the hand-off's fields."""
+    answer_part(tab, name, "email")
+    tap(tab, f".{name}-submit")
+    # Read at once: under reduced motion the card leaves for the join link
+    # 200ms after the hand-off, and the page with it.
+    tab.wait_for_timeout(100)
+    url = tab.evaluate("() => window.__signupHandoff || ''")
+    return dict(p.split("=", 1) for p in url.split("?", 1)[-1].split("&") if "=" in p) if url else {}
+
+
+def check_signup_choices(shell, name, tokens):
+    """The card's batch-one settings, each set and each checked against what
+    it promises: screens, the line after an answer, the members row, the
+    markers, the preview step and the long-answer layout."""
+    where = f"{name} signup settings"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+
+    def walk(attrs, width=PHONE, stem="screens"):
+        tab = open_card(shell, with_settings(html, attrs), f"{name}-signup-{stem}-{width}", width=width)
+        try:
+            seen = walk_to(tab, name, "email")
+            fields = hand_off(tab, name) if seen and "email" in seen[-1] else {}
+        finally:
+            tab.close()
+        return seen, fields
+
+    # The sample's places do not load, so its location step drops.
+    today = [["iam"], ["seeking"], ["dob"], ["intent"], ["enjoy"], ["email"]]
+    seen, fields = walk('data-hub-signup-screens="iam seeking | dob | email"')
+    if seen != [["iam", "seeking"], ["dob"], ["email"]]:
+        faults.append(f"{where}: screens='iam seeking | dob | email' showed {seen!r}")
+    elif fields.get("mt") != "2" or "interests" in fields:
+        faults.append(f"{where}: with the interest steps left out of screens the hand-off sent 'I am' "
+                      f"{fields.get('mt')!r} and interests {fields.get('interests')!r} - the answers given, "
+                      f"and no interests")
+    seen, fields = walk('data-hub-signup-screens="iam | seeking | email"', stem="no-dob")
+    if seen != [["iam"], ["seeking"], ["email"]] or {"dd", "dm", "dy"} & set(fields) or fields.get("mt") != "2":
+        faults.append(f"{where}: a date of birth left to the join flow showed {seen!r} and sent "
+                      f"{ {k: fields.get(k) for k in ('mt', 'dd', 'dm', 'dy')} } - not asked and not sent, "
+                      f"the other answers sent")
+    # "Looking for" may come anywhere; the members wait for it (below).
+    seen, fields = walk('data-hub-signup-screens="iam dob | seeking | email"', stem="seeking-late")
+    if seen != [["iam", "dob"], ["seeking"], ["email"]] or fields.get("lf") != "1":
+        faults.append(f"{where}: screens='iam dob | seeking | email' showed {seen!r} and sent lf="
+                      f"{fields.get('lf')!r} - 'looking for' after the date of birth, as written")
+    for bad, why in (("email | iam seeking", "email not in the last screen"),
+                     ("Iam seeking | dob | email", "a step it does not know"),
+                     ("iam | iam seeking | email", "a step named twice")):
+        seen, _ = walk(f'data-hub-signup-screens="{bad}"', stem="bad")
+        if seen != today:
+            faults.append(f"{where}: screens='{bad}' ({why}) showed {seen!r} - ignored whole, for today's grouping")
+    seen, _ = walk('data-hub-signup-screens="  iam   seeking |dob| email | "', stem="loose")
+    if seen != [["iam", "seeking"], ["dob"], ["email"]]:
+        faults.append(f"{where}: screens with stray spaces and a trailing '|' showed {seen!r}")
+    seen, _ = walk('data-hub-signup-screens="iam | seeking location | dob | email"', stem="no-places")
+    if seen != [["iam"], ["seeking"], ["dob"], ["email"]]:
+        faults.append(f"{where}: places that would not load beside 'looking for' showed {seen!r} - the "
+                      f"location goes and 'looking for' keeps its screen")
+    seen, _ = walk('data-hub-signup-screens="iam | seeking | dob | email" '
+                   'data-hub-signup-screens-wide="iam seeking dob email"', width=WIDTH, stem="wide")
+    if seen != [["iam", "seeking", "dob", "email"]]:
+        faults.append(f"{where}: screens-wide with every question on one screen showed {seen!r} at {WIDTH}px")
+    # A screen of the page's own asks its questions in the order written.
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-screens="iam | seeking | intent dob | enjoy | email"'),
+                    f"{name}-signup-screens-order")
+    try:
+        walk_to(tab, name, "dob")
+        intent_first = tab.evaluate(
+            "() => !!(document.querySelector('[data-hub-signup-part=\"intent\"]').compareDocumentPosition("
+            "document.querySelector('[data-hub-signup-part=\"dob\"]')) & Node.DOCUMENT_POSITION_FOLLOWING)")
+    finally:
+        tab.close()
+    if not intent_first:
+        faults.append(f"{where}: screens 'intent dob' put the date of birth first - the order written is the order asked")
+    # Across 60rem the visitor stays with the question they were on.
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-screens="iam | seeking | dob | intent | email" '
+                                                'data-hub-signup-screens-wide="iam seeking | dob intent | email"'),
+                    f"{name}-signup-screens-resize")
+    try:
+        walk_to(tab, name, "dob")
+        tab.set_viewport_size({"width": WIDTH, "height": HEIGHT})
+        tab.wait_for_timeout(500)
+        wide_parts = tab.evaluate(SIGNUP_PARTS_JS)
+        kept = tab.evaluate("() => (document.querySelector('input[name=\"mt\"]:checked') || {}).value || ''")
+    finally:
+        tab.close()
+    if wide_parts != ["dob", "intent"] or kept != "2":
+        faults.append(f"{where}: widened on the date of birth, the card showed {wide_parts!r} with 'I am' "
+                      f"{kept!r} - the date of birth beside the first interest step, every answer kept")
+    # With its own order, "looking for" may come last: the members wait for
+    # it, no search made before, then show the members it asks for. A fixed
+    # answer, or one ticked from "I am", does not wait.
+    late = 'data-hub-signup-screens="iam | dob | seeking email"'
+    searches = []
+    tab = open_card(shell, with_settings(html, late), f"{name}-signup-members-late", searches=searches)
+    try:
+        held = []
+        for part in ("iam", "dob"):
+            held.append(tab.locator(f".{name}-members").is_visible())
+            walk_to(tab, name, "seeking" if part == "dob" else "dob")
+        held.append(tab.locator(f".{name}-members").is_visible())
+        asked_before = len(searches)
+        answer_part(tab, name, "seeking")
+        tab.wait_for_timeout(800)
+        shown = tab.locator(f".{name}-members").is_visible()
+        faces = tab.locator(f".{name}-members img:visible").count()
+    finally:
+        tab.close()
+    if any(held) or asked_before or not shown or not faces or not searches or \
+            "membertypes=male" not in searches[-1]:
+        faults.append(f"{where}: with 'looking for' last the members showed {held!r} before it was answered "
+                      f"({asked_before} search(es)), then {faces} face(s) from "
+                      f"{searches[-1] if searches else None!r} - none and no search until it is answered, "
+                      f"then the men it asked for")
+    fixed_lf = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="seeking">.*?</fieldset>',
+                      '<input type="hidden" name="lf" value="1">', html, count=1, flags=re.S)
+    for label, attrs, page in (("seeking=opposite", late + ' data-hub-signup-seeking="opposite"', html),
+                               ("a fixed 'looking for'", late, fixed_lf)):
+        tab = open_card(shell, with_settings(page, attrs), f"{name}-signup-members-settled")
+        try:
+            tab.wait_for_timeout(600)
+            shown = tab.locator(f".{name}-members").is_visible()
+        finally:
+            tab.close()
+        if not shown:
+            faults.append(f"{where}: with 'looking for' last and {label}, the members waited - they show "
+                          f"from the start")
+    # The line after an answer: only the moments messages names, and with
+    # messages-keep="step" one step only. Without either, as live cards show it.
+    quiet = re.sub(r'\sdata-hub-signup-(platform|say-[a-z]+|messages[a-z-]*)="[^"]*"', "", html)
+
+    def lines_page(attrs):
+        return with_settings(quiet, f'data-hub-signup-messages-from="{SIGNUP_MESSAGES}" {attrs}'.strip())
+
+    def cheer(tab):
+        tab.wait_for_timeout(400)
+        box = tab.locator(f".{name}-cheer")
+        return box.inner_text().strip() if box.count() and box.is_visible() else None
+
+    for attrs, want_iam, label in (('data-hub-signup-messages="seeking"', False, "messages='seeking'"),
+                                   ('data-hub-signup-messages="Seeking  bogus"', True,
+                                    "messages naming no moment it knows")):
+        tab = open_card(shell, lines_page(attrs), f"{name}-signup-moments", stub=messages_stub(SIGNUP_MEMBERS, None))
+        try:
+            answer_part(tab, name, "iam")
+            after_iam = cheer(tab)
+            answer_part(tab, name, "seeking")
+            after_seeking = cheer(tab)
+        finally:
+            tab.close()
+        if (after_iam is not None) != want_iam or after_seeking is None:
+            faults.append(f"{where}: {label} said {after_iam!r} after 'I am' and {after_seeking!r} after "
+                          f"'looking for' - " + ("every moment speaks, as with on" if want_iam
+                                                  else "nothing after 'I am', a line after 'looking for'"))
+    for keep, gone in (("", False), ('data-hub-signup-messages-keep="step"', True)):
+        tab = open_card(shell, lines_page(keep), f"{name}-signup-keep-{int(gone)}",
+                        stub=messages_stub(SIGNUP_MEMBERS, None))
+        try:
+            walk_to(tab, name, "seeking")
+            answer_part(tab, name, "seeking")
+            said = cheer(tab)
+            tap(tab, f".{name}-next")
+            one_on = cheer(tab)
+            answer_part(tab, name, "dob")
+            tap(tab, f".{name}-next")
+            two_on = cheer(tab)
+        finally:
+            tab.close()
+        label = "messages-keep=step" if keep else "with no messages-keep"
+        if said is None or one_on != said:
+            faults.append(f"{where}: {label} the line after 'looking for' ({said!r}) read {one_on!r} one "
+                          f"step on - it stays for the step it leads into")
+        elif (two_on is None) != gone:
+            faults.append(f"{where}: {label} two steps on the line read {two_on!r} - "
+                          + ("gone: one step only" if gone else "still there until the next answer, as before"))
+    # A tapped "I am" moves the card on before the lines have loaded: with
+    # messages-keep="step" its line still shows on the step it leads into,
+    # and goes after it.
+    tab = open_card(shell, lines_page('data-hub-signup-messages="iam" data-hub-signup-messages-keep="step"'),
+                    f"{name}-signup-keep-first", stub=messages_stub(SIGNUP_MEMBERS, None))
+    try:
+        answer_part(tab, name, "iam")
+        first = cheer(tab)
+        on_seeking = tab.evaluate(SIGNUP_PARTS_JS)
+        answer_part(tab, name, "seeking")
+        tap(tab, f".{name}-next")
+        after = cheer(tab)
+    finally:
+        tab.close()
+    if first is None or on_seeking != ["seeking"]:
+        faults.append(f"{where}: messages-keep=step said {first!r} on {on_seeking!r} after a tapped 'I am' - "
+                      f"its line on the step it leads into")
+    elif after is not None:
+        faults.append(f"{where}: messages-keep=step still showed {after!r} a step after the one the "
+                      f"line led into")
+    # The members row: when it shows (members-from) and whether its line
+    # shows (members-caption).
+    searches = []
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="seeking"'),
+                    f"{name}-signup-members-from", searches=searches)
+    try:
+        tab.wait_for_timeout(400)
+        at_first, asked_first = tab.locator(f".{name}-members").is_visible(), len(searches)
+        answer_part(tab, name, "iam")
+        tab.wait_for_timeout(500)
+        after_iam = tab.locator(f".{name}-members").is_visible()
+        answer_part(tab, name, "seeking")
+        tab.wait_for_timeout(700)
+        faces = tab.locator(f".{name}-members img:visible").count()
+    finally:
+        tab.close()
+    if at_first or asked_first or after_iam or not faces:
+        faults.append(f"{where}: members-from=seeking showed the row on arrival {at_first} (searches "
+                      f"{asked_first}), after 'I am' {after_iam}, and {faces} faces after 'looking for' - "
+                      f"none until 'looking for' is answered, then the members")
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="seeking" '
+                                                'data-hub-signup-seeking="opposite"'),
+                    f"{name}-signup-members-from-ticked")
+    try:
+        tab.wait_for_timeout(600)
+        ticked = tab.locator(f".{name}-members").is_visible()
+    finally:
+        tab.close()
+    if not ticked:
+        faults.append(f"{where}: members-from=seeking with seeking=opposite waited - an answer ticked "
+                      f"from 'I am' shows the row from the start")
+    searches = []
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="off"'),
+                    f"{name}-signup-members-off", searches=searches)
+    try:
+        walk_to(tab, name, "email")
+        shown = tab.locator(f".{name}-members").is_visible()
+    finally:
+        tab.close()
+    if shown or searches:
+        faults.append(f"{where}: members-from=off showed the row ({shown}) or searched ({len(searches)}) - never")
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-caption="off"'), f"{name}-signup-caption")
+    try:
+        tab.wait_for_timeout(600)
+        faces = tab.locator(f".{name}-members img:visible").count()
+        lines = tab.locator(f".{name}-members p").count()
+    finally:
+        tab.close()
+    if not faces or lines:
+        faults.append(f"{where}: members-caption=off showed {faces} faces and {lines} line(s) - the faces, no line")
+    tab = open_card(shell, with_settings(html, 'data-hub-signup-members-from="dob" '
+                                                'data-hub-signup-screens="iam | seeking | email"'),
+                    f"{name}-signup-members-unasked")
+    try:
+        tab.wait_for_timeout(600)
+        shown = tab.locator(f".{name}-members").is_visible()
+    finally:
+        tab.close()
+    if not shown:
+        faults.append(f"{where}: members-from=dob on a card that leaves the date of birth to the join flow "
+                      f"showed no row - a step no screen asks counts as answered")
+    # How many faces: fill, the default, takes as many as the row has room
+    # for, beside a line of two lines at most, at every width and when the
+    # width changes; a number takes that many, with a -wide twin from 60rem.
+    german = with_settings(html, 'lang="de" data-hub-signup-members="{who} im Alter von {ages}, gerade online" '
+                                 'data-hub-signup-who="Männer;Frauen;Paare;Nichtbinäre Mitglieder;Mitglieder"')
+
+    def row_at(page, width, stem, resize=None):
+        tab = open_card(shell, page, f"{name}-signup-count-{stem}-{width}", width=width)
+        try:
+            tab.wait_for_timeout(700)
+            if resize:
+                tab.set_viewport_size({"width": resize, "height": HEIGHT})
+                tab.wait_for_timeout(700)
+            return tab.evaluate(FILL_JS, name)
+        finally:
+            tab.close()
+    wider = html.replace("</style>", f".{name} {{ max-width: none; }}\n</style>", 1)
+    for width in (320, 390, 768, 1280):
+        for label, page in (("English", html), ("German", german),
+                            ("no line", with_settings(html, 'data-hub-signup-members-caption="off"')),
+                            ("a card as wide as its column", wider)):
+            got = row_at(page, width, re.sub(r"\W+", "-", label))
+            fault = fill_fault(got)
+            if fault or (got and got["faces"] > got["built"]):
+                faults.append(f"{where}: members at {width}px, {label}: {fault or 'more faces than found'}")
+            elif label == "a card as wide as its column" and width >= 768 and got["faces"] <= 6:
+                faults.append(f"{where}: a card {width}px wide showed {got['faces']} faces - the row fills")
+    narrow = row_at(wider, PHONE, "resized", resize=768)
+    if fill_fault(narrow) or not narrow or narrow["faces"] <= 6:
+        faults.append(f"{where}: a row widened from {PHONE}px to 768px showed {narrow and narrow['faces']} "
+                      f"faces ({fill_fault(narrow)}) - measured again at its new width")
+    twin = with_settings(html, 'data-hub-signup-members-count="2" data-hub-signup-members-count-wide="fill"')
+    for width, want in ((390, 2), (WIDTH, None)):
+        got = row_at(twin, width, "twin")
+        if not got or (want and got["faces"] != want) or (not want and (fill_fault(got) or got["faces"] <= 2)):
+            faults.append(f"{where}: members-count=2 members-count-wide=fill at {width}px showed "
+                          f"{got and got['faces']} faces - " + ("two" if want else "as many as fit"))
+    # Markers: the step showing on the card, each answered question, and the
+    # step's name in the step event, so a report survives a page's own order.
+    tab = open_card(shell, html, f"{name}-signup-marks")
+    try:
+        at_first = tab.evaluate(f"() => document.querySelector('.{name}').getAttribute('data-hub-signup-at')")
+        answer_part(tab, name, "iam")
+        tab.wait_for_timeout(400)
+        marked = tab.evaluate("() => Array.from(document.querySelectorAll('[data-hub-signup-answered]'))"
+                              ".map((p) => p.getAttribute('data-hub-signup-part'))")
+        at_now = tab.evaluate(f"() => document.querySelector('.{name}').getAttribute('data-hub-signup-at')")
+        last = tab.evaluate("() => window.__signupSteps.slice(-1)[0] || null")
+    finally:
+        tab.close()
+    if (at_first, at_now) != ("iam", "seeking") or marked != ["iam"]:
+        faults.append(f"{where}: the card was marked at {at_first!r} then {at_now!r}, answered {marked!r} - "
+                      f"'iam' then 'seeking', 'iam' answered")
+    if not last or last.get("name") != "seeking" or last.get("step") != 2:
+        faults.append(f"{where}: the step event said {last!r} on the second step - step 2, named 'seeking'")
+    # A preview opens on a step named in its address; anything it cannot
+    # find opens on the first step, as with no address.
+    for query, want in (("?hub-signup-step=dob", ["dob"]), ("?hub-signup-step=3", ["dob"]),
+                        ("?hub-signup-step=zzz", ["iam"]), ("?hub-signup-step=0", ["iam"]),
+                        ("?hub-signup-step=99", ["iam"])):
+        tab = open_card(shell, html, f"{name}-signup-preview", query=query)
+        try:
+            tab.wait_for_timeout(300)
+            opened = tab.evaluate(SIGNUP_PARTS_JS)
+            back = tab.evaluate(f"() => getComputedStyle(document.querySelector('.{name}-back')).visibility")
+        finally:
+            tab.close()
+        if opened != want or (want != ["iam"]) != (back == "visible"):
+            faults.append(f"{where}: {query} opened on {opened!r} with Back {back} - {want!r}"
+                          + (", Back showing" if want != ["iam"] else ""))
+    # Long answers: two "I am" answers side by side while both fit, one above
+    # the other when a long word does not, and never a word out of its tile -
+    # in German and Spanish as in English. The same page drawn on the
+    # two-column grid the tiles had before must fail the check, or the check
+    # cannot see what it is for.
+    tiles_js = ("() => { const opts = Array.from(document.querySelectorAll("
+                f"'[data-hub-signup-part=\"iam\"] .{name}-opt'));"
+                " const faces = Array.from(document.querySelectorAll("
+                f"'[data-hub-signup-part=\"iam\"] .{name}-opt-face'));"
+                " return { tops: opts.map((o) => Math.round(o.getBoundingClientRect().top)),"
+                " spill: faces.some((f) => f.scrollWidth > f.clientWidth + 1"
+                " || Array.from(f.children).some((c) => c.getBoundingClientRect().right"
+                " > f.getBoundingClientRect().right + 1)) }; }")
+
+    def answers(lang, man, woman):
+        return (html.replace('data-hub-module="signup"', f'data-hub-module="signup" lang="{lang}"', 1)
+                .replace("<span>Sample: a man</span>", f"<span>{man}</span>", 1)
+                .replace("<span>Sample: a woman</span>", f"<span>{woman}</span>", 1))
+    german = answers("de", "Ein alleinstehender Mann", "Eine Lebensabschnittsgefährtin")
+    spanish = answers("es", "Un hombre soltero", "Una mujer soltera")
+    # Real short answers: the sample's "Sample: a woman" is wider than half
+    # the card in some faces, which a real answer is not.
+    english = answers("en", "A man", "A woman")
+    gridded = german.replace("</style>", f".{name}-opts--two {{ display: grid; grid-template-columns: 1fr 1fr; }}\n"
+                                         f".{name}-opts--two > .{name}-opt {{ min-width: 0; }}\n</style>", 1)
+
+    def tiles(page, width):
+        tab = open_card(shell, page, f"{name}-signup-tiles-{width}", width=width)
+        try:
+            return tab.evaluate(tiles_js)
+        finally:
+            tab.close()
+    for width in (320, PHONE, 390):
+        got = tiles(german, width)
+        if len(set(got["tops"])) != 2 or got["spill"]:
+            faults.append(f"{where}: long German 'I am' answers at {width}px sat at {got['tops']!r}, "
+                          f"spilling {got['spill']} - one above the other, nothing spilling")
+        # Spanish answers sit near half the card at 320 and 360, where the
+        # face decides; at 390 they fit beside each other in any face here.
+        for label, page, beside in (("short", english, True), ("Spanish", spanish, width >= 390)):
+            got = tiles(page, width)
+            if (beside and len(set(got["tops"])) != 1) or got["spill"]:
+                faults.append(f"{where}: {label} 'I am' answers at {width}px sat at {got['tops']!r}, spilling "
+                              f"{got['spill']} - " + ("side by side, " if beside else "") + "nothing spilling")
+    for page, label in ((german, "German"), (spanish, "Spanish")):
+        if tiles(page, WIDTH)["spill"]:
+            faults.append(f"{where}: long {label} 'I am' answers spill out of their tiles at {WIDTH}px")
+    control = tiles(gridded, PHONE)
+    if len(set(control["tops"])) == 2 and not control["spill"]:
+        faults.append(f"{where}: the control - long answers on the old two-column grid - passed the check "
+                      f"above, so it cannot see a card that keeps two columns")
+    return faults
+
+
+# The card as it is drawn: the questions showing, the card's height and where
+# its first question and its button sit.
+FIRST_PAINT_JS = """
+(name) => {
+  const top = (sel) => { const n = Array.from(document.querySelectorAll(sel)).find((e) => e.offsetParent);
+                         return n ? Math.round(n.getBoundingClientRect().top) : null; };
+  return {
+    parts: Array.from(document.querySelectorAll('[data-hub-signup-part]'))
+      .filter((p) => p.offsetParent !== null).map((p) => p.getAttribute('data-hub-signup-part')),
+    height: Math.round(document.querySelector(`.${name}`).getBoundingClientRect().height),
+    question: top(`.${name}-q`),
+    button: top(`.${name}-next, .${name}-submit`),
+  };
+}
+"""
+# How long a card waits for the bundle before it shows every question, and a
+# little past it.
+FIRST_PAINT_FALLBACK_MS = 3300
+
+
+def check_signup_first_paint(shell, name, tokens):
+    """The card is drawn at its first step before the bundle arrives, where
+    scripts run, so nothing moves when the bundle takes it over: the same
+    questions, the same height, the question and the button in the same
+    place. A bundle that never arrives leaves every question showing after
+    a few seconds, and with scripting off they show at once. The same page
+    with the first-step look taken away must fail, or the check cannot see
+    what it is for."""
+    where = f"{name} first paint"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    german = (html.replace('data-hub-module="signup"', 'data-hub-module="signup" lang="de"', 1)
+              .replace("<span>Sample: a man</span>", "<span>Ein alleinstehender Mann</span>", 1)
+              .replace("<span>Sample: a woman</span>", "<span>Eine Lebensabschnittsgefährtin</span>", 1))
+    fixed_mt = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="iam">.*?</fieldset>',
+                      '<input type="hidden" name="mt" value="2">', html, count=1, flags=re.S)
+    unstyled = html.replace("</style>", f".{name} :is(*, *::before) {{ animation: none !important; }}\n</style>", 1)
+
+    tag = '<script type="module" src="hub.js"></script>'
+
+    def takeover(page, width, stem):
+        """The card before the bundle arrives and once it has taken over: the
+        page is opened without the bundle, which is added a moment later, as
+        a slow connection delivers it."""
+        tab = shell.open(page.replace(tag, ""), f"{name}-first-{stem}-{width}", width=width,
+                         before=signup_stub([]))
+        try:
+            tab.wait_for_timeout(400)
+            early = tab.evaluate(FIRST_PAINT_JS, name)
+            tab.add_script_tag(url=(shell._dir / "hub.js").as_uri(), type="module")
+            tab.wait_for_function("() => !!document.querySelector('.hub-signup-live')", timeout=5000)
+            tab.wait_for_timeout(500)
+            late = tab.evaluate(FIRST_PAINT_JS, name)
+        finally:
+            tab.close()
+        return early, late
+
+    def moved(early, late):
+        return (early["parts"] != late["parts"] or abs(early["height"] - late["height"]) > 2
+                or abs((early["question"] or 0) - (late["question"] or 0)) > 2
+                or abs((early["button"] or 0) - (late["button"] or 0)) > 2)
+    for label, page, width in (("English", html, 320), ("English", html, PHONE), ("English", html, 390),
+                               ("German", german, 320), ("German", german, 390),
+                               ("English", html, WIDTH), ("a fixed 'I am'", fixed_mt, PHONE)):
+        early, late = takeover(page, width, label.replace(" ", "-").replace("'", ""))
+        if moved(early, late):
+            faults.append(f"{where}: {label} at {width}px drew {early} before the bundle and {late} once it "
+                          f"took over - the first step, the same height, nothing moved")
+    early, late = takeover(unstyled, PHONE, "control")
+    if not moved(early, late):
+        faults.append(f"{where}: the control - the card without its first-step look - did not move when "
+                      f"the bundle took over, so this check cannot see a card that jumps")
+    # No bundle at all: the first step, then every question.
+    tab = shell.open(html.replace(tag, ""), f"{name}-first-none", width=PHONE, before=signup_stub([]))
+    try:
+        tab.wait_for_timeout(400)
+        waiting = tab.evaluate(FIRST_PAINT_JS, name)["parts"]
+        tab.wait_for_timeout(FIRST_PAINT_FALLBACK_MS)
+        given_up = tab.evaluate(FIRST_PAINT_JS, name)["parts"]
+    finally:
+        tab.close()
+    if waiting != ["iam"] or given_up != ["iam", "seeking", "dob", "email"]:
+        faults.append(f"{where}: with no bundle the card showed {waiting!r}, then {given_up!r} - the first "
+                      f"step while it may still come, then every question")
+    # Scripting off: every question from the start.
+    path = shell._dir / f"{name}-first-off.html"
+    path.write_text(html, encoding="utf-8", newline="\n")
+    context = shell._browser.new_context(viewport={"width": PHONE, "height": HEIGHT}, java_script_enabled=False)
+    try:
+        tab = context.new_page()
+        tab.goto(path.as_uri())
+        off = tab.evaluate(FIRST_PAINT_JS, name)["parts"]
+    finally:
+        context.close()
+    if off != ["iam", "seeking", "dob", "email"]:
+        faults.append(f"{where}: with scripting off the card showed {off!r} - every question, at once")
+    return faults
 
 
 def check_signup(shell, name, tokens):
@@ -828,7 +1474,7 @@ def check_signup(shell, name, tokens):
     html = page_for(name, "signup", tokens, "hub.js", PHONE)
     face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
     tab = shell.open(html, f"{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS),
-                     query="?utm_source=s&utm_medium=m&cmp=abc&gclid=g&cmp=second")
+                     query="?utm_source=s&utm_medium=m&cmp=abc&gclid=g&cmp=second&pn=incoming")
     try:
         tab.wait_for_timeout(300)
         version = tab.evaluate(VERSION_JS)
@@ -846,15 +1492,20 @@ def check_signup(shell, name, tokens):
         tab.wait_for_timeout(900)
         if tab.evaluate(SIGNUP_PARTS_JS) != ["seeking"]:
             faults.append(f"{where}: a tapped single answer did not move on by itself")
-        before = tab.locator(f".{name}-members img").evaluate_all("els => els.map(e => e.src)")
+        showing = f".{name}-members .{name}-face:not([hidden]) img"
+        before = tab.locator(showing).evaluate_all("els => els.map(e => e.src)")
         tap(tab, face.format("lf", 1))
+        tab.wait_for_timeout(600)
+        # Read after one answer: a row that shows half the members found has
+        # shown them all after two, and goes back to the first it showed.
+        after = tab.locator(showing).evaluate_all("els => els.map(e => e.src)")
         tap(tab, face.format("lf", 2))
         tab.wait_for_timeout(600)
-        after = tab.locator(f".{name}-members img").evaluate_all("els => els.map(e => e.src)")
-        if len(after) != 4:
-            faults.append(f"{where}: four members should show once 'looking for' is answered")
+        row = fill_fault(tab.evaluate(FILL_JS, name))
+        if row:
+            faults.append(f"{where}: once 'looking for' is answered the members row should fill - {row}")
         elif before and not set(after) - set(before):
-            faults.append(f"{where}: answering 'looking for' showed the same four faces again, with "
+            faults.append(f"{where}: answering 'looking for' showed the same faces again, with "
                           f"unseen members in the results")
         tap(tab, f".{name}-next")
         tab.wait_for_timeout(500)
@@ -908,7 +1559,8 @@ def check_signup(shell, name, tokens):
                       f"on as it came, the first of each")
     if not fields.get("pn", "").startswith("ai~canvas-studio~abc123def456~/") or "%2F" in fields.get("pn", ""):
         faults.append(f"{where}: pn sent as {fields.get('pn')!r} - ai~<template>~<page>~<path>, "
-                      f"as the platform writes it on every join link")
+                      f"as the platform writes it on every join link, in place of any pn the "
+                      f"visitor arrived with")
     # A brand with one possible answer to each: the questions are hidden
     # values, nobody is asked them, and each value is sent once.
     single = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="(iam|seeking)">.*?</fieldset>',
@@ -1208,8 +1860,11 @@ def check_signup(shell, name, tokens):
     if opened != ["", "", year]:
         faults.append(f"{where}: dob-start=30 opened the wheels on {opened!r} - the year {year}, "
                       f"day and month blank")
-    # The lines after an answer are the card's; the older block has none.
-    return faults + (check_signup_messages(shell, name, tokens) if name == "signup-card" else [])
+    # The lines after an answer and the batch-one settings are the card's;
+    # the older block has neither.
+    return faults + (check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
+                     + check_signup_first_paint(shell, name, tokens)
+                     if name == "signup-card" else [])
 
 
 def messages_stub(members, platform_file):
@@ -1596,14 +2251,15 @@ def check_compat(shell, tokens, broken):
     moving = "hub.js"
     if broken:
         source = (shell._dir / "hub.js").read_text(encoding="utf-8")
-        for control in (COMPAT_CONTROL, MOTION_COMPAT_CONTROL):
+        for control in (COMPAT_CONTROL, MOTION_COMPAT_CONTROL, SIGNUP_COMPAT_CONTROL):
             if control[0] not in source:
                 raise SystemExit(f"control: the compat substitution {control[0]!r} no "
                                  f"longer matches lib/hub.js")
         moving = "hub-still.js"
         (shell._dir / moving).write_text(source.replace(*MOTION_COMPAT_CONTROL, 1),
                                          encoding="utf-8", newline="\n")
-        (shell._dir / "hub.js").write_text(source.replace(*COMPAT_CONTROL, 1),
+        (shell._dir / "hub.js").write_text(source.replace(*COMPAT_CONTROL, 1)
+                                           .replace(*SIGNUP_COMPAT_CONTROL, 1),
                                            encoding="utf-8", newline="\n")
     faults, count = [], 0
     for label, name, rung, module in COMPAT_BLOCKS:
@@ -1655,7 +2311,8 @@ def check_compat(shell, tokens, broken):
                 if not built:
                     faults.append(f"{where}: no controls were built")
     more, renders = check_motion_compat(shell, tokens, version, moving)
-    return faults + more, count + renders
+    card, walks = check_signup_compat(shell, tokens, version, old.read_text(encoding="utf-8"))
+    return faults + more + card, count + renders + walks
 
 
 # ------------------------------------------------ compatibility: motion
@@ -1775,6 +2432,189 @@ def check_motion_compat(shell, tokens, version, bundle):
     return faults, count
 
 
+# ------------------------------------------ compatibility: the sign-up card
+
+"""THE LIVE CARDS. Every live sign-up card loads the newest bundle from the
+floating URL, so a card that sets none of the settings added since the last
+published bundle has to step through on this bundle exactly as it stepped
+through on that one: the same questions on each screen, the same words, the
+same answers kept, the same line after an answer, the same members, and the
+same hand-off. Each card - as LATEST released it, and as it stands with each
+setting live cards carry - is answered screen by screen on a phone and a wide
+screen, Back once and on again, and sent, with a snapshot after every move;
+the two bundles' snapshots must match. Under reduced motion, so nothing is
+caught mid-animation, and with one seeded Math.random on both pages, so the
+line drawn after an answer is the same draw.
+
+SIGNUP_ADDED names the attributes this bundle adds to every card by design,
+which no stylesheet draws: they are left out of the comparison, and the check
+proves no released signup-card stylesheet names them.
+
+--compat --broken also moves the card's first-step mark by one step, and
+requires the walk to fire."""
+
+SIGNUP_ADDED = ("data-hub-signup-at", "data-hub-signup-answered")
+SIGNUP_COMPAT_CONTROL = ('el.classList.toggle("hub-signup-first", at === 0);',
+                         'el.classList.toggle("hub-signup-first", at <= 1);')
+# The settings live cards carry, each walked apart; "" is a card with none.
+# A setting the previous bundle does not know yet is skipped until it does.
+SIGNUP_COMPAT_SETTINGS = [
+    "",
+    'data-hub-signup-dob="wheel"',
+    'data-hub-signup-dob="wheel" data-hub-signup-dob-wide="boxes" data-hub-signup-dob-start="30"',
+    'data-hub-signup-messages="off" data-hub-signup-reward="age"',
+    'data-hub-signup-seeking="opposite" data-hub-signup-settle="off"',
+    f'data-hub-signup-places="UK/England: Greater London" data-hub-signup-places-from="{SIGNUP_PLACES}"',
+]
+SIGNUP_COMPAT_QUERY = "?utm_source=s&cmp=abc&pn=incoming"
+SEEDED_RANDOM = ("(() => { let s = 42; Math.random = () => "
+                 "((s = (s * 16807) % 2147483647) - 1) / 2147483646; })();")
+SIGNUP_SNAPSHOT_JS = """
+(added) => {
+  const card = document.querySelector('[data-hub-module~="signup"]');
+  const copy = card.cloneNode(true);
+  [copy, ...copy.querySelectorAll('*')].forEach((n) => added.forEach((a) => n.removeAttribute(a)));
+  // The members row fills to its width on this bundle and held four on the
+  // last: whether it shows is compared, and what it holds is checked apart.
+  const strip = card.querySelector('.signup-card-members');
+  copy.querySelectorAll('.signup-card-members').forEach((n) => n.replaceChildren());
+  return {
+    html: copy.outerHTML.replace(/hub-signup-places-[a-z0-9]{1,6}/g, 'hub-signup-places-x'),
+    shown: Array.from(card.querySelectorAll('[data-hub-signup-part]'))
+      .filter((p) => p.offsetParent !== null).map((p) => p.getAttribute('data-hub-signup-part')),
+    text: card.innerText.replace(strip ? strip.innerText : '', ''),
+    values: Array.from(card.querySelectorAll('input, select'))
+      .map((i) => (i.type === 'checkbox' || i.type === 'radio') ? i.checked : i.value),
+  };
+}
+"""
+
+
+def where_apart(a, b):
+    """The first place two snapshots part, with a little either side."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        key = next((k for k in a if a.get(k) != b.get(k)), None)
+        if key is None:
+            return f"{sorted(set(b) - set(a))} only on the earlier bundle"
+        a, b, label = a[key], b.get(key), f"{key}: "
+    else:
+        label = ""
+    x = json.dumps(a, ensure_ascii=False)
+    y = json.dumps(b, ensure_ascii=False)
+    i = next((n for n, (p, q) in enumerate(zip(x, y)) if p != q), min(len(x), len(y)))
+    return f"{label}...{x[max(0, i - 80):i + 120]}... against ...{y[max(0, i - 80):i + 120]}..."
+
+
+def signup_compat_page(h, c, sample, tokens, bundle, attrs):
+    """A card's markup and styles, filled with its sample, on `bundle`."""
+    markup = fill(re.sub(r"\s*<!--\n.*?\n-->", "", h, count=1, flags=re.S), sample)
+    markup = re.sub(r'(<form class="(?:signup-steps-card|signup-card-form)"[^>]*action=")[^"]*"',
+                    lambda m: m.group(1) + SIGNUP_JOIN + '"', markup, count=1)
+    return SHELL.format(title="compat signup", tokens=tokens, css=c, bundle=bundle, before="",
+                        markup=with_settings(markup, attrs),
+                        after='<section class="behaviour-check-section">' + FILLER + "</section>")
+
+
+def signup_walk(shell, html, stem, width):
+    """Step a card through as a visitor does: each screen's questions
+    answered, Back once and on again on the second screen, then the
+    hand-off; a snapshot after every move. (snapshots, errors thrown)."""
+    errors, snaps, rows = [], [], []
+
+    def before(tab):
+        signup_stub(SIGNUP_MEMBERS)(tab)
+        tab.add_init_script(SEEDED_RANDOM)
+        tab.on("pageerror", lambda e: errors.append(str(e)))
+    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=SIGNUP_COMPAT_QUERY)
+
+    def snap(label):
+        tab.wait_for_timeout(600)
+        got = tab.evaluate(SIGNUP_SNAPSHOT_JS, list(SIGNUP_ADDED))
+        rows.append((label, tab.evaluate(FILL_JS, "signup-card")))
+        snaps.append((label, got))
+    try:
+        snap("arrival")
+        for n in range(1, 11):
+            parts = tab.evaluate(SIGNUP_PARTS_JS)
+            if not parts:
+                break
+            for part in parts:
+                answer_part(tab, "signup-card", part)
+                snap(f"screen {n}, {part} answered")
+            if n == 2:
+                tap(tab, ".signup-card-back")
+                snap(f"screen {n}, back")
+                tap(tab, ".signup-card-next")
+                snap(f"screen {n}, on again")
+            if "email" in parts:
+                tap(tab, ".signup-card-submit")
+                # Read at once: under reduced motion the card leaves for the
+                # join link 200ms after the hand-off, and the page with it.
+                tab.wait_for_timeout(100)
+                snaps.append(("hand-off", tab.evaluate("() => window.__signupHandoff || ''")))
+                break
+            if tab.evaluate(SIGNUP_PARTS_JS) == parts:
+                tap(tab, ".signup-card-next")
+            snap(f"screen {n}, next")
+    except Exception as e:
+        # The page left mid-walk (a bundle that hands off early goes to the
+        # join link); where it stopped is compared like any other snapshot.
+        snaps.append(("stopped", type(e).__name__))
+    finally:
+        tab.close()
+    return snaps, errors, rows
+
+
+def check_signup_compat(shell, tokens, version, old_source):
+    """The sign-up card with no setting newer than `version`, walked on this
+    bundle and on that one; (faults, walks)."""
+    faults, count = [], 0
+    folder = PATTERNS / "signup-card"
+    now_css = (folder / "pattern.css").read_text(encoding="utf-8")
+    forms = [("as it stands", (folder / "pattern.html").read_text(encoding="utf-8"), now_css,
+              json.loads((folder / "preview-content.json").read_text(encoding="utf-8")))]
+    rel = released("signup-card")
+    if rel:
+        tag, (h, c, j) = rel
+        forms.insert(0, (f"as released in {tag}", h, c, json.loads(j)))
+    else:
+        faults.append("compat signup: signup-card could not be read at the release LATEST names")
+    for label, h, c, _ in forms:
+        for added in SIGNUP_ADDED:
+            if added in c:
+                faults.append(f"compat signup: the signup-card stylesheet {label} names {added}, which "
+                              f"every live card gains unasked")
+    for label, h, c, sample in forms:
+        for attrs in (SIGNUP_COMPAT_SETTINGS if label == "as it stands" else [""]):
+            if any(f'"{n}"' not in old_source for n in re.findall(r"data-hub-signup-([\w-]+)=", attrs)):
+                continue
+            for width in (PHONE, WIDTH):
+                # One file name for both pages: the pn handed off carries the
+                # page's path, and it must be the same path on both bundles.
+                a, a_err, a_rows = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub.js", attrs),
+                                               "compat-signup", width)
+                b, _, _ = signup_walk(shell, signup_compat_page(h, c, sample, tokens, "hub-previous.js", attrs),
+                                      "compat-signup", width)
+                count += 1
+                where = f"compat signup: {label}, {attrs or 'no settings'}, {width}px"
+                if a_err:
+                    faults.append(f"{where}: the bundle threw {a_err[0]}")
+                if len(a) != len(b):
+                    faults.append(f"{where}: {len(a)} moves on this bundle and {len(b)} on {version}")
+                for (at_a, snap_a), (_, snap_b) in zip(a, b):
+                    if snap_a != snap_b:
+                        faults.append(f"{where}: at '{at_a}' the card differs from {version}'s - "
+                                      + where_apart(snap_a, snap_b))
+                        break
+                # Every card's members fill their row on this bundle.
+                for at_a, row in a_rows:
+                    if row and fill_fault(row):
+                        faults.append(f"{where}: at '{at_a}' {fill_fault(row)} - every card's members "
+                                      f"fill their row")
+                        break
+    return faults, count
+
+
 CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel,
           "signup": check_signup, "reveal": check_reveal}
 
@@ -1821,22 +2661,26 @@ def main():
             print(f"  FAIL  {line}")
         version = previous_bundle()[0]
         if args.broken:
-            look = [f for f in faults if not f.startswith("compat motion:")]
+            look = [f for f in faults if not f.startswith(("compat motion:", "compat signup:"))]
             still = [f for f in faults if f.startswith("compat motion:")]
-            if look and still:
+            card = [f for f in faults if f.startswith("compat signup:")]
+            if look and still and card:
                 print(f"  control: {len(look)} fault(s) caught with the new look forced on "
-                      f"a block that asked for none, and {len(still)} with every block "
-                      f"{LIVE_REF} shipped held still. The gate fires.")
+                      f"a block that asked for none, {len(still)} with every block "
+                      f"{LIVE_REF} shipped held still, and {len(card)} with the sign-up card's "
+                      f"first-step mark moved. The gate fires.")
                 return 0
             print("  CONTROL FAILED: " + ("the new look was forced on" if not look
-                                         else f"every block {LIVE_REF} shipped was held still")
+                                         else f"every block {LIVE_REF} shipped was held still" if not still
+                                         else "the sign-up card's first-step mark was moved")
                   + " and nothing fired.")
             return 1
         if faults:
             return 1
         print(f"  clean: {count} render(s) - with no new setting the bundle builds what "
-              f"{version} built, today's markup falls back on {version}, and every "
-              f"block {LIVE_REF} shipped moves as {version} moved it")
+              f"{version} built, today's markup falls back on {version}, every "
+              f"block {LIVE_REF} shipped moves as {version} moved it, and the sign-up card "
+              f"steps through as it did on {version}")
         return 0
     print(f"behaviours: {len(names)} pattern(s) on the {args.tokens} tokens, bundle "
           f"{bundle_version()}" + ("  [control: one line of each turned wrong]" if args.broken else ""))
