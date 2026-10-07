@@ -179,8 +179,12 @@ CONTROL_SUBSTITUTIONS = {
                ".reduce((sum, r) => Number(r.value), 0)"),
     "signup-attribution": ("new URLSearchParams(location.search).forEach((v, k) => first(k, v));",
                            "void first;"),
-    "signup-pn": ('params.set("pn", `${kind}${name}~${info.page_guid}~${location.pathname}`);',
+    "signup-pn": ('params.set("pn", `${kind}~${name}${SIGNUP_ROUTE}~${info.page_guid}~${location.pathname}`);',
                   'params.set("pn", new URLSearchParams(location.search).get("pn") || "");'),
+    "signup-route": ('const SIGNUP_ROUTE = "sc";', 'const SIGNUP_ROUTE = "";'),
+    "analytics-wait": ("if (!analyticsReady()) {", "if (false) {"),
+    "analytics-live": ("info.is_prod !== true || !analyticsId()", "!analyticsId()"),
+    "signup-reach": ('if (dir > 0 && !reached.has(on.join(" "))) {', "if (dir > 0) {"),
     "signup-location": ('else if (where.at) { set("lat", where.at[0]); set("long", where.at[1]); }',
                         "else void where;"),
     "signup-postal": ('if (where.zip) set("zipCode", where.zip);', "if (where.zip) void where;"),
@@ -212,6 +216,11 @@ CONTROL_SUBSTITUTIONS = {
 # The signup check hands off to this link and never follows it; the GUID in it
 # is what the member strip searches with, and the search is answered here.
 SIGNUP_JOIN = "https://example.invalid/s/register/00000000-0000-4000-8000-000000000000"
+# The pn a card on the stubbed page hands off: the platform's own, with the
+# template marked as the card's.
+SIGNUP_PN = "ai~canvas-studio-sc~abc123def456~/"
+# The measurement id the analytics check names as the platform's.
+SIGNUP_TAG = "G-TEST000000"
 # The places the location step reads: the library's own, served from here.
 SIGNUP_PLACES = "https://example.invalid/places/"
 # The encouraging lines, served from here the same way.
@@ -1552,15 +1561,16 @@ def check_signup(shell, name, tokens):
     if "p" in fields:
         faults.append(f"{where}: a password was sent")
     # What every join link on the platform carries: the page's own parameters,
-    # the first of each, and its pn attribution, ~ and / written plain.
+    # the first of each, and its pn attribution, ~ and / written plain - the
+    # template marked as the card's, so its sign-ups are told apart.
     carried = {k: fields.get(k) for k in ("utm_source", "utm_medium", "cmp", "gclid")}
     if carried != {"utm_source": "s", "utm_medium": "m", "cmp": "abc", "gclid": "g"}:
         faults.append(f"{where}: the page's own parameters arrived as {carried!r} - each is passed "
                       f"on as it came, the first of each")
-    if not fields.get("pn", "").startswith("ai~canvas-studio~abc123def456~/") or "%2F" in fields.get("pn", ""):
-        faults.append(f"{where}: pn sent as {fields.get('pn')!r} - ai~<template>~<page>~<path>, "
-                      f"as the platform writes it on every join link, in place of any pn the "
-                      f"visitor arrived with")
+    if not fields.get("pn", "").startswith(SIGNUP_PN) or "%2F" in fields.get("pn", ""):
+        faults.append(f"{where}: pn sent as {fields.get('pn')!r} - ai~<template>-sc~<page>~<path>, "
+                      f"as the platform writes it on every join link with the template marked as "
+                      f"the card's, in place of any pn the visitor arrived with")
     # A brand with one possible answer to each: the questions are hidden
     # values, nobody is asked them, and each value is sent once.
     single = re.sub(rf'<fieldset class="{name}-step" data-hub-signup-part="(iam|seeking)">.*?</fieldset>',
@@ -1862,9 +1872,127 @@ def check_signup(shell, name, tokens):
                       f"day and month blank")
     # The lines after an answer and the batch-one settings are the card's;
     # the older block has neither.
-    return faults + (check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
-                     + check_signup_first_paint(shell, name, tokens)
-                     if name == "signup-card" else [])
+    return faults + check_signup_analytics(shell, name, tokens) + (
+        check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
+        + check_signup_first_paint(shell, name, tokens)
+        if name == "signup-card" else [])
+
+
+ANALYTICS_EVENTS_JS = """
+() => (window.dataLayer || []).filter(e => e && e[0] === 'event')
+        .map(e => Object.assign({ event: e[1] }, e[2]))
+"""
+
+
+def analytics_stub(tag=True, layer=True, live=True):
+    """The member search, places and hand-off stubbed as for any card, and the
+    platform's analytics as its footer leaves them: a measurement id named,
+    an empty queue, and the id configured only when window.__configure() is
+    called, as the platform's tag does a moment after the page loads."""
+    def before(tab):
+        signup_stub(SIGNUP_MEMBERS)(tab)
+        script = []
+        if layer:
+            script.append("window.dataLayer = [];")
+        if tag:
+            script.append(f"window.gTagList = {{hubaiTrackingCode: '{SIGNUP_TAG}'}};")
+        script.append("window.__configure = () => { (function () { window.dataLayer.push(arguments); })"
+                      f"('config', '{SIGNUP_TAG}', {{}}); }};")
+        if not live:
+            script.append("window.templateInfo.is_prod = false;")
+        tab.add_init_script("\n".join(script))
+    return before
+
+
+def check_signup_analytics(shell, name, tokens):
+    """What the card tells the platform's analytics: nothing until the
+    platform has configured its measurement id, then the card shown, each
+    screen the first time it is reached and the hand-off, all to that id; on
+    a preview nothing at all; and with no analytics on the page the card
+    hands off exactly as it does with them."""
+    where = f"{name} analytics"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    tab = open_card(shell, html, f"{name}-analytics", stub=analytics_stub())
+    try:
+        early = tab.evaluate(ANALYTICS_EVENTS_JS)
+        tab.evaluate("() => window.__configure()")
+        tab.wait_for_timeout(1500)
+        shown = tab.evaluate(ANALYTICS_EVENTS_JS)
+        walk_to(tab, name, "email")
+        # Back from the last screen and on again: a screen reached twice is
+        # reported once.
+        tap(tab, f".{name}-back")
+        tab.wait_for_timeout(300)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(300)
+        fields = hand_off(tab, name)
+        events = tab.evaluate(ANALYTICS_EVENTS_JS)
+    finally:
+        tab.close()
+    if early:
+        faults.append(f"{where}: {[e['event'] for e in early]} sent before the platform configured "
+                      f"its measurement id - an event waits until it has")
+    if [e["event"] for e in shown] != ["signup_card_view"]:
+        faults.append(f"{where}: once the id was configured the page held {[e['event'] for e in shown]!r} "
+                      f"- one signup_card_view, sent when it could be")
+    names = [e["event"] for e in events]
+    steps = [e.get("card_step") for e in events if e["event"] == "signup_card_step"]
+    total = events[-1].get("card_steps") if events else None
+    if (not events or names[0] != "signup_card_view" or names[-1] != "signup_card_handoff"
+            or steps != list(range(2, (total or 0) + 1))):
+        faults.append(f"{where}: sent {[(e['event'], e.get('card_step')) for e in events]!r} - the card shown, "
+                      f"each of its {total} screens once from the second, then the hand-off")
+    for e in events:
+        if e.get("send_to") != SIGNUP_TAG:
+            faults.append(f"{where}: {e['event']} sent to {e.get('send_to')!r}, not the platform's id")
+            break
+        if (e.get("card_kind") != name or e.get("hub_version") != bundle_version()
+                or e.get("card_dob") not in ("boxes", "wheel") or not e.get("card_screens")):
+            faults.append(f"{where}: {e['event']} carried {e!r} - the card's kind, version, date of "
+                          f"birth and screens with every event")
+            break
+    if not fields.get("pn", "").startswith(SIGNUP_PN):
+        faults.append(f"{where}: with analytics on the page, pn handed off as {fields.get('pn')!r}")
+    if name != "signup-card":
+        return faults
+    # A preview: the platform's record says it is not live, and nothing is
+    # sent, however the analytics stand.
+    tab = open_card(shell, html, f"{name}-analytics-preview", stub=analytics_stub(live=False))
+    try:
+        tab.evaluate("() => window.__configure()")
+        tab.wait_for_timeout(1500)
+        walk_to(tab, name, "email")
+        hand_off(tab, name)
+        preview = tab.evaluate(ANALYTICS_EVENTS_JS)
+    finally:
+        tab.close()
+    if preview:
+        faults.append(f"{where}: a page that is not live sent {[e['event'] for e in preview]!r}")
+    # A page whose tag never arrives (blocked, or never configured): the card
+    # steps through and hands off as it always has, and nothing is thrown.
+    for label, stub in (("no measurement id", analytics_stub(tag=False)),
+                        ("an id but no queue", analytics_stub(layer=False))):
+        errors = []
+
+        def before(tab, stub=stub, errors=errors):
+            stub(tab)
+            tab.on("pageerror", lambda e: errors.append(str(e)))
+        tab = open_card(shell, html, f"{name}-analytics-none", stub=before)
+        try:
+            walk_to(tab, name, "email")
+            got = hand_off(tab, name)
+            sent = tab.evaluate(ANALYTICS_EVENTS_JS)
+        finally:
+            tab.close()
+        if errors:
+            faults.append(f"{where}: with {label} the page threw {errors[0]}")
+        if not got.get("pn", "").startswith(SIGNUP_PN):
+            faults.append(f"{where}: with {label} the card handed off {got!r} - it hands off as it "
+                          f"does with analytics")
+        if sent:
+            faults.append(f"{where}: with {label} the page still held {[e['event'] for e in sent]!r}")
+    return faults
 
 
 def messages_stub(members, platform_file):
@@ -2602,6 +2730,10 @@ def check_signup_compat(shell, tokens, version, old_source):
                 if len(a) != len(b):
                     faults.append(f"{where}: {len(a)} moves on this bundle and {len(b)} on {version}")
                 for (at_a, snap_a), (_, snap_b) in zip(a, b):
+                    # The one hand-off difference meant: a bundle from before
+                    # the card's mark sends the platform's pn unmarked.
+                    if at_a == "hand-off" and "SIGNUP_ROUTE" not in old_source:
+                        snap_a = snap_a.replace("pn=ai~canvas-studio-sc~", "pn=ai~canvas-studio~")
                     if snap_a != snap_b:
                         faults.append(f"{where}: at '{at_a}' the card differs from {version}'s - "
                                       + where_apart(snap_a, snap_b))
