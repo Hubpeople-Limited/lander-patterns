@@ -25,9 +25,10 @@ live page would read to a visitor as the brand's.
 
 **The member loop** is the platform's, exactly as in `member-grid`: author it
 empty, keep `data-members-strict="true"` in lowercase, and spell any country
-or region as the platform does (a wrong one is ignored, not refused). Below
+or region as `lib/places` holds it (a wrong one is ignored, not refused). Below
 three members the platform writes the empty-state sentence instead, so that
-sentence needs to be true. Previews show sample members.
+sentence needs to be true. Previews show sample members. Every setting the
+loop takes is listed in `member-grid`'s `settings.json`.
 
 **Three axes.** `words`: `start`, the headline and the join down the left with
 the tiles to their right (the default); `end`, mirrored; `top`, the headline
