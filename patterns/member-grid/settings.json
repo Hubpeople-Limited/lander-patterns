@@ -17,7 +17,7 @@
     "cta-href": {"kind": "url", "default": "{{join.url}}", "about": "Where each card's link goes: the brand's join address unless set."},
     "join-tile": {"kind": "choice", "values": ["off"], "default": "on", "about": "off removes the join card that closes the block."},
     "image-size": {"kind": "number", "default": 400, "about": "The photo size requested, in pixels."},
-    "styles": {"kind": "choice", "values": ["none"], "default": "platform styling", "about": "none gives the platform's classed markup with no styling of its own. This pattern's stylesheet styles that markup, so keep it."}
+    "styles": {"kind": "choice", "values": ["none"], "default": "plain markup with no classes", "about": "none gives the platform's classed markup with no styling of its own, which this pattern's stylesheet styles, so keep it. Left out, the cards come without the classes the stylesheet styles."}
   },
   "words": {
     "cta-text": {"default": "View profile", "about": "The words on each card's link. It goes to the join flow, never to the member's own profile, so the brand's words should not promise one."},
