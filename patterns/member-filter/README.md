@@ -27,6 +27,12 @@ else, and nothing from the partner — the platform supplies the members.
 Be aware of the cost: **each panel is another query the platform runs when the
 page is built.** Three panels is three. Two is usually plenty.
 
+**How each panel is scoped.** Each panel is its own `member-grid` with its own
+settings: `data-members-types` for women or men (`female`, `male`),
+`data-members-age-min` and `data-members-age-max` for age bands, and
+`data-members-city` for towns. Every setting, and how a list of places is
+read, is in `member-grid`'s `settings.json`.
+
 **Pairing.** `member-grid` goes inside it — one per panel, and that is what it
 is for. `heading-block` above it, because the fieldset's own legend labels the
 pills, not the section. `cta-band` below.

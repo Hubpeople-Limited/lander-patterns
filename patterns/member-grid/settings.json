@@ -1,0 +1,29 @@
+{
+  "about": "Every setting and word a page can put on the member block, each as data-members-<name> on the block's own element. The platform reads them when it builds the page. A value listed under values counts only when written exactly so, in lowercase.",
+  "mount": "The block is an element carrying data-members, and it is a <section>: the platform builds the page again to keep the members fresh, and then finds only section elements carrying it. Everything written inside the block is replaced.",
+  "lists": "country, region and city each take one place or a list. A list is separated by '|', never a comma, and a single value with a comma in it ends with '|': the platform splits a value on commas when it holds no '|' or ';', and many region names carry one. data-members-region=\"England: City of Manchester, Greater Manchester|\"; data-members-city=\"Chelmsford|Colchester|Braintree\". The platform reads every country, region and town combination, in the order written: the first fills the block and the rest top it up while it holds fewer than count, so the order is the priority. Vary one level only - one region with several towns, or several regions with none - because several of both pairs every town with every region. There is no step to the whole region once the towns run out. min counts the combined total.",
+  "settings": {
+    "strict": {"kind": "choice", "values": ["true"], "default": "true", "about": "true keeps the block to this brand's own members. Anything else, \"True\" and \"false\" included, shows members of other brands."},
+    "types": {"kind": "list", "values": ["female", "male", "couple", "other"], "default": "everyone", "about": "Who is shown, comma-separated: \"female\", or \"female,couple\". The one control over gender; nothing filters on who members are seeking."},
+    "age-min": {"kind": "number", "default": 18, "about": "The youngest age shown, a whole number."},
+    "age-max": {"kind": "number", "default": 90, "about": "The oldest age shown, a whole number."},
+    "country": {"kind": "places", "default": "the whole brand", "about": "One country or a list, spelled exactly as lib/places holds it. A wrong spelling is ignored, not refused: the block fills from elsewhere and looks normal."},
+    "region": {"kind": "places", "default": "the whole country", "about": "One region or a list, spelled exactly as lib/places holds it. Many region names carry a comma: end a single one with '|'."},
+    "city": {"kind": "places", "default": "the whole region", "about": "One town or a list, spelled exactly as lib/places holds it."},
+    "count": {"kind": "count", "min": 1, "max": 20, "default": 12, "about": "How many members the block shows at most. Above 20 is cut to 20."},
+    "min": {"kind": "count", "min": 1, "default": 1, "about": "The fewest members worth showing; with fewer, empty-text shows instead. Never above count."},
+    "bio": {"kind": "choice", "values": ["off"], "default": "on", "about": "off leaves member descriptions out of the page entirely."},
+    "cta": {"kind": "choice", "values": ["off"], "default": "on", "about": "off removes the link on each card."},
+    "cta-href": {"kind": "url", "default": "{{join.url}}", "about": "Where each card's link goes: the brand's join address unless set."},
+    "join-tile": {"kind": "choice", "values": ["off"], "default": "on", "about": "off removes the join card that closes the block."},
+    "image-size": {"kind": "number", "default": 400, "about": "The photo size requested, in pixels."},
+    "styles": {"kind": "choice", "values": ["none"], "default": "plain markup with no classes", "about": "none gives the platform's classed markup with no styling of its own, which this pattern's stylesheet styles, so keep it. Left out, the cards come without the classes the stylesheet styles."}
+  },
+  "words": {
+    "cta-text": {"default": "View profile", "about": "The words on each card's link. It goes to the join flow, never to the member's own profile, so the brand's words should not promise one."},
+    "join-text": {"default": "Join free", "about": "The words on the join card."},
+    "verified-text": {"default": "ID verified", "about": "The badge on members whose ID is verified. The badge itself cannot be turned off."},
+    "empty-text": {"about": "Shown in place of the members when fewer than min match. A sentence that is true when the block is empty."}
+  },
+  "not-available": ["who members are seeking", "who is online now", "only members with a photograph", "the order members are shown in", "interests", "distance", "hiding a member's name, age or town", "a link to a member's own profile"]
+}
