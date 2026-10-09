@@ -355,6 +355,9 @@ def page_for(name, behaviour, tokens, bundle_file, width, rung="moving", source=
         # real-shaped one, because the member search reads its GUID from it.
         filled = re.sub(r'(<form class="(?:signup-steps-card|signup-card-form)"[^>]*action=")[^"]*"',
                         lambda m: m.group(1) + SIGNUP_JOIN + '"', filled, count=1)
+        # The members row is off unless a page asks; the checks ask for it
+        # as "auto", and a check that sets members-from replaces this.
+        filled = with_settings(filled, 'data-hub-signup-members-from="auto"')
         after = '<section class="behaviour-check-section">' + FILLER + "</section>"
     return SHELL.format(title=f"{name} {behaviour}", tokens=tokens, css=css,
                         bundle=bundle_file, before=before, markup=filled, after=after)
@@ -1234,6 +1237,17 @@ def check_signup_choices(shell, name, tokens):
         tab.close()
     if shown or searches:
         faults.append(f"{where}: members-from=off showed the row ({shown}) or searched ({len(searches)}) - never")
+    searches = []
+    unset = re.sub(r'\sdata-hub-signup-members-from="[^"]*"', "", html, count=1)
+    tab = open_card(shell, unset, f"{name}-signup-members-unset", searches=searches)
+    try:
+        walk_to(tab, name, "email")
+        shown = tab.locator(f".{name}-members").is_visible()
+    finally:
+        tab.close()
+    if shown or searches:
+        faults.append(f"{where}: with no members-from the card showed the row ({shown}) or searched "
+                      f"({len(searches)}) - a page asks for the row")
     tab = open_card(shell, with_settings(html, 'data-hub-signup-members-caption="off"'), f"{name}-signup-caption")
     try:
         tab.wait_for_timeout(600)
@@ -2639,7 +2653,7 @@ def signup_compat_page(h, c, sample, tokens, bundle, attrs):
     markup = re.sub(r'(<form class="(?:signup-steps-card|signup-card-form)"[^>]*action=")[^"]*"',
                     lambda m: m.group(1) + SIGNUP_JOIN + '"', markup, count=1)
     return SHELL.format(title="compat signup", tokens=tokens, css=c, bundle=bundle, before="",
-                        markup=with_settings(markup, attrs),
+                        markup=with_settings(with_settings(markup, 'data-hub-signup-members-from="auto"'), attrs),
                         after='<section class="behaviour-check-section">' + FILLER + "</section>")
 
 
