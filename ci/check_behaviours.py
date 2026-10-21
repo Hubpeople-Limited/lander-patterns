@@ -209,6 +209,7 @@ CONTROL_SUBSTITUTIONS = {
                         'parts[k].toggleAttribute("data-hub-signup-unanswered",'),
     "signup-at": ('el.setAttribute("data-hub-signup-at", on.join(" "));', 'el.setAttribute("data-hub-signup-at", "");'),
     "signup-start": ("show(startAt(), 0);", "show(0, 0);"),
+    "signup-progress-name": ('bar.setAttribute("aria-label", say("progress"));', "void bar;"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -1506,6 +1507,9 @@ def check_signup(shell, name, tokens):
         parts = tab.evaluate(SIGNUP_PARTS_JS)
         if parts != ["iam"]:
             faults.append(f"{where}: a phone opens on {parts!r} - one question, 'iam', is the step")
+        bar_name = tab.evaluate(f"() => document.querySelector('.{name}-bar')?.getAttribute('aria-label')")
+        if not (bar_name or "").strip():
+            faults.append(f"{where}: the progress bar has no spoken name")
         tap(tab, f".{name}-next")
         tab.wait_for_timeout(150)
         if tab.evaluate(SIGNUP_PARTS_JS) != ["iam"] or not tab.locator(

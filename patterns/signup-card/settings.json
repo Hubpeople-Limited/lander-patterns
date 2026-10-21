@@ -34,6 +34,7 @@
     "back": {"default": "Back", "group": "core", "about": "The back arrow's spoken name; the arrow itself has no words."},
     "skip": {"default": "Skip this one", "group": "core"},
     "step": {"default": "{n} of {total}", "group": "core", "tokens": ["n", "total"]},
+    "progress": {"default": "Sign-up progress", "group": "core", "about": "The progress bar's spoken name; the bar itself has no words."},
     "seeking-help": {"default": "Pick as many as you like.", "group": "seeking"},
     "intent-question": {"default": "What are you looking for?", "group": "interests"},
     "intent-help": {"default": "Pick any that fit.", "group": "interests"},
