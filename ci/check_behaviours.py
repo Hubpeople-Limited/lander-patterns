@@ -2752,6 +2752,11 @@ def check_signup_compat(shell, tokens, version, old_source):
                     # the card's mark sends the platform's pn unmarked.
                     if at_a == "hand-off" and "SIGNUP_ROUTE" not in old_source:
                         snap_a = snap_a.replace("pn=ai~canvas-studio-sc~", "pn=ai~canvas-studio~")
+                    # And the progress bar's spoken name, which a bundle from
+                    # before the word existed draws without.
+                    if '"progress":' not in old_source and isinstance(snap_a, dict):
+                        snap_a = {**snap_a, "html": snap_a["html"].replace(
+                            ' aria-label="Sign-up progress"', "")}
                     if snap_a != snap_b:
                         faults.append(f"{where}: at '{at_a}' the card differs from {version}'s - "
                                       + where_apart(snap_a, snap_b))
