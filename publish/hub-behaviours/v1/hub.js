@@ -1342,6 +1342,7 @@ register("carousel", {
  * the platform's analytics how far the visitor got (track, above). */
 const SIGNUP_WORDS = {
   "next": "Next", "back": "Back", "skip": "Skip this one", "step": "{n} of {total}",
+  "progress": "Sign-up progress",
   "seeking-help": "Pick as many as you like.",
   "intent-question": "What are you looking for?", "intent-help": "Pick any that fit.",
   "enjoy-question": "What do you enjoy?", "enjoy-help": "Pick up to {max}.",
@@ -1461,6 +1462,7 @@ register("signup", {
     back.setAttribute("aria-label", say("back"));
     const bar = make("div", `${P}-bar`);
     bar.setAttribute("role", "progressbar");
+    bar.setAttribute("aria-label", say("progress"));
     bar.setAttribute("aria-valuemin", "1");
     const count = make("span", `${P}-count`);
     count.setAttribute("aria-hidden", "true");
@@ -2717,5 +2719,5 @@ if (document.readyState === "loading") {
   initAll();
 }
 
-window.HubBehaviours = { version: "1.17.0", initAll, register };
+window.HubBehaviours = { version: "1.17.1", initAll, register };
 export { initAll, register };
