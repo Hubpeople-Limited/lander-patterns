@@ -1,4 +1,4 @@
-/* hub-behaviours v1.17 — the controlled behaviour library.
+/* hub-behaviours v1.18 — the controlled behaviour library.
  *
  * Markup opts in with data-hub-module="<name>" attributes, which are inert
  * until something puts this module on the page — so a page written today
@@ -2048,13 +2048,12 @@ register("signup", {
     /* When the row may show (members-from): from the start; once a named
        step is answered; or never (off). A step no screen asks counts as
        answered, so the row never waits for a question that is not coming.
-       Without the setting there is no row and no search: a page asks for
-       the row. "auto" shows it from the
-       start, and on a card with its own order once "looking for" is
-       answered: a page's order may ask it anywhere, and the members narrow
-       by who first. "Looking for" ticked from "I am" (seeking) does not wait. */
+       Without the setting, or with "auto", the row shows from the start,
+       and on a card with its own order once "looking for" is answered: a
+       page's order may ask it anywhere, and the members narrow by who
+       first. "Looking for" ticked from "I am" (seeking) does not wait. */
     const membersFrom = ["start", "iam", "seeking", "location", "dob", "auto", "off"].includes(opt("members-from"))
-      ? opt("members-from") : "off";
+      ? opt("members-from") : "auto";
     const seekingSettled = () => lf() > 0 || !!SIGNUP_SEEKING[opt("seeking")];
     const membersDue = () => {
       const from = membersFrom !== "auto" ? membersFrom : (ownScreens(optAt("screens")) ? "seeking" : "start");
@@ -2719,5 +2718,5 @@ if (document.readyState === "loading") {
   initAll();
 }
 
-window.HubBehaviours = { version: "1.17.1", initAll, register };
+window.HubBehaviours = { version: "1.18.0", initAll, register };
 export { initAll, register };
