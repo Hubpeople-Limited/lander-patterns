@@ -356,8 +356,8 @@ def page_for(name, behaviour, tokens, bundle_file, width, rung="moving", source=
         # real-shaped one, because the member search reads its GUID from it.
         filled = re.sub(r'(<form class="(?:signup-steps-card|signup-card-form)"[^>]*action=")[^"]*"',
                         lambda m: m.group(1) + SIGNUP_JOIN + '"', filled, count=1)
-        # The members row is off unless a page asks; the checks ask for it
-        # as "auto", and a check that sets members-from replaces this.
+        # The checks ask for the members row as "auto", the same as no
+        # setting, and a check that sets members-from replaces this.
         filled = with_settings(filled, 'data-hub-signup-members-from="auto"')
         after = '<section class="behaviour-check-section">' + FILLER + "</section>"
     return SHELL.format(title=f"{name} {behaviour}", tokens=tokens, css=css,
@@ -1246,9 +1246,9 @@ def check_signup_choices(shell, name, tokens):
         shown = tab.locator(f".{name}-members").is_visible()
     finally:
         tab.close()
-    if shown or searches:
-        faults.append(f"{where}: with no members-from the card showed the row ({shown}) or searched "
-                      f"({len(searches)}) - a page asks for the row")
+    if not shown or not searches:
+        faults.append(f"{where}: with no members-from the card showed the row ({shown}) after "
+                      f"{len(searches)} search(es) - the row shows unless a page turns it off")
     tab = open_card(shell, with_settings(html, 'data-hub-signup-members-caption="off"'), f"{name}-signup-caption")
     try:
         tab.wait_for_timeout(600)

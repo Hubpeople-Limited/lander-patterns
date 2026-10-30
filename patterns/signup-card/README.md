@@ -57,8 +57,9 @@ in the USA the ZIP code first, the lists a tap away (`-postal`: `first`, `lists`
 coordinates. A town given in full is not asked; without the option, or if the
 places cannot be reached, there is no location step.
 
-**The members are the brand's own, fetched live**, never stored, only where
-`-members-from` asks (absent, no row and no search); narrowed as the visitor answers. Under the
+**The members are the brand's own, fetched live**, never stored: faces from
+arrival, narrowed as the visitor answers; none when there are none
+(`-members-from` delays the row or, set to `off`, leaves it out). Under the
 progress bar a line gathers the answers so far. **Pairing.** `member-grid` below
 the opener, `steps-plain` for how joining works. It refuses `signup-steps`, the
 block it replaces, and `picker-chips`. Leave `cta-sticky` off its page: the card
