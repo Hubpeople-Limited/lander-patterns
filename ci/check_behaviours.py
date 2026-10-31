@@ -182,6 +182,7 @@ CONTROL_SUBSTITUTIONS = {
     "signup-pn": ('params.set("pn", `${kind}~${name}${SIGNUP_ROUTE}~${info.page_guid}~${location.pathname}`);',
                   'params.set("pn", new URLSearchParams(location.search).get("pn") || "");'),
     "signup-route": ('const SIGNUP_ROUTE = "sc";', 'const SIGNUP_ROUTE = "";'),
+    "signup-platform": ('if (typeof tag !== "function") return null;', "if (tag) return null;"),
     "analytics-wait": ("if (!analyticsReady()) {", "if (false) {"),
     "analytics-live": ("info.is_prod !== true || !analyticsId()", "!analyticsId()"),
     "signup-reach": ('if (dir > 0 && !reached.has(on.join(" "))) {', "if (dir > 0) {"),
@@ -1890,10 +1891,114 @@ def check_signup(shell, name, tokens):
                       f"day and month blank")
     # The lines after an answer and the batch-one settings are the card's;
     # the older block has neither.
-    return faults + check_signup_analytics(shell, name, tokens) + (
+    return faults + check_signup_analytics(shell, name, tokens) + check_signup_platform(shell, name, tokens) + (
         check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
         + check_signup_first_paint(shell, name, tokens)
         if name == "signup-card" else [])
+
+
+# The platform's tagging, as a page whose tracking script runs carries it: each
+# call kept, and the link answered tagged - a source, a pn for the route asked
+# for, and an mt the visitor's own answer must beat.
+PLATFORM_TAG_JS = """
+window.hubTracking = { referrerSource: 'ref.example', tag(href, options) {
+  window.__keep('tag', JSON.stringify({ href, route: options && options.route }));
+  const u = new URL(href);
+  u.searchParams.set('utm_source', 'platform');
+  u.searchParams.set('pn', 'ai~platform-' + (options && options.route) + '~page~/');
+  u.searchParams.set('mt', '9');
+  return u.href;
+} };
+"""
+# Pages where the tagging is not there to use, each handing off as the card
+# always has: tracking with no tagging in it, tagging that fails, and tagging
+# that answers with something other than the link.
+PLATFORM_ABSENT = (
+    ("no tracking", ""),
+    ("tracking without tagging", "window.hubTracking = { referrerSource: 'ref.example' };"),
+    ("tagging that fails", "window.hubTracking = { tag() { throw new Error('unavailable'); } };"),
+    ("tagging that answers nothing", "window.hubTracking = { tag() { return undefined; } };"),
+    ("tagging that answers another link", "window.hubTracking = { tag() { return 'https://example.invalid/elsewhere'; } };"),
+)
+
+
+def check_signup_platform(shell, name, tokens):
+    """Where the platform's tagging is on the page, the card hands it the link
+    with no tracking of its own - the join link's own parameters and the
+    page's hidden fields only - and sends what comes back with the answers on
+    top. Anywhere else it hands off exactly as it always has."""
+    where = f"{name} platform tracking"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    html = html.replace(f'action="{SIGNUP_JOIN}"', f'action="{SIGNUP_JOIN}?own=1"', 1)
+    html = re.sub(r'(<form class="(?:signup-steps-card|signup-card-form)"[^>]*>)',
+                  r'\1<input type="hidden" name="utm_campaign" value="authored">', html, count=1)
+    query = "?utm_source=s&utm_medium=m"
+
+    def run(script, stem):
+        # Kept outside the page: the card leaves for the join link straight
+        # after the hand-off, and the page's own record goes with it.
+        kept = []
+
+        def stub(tab):
+            signup_stub(SIGNUP_MEMBERS)(tab)
+            tab.expose_function("__keep", lambda kind, value: kept.append((kind, value)))
+            tab.add_init_script("addEventListener('hub:signup:handoff', e => window.__keep('handoff', e.detail.url))")
+            if script:
+                tab.add_init_script(script)
+        tab = open_card(shell, html, f"{name}-platform-{stem}", query=query, stub=stub)
+        try:
+            walk_to(tab, name, "email")
+            answer_part(tab, name, "email")
+            tap(tab, f".{name}-submit")
+            tab.wait_for_timeout(400)
+        finally:
+            tab.close()
+        url = next((v for k, v in kept if k == "handoff"), "")
+        return url, [json.loads(v) for k, v in kept if k == "tag"]
+
+    def fields_of(url):
+        return dict(p.split("=", 1) for p in url.split("?", 1)[-1].split("&") if "=" in p)
+
+    url, tagged = run(PLATFORM_TAG_JS, "tag")
+    fields = fields_of(url)
+    if len(tagged) != 1 or tagged[0].get("route") != "sc":
+        faults.append(f"{where}: the platform's tagging was asked {len(tagged)} time(s), "
+                      f"route {tagged[0].get('route') if tagged else None!r} - once, for the card's route 'sc'")
+    else:
+        given = fields_of(tagged[0]["href"])
+        own = {k: given.get(k) for k in ("own", "utm_campaign")}
+        if own != {"own": "1", "utm_campaign": "authored"}:
+            faults.append(f"{where}: the link handed to the platform carried {own!r} - the join "
+                          f"link's own parameters and the page's hidden fields")
+        # culture is not among them: the card carries it as a hidden field.
+        added = sorted(k for k in ("utm_source", "utm_medium", "pn") if k in given)
+        if added:
+            faults.append(f"{where}: the link handed to the platform already carried {added!r} - "
+                          f"tracking is the platform's to add")
+    if not url.startswith(SIGNUP_JOIN + "?"):
+        faults.append(f"{where}: handed off to {url.split('?')[0]!r}, not the join link")
+    if fields.get("utm_source") != "platform" or "utm_medium" in fields:
+        faults.append(f"{where}: sent utm_source={fields.get('utm_source')!r}, utm_medium="
+                      f"{fields.get('utm_medium')!r} - the platform's tagging alone, none of the card's own")
+    if fields.get("pn") != "ai~platform-sc~page~/":
+        faults.append(f"{where}: pn sent as {fields.get('pn')!r} - the platform's, ~ and / written plain")
+    if fields.get("mt") != "2" or fields.get("firstname") != "Sam%20Lee" or "+" in url:
+        faults.append(f"{where}: the answers were not on top of the platform's link (mt "
+                      f"{fields.get('mt')!r}, firstname {fields.get('firstname')!r})")
+
+    for label, script in PLATFORM_ABSENT:
+        url, tagged = run(script, re.sub(r"\W+", "-", label))
+        if not url:
+            faults.append(f"{where}: {label}: the card handed nothing off")
+            continue
+        fields = fields_of(url)
+        got = {k: fields.get(k) for k in ("utm_source", "utm_medium", "own", "utm_campaign", "mt")}
+        want = {"utm_source": "s", "utm_medium": "m", "own": "1", "utm_campaign": "authored", "mt": "2"}
+        if not url.startswith(SIGNUP_JOIN + "?") or got != want or not fields.get("pn", "").startswith(SIGNUP_PN):
+            faults.append(f"{where}: {label}: handed off {url!r} - as the card always has, the "
+                          f"visitor's parameters, the page's own and pn {SIGNUP_PN!r}")
+    return faults
 
 
 ANALYTICS_EVENTS_JS = """
