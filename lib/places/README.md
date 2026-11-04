@@ -21,7 +21,9 @@ lists their regions, and their towns are biggest first.
 Published beside the bundle as `/hub-behaviours/places/<edition>/`, immutable. The
 bundle's `SIGNUP_PLACES_EDITION` names the edition it reads.
 
-Coordinates for the countries asked region by region:
-[GeoNames](https://www.geonames.org/), licensed under
+A town's coordinates are the platform's own wherever its reference places the
+town, so a visitor is joined in the town they picked. For the countries asked
+region by region, the region sizes, and the coordinates of a town the reference
+does not place, come from [GeoNames](https://www.geonames.org/), licensed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Each file's `source`
 says where its coordinates come from.
