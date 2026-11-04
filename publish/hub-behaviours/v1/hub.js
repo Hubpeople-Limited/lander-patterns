@@ -1,4 +1,4 @@
-/* hub-behaviours v1.18 — the controlled behaviour library.
+/* hub-behaviours v1.19 — the controlled behaviour library.
  *
  * Markup opts in with data-hub-module="<name>" attributes, which are inert
  * until something puts this module on the page — so a page written today
@@ -1363,7 +1363,7 @@ const SIGNUP_WORDS = {
   "zip-label": "ZIP code", "zip-to-lists": "Or choose your state and town",
   "zip-to-code": "Or enter your ZIP code instead", "error-zip": "Enter your 5-digit ZIP code, or choose your state and town.",
   "zip-unknown": "We don't know that ZIP code. Check it, or choose your state and town.", "largest": "Largest", "a-to-z": "A to Z",
-  "places-count": "{n} towns, biggest first", "places-found": "{n} found",
+  "places-count": "{n} towns, biggest first", "places-count-all": "{n} towns", "places-found": "{n} found",
   "places-more": "Keep typing to find the rest",
   "choose": "Choose\u2026", "loading": "Loading\u2026", "places-none": "No town by that name. Check the spelling.",
   "error-place": "Choose your town from the list, or skip this one.",
@@ -1371,7 +1371,7 @@ const SIGNUP_WORDS = {
 };
 // The places files: the platform's location reference with coordinates, made by
 // ci/make_places.py and published beside this file under their edition.
-const SIGNUP_PLACES_EDITION = "2026-08-18.3";
+const SIGNUP_PLACES_EDITION = "2026-11-04.3";
 // What a region is called in each of the platform's countries; region-label
 // overrides it.
 const SIGNUP_REGION_WORDS = {
@@ -1533,7 +1533,12 @@ register("signup", {
       }
       return loaded[file];
     };
-    const countryFile = (c) => `${c.toLowerCase().replace(/ /g, "-")}.json`;
+    // The name ci/make_places.py gives the country's file (slug), kept in step:
+    // accents dropped, any run of anything but a letter or digit one hyphen.
+    const countryFile = (c) => `${c.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}.json`;
+    // Shown only: the platform writes an apostrophe in a country's name as a backtick.
+    const countryName = (c) => c.replace(/\u0060/g, "\u2019");
     const nationOf = (r) => (r.includes(": ") ? r.split(": ")[0] : "");
     // Shown names only: the value sent is always the platform's own spelling,
     // stray punctuation and all ("Puerto Rico,").
@@ -1541,6 +1546,12 @@ register("signup", {
     const regionName = (r) => (nationOf(r)
       ? `${plainRegion(r)}, ${SIGNUP_NATIONS[nationOf(r)] || nationOf(r)}` : plainRegion(r));
     let townsHere = {};
+    // A country asked in two levels lists every town in it at once, each under
+    // the name it is shown by: what that name stands for, [region, town].
+    let townsAs = Object.create(null);
+    let wholeCountry = false;
+    // Which countries the index says are asked in two levels, once it is read.
+    const countryLevels = {};
     const loc = {};
     if (scope.length && !where.town) {
       const set = make("fieldset", `${P}-step`);
@@ -2413,9 +2424,11 @@ register("signup", {
       const i = screens.findIndex((sc) => sc.includes(was));
       show(i < 0 ? Math.min(at, screens.length - 1) : i, 0);
     };
-    const fill = (select, names, label) => {
+    // A to Z, after `first` where one is given.
+    const fill = (select, names, label, first) => {
       select.replaceChildren(new Option(say("choose"), ""),
-        ...names.slice().sort((x, y) => label(x).localeCompare(label(y))).map((n) => new Option(label(n), n)));
+        ...names.slice().sort((x, y) => (first ? first(x, y) : 0) || label(x).localeCompare(label(y)))
+          .map((n) => new Option(label(n), n)));
       select.closest("label").hidden = false;
     };
     const fillRegions = (select, data) => {
@@ -2449,9 +2462,17 @@ register("signup", {
       select.disabled = false;
       select.closest("label").hidden = false;
     };
-    const chooseTown = (name) => {
-      where.town = name || "";
+    // The town a shown name stands for, in the platform's spelling, and where
+    // the whole country is listed its region too: the member search narrows by
+    // both, and the region of a town that has none is not sent.
+    const settle = (name) => {
+      const as = townsAs[name];
+      where.town = as ? as[1] : name || "";
+      if (wholeCountry) where.region = as ? as[0] : "";
       where.at = name ? townsHere[name] || null : null;
+    };
+    const chooseTown = (name) => {
+      settle(name);
       if (loc.town && name) loc.town.value = name;
       if (loc.list) closeList();
       sayPlace(name);
@@ -2459,9 +2480,9 @@ register("signup", {
       recap();
       ready();
     };
-    const showRegion = (name) => {
-      where.region = name;
-      townsHere = (name && country && country.regions[name]) || {};
+    // The towns in townsHere, offered: a list to pick from when they are few,
+    // otherwise the field, once there is something to list.
+    const listTowns = (open) => {
       chooseTown("");
       if (!loc.town) return;
       const names = Object.keys(townsHere);
@@ -2470,7 +2491,39 @@ register("signup", {
       loc.none.hidden = true;
       if (few) fill(loc.townPick, names, (n) => n);
       loc.townPick.closest("label").hidden = !few;
-      loc.townField.hidden = !name || few || !names.length;
+      loc.townField.hidden = !open || few || !names.length;
+    };
+    const showRegion = (name) => {
+      where.region = name;
+      townsHere = (name && country && country.regions[name]) || {};
+      townsAs = Object.create(null);
+      wholeCountry = false;
+      listTowns(!!name);
+    };
+    /* A country asked in two levels: no region step, and every town in the
+       country listed in the platform's own order, which the file keeps as each
+       town's region in turn. A name in more than one region is shown with its
+       region ("Neustadt, Bayern") so each can be told apart; the name sent is
+       still the platform's own. */
+    const showCountryTowns = (data) => {
+      const regions = Object.keys(data.regions);
+      const lists = regions.map((r) => Object.keys(data.regions[r]));
+      const next = regions.map(() => 0);
+      const order = Array.isArray(data.order) ? data.order : lists.flatMap((l, i) => l.map(() => i));
+      const all = order.map((i) => [regions[i], lists[i][next[i]++]]).filter(([, t]) => t != null);
+      const seen = Object.create(null);
+      all.forEach(([, t]) => { seen[t.toLowerCase()] = (seen[t.toLowerCase()] || 0) + 1; });
+      // No prototype: a town may be called anything.
+      townsHere = Object.create(null);
+      townsAs = Object.create(null);
+      all.forEach(([r, t]) => {
+        const shown = r && seen[t.toLowerCase()] > 1 ? `${t}, ${regionName(r)}` : t;
+        if (shown in townsHere) return;
+        townsHere[shown] = data.regions[r][t];
+        townsAs[shown] = [r, t];
+      });
+      wholeCountry = true;
+      listTowns(true);
     };
     let country = null;
     const postalWay = ["first", "lists", "off"].includes(opt("postal")) ? opt("postal") : "first";
@@ -2536,7 +2589,7 @@ register("signup", {
         // rather than vanishing and coming back.
         loc.region.replaceChildren(new Option(say("loading"), ""));
         loc.region.disabled = true;
-        loc.region.closest("label").hidden = !name;
+        loc.region.closest("label").hidden = !name || countryLevels[name] === 2;
       }
       if (!name) return Promise.resolve();
       if (loc.zip) useCode(false);
@@ -2544,6 +2597,11 @@ register("signup", {
         if (where.country !== name) return;
         country = data;
         if (loc.zip) useCode(postalWay === "first");
+        if (data.levels === 2 && !fixedWhere.region) {
+          if (loc.region) loc.region.closest("label").hidden = true;
+          showCountryTowns(data);
+          return;
+        }
         if (loc.region) {
           const regionWord = opt("region-label") || SIGNUP_REGION_WORDS[name] || say("region-label");
           loc.region.closest("label").firstChild.textContent = regionWord;
@@ -2576,8 +2634,7 @@ register("signup", {
       const typed = loc.town.value.trim().toLowerCase();
       const names = Object.keys(townsHere);
       const exact = names.find((n) => n.toLowerCase() === typed);
-      where.town = exact || "";
-      where.at = exact ? townsHere[exact] || null : null;
+      settle(exact || "");
       sayPlace(exact);
       // Nothing typed yet: every town in the region, biggest first, while the
       // field has focus - a list that scrolls, not a sample that looks whole.
@@ -2591,7 +2648,9 @@ register("signup", {
       const found = typed ? names.filter((n) => score(n) < 3).sort((x, y) => score(x) - score(y)) : names;
       const hits = found.slice(0, SIGNUP_PLACES_SHOWN);
       loc.none.hidden = hits.length > 0;
-      loc.count.textContent = say(typed ? "places-found" : "places-count", { n: found.length });
+      // A whole country's towns are in the platform's order, not by size.
+      loc.count.textContent = say(typed ? "places-found" : wholeCountry ? "places-count-all" : "places-count",
+        { n: found.length });
       loc.rest.hidden = found.length <= hits.length;
       loc.list.replaceChildren(...hits.map((n, i) => {
         const li = make("li", null, n);
@@ -2635,7 +2694,12 @@ register("signup", {
       }
       if (loc.country) loc.country.addEventListener("change", () => showCountry(loc.country.value).catch(dropPlaces));
       const start = fixedWhere.country ? showCountry(where.country)
-        : loadPlaces("index.json").then((index) => fill(loc.country, Object.keys(index.countries), (n) => n));
+        : loadPlaces("index.json").then((index) => {
+          // The countries asked region by region first, then the rest, each A to Z.
+          Object.keys(index.countries).forEach((n) => { countryLevels[n] = index.countries[n].levels || 3; });
+          const two = (n) => (countryLevels[n] === 2 ? 1 : 0);
+          fill(loc.country, Object.keys(index.countries), countryName, (x, y) => two(x) - two(y));
+        });
       start.catch(dropPlaces);
     } else if (where.town) {
       // A town given in full is not asked: its coordinates still go.
@@ -2718,5 +2782,5 @@ if (document.readyState === "loading") {
   initAll();
 }
 
-window.HubBehaviours = { version: "1.18.0", initAll, register };
+window.HubBehaviours = { version: "1.19.0", initAll, register };
 export { initAll, register };
