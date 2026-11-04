@@ -1371,7 +1371,7 @@ const SIGNUP_WORDS = {
 };
 // The places files: the platform's location reference with coordinates, made by
 // ci/make_places.py and published beside this file under their edition.
-const SIGNUP_PLACES_EDITION = "2026-11-04.3";
+const SIGNUP_PLACES_EDITION = "2026-11-04.4";
 // What a region is called in each of the platform's countries; region-label
 // overrides it.
 const SIGNUP_REGION_WORDS = {
@@ -2782,5 +2782,5 @@ if (document.readyState === "loading") {
   initAll();
 }
 
-window.HubBehaviours = { version: "1.19.0", initAll, register };
+window.HubBehaviours = { version: "1.19.1", initAll, register };
 export { initAll, register };

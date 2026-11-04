@@ -2,7 +2,7 @@
   "composition": "location-photo",
   "version": 1,
   "page": "location",
-  "library": "v316",
+  "library": "v319",
   "generated-by": "ci/compose.py - regenerate with: python ci/compose.py; never hand-edit",
   "patterns": [
     {
