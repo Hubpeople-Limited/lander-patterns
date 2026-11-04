@@ -71,6 +71,7 @@
     "largest": {"default": "Largest", "group": "location"},
     "a-to-z": {"default": "A to Z", "group": "location"},
     "places-count": {"default": "{n} towns, biggest first", "group": "location", "tokens": ["n"]},
+    "places-count-all": {"default": "{n} towns", "group": "location", "tokens": ["n"]},
     "places-found": {"default": "{n} found", "group": "location", "tokens": ["n"]},
     "places-more": {"default": "Keep typing to find the rest", "group": "location"},
     "choose": {"default": "Choose…", "group": "location"},

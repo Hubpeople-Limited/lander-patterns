@@ -50,12 +50,12 @@ Interest labels and place names stay as the join flow spells them.
 **Where the visitor lives.** `data-hub-signup-places` says where the page's
 visitors are, in the platform's own location names: `world`, a country (`UK`),
 a region (`UK/England: Avon`) or a town (`UK/England: Avon/Bristol`). Straight
-after "looking for" the card asks what that leaves open — country, region, town
-(a list in a small region, a scrolling list narrowed as typed in a big one) — or
-in the USA the ZIP code first, the lists a tap away (`-postal`: `first`, `lists`,
-`off`). It narrows the members and hands the join flow the ZIP or the town's
-coordinates. A town given in full is not asked; without the option, or if the
-places cannot be reached, there is no location step.
+after "looking for" the card asks what that leaves open. The ten countries a
+`world` card lists first go region then town; every other country goes straight
+to the town, a name found in two regions shown with its region. In the USA the
+ZIP code comes first, the lists a tap away (`-postal`: `first`, `lists`, `off`).
+It narrows the members and sends the ZIP or the town's coordinates. A town given
+in full is not asked; without the option or its places, there is no step.
 
 **The members are the brand's own, fetched live**, never stored: faces from arrival
 unless `-members-from` delays them or is `off`; narrowed as the visitor answers. Under the
