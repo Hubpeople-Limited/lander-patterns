@@ -106,7 +106,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from urllib.parse import quote_plus
+from urllib.parse import parse_qsl, quote_plus
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -190,6 +190,8 @@ CONTROL_SUBSTITUTIONS = {
     "signup-pn": ('params.set("pn", `${kind}~${name}${SIGNUP_ROUTE}~${info.page_guid}~${location.pathname}`);',
                   'params.set("pn", new URLSearchParams(location.search).get("pn") || "");'),
     "signup-route": ('const SIGNUP_ROUTE = "sc";', 'const SIGNUP_ROUTE = "";'),
+    "signup-demo": ("if (demo) {", "if (false) {"),
+    "signup-demo-host": ("const demo = location.hostname === SIGNUP_DEMO_HOST;", "const demo = true;"),
     "analytics-wait": ("if (!analyticsReady()) {", "if (false) {"),
     "analytics-live": ("info.is_prod !== true || !analyticsId()", "!analyticsId()"),
     "signup-reach": ('if (dir > 0 && !reached.has(on.join(" "))) {', "if (dir > 0) {"),
@@ -449,7 +451,10 @@ class Shell:
         shutil.rmtree(self._dir, ignore_errors=True)
         return False
 
-    def open(self, html, stem, width=WIDTH, reduced=False, before=None, query=""):
+    def open(self, html, stem, width=WIDTH, reduced=False, before=None, query="", host=None):
+        """The page in a tab, from a file; or, given a `host`, served from
+        https://<host>/ out of the same folder, for a behaviour that reads
+        the page's host."""
         path = self._dir / f"{stem}.html"
         path.write_text(html, encoding="utf-8", newline="\n")
         tab = self._browser.new_page(
@@ -457,6 +462,18 @@ class Shell:
             reduced_motion="reduce" if reduced else "no-preference")
         if before:
             before(tab)
+        if host:
+            def serve(route):
+                f = self._dir / route.request.url.split("?", 1)[0].rsplit("/", 1)[-1]
+                if not f.is_file():
+                    route.fulfill(status=404, body="")
+                    return
+                kind = {".html": "text/html", ".js": "text/javascript",
+                        ".svg": "image/svg+xml"}.get(f.suffix, "application/octet-stream")
+                route.fulfill(status=200, content_type=kind, body=f.read_bytes())
+            tab.route(f"https://{host}/**", serve)
+            tab.goto(f"https://{host}/{stem}.html{query}")
+            return tab
         tab.goto(path.as_uri() + query)
         return tab
 
@@ -984,7 +1001,7 @@ def answer_part(tab, name, part):
         tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
 
 
-def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None):
+def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None, host=None):
     """A card page opened under reduced motion - a tapped answer moves on at
     once, so a walk never races the card - with the member search, places and
     hand-off stubbed and every step event kept in window.__signupSteps."""
@@ -992,7 +1009,7 @@ def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None
         (stub or signup_stub(SIGNUP_MEMBERS, searches))(tab)
         tab.add_init_script("window.__signupSteps = []; addEventListener('hub:signup:step', "
                             "e => window.__signupSteps.push(e.detail))")
-    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=query)
+    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=query, host=host)
     tab.wait_for_timeout(300)
     return tab
 
@@ -2133,6 +2150,7 @@ def check_signup(shell, name, tokens):
     # The lines after an answer and the batch-one settings are the card's;
     # the older block has neither.
     return faults + check_signup_countries(shell, name, tokens) + check_signup_analytics(shell, name, tokens) + (
+        check_signup_demo(shell, name, tokens)) + (
         check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
         + check_signup_first_paint(shell, name, tokens)
         if name == "signup-card" else [])
@@ -2252,6 +2270,74 @@ def check_signup_analytics(shell, name, tokens):
                           f"does with analytics")
         if sent:
             faults.append(f"{where}: with {label} the page still held {[e['event'] for e in sent]!r}")
+    return faults
+
+
+# The help site, where the card is a demonstration, and a partner's own domain,
+# where it hands off as it always has.
+SIGNUP_DEMO_HOST = "help.hubpeople.ai"
+SIGNUP_OTHER_HOST = "www.partner.example"
+
+SIGNUP_SENT_JS = """
+(name) => {
+  const box = document.querySelector(`.${name}-sent`);
+  return box && Array.from(box.querySelectorAll('dt'))
+    .map(dt => [dt.textContent, dt.nextElementSibling ? dt.nextElementSibling.textContent : null]);
+}
+"""
+
+
+def check_signup_demo(shell, name, tokens):
+    """On the help site the card reaches its finish, lists every value the
+    join link would have carried, and stays there: no navigation, and nothing
+    sent to the analytics from the card shown to the hand-off. Served from any
+    other host the same card goes to the join link and reports the hand-off."""
+    where = f"{name} demo"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    for host in (SIGNUP_DEMO_HOST, SIGNUP_OTHER_HOST):
+        left = []
+
+        def before(tab, left=left):
+            analytics_stub()(tab)
+            tab.on("request", lambda r: left.append(r.url)
+                   if r.is_navigation_request() and "/s/register/" in r.url else None)
+        tab = open_card(shell, html, f"{name}-demo", stub=before, host=host)
+        try:
+            tab.evaluate("() => window.__configure()")
+            tab.wait_for_timeout(1500)
+            walk_to(tab, name, "email")
+            fields = hand_off(tab, name)
+            events = [e["event"] for e in tab.evaluate(ANALYTICS_EVENTS_JS)]
+            url = tab.evaluate("() => window.__signupHandoff || ''")
+            # Past the moment the card would leave, and past the 3s after
+            # which a card that left gives the form back.
+            tab.wait_for_timeout(3500)
+            if host == SIGNUP_DEMO_HOST:
+                sent = tab.evaluate(SIGNUP_SENT_JS, name)
+                finish = tab.locator(f".{name}-finish").is_visible()
+        finally:
+            tab.close()
+        if host != SIGNUP_DEMO_HOST:
+            if not left:
+                faults.append(f"{where}: on {host} the card never went to the join link")
+            if not events or events[-1] != "signup_card_handoff":
+                faults.append(f"{where}: on {host} the analytics held {events!r} - the hand-off "
+                              f"reported last, as on any live page")
+            continue
+        if left:
+            faults.append(f"{where}: on {host} the card went to {left[0]} - a demonstration goes nowhere")
+        if events:
+            faults.append(f"{where}: on {host} the analytics held {events!r} - a demonstration reports nothing")
+        if not url or fields.get("mt") != "2" or fields.get("lf") != "1" or not fields.get("em"):
+            faults.append(f"{where}: on {host} the hand-off event carried {url!r} - the join link "
+                          f"with the answers, for the page to read")
+        if not finish:
+            faults.append(f"{where}: on {host} the finish was gone 3.5s after sending - it stays")
+        want = parse_qsl(url.split("?", 1)[-1], keep_blank_values=True) if url else []
+        if sent != [list(p) for p in want]:
+            faults.append(f"{where}: on {host} the finish listed {sent!r} - every value the join "
+                          f"link carries, as sent: {want!r}")
     return faults
 
 
