@@ -228,6 +228,8 @@ CONTROL_SUBSTITUTIONS = {
     "signup-countries-order": ("(first ? first(x, y) : 0) ||", "0 ||"),
     "signup-countries-file": ('.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}.json`;',
                               '.replace(/ /g, "-")}.json`;'),
+    "signup-countries-list": ("fill(loc.country, named, countryName, (x, y) => named.indexOf(x) - named.indexOf(y));",
+                              "fill(loc.country, named, countryName);"),
     "signup-countries-none": ("where.at = name ? townsHere[name] || null : null;",
                               "where.at = name ? townsHere[name] || [0, 0] : null;"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
@@ -1714,6 +1716,29 @@ def check_signup_countries(shell, name, tokens):
         if ok is not True:
             faults.append(f"{where}: picking {c} on a page with no country should go straight to its towns "
                           f"({ok or 'it did not'})")
+    # A page's own countries: only those, in the order written, a name the
+    # platform does not hold left out; a pick still goes to its towns. A list
+    # left with one country asks that country at once.
+    for scope, want in (("Denmark;Atlantis;UK;France", ["Denmark", "UK", "France"]),
+                        ("Atlantis;Denmark", ["Denmark"])):
+        tab = shell.open(with_places(scope), f"{name}-signup-list", width=PHONE,
+                         before=signup_stub(SIGNUP_MEMBERS))
+        try:
+            to_location(tab)
+            country = '[data-hub-signup-part="location"] select'
+            shown = tab.locator(country).first.is_visible()
+            listed = [v for v, _ in tab.evaluate(COUNTRY_LIST_JS)]
+            if len(want) > 1 and shown:
+                tab.locator(country).first.select_option(want[0])
+                tab.wait_for_timeout(700)
+            towns = tab.locator(town).is_visible()
+        finally:
+            tab.close()
+        if (len(want) > 1 and listed != want) or shown != (len(want) > 1) or not towns:
+            faults.append(f"{where}: places={scope!r} offered {listed!r} with the country list "
+                          f"{'shown' if shown else 'hidden'}, then towns {'asked' if towns else 'not asked'} - "
+                          f"{want!r} in that order, the list {'shown' if len(want) > 1 else 'hidden'}, then "
+                          f"{want[0]}'s towns")
     # A town written with no coordinates is still picked, and the hand-off
     # leaves the location to the join flow. Typed, so a country with more
     # towns than the pick list holds.
