@@ -27,6 +27,11 @@ new only when the places are. The sign-up card's encouraging lines
 (lib/messages/, held to their rule by ci/make_messages.py) go out the same
 way, under /hub-behaviours/messages/<edition>/.
 
+The sign-up card's list of settings and words, its markup and its styles
+(patterns/signup-card/settings.json, pattern.html, pattern.css) go inside each
+version's folder, under signup-card/, so anything that draws or configures the
+card reads the files that match the bundle it runs.
+
 `publish/` only ever grows, and it is committed. The host replaces its whole
 contents on each deploy, so the accumulated tree in the repository is both the
 record of every version ever served and the thing that stops a deploy quietly
@@ -73,6 +78,8 @@ SHARED_HEADERS = {
 }
 
 SEMVER = re.compile(r"\d+\.\d+\.\d+")
+SIGNUP_CARD = ROOT / "patterns" / "signup-card"
+SIGNUP_CARD_FILES = ("settings.json", "pattern.html", "pattern.css")
 PLACES = ROOT / "lib" / "places"
 EDITION = re.compile(r'SIGNUP_PLACES_EDITION\s*=\s*"([^"]+)"')
 MESSAGES = ROOT / "lib" / "messages"
@@ -271,6 +278,8 @@ def build(source_path, out, minified_path=None):
         files = {"hub.min.js": minified, "hub.js": source}
         if smap_path.is_file():
             files["hub.min.js.map"] = smap_path.read_bytes()
+        for name in SIGNUP_CARD_FILES:
+            files[f"signup-card/{name}"] = (SIGNUP_CARD / name).read_bytes()
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -282,6 +291,12 @@ def build(source_path, out, minified_path=None):
         return None, (f"{version} is already published and the bundle no "
                       f"longer builds to it. A published version's bytes "
                       f"never change - bump the version in the bundle instead")
+    for name in SIGNUP_CARD_FILES:
+        served = out / BASE / version / "signup-card" / name
+        if served.is_file() and served.read_bytes() != files[f"signup-card/{name}"]:
+            return None, (f"{version} is already published with a different "
+                          f"signup-card/{name}. A published version's files "
+                          f"never change - bump the version in the bundle instead")
 
     manifest = load_manifest(out)
     record = manifest["versions"].get(version, {})
