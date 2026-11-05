@@ -1,4 +1,4 @@
-/* hub-behaviours v1.20 — the controlled behaviour library.
+/* hub-behaviours v1.21 — the controlled behaviour library.
  *
  * Markup opts in with data-hub-module="<name>" attributes, which are inert
  * until something puts this module on the page — so a page written today
@@ -1517,8 +1517,14 @@ register("signup", {
 
     /* Where the visitor lives, as far as the page's scope leaves open. The
        names are the platform's own, so the member search narrows by them
-       exactly; the join flow is sent the chosen town's coordinates. */
-    const scope = (opt("places") || "").split("/").map((x) => x.trim()).filter(Boolean);
+       exactly; the join flow is sent the chosen town's coordinates. A list of
+       countries, ";"-separated, offers only those, in the order written; a
+       list of one is that country. */
+    const placesOpt = (opt("places") || "").trim();
+    const countryList = placesOpt.includes(";")
+      ? placesOpt.split(";").map((x) => x.trim()).filter((x) => x && !x.includes("/")) : null;
+    const scope = countryList ? (countryList.length > 1 ? ["world"] : countryList)
+      : placesOpt.split("/").map((x) => x.trim()).filter(Boolean);
     const everywhere = scope.length === 1 && scope[0].toLowerCase() === "world";
     const where = { country: everywhere ? "" : scope[0] || "", region: scope[1] || "",
       town: scope[2] || "", at: null };
@@ -2710,10 +2716,27 @@ register("signup", {
       if (loc.country) loc.country.addEventListener("change", () => showCountry(loc.country.value).catch(dropPlaces));
       const start = fixedWhere.country ? showCountry(where.country)
         : loadPlaces("index.json").then((index) => {
-          // The countries asked region by region first, then the rest, each A to Z.
           Object.keys(index.countries).forEach((n) => { countryLevels[n] = index.countries[n].levels || 3; });
-          const two = (n) => (countryLevels[n] === 2 ? 1 : 0);
-          fill(loc.country, Object.keys(index.countries), countryName, (x, y) => two(x) - two(y));
+          if (countryList) {
+            // The page's own countries, in its order, each named once; one the
+            // platform does not hold is left out, and a list left with one
+            // country asks that country.
+            const known = Object.create(null);
+            Object.keys(index.countries).forEach((n) => { known[n.toLowerCase()] = n; });
+            const named = [...new Set(countryList.map((n) => known[n.toLowerCase()]).filter(Boolean))];
+            if (!named.length) throw new Error("none of the listed countries");
+            if (named.length === 1) {
+              loc.country.closest("label").hidden = true;
+              loc.country.replaceChildren(new Option(countryName(named[0]), named[0]));
+              return showCountry(named[0]);
+            }
+            fill(loc.country, named, countryName, (x, y) => named.indexOf(x) - named.indexOf(y));
+          } else {
+            // The countries asked region by region first, then the rest, each A to Z.
+            const two = (n) => (countryLevels[n] === 2 ? 1 : 0);
+            fill(loc.country, Object.keys(index.countries), countryName, (x, y) => two(x) - two(y));
+          }
+          return null;
         });
       start.catch(dropPlaces);
     } else if (where.town) {
@@ -2800,5 +2823,5 @@ if (document.readyState === "loading") {
   initAll();
 }
 
-window.HubBehaviours = { version: "1.20.0", initAll, register };
+window.HubBehaviours = { version: "1.21.0", initAll, register };
 export { initAll, register };
