@@ -1,0 +1,36 @@
+<!--
+name: currency-switch
+display-name: Currency switch
+summary: A row of choices that shows every price on the page in the currency a visitor picks.
+version: 1
+type: component
+page-types: pricing
+requires: none
+content-shape: reference
+layout: none
+description: A radio group that shows every price on the page in one currency at a time - up to six currencies, switched by the stylesheet alone, with every currency shown side by side where the browser cannot switch.
+keywords: currency, switch, prices, pricing, money
+needs: a page whose prices are each written once for every currency it shows, in one order; the real name of each currency; one short label saying what the choice does
+pairs-with: pricing-tiers
+avoid-with: none
+tokens-used: --chip-radius, --color-focus, --color-on-primary, --color-primary, --color-surface, --color-text, --long-word-hyphens, --long-words, --space-2, --space-4, --space-5
+motion: none
+one-per-page: yes
+status: active
+added: 2026-11-11
+behaviours: currency
+-->
+<fieldset class="currency-switch" data-hub-module="currency">
+  <legend class="currency-switch-label"><!-- slot: switch-label --></legend>
+  <!-- ONE <label> per currency the page shows, two to six; duplicate the
+       whole <label>, in the order every price lists its currencies. Only the
+       first keeps `checked`: it is the currency the page opens in. -->
+  <label class="currency-switch-option">
+    <input class="currency-switch-input" type="radio" name="currency-switch" value="slot:currency-code" checked>
+    <span class="currency-switch-name"><!-- slot: currency-name --></span>
+  </label>
+</fieldset>
+<!-- The switch acts on prices anywhere on the page, each written once for
+     every currency in the same order as the options above:
+     <span class="currency-switch-price"><span>first currency's price</span><span>second currency's price</span></span>
+     Nothing else goes inside the wrapper, and a price outside one never changes. -->

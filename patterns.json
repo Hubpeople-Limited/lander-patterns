@@ -662,6 +662,34 @@
   "version": "8",
   "whole-page": false
  },
+ "currency-switch": {
+  "avoid-with": [],
+  "behaviours": [
+   "currency"
+  ],
+  "content-shape": "reference",
+  "description": "A radio group that shows every price on the page in one currency at a time - up to six currencies, switched by the stylesheet alone, with every currency shown side by side where the browser cannot switch.",
+  "display-name": "Currency switch",
+  "image-slots": [],
+  "layout": {},
+  "motion": "none",
+  "needs": "a page whose prices are each written once for every currency it shows, in one order; the real name of each currency; one short label saying what the choice does",
+  "one-per-page": true,
+  "page-types": [
+   "pricing"
+  ],
+  "pairs-with": [
+   "pricing-tiers"
+  ],
+  "replaced-by": "",
+  "requires": "none",
+  "status": "active",
+  "summary": "A row of choices that shows every price on the page in the currency a visitor picks.",
+  "type": "component",
+  "variants": {},
+  "version": "1",
+  "whole-page": false
+ },
  "faq-details": {
   "avoid-with": [],
   "behaviours": [],

@@ -813,7 +813,7 @@ python ci/check_behaviours.py --broken       the positive control
 python ci/check_behaviours.py --out /tmp/b   keep the rendered pages
 ```
 
-It puts every pattern declaring `counter`, `scrollspy` or `carousel` in a page
+It puts every pattern declaring `counter`, `scrollspy`, `carousel` or `currency` in a page
 with the bundle, launched with file access allowed so the module script runs,
 proves the bundle ran by reading its version off the page, and holds each to
 its registry row: a figure that ends on the authored text byte for byte and
@@ -821,7 +821,10 @@ moved on the way there, and never moves under reduced motion; the one link
 whose heading was passed last carrying `aria-current`, and none above the first
 heading; two controls built inside the block and none in the authored render,
 next moving the slide and previous moving it back, wrapping on a radio carousel
-and disabling at a scroller's ends, thumb-sized at a phone width. **`--broken`
+and disabling at a scroller's ends, thumb-sized at a phone width; and a price
+switch that shows one currency's prices with the stylesheet alone, for every
+option up to six, shows every currency where the browser cannot switch, and
+with the bundle opens again on the currency picked before. **`--broken`
 is the positive control and CI runs it**: a copy of the bundle with one named
 line of each behaviour turned wrong, and every check must fire; a substitution
 that no longer matches fails the control rather than letting it go stale.
