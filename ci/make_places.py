@@ -16,8 +16,22 @@ the candidate nearest the region's other towns and within their spread. Anything
 pick it, the member search still narrows by it, and the join flow asks for the
 location itself.
 
-    python ci/make_places.py            fetch, match, write lib/places/, report
-    python ci/make_places.py --check    verify what is committed, fetch nothing
+Every other country the platform takes comes from a local copy of its
+reference that carries the platform's own coordinates (--reference: the help
+site's two files, plus "iso", "coordinates" beside each region's towns and
+"order", each town's region in the platform's own order). Those countries are
+asked in two steps, country then town: their files say so ("levels": 2) and
+keep the same shape, with towns that have no region under the region "". The
+ten above are carried over from lib/places/ as published - the same towns,
+names, regions, order, aliases, sizes and postal files - with each town's
+coordinates the reference's own wherever it holds that town: the platform's own
+point for a town is the one that joins the visitor in the town they picked. A
+town the reference does not hold, or places at a point it also gives a town in
+another region, keeps the coordinates it has.
+
+    python ci/make_places.py                    fetch, match, write lib/places/, report
+    python ci/make_places.py --reference DIR    the ten as published on DIR's coordinates, every other country from DIR
+    python ci/make_places.py --check            verify what is committed, fetch nothing
 
 Downloads go to .cache/ (ignored). Rerun when the platform's reference moves:
 its "generated" date is part of the edition.
@@ -29,6 +43,7 @@ import difflib
 import io
 import json
 import math
+import re
 import statistics
 import sys
 import unicodedata
@@ -48,17 +63,39 @@ GEONAMES_ZIP = "https://download.geonames.org/export/zip"
 POSTAL = {"USA": "US"}
 # Bumped when the matching changes, so a new match of the same reference is a
 # new edition and a published one never changes.
-MATCHER = 3
+MATCHER = 4
 # The platform's country names, as its reference spells them, to ISO codes.
 ISO = {"Argentina": "AR", "Australia": "AU", "Brazil": "BR", "Canada": "CA",
        "Ireland": "IE", "New Zealand": "NZ", "South Africa": "ZA", "Spain": "ES",
        "UK": "GB", "USA": "US"}
 SOURCE = ("Coordinates from GeoNames (geonames.org), CC BY 4.0. Place names from "
           "the HubPeople location reference.")
+# A country built from the local reference: its names and coordinates both.
+SOURCE_PLATFORM = "Place names and coordinates from the HubPeople location reference."
+# A country GeoNames placed, carried onto the local reference's coordinates.
+SOURCE_CARRIED = ("Place names and coordinates from the HubPeople location reference. Region sizes, "
+                  "and coordinates for a town the reference does not place, from GeoNames "
+                  "(geonames.org), CC BY 4.0.")
+# The index, once it holds both kinds.
+SOURCE_BOTH = ("Place names from the HubPeople location reference. Coordinates from GeoNames "
+               "(geonames.org), CC BY 4.0, where a country's file says so, and otherwise from "
+               "the same reference.")
+# A town further than this from its country's middle, and from its region's,
+# is placed wrongly (an island or a far province is near one or the other): a
+# multiple of how far out the country's towns reach, and never less than the floor.
+FAR_REACH, FAR_FLOOR_KM = 4, 500
+# The reference holds most towns to four decimals (about 10 m), and the ten are
+# written to the same: rounded any further, a town a few hundred metres from
+# its neighbour can be sent nearer the neighbour than itself.
+CARRIED_DECIMALS = 4
 
 
 def slug(country):
-    return country.lower().replace(" ", "-")
+    """The country's file name. lib/hub.js derives the same one (countryFile) and
+    must stay in step: combining accents dropped, lower case, any run of
+    anything but a letter or digit one hyphen."""
+    plain = re.sub("[\u0300-\u036f]", "", unicodedata.normalize("NFKD", country))
+    return re.sub(r"[^a-z0-9]+", "-", plain.lower()).strip("-")
 
 
 # Spellings that differ only by convention: the reference writes "Mc Rae" and
@@ -270,6 +307,168 @@ def build():
     return files
 
 
+def apart(a, b):
+    """km between two places, the short way round: a country can straddle 180°."""
+    east = (b[1] - a[1] + 540) % 360 - 180
+    return 111.2 * math.hypot(a[0] - b[0], east * math.cos(math.radians((a[0] + b[0]) / 2)))
+
+
+def reach(points):
+    """(the middle of these places, how far from it a place still belongs). The
+    middle's longitude is taken across the widest gap between them, so a
+    country either side of 180° has its middle among its towns, not opposite."""
+    lat = statistics.median(p[0] for p in points)
+    east = sorted(p[1] for p in points)
+    gap = max(range(len(east)), key=lambda i: (east[(i + 1) % len(east)] - east[i]) % 360)
+    base = east[(gap + 1) % len(east)]
+    lng = (statistics.median((e - base) % 360 for e in east) + base + 180) % 360 - 180
+    mid = (lat, lng)
+    spread = sorted(apart(p, mid) for p in points)[int(0.9 * (len(points) - 1))]
+    return mid, max(FAR_FLOOR_KM, FAR_REACH * spread)
+
+
+def from_reference(data):
+    """({region: {town: [lat, long] or None}}, the platform's order, how many
+    were written with none). A town keeps its coordinates unless they are at
+    0,0 or far from both its country's towns and its region's; a region of
+    fewer than three placed towns has no spread of its own to judge by."""
+    regions, at = data["regions"], data["coordinates"]
+    if list(regions) != list(at) or any(len(regions[r]) != len(at[r]) for r in regions):
+        raise SystemExit(f"{data['country']}: its coordinates do not run beside its towns")
+    fine = lambda p: p is not None and not (abs(p[0]) < 0.01 and abs(p[1]) < 0.01)
+    everywhere = [p for r in regions for p in at[r] if fine(p)]
+    country = reach(everywhere) if everywhere else None
+    out, far = {}, 0
+    for region, towns in regions.items():
+        own = [p for p in at[region] if fine(p)]
+        local = reach(own) if region and len(own) >= 3 else None
+        out[region] = {}
+        for town, p in zip(towns, at[region]):
+            ok = fine(p) and not (apart(p, country[0]) > country[1]
+                                  and (local is None or apart(p, local[0]) > local[1]))
+            far += p is not None and not ok
+            out[region][town] = [round(p[0], 3), round(p[1], 3)] if ok else None
+    order = data["order"]
+    counts = collections.Counter(order)
+    if [counts[i] for i in range(len(regions))] != [len(t) for t in regions.values()]:
+        raise SystemExit(f"{data['country']}: its order does not name each region's towns once")
+    return out, order, far
+
+
+def onto_platform(data, ref):
+    """Give each town of a country GeoNames placed the reference's own
+    coordinates, in place, and count what became of each. A town is found by
+    its region and name, exactly or else with case set aside (the published
+    "N.ireland" is the reference's "N.Ireland"). Nothing else in the file moves.
+    The reference's point is used as it is, however it looks: it is the one
+    that joins the visitor in that town. A town keeps the coordinates it has
+    when the reference does not hold it, holds it with none, holds two towns
+    of that name once case is set aside, or gives its point to a town in
+    another region too, which cannot be right for both."""
+    if list(ref["regions"]) != list(ref["coordinates"]) or \
+            any(len(ref["regions"][r]) != len(ref["coordinates"][r]) for r in ref["regions"]):
+        raise SystemExit(f"{ref['country']}: its coordinates do not run beside its towns")
+    exact, folded, regions_at = {}, collections.defaultdict(list), collections.defaultdict(set)
+    for region, towns in ref["regions"].items():
+        for town, p in zip(towns, ref["coordinates"][region]):
+            exact[(region, town)] = p
+            folded[(region.casefold(), town.casefold())].append(p)
+            if p is not None:
+                regions_at[tuple(p)].add(region.casefold())
+    how = collections.Counter()
+    for region, towns in data["regions"].items():
+        for town, was in towns.items():
+            if (region, town) in exact:
+                p = exact[(region, town)]
+            else:
+                found = folded.get((region.casefold(), town.casefold()), [])
+                if not found:
+                    how["not in the reference"] += 1
+                    continue
+                if len(found) > 1:
+                    how["two of that name, case aside"] += 1
+                    continue
+                p = found[0]
+            if p is None:
+                how["no coordinates in the reference"] += 1
+            elif len(regions_at[tuple(p)]) > 1:
+                how["a point shared with another region's town"] += 1
+            else:
+                # + 0.0: a point a hair west of Greenwich is written 0.0, not -0.0.
+                now = [round(p[0], CARRIED_DECIMALS) + 0.0, round(p[1], CARRIED_DECIMALS) + 0.0]
+                how["gained" if was is None else "the same" if was == now else "moved"] += 1
+                towns[town] = now
+    return how
+
+
+def carried(edition, directory):
+    """The countries lib/places/ already holds that GeoNames places, file for
+    file and row for row as published, with the edition moved and each town on
+    the reference's own coordinates (onto_platform): the same towns in the same
+    order, and the row's count of placed towns brought up to date."""
+    index = json.loads((OUT / "index.json").read_text(encoding="utf-8"))
+    files, rows, report = {}, {}, {}
+    for country in sorted(ISO):
+        row = index["countries"].get(country)
+        if row is None:
+            raise SystemExit(f"{country}: not in lib/places/index.json - build it from GeoNames first")
+        data = json.loads((OUT / row["file"]).read_text(encoding="utf-8"))
+        ref = json.loads((directory / f"locations-{slug(country)}.json").read_text(encoding="utf-8"))
+        if ref.get("country") != country:
+            raise SystemExit(f"{country}: the reference's file for it is {ref.get('country')}'s")
+        report[country] = onto_platform(data, ref)
+        data["source"] = SOURCE_CARRIED
+        names = [row["file"]] + ([p.name for p in sorted(OUT.glob(data["postal"].replace("{}", "*")))]
+                                 if data.get("postal") else [])
+        for name in names:
+            each = data if name == row["file"] else json.loads((OUT / name).read_text(encoding="utf-8"))
+            each["edition"] = edition
+            files[name] = each
+        rows[country] = dict(row, placed=sum(1 for t in data["regions"].values() for v in t.values() if v))
+    return files, rows, report
+
+
+def build_with(directory):
+    reference = json.loads((directory / "countries-regions.json").read_text(encoding="utf-8"))
+    generated = reference["generated"]
+    edition = f"{generated}.{MATCHER}"
+    files, rows, report = carried(edition, directory)
+    print(f"  {len(rows)} countries carried as published, on the reference's coordinates:")
+    for country, how in report.items():
+        print(f"  {country:13s} {sum(how.values()):6d} towns  "
+              f"({', '.join(f'{k} {v}' for k, v in how.most_common())})")
+    index = {"edition": edition, "source": SOURCE_BOTH, "countries": dict(rows)}
+    far_by = {}
+    total = placed_total = 0
+    for country in sorted(reference["countries"]):
+        if country in ISO:
+            continue
+        name = f"{slug(country)}.json"
+        data = json.loads((directory / f"locations-{slug(country)}.json").read_text(encoding="utf-8"))
+        if data.get("generated") != generated or data.get("country") != country:
+            raise SystemExit(f"{country}: its town list is {data.get('country')} from "
+                             f"{data.get('generated')} and the region list from {generated}")
+        if name in files:
+            raise SystemExit(f"{country}: {name} is already another country's file")
+        regions, order, far = from_reference(data)
+        towns = len(order)
+        with_place = sum(1 for t in regions.values() for v in t.values() if v)
+        files[name] = {"edition": edition, "country": country, "source": SOURCE_PLATFORM, "levels": 2,
+                       "regions": regions, "order": order}
+        index["countries"][country] = {"file": name, "levels": 2, "towns": towns, "placed": with_place}
+        total += towns
+        placed_total += with_place
+        if far:
+            far_by[country] = far
+    added = len(index["countries"]) - len(rows)
+    print(f"  {added} countries from the reference: {total} towns, {placed_total} placed, "
+          f"{total - placed_total} with no coordinates")
+    for country, n in sorted(far_by.items()):
+        print(f"  {country:13s} {n} town(s) far from both their country and region: written with none")
+    files["index.json"] = index
+    return files
+
+
 def dump(data):
     return json.dumps(data, ensure_ascii=False, separators=(",", ":"), sort_keys=False) + "\n"
 
@@ -294,7 +493,18 @@ def check():
         if data.get("edition") != edition or data.get("country") != country:
             faults.append(f"{path.name}: edition {data.get('edition')} / {data.get('country')}, "
                           f"the index says {edition} / {country}")
-        if list(data["regions"]) != row["regions"]:
+        if row["file"] != f"{slug(country)}.json":
+            faults.append(f"{path.name}: the card looks for {country} at {slug(country)}.json")
+        if data.get("levels") != row.get("levels"):
+            faults.append(f"{path.name}: levels {data.get('levels')}, the index says {row.get('levels')}")
+        if row.get("levels") == 2:
+            # Asked country then town: the index lists no regions, and the
+            # order names every town once, by its region's place in the file.
+            counts = collections.Counter(data.get("order") or [])
+            if "regions" in row or [counts[i] for i in range(len(data["regions"]))] != \
+                    [len(t) for t in data["regions"].values()] or sum(counts.values()) != row["towns"]:
+                faults.append(f"{path.name}: its order is not one entry per town, or the index lists regions")
+        elif list(data["regions"]) != row["regions"]:
             faults.append(f"{path.name}: its regions are not the index's")
         for region, names in (data.get("aliases") or {}).items():
             for alias, town in names.items():
@@ -325,6 +535,10 @@ def check():
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--check", action="store_true", help="verify lib/places/ and fetch nothing")
+    ap.add_argument("--reference", type=Path, metavar="DIR",
+                    help="a local copy of the platform's reference with its coordinates: the "
+                         "countries GeoNames places are carried as published onto its coordinates, "
+                         "every other from here")
     args = ap.parse_args()
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -339,7 +553,7 @@ def main():
             print(f"clean: lib/places/ edition {index['edition']}, "
                   f"{len(index['countries'])} countries")
         return 1 if faults else 0
-    files = build()
+    files = build_with(args.reference) if args.reference else build()
     OUT.mkdir(parents=True, exist_ok=True)
     for old in OUT.glob("*.json"):
         old.unlink()

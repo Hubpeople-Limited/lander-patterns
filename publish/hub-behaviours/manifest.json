@@ -1,6 +1,6 @@
 {
   "current": {
-    "v1": "1.18.0"
+    "v1": "1.21.0"
   },
   "floating": {
     "v1": "/hub-behaviours/v1/hub.min.js"
@@ -89,6 +89,30 @@
       "integrity": "sha384-wvD7zU8a6Dmmm3EWfAsZIgEuZS4+zqYUoKcxqd661lE2B2Kb3AizifwtrzCJJyph",
       "path": "/hub-behaviours/1.18.0/hub.min.js",
       "published": "2026-10-30"
+    },
+    "1.19.0": {
+      "bytes": 62497,
+      "integrity": "sha384-Wa4wMlrzr+bluQfr2KJP5t91p/+ePtQZ7mY3ZHm/SqQwROZXMGYHF8X/wxz9vP8A",
+      "path": "/hub-behaviours/1.19.0/hub.min.js",
+      "published": "2026-11-04"
+    },
+    "1.19.1": {
+      "bytes": 62497,
+      "integrity": "sha384-uKwzVTUm0sRg74uAQtc7BNKoEVeOgO2w48ujLSAarmXxJ9ZqvFoQEbo0Lh2POPuo",
+      "path": "/hub-behaviours/1.19.1/hub.min.js",
+      "published": "2026-11-04"
+    },
+    "1.20.0": {
+      "bytes": 63071,
+      "integrity": "sha384-bMGODki6+EqBjLKaOlt6MmsV118lHe6QIILZ2hP8kSFUnTuo5NFxgvYKvpqBlSc2",
+      "path": "/hub-behaviours/1.20.0/hub.min.js",
+      "published": "2026-11-05"
+    },
+    "1.21.0": {
+      "bytes": 63610,
+      "integrity": "sha384-fWZM3Z39cao1sw37HftvjkmkK/APUYSfSxKSMiLAC9Kz1jkk3L6nDps+G6qrCbXQ",
+      "path": "/hub-behaviours/1.21.0/hub.min.js",
+      "published": "2026-11-05"
     },
     "1.5.0": {
       "bytes": 19011,

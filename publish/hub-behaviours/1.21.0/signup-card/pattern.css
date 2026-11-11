@@ -1,0 +1,892 @@
+/* signup-card v8 - tokens only, selectors prefixed */
+/* The card sits in an opener's call-to-action place: it takes a width of its
+   own and leaves the page's layout to the opener. */
+.signup-card {
+  /* Answer rows: over the 44px floor, sized for a thumb. */
+  --signup-card-target: 56px;
+  width: 100%;
+  max-width: 24rem;
+  text-align: left;
+}
+.signup-card-form {
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+/* --color-text, not --color-heading: a heading on a card is not on the page ground. */
+.signup-card-title,
+.signup-card-q {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-heading);
+  font-weight: var(--weight-display, 700);
+  line-height: calc(1.2 * var(--heading-leading, 1));
+  letter-spacing: calc(-0.005em + var(--heading-tracking, 0) * 1em);
+  color: var(--color-text);
+}
+@supports (line-height: 1cap) {
+  .signup-card-title,
+  .signup-card-q {
+    line-height: calc(max(1.2em, 1.45cap) * var(--heading-leading, 1));
+  }
+}
+.signup-card-title {
+  font-size: calc(clamp(1.375rem, 1.2rem + .8vw, 1.75rem) * var(--type-scale, 1));
+}
+.signup-card-q {
+  margin-bottom: var(--space-3);
+  font-size: calc(1.1875rem * var(--type-scale, 1));
+}
+/* A new step's question takes focus for screen readers; it is not a control,
+so it draws no ring. */
+.signup-card-q:focus {
+  outline: none;
+}
+.signup-card-step {
+  min-width: 0;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  border: 0;
+}
+.signup-card-title + .signup-card-step {
+  margin-top: var(--space-4);
+}
+.signup-card-help {
+  margin: calc(-1 * var(--space-2)) 0 var(--space-3);
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+/* Answers: the input is inside its label, so the whole row is the target. */
+.signup-card-opts {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Two "I am" answers side by side while both fit; an answer whose longest
+   word is wider than half the card takes the whole row, and so does the
+   other. width: 100% is not the width: it caps the automatic minimum at the
+   row, so a word wider than the row breaks inside its tile. Each half gives
+   up half the gap and 1px, or two halves rounded up wrap. */
+.signup-card-opts--two {
+  display: flex;
+  flex-wrap: wrap;
+}
+.signup-card-opt {
+  min-width: 0;
+}
+.signup-card-opts--two > .signup-card-opt {
+  flex: 1 1 calc(50% - var(--space-3) / 2 - 1px);
+  width: 100%;
+  min-width: auto;
+}
+.signup-card-opts--two .signup-card-opt-face {
+  gap: var(--space-2);
+}
+.signup-card-opt label {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+/* Off-screen but focusable, so the row takes the keyboard and the group is
+still announced. display: none would remove both. */
+.signup-card-opt input,
+.signup-card-other input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.signup-card-opt-face {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--signup-card-target);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  /* The border is the only thing marking this as a control. */
+  border: 2px solid color-mix(in srgb, var(--color-text) 22%, var(--color-surface));
+  border-radius: var(--btn-radius);
+  font-weight: 700;
+  line-height: 1.25;
+}
+/* A word wider than a whole row breaks rather than leave its tile. */
+.signup-card-opt-face > span:first-child {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.signup-card-opt:hover .signup-card-opt-face {
+  border-color: color-mix(in srgb, var(--color-primary) 70%, var(--color-surface));
+}
+.signup-card-opt input:checked + .signup-card-opt-face {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface));
+}
+.signup-card-tick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid color-mix(in srgb, var(--color-text) 35%, var(--color-surface));
+  border-radius: 50%;
+}
+.signup-card-opt input:checked + .signup-card-opt-face .signup-card-tick {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.signup-card-opt input:checked + .signup-card-opt-face .signup-card-tick::before,
+.signup-card-other input:checked + span .signup-card-tick::before {
+  content: "";
+  width: 5px;
+  height: 10px;
+  margin-top: -2px;
+  border: solid currentColor;
+  border-width: 0 2.5px 2.5px 0;
+  transform: rotate(45deg);
+}
+/* The third answer to "who are you": a real choice, drawn small. */
+.signup-card-other {
+  position: relative;
+  display: inline-flex;
+  margin-top: var(--space-2);
+  cursor: pointer;
+}
+.signup-card-other > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-1);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.signup-card-other .signup-card-tick {
+  display: none;
+}
+.signup-card-other input:checked + span {
+  text-decoration: none;
+}
+.signup-card-other input:checked + span .signup-card-tick {
+  display: grid;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+/* Fields. 16px text, or iOS zooms the page on focus. */
+.signup-card-dob {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr;
+  gap: var(--space-2);
+  /* A label that wraps must not push its box out of line with the others. */
+  align-items: end;
+}
+.signup-card-field {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.signup-card-field > span {
+  font-size: .9375rem;
+  font-weight: 700;
+}
+.signup-card-field input,
+.signup-card-field select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 var(--space-3);
+  font: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 2px solid color-mix(in srgb, var(--color-text) 30%, var(--color-surface));
+  border-radius: var(--btn-radius);
+}
+.signup-card-consent {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  margin-top: var(--space-4);
+  font-size: .875rem;
+}
+.signup-card-consent input {
+  width: 22px;
+  height: 22px;
+  margin: 2px 0 0;
+  accent-color: var(--color-primary);
+}
+.signup-card-consent a,
+.signup-card-foot a {
+  color: var(--color-text);
+  font-weight: 700;
+  text-underline-offset: 2px;
+}
+.signup-card-actions {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+.signup-card-submit {
+  width: 100%;
+  min-height: var(--signup-card-target);
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.signup-card-submit:hover {
+  background: var(--color-primary-dark);
+}
+.signup-card-note {
+  margin: 0;
+  text-align: center;
+  font-size: .875rem;
+  color: var(--color-text-soft);
+}
+.signup-card-foot {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-rule);
+  text-align: center;
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+.signup-card-opt input:focus-visible + .signup-card-opt-face,
+.signup-card-other input:focus-visible + span,
+.signup-card-field input:focus-visible,
+.signup-card-field select:focus-visible,
+.signup-card-consent input:focus-visible,
+.signup-card-submit:focus-visible,
+.signup-card-consent a:focus-visible,
+.signup-card-foot a:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+/* Built by the behaviour. Nothing below is in the authored page; the
+behaviour adds it, and these rules draw it. */
+.signup-card-form {
+  scroll-margin-top: var(--space-2);
+}
+.signup-card-top {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+}
+.signup-card-back {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: calc(-1 * var(--space-2));
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: var(--btn-radius);
+  color: var(--color-text);
+  cursor: pointer;
+}
+.signup-card-back::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin-left: 4px;
+  border: solid currentColor;
+  border-width: 0 0 2.5px 2.5px;
+  transform: rotate(45deg);
+}
+.signup-card-bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: var(--space-1);
+}
+.signup-card-seg {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--chip-radius);
+  background: color-mix(in srgb, var(--color-text) 14%, var(--color-surface));
+}
+.signup-card-seg::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--color-primary);
+}
+.signup-card-seg[data-hub-signup-done]::before {
+  width: 100%;
+}
+.signup-card-seg[data-hub-signup-now]::before {
+  width: 35%;
+}
+.signup-card-seg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-surface) 70%, transparent), transparent);
+}
+.signup-card-count {
+  font-size: .875rem;
+  color: var(--color-text-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* The members: faces in the card on a phone, a row beside it when wide. */
+.signup-card-members {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--chip-radius);
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface));
+}
+.signup-card-faces {
+  display: flex;
+  flex: none;
+  padding-left: var(--space-2);
+}
+.signup-card-face {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-left: calc(-1 * var(--space-2));
+  overflow: hidden;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+  background: var(--color-surface-soft);
+}
+.signup-card-face img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+.signup-card-members p {
+  margin: 0;
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.signup-card-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+  font-size: .875rem;
+  color: var(--color-text-soft);
+}
+.signup-card-summary::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 9px;
+  margin: 0 var(--space-1) 2px;
+  border: solid var(--color-primary);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+/* Several answers to "looking for": a square tick, not a round one. */
+.signup-card-opt input[type="checkbox"] + .signup-card-opt-face .signup-card-tick {
+  border-radius: min(var(--btn-radius), 6px);
+}
+/* Interests. */
+.signup-card-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.signup-card-chip label {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+.signup-card-chip input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+.signup-card-chip span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  background: var(--color-surface);
+  border: 2px solid color-mix(in srgb, var(--color-text) 22%, var(--color-surface));
+  border-radius: var(--chip-radius);
+  font-size: .9375rem;
+  font-weight: 600;
+}
+.signup-card-chip span::before {
+  content: "+";
+  font-weight: 400;
+  color: var(--color-text-soft);
+}
+.signup-card-chip input:checked + span {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-on-primary);
+}
+.signup-card-chip input:checked + span::before {
+  content: "";
+  width: 5px;
+  height: 9px;
+  margin-right: 2px;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translateY(-1px);
+}
+.signup-card-chip input:disabled + span {
+  cursor: not-allowed;
+  border-style: dashed;
+  color: var(--color-text-soft);
+}
+.signup-card-more {
+  min-height: 44px;
+  margin-top: var(--space-2);
+  padding: 0 var(--space-1);
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.signup-card-tally {
+  margin: var(--space-3) 0 0;
+  font-size: .875rem;
+  color: var(--color-text-soft);
+}
+/* The date of birth: the reward, and the wheel where a page asks for one. */
+.signup-card-reward {
+  display: inline-flex;
+  margin: var(--space-3) 0 0;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--chip-radius);
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  font-size: .9375rem;
+  font-weight: 700;
+}
+.signup-card-wheels {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1.3fr;
+  gap: var(--space-2);
+}
+.signup-card-wheel-col {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.signup-card-wheel-label {
+  font-size: .9375rem;
+  font-weight: 700;
+  text-align: center;
+}
+/* The band is the background, so it stays put while the rows scroll. Five
+44px rows show, two of them spacers above and below: keep the band's 88px
+and 132px in step with that. */
+.signup-card-wheel {
+  height: 220px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  list-style: none;
+  border-radius: var(--btn-radius);
+  background: linear-gradient(transparent 88px, color-mix(in srgb, var(--color-primary) 12%, var(--color-surface)) 88px 132px, transparent 132px);
+  mask-image: linear-gradient(to bottom, transparent, var(--color-text) 30%, var(--color-text) 70%, transparent);
+}
+.signup-card-wheel::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.signup-card-wheel li {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  scroll-snap-align: center;
+  font-size: 1.0625rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-soft);
+  cursor: pointer;
+}
+.signup-card-wheel li[aria-selected="true"] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+/* Errors say what is missing; a dashed edge marks where, never colour alone. */
+.signup-card-error {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2) var(--space-3);
+  border-left: 4px solid var(--color-text);
+  background: var(--color-surface-soft);
+  font-size: .9375rem;
+  font-weight: 600;
+}
+.signup-card-opt input[aria-invalid] + .signup-card-opt-face,
+/* Where the visitor lives: country, postal code or region, town. One rhythm
+   between them, wide enough that a focus ring never meets the next label. */
+.signup-card-lists {
+  display: grid;
+  gap: var(--space-4);
+}
+.signup-card-step > .signup-card-field + .signup-card-field,
+.signup-card-step > .signup-card-field + .signup-card-postal,
+.signup-card-step > .signup-card-field + .signup-card-lists,
+.signup-card-step > .signup-card-postal + .signup-card-lists {
+  margin-top: var(--space-4);
+}
+/* The towns offered as the visitor types: a raised list over the card, under
+   the field, so the card keeps its height. */
+.signup-card-place {
+  position: relative;
+}
+.signup-card-places {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  margin: var(--space-1) 0 0;
+  padding: var(--space-1);
+  background: var(--color-surface);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--btn-radius);
+  box-shadow: var(--card-shadow);
+}
+/* How many towns there are, and that the list goes on. */
+.signup-card-places-count {
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  font-size: .8125rem;
+  color: var(--color-text-soft);
+}
+/* Four and a half rows: the cut row says the list scrolls. */
+.signup-card-places-list {
+  max-height: calc(4.5 * 44px);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+}
+.signup-card-places li {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border-radius: var(--btn-radius);
+  cursor: pointer;
+}
+.signup-card-places li:hover,
+.signup-card-places li[aria-selected="true"] {
+  background: var(--color-surface-soft);
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+.signup-card-field input[aria-invalid],
+.signup-card-field select[aria-invalid] {
+  border-style: dashed;
+  border-color: var(--color-text);
+}
+.signup-card-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--signup-card-target);
+  padding: 0 var(--space-5);
+  border: 0;
+  border-radius: var(--btn-radius);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.signup-card-next::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border: solid currentColor;
+  border-width: 2.5px 2.5px 0 0;
+  transform: rotate(45deg);
+}
+.signup-card-next:hover {
+  background: var(--color-primary-dark);
+}
+/* The encouraging line after an answer, under the summary of answers so far. */
+.signup-card-cheer {
+  margin: var(--space-2) 0 0;
+  font-size: .9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+/* A line under a location field: the place a postal code was read as, or a
+   warning, set apart from the field rather than tucked under it. */
+.signup-card-place-note {
+  margin: var(--space-2) 0 0;
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+.signup-card-lists > .signup-card-place-note {
+  margin-top: calc(-1 * var(--space-2));
+}
+.signup-card-place-note[data-hub-signup-warn] {
+  color: var(--color-text);
+  font-weight: 600;
+}
+/* The link between a postal code and the region and town lists. */
+.signup-card-switch {
+  display: block;
+  min-height: 44px;
+  margin-top: var(--space-2);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font: inherit;
+  font-size: .9375rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.signup-card-skip {
+  justify-self: center;
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.signup-card-finish {
+  padding: var(--space-8) var(--space-2);
+  text-align: center;
+}
+.signup-card-finish svg {
+  display: block;
+  margin: 0 auto;
+  color: var(--color-primary);
+}
+.signup-card-finish p {
+  margin: var(--space-4) 0 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.signup-card-finish small {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: .9375rem;
+  color: var(--color-text-soft);
+}
+.signup-card-back:focus-visible,
+.signup-card-next:focus-visible,
+.signup-card-skip:focus-visible,
+.signup-card-switch:focus-visible,
+.signup-card-more:focus-visible,
+.signup-card-wheel:focus-visible,
+.signup-card-chip input:focus-visible + span {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+/* A short phone: the same card, tighter, so Next stays in view. */
+@media (max-width: 59.99rem) and (max-height: 760px) {
+  .signup-card {
+    --signup-card-target: 48px;
+  }
+  .signup-card-form {
+    padding-top: var(--space-3);
+  }
+  .signup-card-step {
+    margin-top: var(--space-4);
+  }
+  .signup-card-opts {
+    gap: var(--space-2);
+  }
+  .signup-card-actions {
+    margin-top: var(--space-4);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signup-card-opt-face,
+  .signup-card-field input,
+  .signup-card-chip span {
+    transition: border-color var(--transition-fast) ease-out, background-color var(--transition-fast) ease-out, transform var(--transition-fast) ease-out;
+  }
+  .signup-card-opt:active .signup-card-opt-face,
+  .signup-card-chip:active span {
+    transform: scale(.97);
+  }
+  .signup-card-opt input:checked + .signup-card-opt-face .signup-card-tick,
+  .signup-card-chip input:checked + span {
+    animation: signup-card-pop .34s cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .signup-card-seg::before {
+    transition: width .5s cubic-bezier(.2, .8, .2, 1);
+  }
+  @keyframes signup-card-pop {
+    from {
+      transform: scale(.6);
+    }
+  }
+}
+/* Wide: a tighter card, so a first step and its button sit above the fold. */
+@media (min-width: 60rem) {
+  .signup-card {
+    --signup-card-target: 48px;
+  }
+  .signup-card-form {
+    padding: var(--space-5);
+  }
+  .signup-card-q {
+    font-size: calc(1.125rem * var(--type-scale, 1));
+  }
+  .signup-card-opts {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+  .signup-card-opt-face {
+    padding: var(--space-2) var(--space-3);
+    font-size: .9375rem;
+  }
+  /* A tighter card beside the words, so a first step and its button sit above
+  the fold on a laptop. */
+  .signup-card-top {
+    min-height: 36px;
+  }
+  .signup-card-members {
+    min-height: 44px;
+    margin-top: var(--space-2);
+    padding-block: var(--space-1);
+  }
+  .signup-card-step {
+    margin-top: var(--space-4);
+  }
+  .signup-card-step[data-hub-signup-part="seeking"] {
+    margin-top: var(--space-4);
+  }
+  .signup-card-q {
+    margin-bottom: var(--space-2);
+  }
+  .signup-card-help {
+    margin-bottom: var(--space-2);
+  }
+  .signup-card-other {
+    margin-top: 0;
+  }
+  .signup-card-actions {
+    margin-top: var(--space-4);
+  }
+  .signup-card-foot {
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+  }
+}
+/* Before the behaviour library takes the card over, the card is drawn at
+   its first step where scripts run, so the page does not jump when it does.
+   The animations move nothing: each holds a state for 3s, and if the library
+   has not come by then every question shows. */
+@media (scripting: enabled) {
+  .signup-card:not(.hub-signup-live) :is(.signup-card-title, .signup-card-note, fieldset.signup-card-step:not(:first-of-type)) {
+    animation: signup-card-wait 0s 3s backwards;
+  }
+  /* The row the progress bar takes. */
+  .signup-card:not(.hub-signup-live) .signup-card-form::before {
+    content: "";
+    display: block;
+    animation: signup-card-bar 0s 3s backwards;
+  }
+  /* "Looking for" first: its help line, and no summed answer. */
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="seeking"]:first-of-type::before {
+    content: "";
+    display: block;
+    font-size: .9375rem;
+    animation: signup-card-help 0s 3s backwards;
+  }
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="seeking"]:first-of-type .signup-card-opt:has(input[name="lf"]:is([value="3"], [value="5"], [value="6"], [value="7"], [value="17"], [value="18"], [value="19"], [value="20"], [value="21"], [value="22"], [value="23"])) {
+    animation: signup-card-wait 0s 3s backwards;
+  }
+}
+/* From 60rem "I am" and "looking for" are the first step together. */
+@media (scripting: enabled) and (min-width: 60rem) {
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="iam"]:first-of-type + [data-hub-signup-part="seeking"] {
+    animation: none;
+  }
+  .signup-card:not(.hub-signup-live) :is([data-hub-signup-part="seeking"]:first-of-type, [data-hub-signup-part="iam"]:first-of-type + [data-hub-signup-part="seeking"])::before {
+    content: "";
+    display: block;
+    font-size: .9375rem;
+    animation: signup-card-help-wide 0s 3s backwards;
+  }
+  .signup-card:not(.hub-signup-live) [data-hub-signup-part="iam"]:first-of-type + [data-hub-signup-part="seeking"] .signup-card-opt:has(input[name="lf"]:is([value="3"], [value="5"], [value="6"], [value="7"], [value="17"], [value="18"], [value="19"], [value="20"], [value="21"], [value="22"], [value="23"])) {
+    animation: signup-card-wait 0s 3s backwards;
+  }
+}
+@keyframes signup-card-wait {
+  from {
+    display: none;
+  }
+}
+@keyframes signup-card-bar {
+  from {
+    min-height: 44px;
+  }
+}
+@keyframes signup-card-help {
+  from {
+    content: "\a0";
+    margin: calc(-1 * var(--space-2)) 0 var(--space-3);
+  }
+}
+@keyframes signup-card-help-wide {
+  from {
+    content: "\a0";
+    margin: calc(-1 * var(--space-2)) 0 var(--space-2);
+  }
+}

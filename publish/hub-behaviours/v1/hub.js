@@ -1,4 +1,4 @@
-/* hub-behaviours v1.18 — the controlled behaviour library.
+/* hub-behaviours v1.21 — the controlled behaviour library.
  *
  * Markup opts in with data-hub-module="<name>" attributes, which are inert
  * until something puts this module on the page — so a page written today
@@ -1363,7 +1363,7 @@ const SIGNUP_WORDS = {
   "zip-label": "ZIP code", "zip-to-lists": "Or choose your state and town",
   "zip-to-code": "Or enter your ZIP code instead", "error-zip": "Enter your 5-digit ZIP code, or choose your state and town.",
   "zip-unknown": "We don't know that ZIP code. Check it, or choose your state and town.", "largest": "Largest", "a-to-z": "A to Z",
-  "places-count": "{n} towns, biggest first", "places-found": "{n} found",
+  "places-count": "{n} towns, biggest first", "places-count-all": "{n} towns", "places-found": "{n} found",
   "places-more": "Keep typing to find the rest",
   "choose": "Choose\u2026", "loading": "Loading\u2026", "places-none": "No town by that name. Check the spelling.",
   "error-place": "Choose your town from the list, or skip this one.",
@@ -1371,7 +1371,7 @@ const SIGNUP_WORDS = {
 };
 // The places files: the platform's location reference with coordinates, made by
 // ci/make_places.py and published beside this file under their edition.
-const SIGNUP_PLACES_EDITION = "2026-08-18.3";
+const SIGNUP_PLACES_EDITION = "2026-11-04.4";
 // What a region is called in each of the platform's countries; region-label
 // overrides it.
 const SIGNUP_REGION_WORDS = {
@@ -1414,6 +1414,11 @@ const SIGNUP_GLYPHS = "♑♒♓♈♉♊♋♌♍♎♏♐";
 // platform writes them, so anything reading the type, the page or the path
 // reads a card's sign-up the same way.
 const SIGNUP_ROUTE = "sc";
+// The help site shows the card working without it leading anywhere: there the
+// card stops at its finish and lists what it would have sent, and tells the
+// analytics nothing. Read from the page's host, never from a setting, so a page
+// anywhere else cannot choose it and a card copied from the help site works.
+const SIGNUP_DEMO_HOST = "help.hubpeople.ai";
 
 register("signup", {
   setup(el) {
@@ -1512,8 +1517,14 @@ register("signup", {
 
     /* Where the visitor lives, as far as the page's scope leaves open. The
        names are the platform's own, so the member search narrows by them
-       exactly; the join flow is sent the chosen town's coordinates. */
-    const scope = (opt("places") || "").split("/").map((x) => x.trim()).filter(Boolean);
+       exactly; the join flow is sent the chosen town's coordinates. A list of
+       countries, ";"-separated, offers only those, in the order written; a
+       list of one is that country. */
+    const placesOpt = (opt("places") || "").trim();
+    const countryList = placesOpt.includes(";")
+      ? placesOpt.split(";").map((x) => x.trim()).filter((x) => x && !x.includes("/")) : null;
+    const scope = countryList ? (countryList.length > 1 ? ["world"] : countryList)
+      : placesOpt.split("/").map((x) => x.trim()).filter(Boolean);
     const everywhere = scope.length === 1 && scope[0].toLowerCase() === "world";
     const where = { country: everywhere ? "" : scope[0] || "", region: scope[1] || "",
       town: scope[2] || "", at: null };
@@ -1533,7 +1544,12 @@ register("signup", {
       }
       return loaded[file];
     };
-    const countryFile = (c) => `${c.toLowerCase().replace(/ /g, "-")}.json`;
+    // The name ci/make_places.py gives the country's file (slug), kept in step:
+    // accents dropped, any run of anything but a letter or digit one hyphen.
+    const countryFile = (c) => `${c.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}.json`;
+    // Shown only: the platform writes an apostrophe in a country's name as a backtick.
+    const countryName = (c) => c.replace(/\u0060/g, "\u2019");
     const nationOf = (r) => (r.includes(": ") ? r.split(": ")[0] : "");
     // Shown names only: the value sent is always the platform's own spelling,
     // stray punctuation and all ("Puerto Rico,").
@@ -1541,6 +1557,12 @@ register("signup", {
     const regionName = (r) => (nationOf(r)
       ? `${plainRegion(r)}, ${SIGNUP_NATIONS[nationOf(r)] || nationOf(r)}` : plainRegion(r));
     let townsHere = {};
+    // A country asked in two levels lists every town in it at once, each under
+    // the name it is shown by: what that name stands for, [region, town].
+    let townsAs = Object.create(null);
+    let wholeCountry = false;
+    // Which countries the index says are asked in two levels, once it is read.
+    const countryLevels = {};
     const loc = {};
     if (scope.length && !where.town) {
       const set = make("fieldset", `${P}-step`);
@@ -1756,9 +1778,10 @@ register("signup", {
     let byPointer = false;
     /* How far visitors get, for the platform's analytics: the card shown,
        each screen the first time it is reached, and the hand-off, each with
-       how this card is set up at this width. */
+       how this card is set up at this width. A demonstration reports none. */
     const reached = new Set();
-    const report = (event, extra) => track(event, {
+    const demo = location.hostname === SIGNUP_DEMO_HOST;
+    const report = (event, extra) => demo || track(event, {
       card_kind: P,
       card_screens: screens.map((s) => s.join(" ")).join(" | "),
       card_steps: screens.length,
@@ -2271,6 +2294,15 @@ register("signup", {
       form.append(done);
       el.classList.add("hub-signup-going");
       emit(el, "signup", "handoff", { url });
+      // A demonstration stays at the finish and shows what the join link
+      // would have carried, each value as sent.
+      if (demo) {
+        const sent = make("dl", `${P}-sent`);
+        params.forEach((v, k) => sent.append(make("dt", null, k),
+          make("dd", null, Array.isArray(v) ? v.join(";") : v)));
+        done.append(sent);
+        return;
+      }
       report("signup_card_handoff", { card_step: at + 1, card_step_name: screens[at].join(" ") });
       setTimeout(() => location.assign(url), calm() ? 200 : 1100);
       // Back from the join flow restores this page as it was left: give the
@@ -2413,9 +2445,11 @@ register("signup", {
       const i = screens.findIndex((sc) => sc.includes(was));
       show(i < 0 ? Math.min(at, screens.length - 1) : i, 0);
     };
-    const fill = (select, names, label) => {
+    // A to Z, after `first` where one is given.
+    const fill = (select, names, label, first) => {
       select.replaceChildren(new Option(say("choose"), ""),
-        ...names.slice().sort((x, y) => label(x).localeCompare(label(y))).map((n) => new Option(label(n), n)));
+        ...names.slice().sort((x, y) => (first ? first(x, y) : 0) || label(x).localeCompare(label(y)))
+          .map((n) => new Option(label(n), n)));
       select.closest("label").hidden = false;
     };
     const fillRegions = (select, data) => {
@@ -2449,9 +2483,17 @@ register("signup", {
       select.disabled = false;
       select.closest("label").hidden = false;
     };
-    const chooseTown = (name) => {
-      where.town = name || "";
+    // The town a shown name stands for, in the platform's spelling, and where
+    // the whole country is listed its region too: the member search narrows by
+    // both, and the region of a town that has none is not sent.
+    const settle = (name) => {
+      const as = townsAs[name];
+      where.town = as ? as[1] : name || "";
+      if (wholeCountry) where.region = as ? as[0] : "";
       where.at = name ? townsHere[name] || null : null;
+    };
+    const chooseTown = (name) => {
+      settle(name);
       if (loc.town && name) loc.town.value = name;
       if (loc.list) closeList();
       sayPlace(name);
@@ -2459,9 +2501,9 @@ register("signup", {
       recap();
       ready();
     };
-    const showRegion = (name) => {
-      where.region = name;
-      townsHere = (name && country && country.regions[name]) || {};
+    // The towns in townsHere, offered: a list to pick from when they are few,
+    // otherwise the field, once there is something to list.
+    const listTowns = (open) => {
       chooseTown("");
       if (!loc.town) return;
       const names = Object.keys(townsHere);
@@ -2470,7 +2512,39 @@ register("signup", {
       loc.none.hidden = true;
       if (few) fill(loc.townPick, names, (n) => n);
       loc.townPick.closest("label").hidden = !few;
-      loc.townField.hidden = !name || few || !names.length;
+      loc.townField.hidden = !open || few || !names.length;
+    };
+    const showRegion = (name) => {
+      where.region = name;
+      townsHere = (name && country && country.regions[name]) || {};
+      townsAs = Object.create(null);
+      wholeCountry = false;
+      listTowns(!!name);
+    };
+    /* A country asked in two levels: no region step, and every town in the
+       country listed in the platform's own order, which the file keeps as each
+       town's region in turn. A name in more than one region is shown with its
+       region ("Neustadt, Bayern") so each can be told apart; the name sent is
+       still the platform's own. */
+    const showCountryTowns = (data) => {
+      const regions = Object.keys(data.regions);
+      const lists = regions.map((r) => Object.keys(data.regions[r]));
+      const next = regions.map(() => 0);
+      const order = Array.isArray(data.order) ? data.order : lists.flatMap((l, i) => l.map(() => i));
+      const all = order.map((i) => [regions[i], lists[i][next[i]++]]).filter(([, t]) => t != null);
+      const seen = Object.create(null);
+      all.forEach(([, t]) => { seen[t.toLowerCase()] = (seen[t.toLowerCase()] || 0) + 1; });
+      // No prototype: a town may be called anything.
+      townsHere = Object.create(null);
+      townsAs = Object.create(null);
+      all.forEach(([r, t]) => {
+        const shown = r && seen[t.toLowerCase()] > 1 ? `${t}, ${regionName(r)}` : t;
+        if (shown in townsHere) return;
+        townsHere[shown] = data.regions[r][t];
+        townsAs[shown] = [r, t];
+      });
+      wholeCountry = true;
+      listTowns(true);
     };
     let country = null;
     const postalWay = ["first", "lists", "off"].includes(opt("postal")) ? opt("postal") : "first";
@@ -2536,7 +2610,7 @@ register("signup", {
         // rather than vanishing and coming back.
         loc.region.replaceChildren(new Option(say("loading"), ""));
         loc.region.disabled = true;
-        loc.region.closest("label").hidden = !name;
+        loc.region.closest("label").hidden = !name || countryLevels[name] === 2;
       }
       if (!name) return Promise.resolve();
       if (loc.zip) useCode(false);
@@ -2544,6 +2618,11 @@ register("signup", {
         if (where.country !== name) return;
         country = data;
         if (loc.zip) useCode(postalWay === "first");
+        if (data.levels === 2 && !fixedWhere.region) {
+          if (loc.region) loc.region.closest("label").hidden = true;
+          showCountryTowns(data);
+          return;
+        }
         if (loc.region) {
           const regionWord = opt("region-label") || SIGNUP_REGION_WORDS[name] || say("region-label");
           loc.region.closest("label").firstChild.textContent = regionWord;
@@ -2576,8 +2655,7 @@ register("signup", {
       const typed = loc.town.value.trim().toLowerCase();
       const names = Object.keys(townsHere);
       const exact = names.find((n) => n.toLowerCase() === typed);
-      where.town = exact || "";
-      where.at = exact ? townsHere[exact] || null : null;
+      settle(exact || "");
       sayPlace(exact);
       // Nothing typed yet: every town in the region, biggest first, while the
       // field has focus - a list that scrolls, not a sample that looks whole.
@@ -2591,7 +2669,9 @@ register("signup", {
       const found = typed ? names.filter((n) => score(n) < 3).sort((x, y) => score(x) - score(y)) : names;
       const hits = found.slice(0, SIGNUP_PLACES_SHOWN);
       loc.none.hidden = hits.length > 0;
-      loc.count.textContent = say(typed ? "places-found" : "places-count", { n: found.length });
+      // A whole country's towns are in the platform's order, not by size.
+      loc.count.textContent = say(typed ? "places-found" : wholeCountry ? "places-count-all" : "places-count",
+        { n: found.length });
       loc.rest.hidden = found.length <= hits.length;
       loc.list.replaceChildren(...hits.map((n, i) => {
         const li = make("li", null, n);
@@ -2635,7 +2715,29 @@ register("signup", {
       }
       if (loc.country) loc.country.addEventListener("change", () => showCountry(loc.country.value).catch(dropPlaces));
       const start = fixedWhere.country ? showCountry(where.country)
-        : loadPlaces("index.json").then((index) => fill(loc.country, Object.keys(index.countries), (n) => n));
+        : loadPlaces("index.json").then((index) => {
+          Object.keys(index.countries).forEach((n) => { countryLevels[n] = index.countries[n].levels || 3; });
+          if (countryList) {
+            // The page's own countries, in its order, each named once; one the
+            // platform does not hold is left out, and a list left with one
+            // country asks that country.
+            const known = Object.create(null);
+            Object.keys(index.countries).forEach((n) => { known[n.toLowerCase()] = n; });
+            const named = [...new Set(countryList.map((n) => known[n.toLowerCase()]).filter(Boolean))];
+            if (!named.length) throw new Error("none of the listed countries");
+            if (named.length === 1) {
+              loc.country.closest("label").hidden = true;
+              loc.country.replaceChildren(new Option(countryName(named[0]), named[0]));
+              return showCountry(named[0]);
+            }
+            fill(loc.country, named, countryName, (x, y) => named.indexOf(x) - named.indexOf(y));
+          } else {
+            // The countries asked region by region first, then the rest, each A to Z.
+            const two = (n) => (countryLevels[n] === 2 ? 1 : 0);
+            fill(loc.country, Object.keys(index.countries), countryName, (x, y) => two(x) - two(y));
+          }
+          return null;
+        });
       start.catch(dropPlaces);
     } else if (where.town) {
       // A town given in full is not asked: its coordinates still go.
@@ -2683,6 +2785,9 @@ register("signup", {
 .hub-signup-going form > :not(:is(.signup-steps-finish, .signup-card-finish)),
 .hub-signup-live [hidden] { display: none !important; }
 .hub-signup-first :is(.signup-steps-back, .signup-card-back) { visibility: hidden; }
+.hub-signup-going :is(.signup-steps-sent, .signup-card-sent) { display: grid; grid-template-columns: auto 1fr; gap: .25rem 1rem; margin: 1.5rem 0 0; font-size: .875rem; text-align: start; }
+.hub-signup-going :is(.signup-steps-sent, .signup-card-sent) dt { font-weight: 600; }
+.hub-signup-going :is(.signup-steps-sent, .signup-card-sent) dd { margin: 0; overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: no-preference) {
   .hub-signup-fwd { animation: hub-signup-fwd .36s cubic-bezier(.2,.8,.2,1) both; }
   .hub-signup-back { animation: hub-signup-back .36s cubic-bezier(.2,.8,.2,1) both; }
@@ -2718,5 +2823,5 @@ if (document.readyState === "loading") {
   initAll();
 }
 
-window.HubBehaviours = { version: "1.18.0", initAll, register };
+window.HubBehaviours = { version: "1.21.0", initAll, register };
 export { initAll, register };

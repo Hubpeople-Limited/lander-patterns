@@ -42,6 +42,12 @@ page, and holds each behaviour to what its row says:
                (its biggest from the first tap) and a small region's as a list,
                narrows the members to the town picked and sends its lat and
                long, and a card whose places will not load simply goes on;
+               a country asked in two levels goes straight to the town, every
+               town in the country, a name in two regions shown once in each
+               with its region and sent with both, a town with no coordinates
+               still picked and sent with none; a page with no country lists
+               the countries asked region by region first, then the rest, each
+               A to Z, and loads a country whose name carries punctuation;
                the line after an answer goes when the visitor goes back;
                a page in another language keeps its answers' capitals in
                the answers so far;
@@ -92,6 +98,7 @@ Exit codes: 0 clean, or skipped because no browser is available; 1 at least
 one behaviour does not do what its row says; 2 the request itself is unusable.
 """
 import argparse
+import collections
 import json
 import re
 import shutil
@@ -99,6 +106,7 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import parse_qsl, quote_plus
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -183,6 +191,8 @@ CONTROL_SUBSTITUTIONS = {
                   'params.set("pn", new URLSearchParams(location.search).get("pn") || "");'),
     "signup-route": ('const SIGNUP_ROUTE = "sc";', 'const SIGNUP_ROUTE = "";'),
     "signup-platform": ('if (typeof tag !== "function") return null;', "if (tag) return null;"),
+    "signup-demo": ("if (demo) {", "if (false) {"),
+    "signup-demo-host": ("const demo = location.hostname === SIGNUP_DEMO_HOST;", "const demo = true;"),
     "analytics-wait": ("if (!analyticsReady()) {", "if (false) {"),
     "analytics-live": ("info.is_prod !== true || !analyticsId()", "!analyticsId()"),
     "signup-reach": ('if (dir > 0 && !reached.has(on.join(" "))) {', "if (dir > 0) {"),
@@ -211,6 +221,18 @@ CONTROL_SUBSTITUTIONS = {
     "signup-at": ('el.setAttribute("data-hub-signup-at", on.join(" "));', 'el.setAttribute("data-hub-signup-at", "");'),
     "signup-start": ("show(startAt(), 0);", "show(0, 0);"),
     "signup-progress-name": ('bar.setAttribute("aria-label", say("progress"));', "void bar;"),
+    "signup-countries-two": ("if (data.levels === 2 && !fixedWhere.region) {", "if (false) {"),
+    "signup-countries-label": ("const shown = r && seen[t.toLowerCase()] > 1 ? `${t}, ${regionName(r)}` : t;",
+                               "const shown = t;"),
+    "signup-countries-region": ('if (wholeCountry) where.region = as ? as[0] : "";', "void as;"),
+    "signup-countries-count": ('wholeCountry ? "places-count-all" : "places-count"', '"places-count"'),
+    "signup-countries-order": ("(first ? first(x, y) : 0) ||", "0 ||"),
+    "signup-countries-file": ('.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}.json`;',
+                              '.replace(/ /g, "-")}.json`;'),
+    "signup-countries-list": ("fill(loc.country, named, countryName, (x, y) => named.indexOf(x) - named.indexOf(y));",
+                              "fill(loc.country, named, countryName);"),
+    "signup-countries-none": ("where.at = name ? townsHere[name] || null : null;",
+                              "where.at = name ? townsHere[name] || [0, 0] : null;"),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -432,7 +454,10 @@ class Shell:
         shutil.rmtree(self._dir, ignore_errors=True)
         return False
 
-    def open(self, html, stem, width=WIDTH, reduced=False, before=None, query=""):
+    def open(self, html, stem, width=WIDTH, reduced=False, before=None, query="", host=None):
+        """The page in a tab, from a file; or, given a `host`, served from
+        https://<host>/ out of the same folder, for a behaviour that reads
+        the page's host."""
         path = self._dir / f"{stem}.html"
         path.write_text(html, encoding="utf-8", newline="\n")
         tab = self._browser.new_page(
@@ -440,6 +465,18 @@ class Shell:
             reduced_motion="reduce" if reduced else "no-preference")
         if before:
             before(tab)
+        if host:
+            def serve(route):
+                f = self._dir / route.request.url.split("?", 1)[0].rsplit("/", 1)[-1]
+                if not f.is_file():
+                    route.fulfill(status=404, body="")
+                    return
+                kind = {".html": "text/html", ".js": "text/javascript",
+                        ".svg": "image/svg+xml"}.get(f.suffix, "application/octet-stream")
+                route.fulfill(status=200, content_type=kind, body=f.read_bytes())
+            tab.route(f"https://{host}/**", serve)
+            tab.goto(f"https://{host}/{stem}.html{query}")
+            return tab
         tab.goto(path.as_uri() + query)
         return tab
 
@@ -967,7 +1004,7 @@ def answer_part(tab, name, part):
         tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
 
 
-def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None):
+def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None, host=None):
     """A card page opened under reduced motion - a tapped answer moves on at
     once, so a walk never races the card - with the member search, places and
     hand-off stubbed and every step event kept in window.__signupSteps."""
@@ -975,7 +1012,7 @@ def open_card(shell, html, stem, width=PHONE, query="", searches=None, stub=None
         (stub or signup_stub(SIGNUP_MEMBERS, searches))(tab)
         tab.add_init_script("window.__signupSteps = []; addEventListener('hub:signup:step', "
                             "e => window.__signupSteps.push(e.detail))")
-    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=query)
+    tab = shell.open(html, stem, width=width, reduced=True, before=before, query=query, host=host)
     tab.wait_for_timeout(300)
     return tab
 
@@ -1493,6 +1530,253 @@ def check_signup_first_paint(shell, name, tokens):
     return faults
 
 
+# The visible selects in the location step: the country's, the region's, a
+# small region's town list.
+SHOWN_SELECTS_JS = """
+() => Array.from(document.querySelectorAll('[data-hub-signup-part="location"] select'))
+        .filter(s => s.offsetParent !== null).length
+"""
+# The country list on a page with no country: [value, label] for each, and
+# whether each run of labels after the first `n` is A to Z as the card sorts.
+COUNTRY_LIST_JS = """
+() => {
+  const s = document.querySelector('[data-hub-signup-part="location"] select');
+  return s ? Array.from(s.options).slice(1).map(o => [o.value, o.textContent]) : [];
+}
+"""
+SORTED_JS = "(labels) => labels.every((l, i) => i === 0 || labels[i - 1].localeCompare(l) <= 0)"
+# Countries whose names carry punctuation, each loaded by a page with no
+# country: the card and the generator must name their files alike.
+PUNCTUATED = ("Korea, Republic of", "Cote d`Ivoire", "Holy See (Vatican City State)")
+
+
+def check_signup_countries(shell, name, tokens):
+    """Every country the platform takes beyond those asked region by region:
+    straight to the town, the whole country's towns, a name repeated across
+    regions shown with its region, a town with no coordinates still picked,
+    and the country list on a page with no country."""
+    where = f"{name} signup countries"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
+    town = '[data-hub-signup-part="location"] input[role="combobox"]'
+    options = f".{name}-places [role=option]"
+    places = ROOT / "lib" / "places"
+    index = json.loads((places / "index.json").read_text(encoding="utf-8"))["countries"]
+
+    def regions_of(country):
+        return json.loads((places / index[country]["file"]).read_text(encoding="utf-8"))["regions"]
+
+    def with_places(scope):
+        page = re.sub(r'\sdata-hub-signup-places="[^"]*"', "", html, count=1)
+        return page.replace('data-hub-module="signup"',
+                            f'data-hub-module="signup" data-hub-signup-places="{scope}" '
+                            f'data-hub-signup-places-from="{SIGNUP_PLACES}"', 1)
+
+    def to_location(tab):
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(900)
+
+    def pick(tab, typed, shown):
+        """Type into the town field and choose `shown` from the list with the
+        keyboard; what the list offered."""
+        tab.locator(town).focus()
+        tab.locator(town).press_sequentially(typed, delay=30)
+        tab.wait_for_timeout(400)
+        offered = tab.locator(options).all_inner_texts()
+        if shown in offered:
+            for _ in range(offered.index(shown) + 1):
+                tab.locator(town).press("ArrowDown")
+            tab.locator(town).press("Enter")
+            tab.wait_for_timeout(600)
+        return offered
+
+    def finish(tab):
+        """On from the location step to the hand-off; its fields, and the
+        steps the card moved on to."""
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        moved = tab.evaluate(SIGNUP_PARTS_JS)
+        # Still asking where: nothing was picked, and nothing is handed off.
+        if moved != ["dob"]:
+            return {}, moved
+        for field, value in (("dd", "14"), ("dm", "8"), ("dy", "1992")):
+            tab.fill(f'input[name="{field}"]', value)
+        tab.wait_for_timeout(500)
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(500)
+        for chips in ("intent", "enjoy"):
+            if tab.evaluate(SIGNUP_PARTS_JS) == [chips]:
+                tap(tab, f".{name}-skip" if chips == "enjoy" else f'[data-hub-signup-part="{chips}"] .{name}-chip')
+                if chips != "enjoy":
+                    tap(tab, f".{name}-next")
+                tab.wait_for_timeout(500)
+        tab.locator('[data-hub-signup-part="email"] input').first.fill("Sam")
+        tab.fill('input[name="em"]', "sam@example.com")
+        tab.check('[data-hub-signup-part="email"] input[type="checkbox"]')
+        tap(tab, f".{name}-submit")
+        tab.wait_for_timeout(400)
+        url = tab.evaluate("() => window.__signupHandoff || ''")
+        return dict(x.split("=", 1) for x in url.split("?", 1)[-1].split("&") if "=" in x), moved
+
+    # Denmark: the town at once, with no region step; "lyng" offers each
+    # Lyngby with its region; the one picked sends its coordinates, and the
+    # member search narrows to it, its region and the country.
+    dk = regions_of("Denmark")
+    want = "Lyngby, Hovedstaden"
+    lyngbys = [f"Lyngby, {r}" for r in dk if r and "Lyngby" in dk[r]]
+    searches = []
+    tab = shell.open(with_places("Denmark"), f"{name}-signup-denmark", width=PHONE,
+                     before=signup_stub(SIGNUP_MEMBERS, searches))
+    try:
+        to_location(tab)
+        asked = tab.evaluate(SIGNUP_PARTS_JS)
+        lists = tab.evaluate(SHOWN_SELECTS_JS)
+        field = tab.locator(town).is_visible()
+        offered, counted, sent = [], "", {}
+        if asked == ["location"] and field:
+            tab.locator(town).focus()
+            tab.wait_for_timeout(300)
+            counted = tab.locator(f".{name}-places-count").first.inner_text()
+            offered = pick(tab, "lyng", want)
+            sent, _ = finish(tab)
+    finally:
+        tab.close()
+    total = sum(len(t) for t in dk.values())
+    if asked != ["location"] or lists or not field:
+        faults.append(f"{where}: a Denmark page should ask the town with no region step "
+                      f"(step {asked!r}, {lists} list(s) showing, town field {field})")
+    elif counted.strip() != f"{total} towns":
+        faults.append(f"{where}: the first tap on Denmark's town field said {counted!r} - "
+                      f"'{total} towns', every town in the country and not 'biggest first'")
+    elif len(lyngbys) < 2 or not set(lyngbys) <= set(offered):
+        faults.append(f"{where}: typing 'lyng' offered {offered!r} - each of {lyngbys!r}, "
+                      f"named with its region")
+    else:
+        at = dk["Hovedstaden"]["Lyngby"]
+        if (sent.get("lat"), sent.get("long")) != (str(at[0]), str(at[1])):
+            faults.append(f"{where}: {want} sent as lat={sent.get('lat')!r} long={sent.get('long')!r}, "
+                          f"not its coordinates {at!r}")
+        if not any("country=Denmark" in u and "region=Hovedstaden" in u and "city=Lyngby&" in u + "&"
+                   for u in searches):
+            faults.append(f"{where}: no member search narrowed to Lyngby, Hovedstaden, Denmark")
+    # Germany: every Neustadt once, each with its region, and none bare.
+    de = regions_of("Germany")
+    neustadts = {f"Neustadt, {r}" for r in de if r and "Neustadt" in de[r]}
+    tab = shell.open(with_places("Germany"), f"{name}-signup-germany", width=PHONE,
+                     before=signup_stub(SIGNUP_MEMBERS))
+    try:
+        to_location(tab)
+        offered = pick(tab, "neustadt", "") if tab.locator(town).is_visible() else []
+    finally:
+        tab.close()
+    labelled = [o for o in offered if o.startswith("Neustadt, ")]
+    bare = offered.count("Neustadt") - (1 if "Neustadt" in de.get("", {}) else 0)
+    if len(neustadts) < 2 or sorted(labelled) != sorted(neustadts) or bare:
+        faults.append(f"{where}: typing 'neustadt' on a Germany page offered {len(labelled)} labelled and "
+                      f"{offered.count('Neustadt')} bare - each of the {len(neustadts)} once, with its region")
+    # A page with no country: the countries asked region by region first,
+    # then the rest, each run A to Z; Denmark then goes straight to the town,
+    # and a name with punctuation finds its file.
+    tab = shell.open(with_places("world"), f"{name}-signup-world", width=PHONE,
+                     before=signup_stub(SIGNUP_MEMBERS))
+    loaded = {}
+    try:
+        to_location(tab)
+        listed = tab.evaluate(COUNTRY_LIST_JS)
+        regional = sorted(c for c, row in index.items() if row.get("levels") != 2)
+        values, labels = [v for v, _ in listed], [lab for _, lab in listed]
+        n = len(regional)
+        ordered = (sorted(values[:n]) == regional and set(values) == set(index)
+                   and tab.evaluate(SORTED_JS, labels[:n]) and tab.evaluate(SORTED_JS, labels[n:]))
+        country = '[data-hub-signup-part="location"] select'
+        for c in ("Denmark",) + PUNCTUATED:
+            if c not in index:
+                loaded[c] = "not in the index"
+                continue
+            # A file that will not load takes the step with it.
+            if not tab.locator(country).first.is_visible():
+                loaded[c] = "the step had gone"
+                continue
+            tab.locator(country).first.select_option(c)
+            tab.wait_for_timeout(700)
+            shown = tab.evaluate(SHOWN_SELECTS_JS)
+            loaded[c] = (tab.evaluate(SIGNUP_PARTS_JS) == ["location"]
+                         and (tab.locator(town).is_visible() and shown == 1
+                              or index[c]["towns"] <= 12 and shown == 2))
+    finally:
+        tab.close()
+    if not ordered:
+        faults.append(f"{where}: a page with no country listed {labels[:n + 2]!r}... - the {n} asked region "
+                      f"by region first, then the rest, each A to Z")
+    for c, ok in loaded.items():
+        if ok is not True:
+            faults.append(f"{where}: picking {c} on a page with no country should go straight to its towns "
+                          f"({ok or 'it did not'})")
+    # A page's own countries: only those, in the order written, a name the
+    # platform does not hold left out; a pick still goes to its towns. A list
+    # left with one country asks that country at once.
+    for scope, want in (("Denmark;Atlantis;UK;France", ["Denmark", "UK", "France"]),
+                        ("Atlantis;Denmark", ["Denmark"])):
+        tab = shell.open(with_places(scope), f"{name}-signup-list", width=PHONE,
+                         before=signup_stub(SIGNUP_MEMBERS))
+        try:
+            to_location(tab)
+            country = '[data-hub-signup-part="location"] select'
+            shown = tab.locator(country).first.is_visible()
+            listed = [v for v, _ in tab.evaluate(COUNTRY_LIST_JS)]
+            if len(want) > 1 and shown:
+                tab.locator(country).first.select_option(want[0])
+                tab.wait_for_timeout(700)
+            towns = tab.locator(town).is_visible()
+        finally:
+            tab.close()
+        if (len(want) > 1 and listed != want) or shown != (len(want) > 1) or not towns:
+            faults.append(f"{where}: places={scope!r} offered {listed!r} with the country list "
+                          f"{'shown' if shown else 'hidden'}, then towns {'asked' if towns else 'not asked'} - "
+                          f"{want!r} in that order, the list {'shown' if len(want) > 1 else 'hidden'}, then "
+                          f"{want[0]}'s towns")
+    # A town written with no coordinates is still picked, and the hand-off
+    # leaves the location to the join flow. Typed, so a country with more
+    # towns than the pick list holds.
+    bare_town = None
+    for c, row in sorted(index.items()):
+        if row.get("levels") != 2 or row["placed"] == row["towns"] or row["towns"] <= 12:
+            continue
+        regions = regions_of(c)
+        names = collections.Counter(t.lower() for ts in regions.values() for t in ts)
+        bare_town = next(((c, t) for ts in regions.values() for t, at in ts.items()
+                          if at is None and names[t.lower()] == 1 and len(t) > 3), None)
+        if bare_town:
+            break
+    if not bare_town:
+        faults.append(f"{where}: no country asked in two levels has a town with no coordinates to try")
+        return faults
+    c, t = bare_town
+    searches = []
+    tab = shell.open(with_places(c), f"{name}-signup-no-coordinates", width=PHONE,
+                     before=signup_stub(SIGNUP_MEMBERS, searches))
+    try:
+        to_location(tab)
+        offered = pick(tab, t[:-1], t) if tab.locator(town).is_visible() else []
+        sent, moved = finish(tab) if t in offered else ({}, [])
+    finally:
+        tab.close()
+    if t not in offered or moved != ["dob"]:
+        faults.append(f"{where}: {t}, {c}, which has no coordinates, should be offered and picked "
+                      f"(offered {t in offered}, then the card showed {moved!r})")
+    elif "lat" in sent or "long" in sent:
+        faults.append(f"{where}: {t}, {c} has no coordinates and was sent with lat={sent.get('lat')!r} "
+                      f"long={sent.get('long')!r} - none, so the join flow asks")
+    elif not any(f"city={quote_plus(t)}" in u for u in searches):
+        faults.append(f"{where}: no member search narrowed to {t}, {c}")
+    return faults
+
+
 def check_signup(shell, name, tokens):
     where = f"{name} signup"
     faults = []
@@ -1891,7 +2175,8 @@ def check_signup(shell, name, tokens):
                       f"day and month blank")
     # The lines after an answer and the batch-one settings are the card's;
     # the older block has neither.
-    return faults + check_signup_analytics(shell, name, tokens) + check_signup_platform(shell, name, tokens) + (
+    return faults + check_signup_countries(shell, name, tokens) + check_signup_analytics(shell, name, tokens) + (
+        check_signup_platform(shell, name, tokens) + check_signup_demo(shell, name, tokens)) + (
         check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
         + check_signup_first_paint(shell, name, tokens)
         if name == "signup-card" else [])
@@ -2115,6 +2400,74 @@ def check_signup_analytics(shell, name, tokens):
                           f"does with analytics")
         if sent:
             faults.append(f"{where}: with {label} the page still held {[e['event'] for e in sent]!r}")
+    return faults
+
+
+# The help site, where the card is a demonstration, and a partner's own domain,
+# where it hands off as it always has.
+SIGNUP_DEMO_HOST = "help.hubpeople.ai"
+SIGNUP_OTHER_HOST = "www.partner.example"
+
+SIGNUP_SENT_JS = """
+(name) => {
+  const box = document.querySelector(`.${name}-sent`);
+  return box && Array.from(box.querySelectorAll('dt'))
+    .map(dt => [dt.textContent, dt.nextElementSibling ? dt.nextElementSibling.textContent : null]);
+}
+"""
+
+
+def check_signup_demo(shell, name, tokens):
+    """On the help site the card reaches its finish, lists every value the
+    join link would have carried, and stays there: no navigation, and nothing
+    sent to the analytics from the card shown to the hand-off. Served from any
+    other host the same card goes to the join link and reports the hand-off."""
+    where = f"{name} demo"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    for host in (SIGNUP_DEMO_HOST, SIGNUP_OTHER_HOST):
+        left = []
+
+        def before(tab, left=left):
+            analytics_stub()(tab)
+            tab.on("request", lambda r: left.append(r.url)
+                   if r.is_navigation_request() and "/s/register/" in r.url else None)
+        tab = open_card(shell, html, f"{name}-demo", stub=before, host=host)
+        try:
+            tab.evaluate("() => window.__configure()")
+            tab.wait_for_timeout(1500)
+            walk_to(tab, name, "email")
+            fields = hand_off(tab, name)
+            events = [e["event"] for e in tab.evaluate(ANALYTICS_EVENTS_JS)]
+            url = tab.evaluate("() => window.__signupHandoff || ''")
+            # Past the moment the card would leave, and past the 3s after
+            # which a card that left gives the form back.
+            tab.wait_for_timeout(3500)
+            if host == SIGNUP_DEMO_HOST:
+                sent = tab.evaluate(SIGNUP_SENT_JS, name)
+                finish = tab.locator(f".{name}-finish").is_visible()
+        finally:
+            tab.close()
+        if host != SIGNUP_DEMO_HOST:
+            if not left:
+                faults.append(f"{where}: on {host} the card never went to the join link")
+            if not events or events[-1] != "signup_card_handoff":
+                faults.append(f"{where}: on {host} the analytics held {events!r} - the hand-off "
+                              f"reported last, as on any live page")
+            continue
+        if left:
+            faults.append(f"{where}: on {host} the card went to {left[0]} - a demonstration goes nowhere")
+        if events:
+            faults.append(f"{where}: on {host} the analytics held {events!r} - a demonstration reports nothing")
+        if not url or fields.get("mt") != "2" or fields.get("lf") != "1" or not fields.get("em"):
+            faults.append(f"{where}: on {host} the hand-off event carried {url!r} - the join link "
+                          f"with the answers, for the page to read")
+        if not finish:
+            faults.append(f"{where}: on {host} the finish was gone 3.5s after sending - it stays")
+        want = parse_qsl(url.split("?", 1)[-1], keep_blank_values=True) if url else []
+        if sent != [list(p) for p in want]:
+            faults.append(f"{where}: on {host} the finish listed {sent!r} - every value the join "
+                          f"link carries, as sent: {want!r}")
     return faults
 
 

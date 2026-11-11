@@ -2664,6 +2664,24 @@ def check_hub_publish():
         if not ok:
             failures.append("floating URL follows the release")
 
+        # The sign-up card's list, markup and styles go inside each version's
+        # folder, pinned and floating, as they are in the repository.
+        card = HERE.parent / "patterns" / "signup-card"
+        for name in ("settings.json", "pattern.html", "pattern.css"):
+            ok = all((out / "hub-behaviours" / where / "signup-card" / name).is_file()
+                     and (out / "hub-behaviours" / where / "signup-card" / name).read_bytes()
+                     == (card / name).read_bytes() for where in ("1.4.1", "v1"))
+            print(f"  {'ok  ' if ok else 'FAIL'} "
+                  f"{'signup-card/' + name + ' published with the bundle':<46} want=True")
+            if not ok:
+                failures.append(f"signup-card/{name} published with the bundle")
+        # And they are as fixed as the bundle beside them.
+        pinned = out / "hub-behaviours" / "1.4.1" / "signup-card" / "settings.json"
+        pinned.write_bytes(pinned.read_bytes() + b" ")
+        case("republishing a version whose card files differ",
+             run_publish(_hub("1.4.1"), "//b", out), 1)
+        pinned.write_bytes((card / "settings.json").read_bytes())
+
         # The places go out beside the bundle under their edition, and a
         # bundle naming any other edition would read places nobody published.
         index = json.loads((HERE.parent / "lib" / "places" / "index.json").read_text(encoding="utf-8"))
