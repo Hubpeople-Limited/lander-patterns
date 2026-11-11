@@ -65,16 +65,16 @@ visitors expect. **`edge` costs no height.**
 
 **No script, at any width.** The menu is a native `<details>`/`<summary>`; a shut drawer is
 `visibility: hidden`. Submenus open on hover and `:focus-within`; a shut one is faded, takes no
-pointer down to its third level, and never widens the page; the last two hang from the end edge.
-One limit stays without the library: on a row that has wrapped, a parent at a row's right edge
-has its panel clipped at the bar, because CSS cannot tell which item ends a row; `menu` measures
-it and turns the panel round, and every shell carries the bundle. **The four behaviours add**:
-`drawer`, Escape, a backdrop press and a held page; `menu`, every parent an operable control with
-`aria-expanded`, Escape, outside press, arrow keys, hover grace, and a panel that would leave the
-viewport anchored to its other edge; `overflow` and `shrink`, the two rungs above. Each acts only
-while the stylesheet has the header in that state, so every rung renders complete without the
-library. `ci/check_header.py` renders it against three-, six- and nine-item menus beside two ratio-only
-marks at eight widths, library on and off, and every button rung at phone widths.
+pointer down to its third level and never widens the page; the last two hang from the end edge; a
+tall one scrolls in `100svh` less `--page-header-height`. One limit stays without the library: on
+a row that has wrapped, a parent at a row's right edge has its panel clipped at the bar, because CSS
+cannot tell which item ends a row; `menu` measures it and turns the panel round, and every shell
+carries the bundle. **The four behaviours add**: `drawer`, Escape, a backdrop press and a held page;
+`menu`, every parent an operable control with `aria-expanded`, Escape, outside press, arrow keys,
+hover grace, and a panel that would leave the viewport anchored to its other edge; `overflow` and
+`shrink`, the two rungs above. Each acts only while the stylesheet has the header in that state, so
+every rung renders complete without the library. `ci/check_header.py` renders five menus (to 22
+children), two marks and eight widths, library on and off, every button rung at phone widths.
 
 **The generated markup forces three things.** A parent with both children and a URL arrives as
 two `<li>` entries; the generated `<ul>` cannot carry `role="list"`; `title` is not escaped.
