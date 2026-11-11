@@ -10,7 +10,7 @@ out with one. Above `60rem` the items wrapped onto a second row, the bar grew,
 full-viewport opener slid below the fold - with every gate green, because
 every gate rendered the sample menu.
 
-So this gate renders the header with four menus - short, typical, long, and
+So this gate renders the header with five menus - short, typical, long, tall and
 one three levels deep, the way a brand groups its places by region -
 beside a ratio-only wordmark and a ratio-only square, at eight widths across
 the `60rem` line, with the behaviour library on and off, on the rungs that
@@ -20,7 +20,8 @@ decide how a long menu behaves. It holds the header to:
                    `overflow=scroll` without it, the items sit on one row
     NO OVERLAP     the brand mark never sits on a menu item or a control
     IN VIEW        every submenu opened, and the folded item's own list, stay
-                   inside the viewport
+                   inside the viewport, side to side and top to bottom, and
+                   the last item in each shows when it takes the focus
     SHUT IS SHUT   a shut panel takes no pointer: nothing in it - a third
                    level included, and an item folded into the last one - can
                    be hovered from the empty page under the bar, which would
@@ -141,6 +142,18 @@ MENUS = {
             + item("Safety")
             + item("Advice") + group("Advice", ["First dates", "Profiles"])
             + item("Events") + item("Stories") + item("Contact")
+            + "</ul>",
+    # One group as long as a brand's list of countries: taller than the
+    # screen under the bar, so its panel has to scroll rather than run off.
+    "tall": '<ul class="canvas-navigation-menu">'
+            + item("Home") + item("How it works") + item("Pricing")
+            + group("Countries", ["Argentina", "Bolivia", "Brasil", "Chile",
+                                  "Colombia", "Costa Rica", "Cuba", "Ecuador",
+                                  "El Salvador", "España", "Guatemala", "Honduras",
+                                  "México", "Nicaragua", "Panamá", "Paraguay",
+                                  "Perú", "Portugal", "Puerto Rico",
+                                  "República Dominicana", "Uruguay", "Venezuela"])
+            + item("Safety")
             + "</ul>",
     # Three levels: groups of groups, as a brand with places by region has
     # them. Above the line the groups sit at the end of the row, so on
@@ -424,20 +437,51 @@ PANEL = r"""
   const r = sub.getBoundingClientRect();
   const W = document.documentElement.clientWidth;
   // A link in the open panel, in view, that the pointer cannot reach at its
-  // centre: something else - another panel - lies over it.
+  // centre: something else - another panel - lies over it. In view means
+  // inside the panel's visible box as well as the viewport: a long panel
+  // scrolls, and a link scrolled out of it is reached by scrolling the panel,
+  // not by pointing past its edge.
+  const seenTop = r.top + sub.clientTop, seenLeft = r.left + sub.clientLeft;
+  const seenBottom = seenTop + sub.clientHeight, seenRight = seenLeft + sub.clientWidth;
   const covered = Array.from(sub.querySelectorAll('a[href]')).filter(a => {
     const b = a.getBoundingClientRect();
     const x = b.left + b.width / 2, y = b.top + b.height / 2;
     if (b.width < 1 || b.height < 1 || x < 0 || y < 0 || x >= innerWidth
         || y >= innerHeight) return false;
+    if (x < seenLeft || x >= seenRight || y < seenTop || y >= seenBottom) return false;
     const top = document.elementFromPoint(x, y);
     return !(top && (top === a || a.contains(top)));
   }).map(a => a.textContent.trim().slice(0, 24));
   return { opacity: parseFloat(s.opacity), covered, left: round(r.left), right: round(r.right),
            width: round(r.width), inView: r.left >= -1 && r.right <= W + 1,
+           top: round(r.top), bottom: round(r.bottom),
+           onScreen: r.top >= -1 && r.bottom <= innerHeight + 1,
            positioned: /absolute|fixed/.test(s.position),
            items: Array.from(sub.querySelectorAll('a')).filter(a => {
              const b = a.getBoundingClientRect(); return b.width > 0 && b.height > 0; }).length };
+}
+"""
+
+# The last link in an open panel, reached from the keyboard: focused, it has
+# to show inside the panel and the viewport without the page itself moving -
+# a page that has to scroll to show it has a panel running off the bottom,
+# and under a pinned bar the page scrolling never brings it up.
+REACH = r"""
+(index) => {
+  const list = document.querySelector('.masthead-nav-links > ul, .masthead-nav-links > ol');
+  const sub = list.children[index].querySelector(':scope > ul, :scope > ol');
+  const links = Array.from(sub.querySelectorAll('a[href]'));
+  const last = links[links.length - 1];
+  if (!last) return null;
+  const before = window.scrollY;
+  last.focus();
+  const b = last.getBoundingClientRect(), s = sub.getBoundingClientRect();
+  const moved = Math.abs(window.scrollY - before) > 1;
+  const shows = b.top >= Math.max(0, s.top) - 1
+    && b.bottom <= Math.min(innerHeight, s.bottom) + 1;
+  last.blur();
+  window.scrollTo(0, before);
+  return { label: last.textContent.trim().slice(0, 24), moved, shows };
 }
 """
 
@@ -636,12 +680,21 @@ def measure_render(tab, combo, script):
                 elif not panel["inView"]:
                     faults.append(f"the panel under '{parent['label']}' leaves the "
                                   f"viewport ({panel['left']}..{panel['right']} of {width})")
+                elif not panel["onScreen"]:
+                    faults.append(f"the panel under '{parent['label']}' runs off the "
+                                  f"bottom ({panel['top']}..{panel['bottom']} of {HEIGHT})")
                 elif panel["items"] == 0:
                     faults.append(f"the panel under '{parent['label']}' has no items in it")
                 elif panel["covered"]:
                     faults.append(f"the panel under '{parent['label']}' is open but a "
                                   f"pointer cannot reach "
                                   + ", ".join(f"'{c}'" for c in panel["covered"][:3]))
+            if panel["positioned"] and panel["opacity"] >= 0.99:
+                reach = tab.evaluate(REACH, index)
+                if reach and (reach["moved"] or not reach["shows"]):
+                    faults.append(f"the last item under '{parent['label']}', "
+                                  f"'{reach['label']}', cannot be reached from the "
+                                  f"keyboard without the page scrolling")
             if panel["positioned"] and script:
                 # The press path, which a finger and a keyboard take: shut it
                 # from the keyboard, then press the control and expect it open
