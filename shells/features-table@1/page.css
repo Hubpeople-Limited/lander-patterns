@@ -1163,7 +1163,7 @@
   }
 }
 
-/* ---- comparison-table v6 ---- */
+/* ---- comparison-table v7 ---- */
 /* comparison-table v2 - tokens only, selectors prefixed */
 .comparison-table {
   overflow-wrap: var(--long-words, break-word);
@@ -1208,9 +1208,9 @@
   max-width: 52ch;
   margin: 0 0 var(--space-6);
 }
-/* overflow on both axes, not overflow-x. Setting only one makes the other
-   scrollable anyway, and the sticky head then sticks to a container that
-   never scrolls, so it looks as though it does not work. */
+/* No height is set, so the table always runs its full length in the page and
+   a reader never meets a second scroller inside the page. It scrolls sideways
+   only where it is wider than its column. */
 .comparison-table-scroll {
   overflow: auto;
   border-radius: var(--card-radius);
@@ -1220,8 +1220,8 @@
   outline-offset: 3px;
 }
 /* separate, not collapse: with collapsed borders the table paints the border
-   rather than the cell, and a sticky head loses its bottom edge as it moves.
-   The box-shadow below draws that edge instead. */
+   rather than the cell, and the sticky criterion column loses its row lines
+   as it moves. The head's bottom edge is the box-shadow below. */
 .comparison-table-grid {
   border-collapse: separate;
   border-spacing: 0;
@@ -1308,17 +1308,6 @@
 @media (min-width: 48rem) {
   .comparison-table {
     padding-inline: var(--space-8);
-  }
-  /* svh, not vh: the mobile address bar would eat into a vh height. The
-     vertical scroller exists only where the table is tall enough to want a
-     sticky head; below this width it would nest a scroller inside the page. */
-  .comparison-table-scroll {
-    max-block-size: 80svh;
-  }
-  .comparison-table-corner,
-  .comparison-table-head {
-    position: sticky;
-    inset-block-start: 0;
   }
 }
 
