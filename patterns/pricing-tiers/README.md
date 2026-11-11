@@ -16,7 +16,9 @@ non-recommended tiers; if no tier is recommended, delete it everywhere.
 
 **Pairing.** `stats-band` above it on a long pricing page, so the numbers land
 before the price. Keep detailed feature *comparison* out of the cards — if the
-brand needs a full matrix, that is a table, a different pattern.
+brand needs a full matrix, that is a table, a different pattern. A page that
+shows its prices in more than one currency puts `currency-switch` directly
+above the cards.
 
 **Brand adaptability.** `--card-border`, `--card-radius` and `--card-shadow`
 set the whole feel — hairline-and-flat reads editorial, shadowed-and-round

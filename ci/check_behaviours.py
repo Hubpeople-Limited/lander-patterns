@@ -30,6 +30,13 @@ page, and holds each behaviour to what its row says:
                and they hold their place while the carousel is operated -
                a control that moves as the rail does is one the reader has
                to chase, and it passes every other check on this list
+    currency   the stylesheet alone shows one currency's prices, the one
+               whose option is picked, for every option up to six, and the
+               first with nothing picked; where the browser cannot switch,
+               no choice is drawn and every price shows each currency; six
+               options are thumb-sized and wrap on a 320px screen; with the
+               bundle the choice is kept and a page opened again opens on
+               it, and the change is said in a status line inside the group
     signup     a phone opens on one question; Next with nothing chosen stays
                and says why; a tapped answer moves on by itself; members
                show once "looking for" is answered and never after a failed
@@ -91,7 +98,7 @@ A substitution that no longer matches is itself a failure, so the control
 cannot go quietly stale when a behaviour is reworded.
 
 WHICH PATTERNS. Discovered from the `behaviours:` header of every pattern:
-anything declaring `reveal`, `counter`, `scrollspy` or `carousel`. A new
+anything declaring `reveal`, `counter`, `scrollspy`, `carousel` or `currency`. A new
 pattern taking one of them is measured the day it lands.
 
 Exit codes: 0 clean, or skipped because no browser is available; 1 at least
@@ -120,7 +127,7 @@ from check_page import apply_variants                   # noqa: E402
 from check_phone import browser_unavailable             # noqa: E402
 import lint                                             # noqa: E402
 
-BEHAVIOURS = ("counter", "scrollspy", "carousel", "signup", "reveal")
+BEHAVIOURS = ("counter", "scrollspy", "carousel", "currency", "signup", "reveal")
 # The last release before motion became a switch. Pages built from it keep
 # that markup and those styles and load the bundle from the floating URL,
 # so the bundle is held to moving them exactly as it did.
@@ -179,6 +186,8 @@ CONTROL_SUBSTITUTIONS = {
                 'target.textContent = "0";'),
     "scrollspy": ('current.a.setAttribute("aria-current", "true");',
                   'current.a.setAttribute("data-hub-broken", "true");'),
+    "currency": ("if (again && !again.checked) again.checked = true;",
+                 "if (again && !again.checked) again.checked = false;"),
     "carousel": ("group[index].checked = true;",
                  "group[index].checked = group[index].checked;"),
     "carousel-scroller": ("scroller.scrollBy({ left: step * stepSize(), behavior });",
@@ -641,6 +650,167 @@ def check_scrollspy(shell, name, tokens):
         faults.append(f"{where}: with the third heading passed, the current link(s) "
                       f"read {current} - one link, #hub-s3, should carry aria-current "
                       f"and the state class")
+    return faults
+
+
+# ---------------------------------------------------------------- currency
+
+CURRENCIES = (("gbp", "Pounds"), ("usd", "US dollars"), ("aud", "Australian dollars"),
+              ("eur", "Euros"), ("zar", "Rand"), ("nzd", "New Zealand dollars"))
+CURRENCY_OPTION = re.compile(r'<label class="currency-switch-option">.*?</label>\s*', re.S)
+# What a reader sees of each price: the currencies drawn, and what is drawn
+# between them.
+CURRENCY_SHOWN_JS = """
+() => Array.from(document.querySelectorAll('.currency-switch-price')).map(w =>
+  Array.from(w.children).filter(s => getComputedStyle(s).display !== 'none').map(s => ({
+    text: s.textContent, lead: getComputedStyle(s, '::before').content })))
+"""
+CURRENCY_BOXES_JS = """
+() => ({ scroll: document.documentElement.scrollWidth,
+         drawn: getComputedStyle(document.querySelector('.currency-switch')).display,
+         tops: Array.from(document.querySelectorAll('.currency-switch-option')).map(o => {
+           const r = o.getBoundingClientRect(); return [Math.round(r.top), r.width, r.height]; }) })
+"""
+CURRENCY_STATE_JS = """
+() => { const g = document.querySelector('[data-hub-module~="currency"]');
+        const s = g.querySelector('[role="status"]');
+        const on = g.querySelector('input:checked');
+        let kept = null; try { kept = localStorage.getItem('hub-currency'); } catch (e) {}
+        return { picked: on ? on.value : null, said: s ? s.textContent : null, kept,
+                 heard: window.__hubCurrency || [] }; }
+"""
+
+
+def currency_page(name, tokens, bundle_file, count, picked=0, cannot_switch=False):
+    """The switch with `count` currencies and two prices under it, each
+    written once per currency in the options' order."""
+    filled, css = filled_markup(name)
+    option = CURRENCY_OPTION.search(filled).group(0)
+    if " checked" not in option or 'value="' not in option:
+        raise SystemExit(f"currency: {name}'s option no longer ships a value and "
+                         f"`checked` - the check builds its options from both")
+    built = "".join(
+        re.sub(r"(<span class=\"currency-switch-name\">).*?(</span>)",
+               lambda m, label=label: m.group(1) + label + m.group(2),
+               re.sub(r'value="[^"]*"', f'value="{code}"', option, count=1)
+               .replace(" checked", " checked" if k == picked else "", 1), count=1, flags=re.S)
+        for k, (code, label) in enumerate(CURRENCIES[:count]))
+    filled = CURRENCY_OPTION.sub("", filled, count=len(CURRENCY_OPTION.findall(filled)) - 1)
+    filled = CURRENCY_OPTION.sub(lambda m: built, filled, count=1)
+    if cannot_switch:
+        # A browser without :has(), as the stylesheet sees one.
+        if css.count("selector(:has(*))") != 2:
+            raise SystemExit(f"currency: {name} no longer asks whether the browser can "
+                             f"switch in two places - re-read its @supports rules")
+        css = css.replace("selector(:has(*))", "selector(:hub-check-absent(*))")
+    prices = "".join(
+        f'<p>Plan {n}: <span class="currency-switch-price">'
+        + "".join(f"<span>{n}-{code}</span>" for code, _ in CURRENCIES[:count])
+        + "</span> a week</p>" for n in (1, 2))
+    return SHELL.format(title=f"{name} currency", tokens=tokens, css=css, bundle=bundle_file,
+                        before="", markup=filled, after=prices)
+
+
+def check_currency(shell, name, tokens):
+    where = f"{name} currency"
+    faults = []
+    codes = [c for c, _ in CURRENCIES]
+
+    def only(shown, code):
+        return all([s["text"] for s in price] == [f"{n}-{code}"] and price[0]["lead"] == "none"
+                   for n, price in enumerate(shown, 1)) and len(shown) == 2
+
+    # The stylesheet alone, six currencies on the narrowest phone.
+    tab = shell.open(currency_page(name, tokens, "no-bundle.js", 6), f"{name}-currency-css", width=320)
+    try:
+        if tab.evaluate(VERSION_JS):
+            return [f"{where}: the page with no bundle ran one"]
+        boxes = tab.evaluate(CURRENCY_BOXES_JS)
+        for k, code in enumerate(codes):
+            if k:
+                tab.click(f".currency-switch-option:nth-of-type({k + 1})")
+            shown = tab.evaluate(CURRENCY_SHOWN_JS)
+            if not only(shown, code):
+                faults.append(f"{where}: with no bundle and option {k + 1} picked the prices read "
+                              f"{[[s['text'] for s in p] for p in shown]} - {code} alone, in both")
+    finally:
+        tab.close()
+    if boxes["scroll"] > 321:
+        faults.append(f"{where}: six options scroll a 320px screen sideways ({boxes['scroll']}px)")
+    small = [b for b in boxes["tops"] if min(b[1], b[2]) < TAP_MIN - 0.5]
+    if small or len(boxes["tops"]) != 6:
+        faults.append(f"{where}: {len(small)} of {len(boxes['tops'])} options are under {TAP_MIN}px")
+    if len({b[0] for b in boxes["tops"]}) < 2:
+        faults.append(f"{where}: six options did not wrap at 320px")
+
+    # Nothing picked: the page's first currency.
+    tab = shell.open(currency_page(name, tokens, "no-bundle.js", 3, picked=None),
+                     f"{name}-currency-none", width=PHONE)
+    try:
+        shown = tab.evaluate(CURRENCY_SHOWN_JS)
+    finally:
+        tab.close()
+    if not only(shown, codes[0]):
+        faults.append(f"{where}: with nothing picked the prices read "
+                      f"{[[s['text'] for s in p] for p in shown]} - the first currency alone")
+
+    # A browser that cannot switch: no choices, every currency.
+    tab = shell.open(currency_page(name, tokens, "no-bundle.js", 3, cannot_switch=True),
+                     f"{name}-currency-fallback", width=PHONE)
+    try:
+        shown = tab.evaluate(CURRENCY_SHOWN_JS)
+        boxes = tab.evaluate(CURRENCY_BOXES_JS)
+    finally:
+        tab.close()
+    every = all([s["text"] for s in price] == [f"{n}-{c}" for c in codes[:3]]
+                and [s["lead"] != "none" for s in price] == [False, True, True]
+                for n, price in enumerate(shown, 1))
+    if not every or boxes["drawn"] != "none" or boxes["scroll"] > PHONE + 1:
+        faults.append(f"{where}: where the browser cannot switch, the choices are drawn "
+                      f"{boxes['drawn']!r} and the prices read {[[s['text'] for s in p] for p in shown]} - "
+                      f"no choices, and every currency side by side with a mark between")
+
+    # With the bundle: kept, said, and opened on again.
+    def listen(page):
+        page.add_init_script("addEventListener('hub:currency:change', e => "
+                             "(window.__hubCurrency = window.__hubCurrency || []).push(e.detail.currency))")
+    tab = shell.open(currency_page(name, tokens, "hub.js", 3), f"{name}-currency", width=PHONE, before=listen)
+    try:
+        version = tab.evaluate(VERSION_JS)
+        if version != bundle_version():
+            return faults + [f"{where}: the bundle did not run (version {version!r} on the page)"]
+        tab.evaluate("() => { try { localStorage.removeItem('hub-currency'); } catch (e) {} }")
+        tab.reload()
+        tab.wait_for_function(VERSION_JS)
+        first = tab.evaluate(CURRENCY_STATE_JS)
+        opened = tab.evaluate(CURRENCY_SHOWN_JS)
+        tab.click(".currency-switch-option:nth-of-type(2)")
+        after = tab.evaluate(CURRENCY_STATE_JS)
+        switched = tab.evaluate(CURRENCY_SHOWN_JS)
+        tab.reload()
+        tab.wait_for_function(VERSION_JS)
+        tab.wait_for_timeout(100)
+        again = tab.evaluate(CURRENCY_STATE_JS)
+        reopened = tab.evaluate(CURRENCY_SHOWN_JS)
+        tab.evaluate("() => { try { localStorage.removeItem('hub-currency'); } catch (e) {} }")
+    finally:
+        tab.close()
+    if first["picked"] != codes[0] or not only(opened, codes[0]) or first["said"] != "":
+        faults.append(f"{where}: a first visit opened on {first['picked']!r} saying {first['said']!r} - "
+                      f"the first currency, with a status line that has said nothing yet")
+    if after["picked"] != codes[1] or not only(switched, codes[1]):
+        faults.append(f"{where}: the second option picked, the prices did not follow")
+    if after["said"] != f"Prices shown in {CURRENCIES[1][1]}":
+        faults.append(f"{where}: the change was said as {after['said']!r} - "
+                      f"'Prices shown in {CURRENCIES[1][1]}', in the group's status line")
+    if after["kept"] != codes[1] or after["heard"] != [codes[1]]:
+        faults.append(f"{where}: the choice was kept as {after['kept']!r} and announced to the page "
+                      f"as {after['heard']} - {codes[1]!r}, once")
+    if again["picked"] != codes[1] or not only(reopened, codes[1]):
+        faults.append(f"{where}: opened again, the page shows {again['picked']!r} - the currency "
+                      f"picked before, {codes[1]!r}")
+    if again["heard"]:
+        faults.append(f"{where}: opening on the kept currency announced a change nobody made")
     return faults
 
 
@@ -3229,6 +3399,7 @@ def check_signup_compat(shell, tokens, version, old_source):
 
 
 CHECKS = {"counter": check_counter, "scrollspy": check_scrollspy, "carousel": check_carousel,
+          "currency": check_currency,
           "signup": check_signup, "reveal": check_reveal}
 
 

@@ -1,0 +1,9 @@
+{
+  "switch-label": "Sample label for the preview choice",
+  "currency-code": "sample",
+  "currency-name": "Sample currency",
+  "_repeat": {
+    "class": "currency-switch-option",
+    "count": 3
+  }
+}
