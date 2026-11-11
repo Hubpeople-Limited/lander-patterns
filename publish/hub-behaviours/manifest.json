@@ -1,6 +1,6 @@
 {
   "current": {
-    "v1": "1.21.0"
+    "v1": "1.21.1"
   },
   "floating": {
     "v1": "/hub-behaviours/v1/hub.min.js"
@@ -113,6 +113,12 @@
       "integrity": "sha384-fWZM3Z39cao1sw37HftvjkmkK/APUYSfSxKSMiLAC9Kz1jkk3L6nDps+G6qrCbXQ",
       "path": "/hub-behaviours/1.21.0/hub.min.js",
       "published": "2026-11-05"
+    },
+    "1.21.1": {
+      "bytes": 64228,
+      "integrity": "sha384-IBx+MoxldJrLAuvxQkYiH9kQ56x1JWZNxnSzVQm4tcdSXcVImx5O+Kv1YiYgT2v3",
+      "path": "/hub-behaviours/1.21.1/hub.min.js",
+      "published": "2026-11-11"
     },
     "1.5.0": {
       "bytes": 19011,
