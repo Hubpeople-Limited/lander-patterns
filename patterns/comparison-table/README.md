@@ -37,8 +37,8 @@ own `h2`. `faq-details` reads well after it, for the questions a grid raises.
 **Brand adaptability.** `--card-radius` rounds the scroll container, so the table
 reads soft or sharp with the rest of the brand. `--color-rule` draws every row
 line and the head's bottom edge; a brand may set it as soft as it likes, and the
-table survives it disappearing entirely because the columns still align and the
-head still sticks. `--type-scale` moves the section title and the tier names
+table survives it disappearing entirely because the columns still align.
+`--type-scale` moves the section title and the tier names
 together.
 
 The recommended column mixes 10% of the brand colour into the **page ground**,
@@ -68,10 +68,9 @@ the right-hand columns are unreachable without a mouse. The `role` and label sto
 that focus stop being a mystery. It is a tab stop even on a desktop where nothing
 scrolls, which is the price of the keyboard access.
 
-The head sticks only because the container has a height, and it only gets one
-above `48rem` — a `max-block-size` on a phone nests a vertical scroller inside
-the page scroll on a table already scrolling sideways. `svh`, not `vh`, so the
-address bar cannot eat into it.
+**The table always runs its full length in the page.** The container has no
+height, so however many rows there are, the reader scrolls the page and never a
+second box inside it.
 
 **The criterion column stays put while the values scroll sideways**, so a phone
 reader is never looking at three columns of answers with no question against
