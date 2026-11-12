@@ -1219,6 +1219,89 @@ def hand_off(tab, name):
     return dict(p.split("=", 1) for p in url.split("?", 1)[-1].split("&") if "=" in p) if url else {}
 
 
+def preview_stub(tab):
+    """signup_stub, on a preview: the platform's record says the page is not live."""
+    signup_stub(SIGNUP_MEMBERS)(tab)
+    tab.add_init_script("window.templateInfo.is_prod = false;")
+
+
+def check_signup_guards(shell, name, tokens):
+    """What keeps a visitor on the path: two quick taps on "I am" move on one
+    screen, not two; a live page ignores ?hub-signup-step=; a card opened
+    part-way never sends with an earlier step unanswered; a second press of
+    Send sends nothing more; and the finish stays up until the visitor comes
+    back to the page, when the form is given back."""
+    where = f"{name} signup guards"
+    faults = []
+    html = page_for(name, "signup", tokens, "hub.js", PHONE)
+    # Two answers in one go, as two quick taps make them: under reduced motion
+    # each queues its move at once, so both are waiting before either runs.
+    tab = open_card(shell, html, f"{name}-signup-double-tap")
+    try:
+        tab.evaluate("""(name) => {
+          const form = document.querySelector(`.${name} form`);
+          form.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+          ['1', '2'].forEach((v) => form.querySelector(`input[name="mt"][value="${v}"]`).click());
+        }""", name)
+        tab.wait_for_timeout(300)
+        opened = tab.evaluate(SIGNUP_PARTS_JS)
+    finally:
+        tab.close()
+    if opened != ["seeking"]:
+        faults.append(f"{where}: two quick taps on 'I am' opened {opened!r} - one screen on, 'seeking'")
+    # A live page opens on the first step whatever its address says.
+    tab = open_card(shell, html, f"{name}-signup-live-step", query="?hub-signup-step=email")
+    try:
+        opened = tab.evaluate(SIGNUP_PARTS_JS)
+    finally:
+        tab.close()
+    if opened != ["iam"]:
+        faults.append(f"{where}: a live page with ?hub-signup-step=email opened on {opened!r} - 'iam'")
+    # A preview opened on the last step sends nothing until the steps before
+    # it are answered: Send goes back to the first.
+    tab = open_card(shell, html, f"{name}-signup-preview-send", query="?hub-signup-step=email", stub=preview_stub)
+    try:
+        answer_part(tab, name, "email")
+        tap(tab, f".{name}-submit")
+        tab.wait_for_timeout(300)
+        sent = tab.evaluate("() => window.__signupHandoff || ''")
+        opened = tab.evaluate(SIGNUP_PARTS_JS)
+    finally:
+        tab.close()
+    if sent or opened != ["iam"]:
+        faults.append(f"{where}: Send on a card opened at email, nothing before it answered, "
+                      + (f"handed off {sent!r}" if sent else f"opened {opened!r}") + " - back to 'iam', nothing sent")
+    # A second press of Send, and the page coming back from the join flow.
+    tab = open_card(shell, html, f"{name}-signup-send-twice")
+    try:
+        walk_to(tab, name, "email")
+        answer_part(tab, name, "email")
+        # All in one go: under reduced motion the page leaves 200ms after Send.
+        got = tab.evaluate(f"""() => {{
+          let sends = 0;
+          addEventListener('hub:signup:handoff', () => {{ sends += 1; }});
+          const card = document.querySelector('.{name}');
+          const form = card.querySelector('form');
+          form.requestSubmit();
+          form.requestSubmit();
+          const going = card.classList.contains('hub-signup-going');
+          dispatchEvent(new PageTransitionEvent('pageshow', {{ persisted: false }}));
+          const kept = card.classList.contains('hub-signup-going');
+          dispatchEvent(new PageTransitionEvent('pageshow', {{ persisted: true }}));
+          return {{ sends, going, kept, back: !card.classList.contains('hub-signup-going'),
+                   finish: card.querySelectorAll('.{name}-finish').length }};
+        }}""")
+    finally:
+        tab.close()
+    if got["sends"] != 1:
+        faults.append(f"{where}: Send pressed twice handed off {got['sends']} times - once")
+    if not (got["going"] and got["kept"]):
+        faults.append(f"{where}: the finish was not showing after Send ({got!r})")
+    if not got["back"] or got["finish"]:
+        faults.append(f"{where}: the page restored from history kept the finish ({got!r}) - the form again")
+    return faults
+
+
 def check_signup_choices(shell, name, tokens):
     """The card's batch-one settings, each set and each checked against what
     it promises: screens, the line after an answer, the members row, the
@@ -1533,11 +1616,12 @@ def check_signup_choices(shell, name, tokens):
     if not last or last.get("name") != "seeking" or last.get("step") != 2:
         faults.append(f"{where}: the step event said {last!r} on the second step - step 2, named 'seeking'")
     # A preview opens on a step named in its address; anything it cannot
-    # find opens on the first step, as with no address.
+    # find opens on the first step, as with no address. (A live page never
+    # does: check_signup_guards.)
     for query, want in (("?hub-signup-step=dob", ["dob"]), ("?hub-signup-step=3", ["dob"]),
                         ("?hub-signup-step=zzz", ["iam"]), ("?hub-signup-step=0", ["iam"]),
                         ("?hub-signup-step=99", ["iam"])):
-        tab = open_card(shell, html, f"{name}-signup-preview", query=query)
+        tab = open_card(shell, html, f"{name}-signup-preview", query=query, stub=preview_stub)
         try:
             tab.wait_for_timeout(300)
             opened = tab.evaluate(SIGNUP_PARTS_JS)
@@ -2345,7 +2429,8 @@ def check_signup(shell, name, tokens):
                       f"day and month blank")
     # The lines after an answer and the batch-one settings are the card's;
     # the older block has neither.
-    return faults + check_signup_countries(shell, name, tokens) + check_signup_analytics(shell, name, tokens) + (
+    return faults + check_signup_guards(shell, name, tokens) + (
+        check_signup_countries(shell, name, tokens) + check_signup_analytics(shell, name, tokens)) + (
         check_signup_platform(shell, name, tokens) + check_signup_demo(shell, name, tokens)) + (
         check_signup_messages(shell, name, tokens) + check_signup_choices(shell, name, tokens)
         + check_signup_first_paint(shell, name, tokens)
