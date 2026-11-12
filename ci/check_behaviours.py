@@ -1261,20 +1261,27 @@ def check_signup_guards(shell, name, tokens):
     # it are answered: Send goes back to the first.
     tab = open_card(shell, html, f"{name}-signup-preview-send", query="?hub-signup-step=email", stub=preview_stub)
     try:
-        answer_part(tab, name, "email")
-        tap(tab, f".{name}-submit")
-        tab.wait_for_timeout(300)
-        sent = tab.evaluate("() => window.__signupHandoff || ''")
-        opened = tab.evaluate(SIGNUP_PARTS_JS)
+        start = tab.evaluate(SIGNUP_PARTS_JS)
+        if start == ["email"]:
+            answer_part(tab, name, "email")
+            tap(tab, f".{name}-submit")
+            tab.wait_for_timeout(300)
+            sent = tab.evaluate("() => window.__signupHandoff || ''")
+            opened = tab.evaluate(SIGNUP_PARTS_JS)
     finally:
         tab.close()
-    if sent or opened != ["iam"]:
+    if start != ["email"]:
+        faults.append(f"{where}: a preview with ?hub-signup-step=email opened on {start!r} - 'email'")
+    elif sent or opened != ["iam"]:
         faults.append(f"{where}: Send on a card opened at email, nothing before it answered, "
                       + (f"handed off {sent!r}" if sent else f"opened {opened!r}") + " - back to 'iam', nothing sent")
     # A second press of Send, and the page coming back from the join flow.
     tab = open_card(shell, html, f"{name}-signup-send-twice")
     try:
         walk_to(tab, name, "email")
+        reached = tab.evaluate(SIGNUP_PARTS_JS)
+        if reached != ["email"]:
+            return faults + [f"{where}: the steps never reached the last one (stopped on {reached!r})"]
         answer_part(tab, name, "email")
         # All in one go: under reduced motion the page leaves 200ms after Send.
         got = tab.evaluate(f"""() => {{
