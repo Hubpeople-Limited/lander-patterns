@@ -68,6 +68,7 @@
     "zip-to-code": {"default": "Or enter your ZIP code instead", "group": "postal"},
     "error-zip": {"default": "Enter your 5-digit ZIP code, or choose your state and town.", "group": "postal"},
     "zip-unknown": {"default": "We don't know that ZIP code. Check it, or choose your state and town.", "group": "postal"},
+    "zip-failed": {"default": "We couldn't look up that ZIP code just now. Try again, or choose your state and town.", "group": "postal"},
     "largest": {"default": "Largest", "group": "location"},
     "a-to-z": {"default": "A to Z", "group": "location"},
     "places-count": {"default": "{n} towns, biggest first", "group": "location", "tokens": ["n"]},

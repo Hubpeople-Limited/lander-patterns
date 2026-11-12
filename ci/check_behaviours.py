@@ -145,6 +145,16 @@ COUNTER_SETTLE_MS = 2600
 # decimal, a percentage, and a big grouped number. Each one has to come
 # back exactly.
 FIGURES = ("12,500+", "4.8", "98%", "1,000,000")
+# Figures written other ways than the patterns' own, each with the shape every
+# frame of its count keeps: a decimal comma after grouping dots, a figure
+# followed by a year, digits grouped by a space, and a decimal point after
+# grouping commas.
+FIGURE_SHAPES = {
+    "1.000,50": r"\d{1,3}(\.\d{3})*,\d{2}",
+    "Top 10 2024": r"Top \d{1,2} 2024",
+    "12 500": r"\d{1,3}( \d{3})*",
+    "1,000.5": r"\d{1,3}(,\d{3})*\.\d",
+}
 FILLER = "<p>Filler copy so the page scrolls, used only to render this check.</p>\n" * 12
 
 # How long after a block comes into view a moving one has visibly moved.
@@ -242,6 +252,10 @@ CONTROL_SUBSTITUTIONS = {
                               "fill(loc.country, named, countryName);"),
     "signup-countries-none": ("where.at = name ? townsHere[name] || null : null;",
                               "where.at = name ? townsHere[name] || [0, 0] : null;"),
+    "setup": ("if (!setup || done.has(name)) return;", "if (!setup) return;"),
+    "counter-figures": (r"|\s(?=\d{3}(?!\d)))*", r"|\s)*"),
+    "signup-amp": ('/^\\/amp(\\/|$)/.test(location.pathname)', 'location.href.includes("/amp")'),
+    "signup-places-retry": (".catch((err) => { delete loaded[file]; throw err; })", ""),
     "still": ('const heldStill = (el) => getComputedStyle(el).getPropertyValue("--hub-motion").trim() === "none";',
               "const heldStill = (el) => false;"),
 }
@@ -530,6 +544,93 @@ def check_counter(shell, name, tokens):
         faults.append(f"{where}: under reduced motion the figures read {still!r} - "
                       f"the authored figure is the only one allowed")
     faults += motion_faults(shell, name, tokens, "counter")
+    return faults + figure_faults(shell, tokens)
+
+
+def figure_faults(shell, tokens):
+    """Each frame of a count keeps the authored figure's shape - its marks,
+    its decimals, the words around it - and the count ends on the figure."""
+    markup = ('<dl data-hub-module="counter">'
+              + "".join(f"<dt>{f}</dt><dd>Sample figure</dd>" for f in FIGURE_SHAPES) + "</dl>")
+    html = SHELL.format(title="counter figures", tokens=tokens, css="", bundle="hub.js",
+                        before='<section class="behaviour-check-section">' + FILLER + "</section>",
+                        markup=markup, after='<section class="behaviour-check-section">' + FILLER + "</section>")
+    tab = shell.open(html, "counter-figures")
+    try:
+        tab.evaluate("""() => {
+          const block = document.querySelector('[data-hub-module~="counter"]');
+          const dts = Array.from(block.querySelectorAll('dt'));
+          window.__frames = dts.map(() => []);
+          new MutationObserver(() => dts.forEach((dt, i) => {
+            const f = window.__frames[i];
+            if (f[f.length - 1] !== dt.textContent) f.push(dt.textContent);
+          })).observe(block, { subtree: true, childList: true, characterData: true });
+          block.scrollIntoView();
+        }""")
+        tab.wait_for_timeout(COUNTER_SETTLE_MS)
+        frames = tab.evaluate("() => window.__frames")
+        final = tab.evaluate(COUNTER_JS)
+    finally:
+        tab.close()
+    faults = []
+    for (figure, shape), seen, end in zip(FIGURE_SHAPES.items(), frames, final):
+        off = next((f for f in seen if not re.fullmatch(shape, f)), None)
+        if off is not None:
+            faults.append(f"counter figures: {figure!r} counted through {off!r} - every frame "
+                          f"keeps the figure's shape")
+        if end != figure:
+            faults.append(f"counter figures: {figure!r} ended as {end!r}")
+    return faults
+
+
+def check_setup(shell, tokens):
+    """Each module sets an element up once: a behaviour registered after the
+    page has loaded sets up the elements already there, styles and all; a
+    module that fails is tried again on the next init and the others on the
+    element are not built twice."""
+    html = SHELL.format(title="setup", tokens=tokens, css="", bundle="hub.js", before="", after="",
+                        markup='<div id="late" data-hub-module="late-one"></div>'
+                               '<div id="pair" data-hub-module="counting flaky"></div>')
+    tab = shell.open(html, "setup")
+    try:
+        if tab.evaluate(VERSION_JS) != bundle_version():
+            return ["setup: the bundle did not run"]
+        got = tab.evaluate("""() => {
+          const hub = window.HubBehaviours;
+          const bump = (el, k) => { el.dataset[k] = String(Number(el.dataset[k] || 0) + 1); };
+          hub.register("late-one", { setup: (el) => bump(el, "ran"), css: ".late-one-mark { outline-width: 7px; }" });
+          hub.register("counting", { setup: (el) => bump(el, "ran") });
+          hub.register("flaky", { setup: (el) => { bump(el, "tried"); if (el.dataset.tried === "1") throw new Error("not yet"); } });
+          const quiet = console.error;
+          console.error = () => {};
+          const pair = document.getElementById("pair");
+          hub.initAll();
+          const markedAfterFailure = pair.hasAttribute("data-hub-initialised");
+          hub.initAll();
+          hub.initAll();
+          console.error = quiet;
+          return {
+            late: document.getElementById("late").dataset.ran || "0",
+            styled: Array.from(document.querySelectorAll("style")).some((s) => s.textContent.includes("late-one-mark")),
+            ran: pair.dataset.ran || "0", tried: pair.dataset.tried || "0",
+            markedAfterFailure, marked: pair.hasAttribute("data-hub-initialised"),
+          };
+        }""")
+    finally:
+        tab.close()
+    faults = []
+    if got["late"] != "1" or not got["styled"]:
+        faults.append(f"setup: a behaviour registered after the page loaded ran {got['late']} time(s) "
+                      f"on an element already there, styles {'added' if got['styled'] else 'missing'} - "
+                      f"once, with its styles")
+    if got["ran"] != "1":
+        faults.append(f"setup: a module beside one that failed was built {got['ran']} times over three inits - once")
+    if got["tried"] != "2":
+        faults.append(f"setup: a module that failed once was tried {got['tried']} times over three inits - "
+                      f"again on the next, then left")
+    if got["markedAfterFailure"] or not got["marked"]:
+        faults.append(f"setup: data-hub-initialised read {got['markedAfterFailure']} after a module failed "
+                      f"and {got['marked']} once it was built - false, then true")
     return faults
 
 
@@ -1952,7 +2053,9 @@ def check_signup(shell, name, tokens):
     faults = []
     html = page_for(name, "signup", tokens, "hub.js", PHONE)
     face = 'input[name="{0}"][value="{1}"] + .' + name + '-opt-face'
-    tab = shell.open(html, f"{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS),
+    # Served from a file whose name starts "amp": a page that is not the AMP
+    # edition is attributed as an ordinary page.
+    tab = shell.open(html, f"amplify-{name}-signup", width=PHONE, before=signup_stub(SIGNUP_MEMBERS),
                      query="?utm_source=s&utm_medium=m&cmp=abc&gclid=g&cmp=second&pn=incoming")
     try:
         tab.wait_for_timeout(300)
@@ -2257,6 +2360,47 @@ def check_signup(shell, name, tokens):
     if not lists_first or not offered:
         faults.append(f"{where}: postal=lists should show the state list with the ZIP code a tap away "
                       f"(list {lists_first}, link {offered})")
+    # A ZIP lookup that does not arrive says so, and the code typed again is
+    # looked up again.
+    def flaky_postal(tab):
+        signup_stub(SIGNUP_MEMBERS)(tab)
+        asked = []
+
+        def once(route):
+            asked.append(route.request.url)
+            if len(asked) == 1:
+                route.fulfill(status=503, body="")
+            else:
+                route.fallback()
+        tab.route(SIGNUP_PLACES + "usa-postal-1.json*", once)
+    tab = shell.open(zipped, f"{name}-signup-zip-retry", width=PHONE, before=flaky_postal)
+    try:
+        tab.wait_for_timeout(300)
+        tap(tab, face.format("mt", 2))
+        tab.wait_for_timeout(900)
+        tap(tab, face.format("lf", 1))
+        tap(tab, f".{name}-next")
+        tab.wait_for_timeout(900)
+        code = tab.locator('[data-hub-signup-part="location"] input[autocomplete="postal-code"]')
+        note = tab.locator(f".{name}-postal .{name}-place-note")
+        failed_said = read = None
+        if code.count() == 1 and code.is_visible():
+            code.fill("10001")
+            tab.wait_for_timeout(600)
+            failed_said = note.inner_text() if note.is_visible() else ""
+            code.fill("1000")
+            code.fill("10001")
+            tab.wait_for_timeout(900)
+            read = note.inner_text() if note.is_visible() else ""
+    finally:
+        tab.close()
+    if failed_said is not None:
+        if not failed_said.startswith("We couldn't look up that ZIP code"):
+            faults.append(f"{where}: a ZIP lookup that did not arrive said {failed_said!r} - "
+                          f"that it could not be looked up, not that the code is unknown")
+        if "New York" not in (read or ""):
+            faults.append(f"{where}: ZIP 10001 typed again after a lookup that did not arrive "
+                          f"read {read!r} - looked up again, New York")
     # A failed search leaves nothing behind.
     tab = shell.open(html, f"{name}-signup-failed", width=PHONE, before=signup_stub(None))
     try:
@@ -3481,6 +3625,7 @@ def main():
     fired = {b: 0 for b in BEHAVIOURS}
     faults = []
     still = []
+    setup = []
     with Shell(args.broken) as shell:
         for name in names:
             for behaviour in sorted(found[name]):
@@ -3492,6 +3637,9 @@ def main():
             still = check_still_means_still(shell, tokens)
             faults.extend(still)
             print(f"  still means still: {'FAIL ' + str(len(still)) if still else 'ok'}")
+            setup = check_setup(shell, tokens)
+            faults.extend(setup)
+            print(f"  setup: {'FAIL ' + str(len(setup)) if setup else 'ok'}")
     print()
     for line in faults:
         print(f"  FAIL  {line}")
@@ -3502,6 +3650,10 @@ def main():
         if silent:
             print(f"  CONTROL FAILED: {', '.join(silent)} passed with a line turned "
                   f"wrong. This gate cannot see the thing it exists for.")
+            return 1
+        if not args.names and not setup:
+            print("  CONTROL FAILED: with the setup record turned off, every module "
+                  "was still built once. This gate cannot see the thing it exists for.")
             return 1
         held = [b for b in STILL_BLOCKS
                 if not args.names and not any(f.startswith(f"still {b}:") for f in still)]
